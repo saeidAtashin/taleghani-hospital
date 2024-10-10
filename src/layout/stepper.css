@@ -1,0 +1,35 @@
+.steps {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  position: relative;
+}
+.step-button {
+  width: 230px;
+  height: 81px;
+  border-radius:16px;
+  border: none;
+  background-color: #E7F1FF;
+  color: #9EC5FE;
+
+  transition: 0.4s;
+}
+.step-button[aria-expanded="true"] {
+  width: 230px;
+  height: 81px;
+  background-color:#E7F1FF;
+  color: #0D6EFD;
+}
+.done {
+  background-color: #D2F4EA;
+  color: #20C997;
+}
+.step-item {
+  z-index: 10;
+  text-align: center;
+}
+
+.show {
+  border: 4px solid rgb(83, 83, 83);
+}

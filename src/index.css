@@ -1,0 +1,180 @@
+:root {
+  --scrollbar-thumb: #7e8299;
+  --scrollbar-background: rgb(243, 246, 249);
+}
+
+@font-face {
+  font-family: iranyekanbold;
+  font-style: normal;
+  font-weight: bold;
+  src: url("./fonts/IRANYekan/eot/iranyekanwebboldfanum.eot");
+  src: url("./fonts/IRANYekan/eot/iranyekanwebboldfanum.eot?#iefix")
+      format("embedded-opentype"),
+    /* IE6-8 */ url("./fonts/IRANYekan/woff/iranyekanwebboldfanum.woff")
+      format("woff"),
+    /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+      url("./fonts/IRANYekan/woff2/iranyekanwebboldfanum.woff2") format("woff2"),
+    /* FF39+,Chrome36+, Opera24+*/
+      url("./fonts/IRANYekan/ttf/iranyekanwebboldfanum.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: iranyekan;
+  font-style: normal;
+  font-weight: normal;
+  src: url("./fonts/IRANYekan/eot/iranyekanwebregularfanum.eot");
+  src: url("./fonts/IRANYekan/eot/iranyekanwebregularfanum.eot?#iefix")
+      format("embedded-opentype"),
+    /* IE6-8 */ url("./fonts/IRANYekan/woff/iranyekanwebregularfanum.woff")
+      format("woff"),
+    /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+      url("./fonts/IRANYekan/woff2/iranyekanwebregularfanum.woff2")
+      format("woff2"),
+    /* FF39+,Chrome36+, Opera24+*/
+      url("./fonts/IRANYekan/ttf/iranyekanwebregularfanum.ttf")
+      format("truetype");
+}
+@font-face {
+  font-family: iranyekan900;
+  font-style: normal;
+  font-weight: 900;
+  src: url("./fonts/IRANYekan/eot/iranyekanwebextraboldfanum.eot");
+  src: url("./fonts/IRANYekan/eot/iranyekanwebextraboldfanum.eot?#iefix")
+      format("embedded-opentype"),
+    /* IE6-8 */ url("./fonts/IRANYekan/woff/iranyekanwebextraboldfanum.woff")
+      format("woff"),
+    /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+      url("./fonts/IRANYekan/woff2/iranyekanwebextraboldfanum.woff2")
+      format("woff2"),
+    /* FF39+,Chrome36+, Opera24+*/
+      url("./fonts/IRANYekan/ttf/iranyekanwebextraboldfanum.ttf")
+      format("truetype");
+}
+/* English digits fonts */
+
+@font-face {
+  font-family: iranyekan-en;
+  font-style: normal;
+  font-weight: bold;
+  src: url("./fonts/IRANYEKAN_English/eot/iranyekanwebbold.eot");
+  src: url("./fonts/IRANYEKAN_English/eot/iranyekanwebbold.eot?#iefix")
+      format("embedded-opentype"),
+    /* IE6-8 */ url("./fonts/IRANYEKAN_English/woff/iranyekanwebbold.woff")
+      format("woff"),
+    /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+      url("./fonts/IRANYEKAN_English/woff2/iranyekanwebbold.woff2")
+      format("woff2"),
+    /* FF39+,Chrome36+, Opera24+*/
+      url("./fonts/IRANYEKAN_English/ttf/iranyekanwebbold.ttf")
+      format("truetype");
+}
+
+@font-face {
+  font-family: iranyekan-en;
+  font-style: normal;
+  font-weight: normal;
+  src: url("./fonts/IRANYEKAN_English/eot/iranyekanwebregular.eot");
+  src: url("./fonts/IRANYEKAN_English/eot/iranyekanwebregular.eot?#iefix")
+      format("embedded-opentype"),
+    /* IE6-8 */ url("./fonts/IRANYEKAN_English/woff/iranyekanwebregular.woff")
+      format("woff"),
+    /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+      url("./fonts/IRANYEKAN_English/woff2/iranyekanwebregular.woff2")
+      format("woff2"),
+    /* FF39+,Chrome36+, Opera24+*/
+      url("./fonts/IRANYEKAN_English/ttf/iranyekanwebregular.ttf")
+      format("truetype");
+}
+
+/* End english digits fonts */
+
+@font-face {
+  font-family: "Material Icons";
+  font-style: normal;
+  font-weight: 400;
+  src: url("./fonts/MaterialIcons-Regular.eot"); /* For IE6-8 */
+  src: local("Material Icons"), local("MaterialIcons-Regular"),
+    url("./fonts/MaterialIcons-Regular.woff2") format("woff2"),
+    url("./fonts/MaterialIcons-Regular.woff") format("woff"),
+    url("./fonts/MaterialIcons-Regular.ttf") format("truetype");
+}
+* {
+  box-sizing: border-box; /* Set globally for all elements */
+  
+}
+*,
+body {
+  font-family: "iranyekan";
+  /* pretty scroll styles */
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-background);
+  scrollbar-width: thin;
+}
+
+.iranyekanbold {
+  font-family: "iranyekanbold" !important;
+}
+
+.iranyekan900 {
+  font-family: "iranyekan900" !important;
+}
+
+.btn1 {
+  padding-left: "2.5rem"; 
+  padding-right: "2.5rem";
+}
+
+.bg-image {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Hide the image and add background on mobile */
+@media (max-width: 767px) {
+  .bg-image {
+    background-image: url('./images/login.png');
+    height: 100vh; /* Adjust height as needed */
+  }
+}
+
+.forced-height-full {
+  height: 100vh !important;
+}
+
+/* Default behavior for medium and large screens */
+.responsive-bottom {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+/* Override for extra-large screens (1200px and above) */
+@media (min-width: 768px) {
+  .responsive-bottom {
+    position: sticky;
+    bottom: 0;
+  }
+}
+
+
+.card {
+  background: var(--surface-card);
+  padding: 2rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+/* Customize striped row background color */
+.p-datatable-striped .p-datatable-tbody > tr:nth-child(even) {
+  background-color: #edeeef; /* Change to your desired color */
+}
+
+/* Customize font color for striped rows */
+.p-datatable-striped .p-datatable-tbody > tr:nth-child(even) {
+  color: #333;
+}
+
+
+
+.p-dropdown-items {
+  padding: 0 !important;
+}

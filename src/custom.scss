@@ -1,0 +1,21 @@
+// src/custom.scss
+
+// Import Bootstrap functions and variables
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+
+// Set custom primary color shades
+$primary: #0d6efd; // Primary base color
+$primary-300: lighten($primary, 80%);
+$primary-400: lighten($primary, 10%);
+$primary-500: $primary;
+
+// Import Bootstrap to apply customizations
+@import "~bootstrap/scss/bootstrap";
+
+.primary-300 {
+    background: #3D8BFD;
+  }
+  .primary-400 {
+    color: var(--bs-primary-400);
+  }
