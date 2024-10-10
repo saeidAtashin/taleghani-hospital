@@ -15,7 +15,6 @@ const StepperBootstrap = () => {
     <div className="container">
       <div className="mt-3 fw-bold fs-3 ">ثبت نام بیمار جدید</div>
       <div className="steps">
-        {/* <progress id="progress" value={progress} max="100"></progress> */}
         {[...Array(3)].map((_, i) => (
           <div className="step-item mt-4" key={i}>
             <button
@@ -29,9 +28,9 @@ const StepperBootstrap = () => {
               data-bs-target={`#collapse${i + 1}`}
             >
               مرحله {i + 1}
-            <div className="step-title text-nowrap">
-              {["اطلاعات هویتی", "سوابق بیمار", "اطلاعات بیماری"][i]}
-            </div>
+              <div className="step-title text-nowrap">
+                {["اطلاعات هویتی", "سوابق بیمار", "اطلاعات بیماری"][i]}
+              </div>
             </button>
           </div>
         ))}
@@ -46,9 +45,7 @@ const StepperBootstrap = () => {
               aria-labelledby={`heading${i + 1}`}
               data-bs-parent="#accordionExample"
             >
-              <div className="card-body">
-                {/* {i === 3 ? "4444 - " : ""}your content goes here... */}
-              </div>
+              <div className="card-body">محتوا</div>
             </div>
           </div>
         ))}
