@@ -6,54 +6,71 @@ const DashboardPage = () => {
   const formFields = [
     {
       type: "text",
-      label: "کد ملی",
-      name: "nationalNumber",
-      placeholder: "کد ملی بیمار را وارد نمایید",
+      label: "Username",
+      name: "username",
+      placeholder: "Enter username",
+      defaultValue: "",
       required: true,
     },
     {
       type: "email",
-      label: "نام پزشک معرف",
-      name: "pezeshkemoaref",
-      placeholder: "نام پزشک را وارد نمایید",
-      required: true,
-    },
-    {
-      type: "text",
-      label: "نام",
-      name: "name",
-      placeholder: "نام بیمار را وارد نمایید",
+      label: "Email",
+      name: "email",
+      placeholder: "Enter email",
+      defaultValue: "",
       required: true,
     },
     {
       type: "password",
-      label: "نام خانوادگی",
-      name: "lastname",
-      placeholder: "نام خانوادگی را وارد نمایید",
+      label: "Password",
+      name: "password",
+      placeholder: "Enter password",
+      defaultValue: "",
       required: true,
     },
     {
       type: "select",
-      label: "جنسیت",
+      label: "Role",
       name: "role",
       options: [
-        { value: "male", label: "مرد" },
-        { value: "female", label: "زن" },
+        { value: "admin", label: "Admin" },
+        { value: "user", label: "User" },
+        { value: "guest", label: "Guest" },
       ],
-      placeholder: "جنسیت را انتخاب نمایید",
+      placeholder: "Select role",
+      defaultValue: "user",
+      required: true,
+    },
+
+    {
+      type: "select",
+      label: "Second Select",
+      name: "rolesec",
+      options: [
+        { value: "1", label: "1" },
+        { value: "2", label: "2" },
+        { value: "3", label: "3" },
+      ],
+      placeholder: "select",
+      defaultValue: "0",
       required: true,
     },
     {
       type: "checkbox",
-      label: "چک باکس",
+      label: "Accept terms and conditions",
       name: "termsAccepted",
+      defaultValue: false,
     },
   ];
 
   const handleFormSubmit = (data) => {
     console.log("Submitted Data:", data);
   };
+  const [selectedOption, setSelectedOption] = useState("");
 
+  const handleSelectChange = (event) => {
+    setSelectedOption(event.target.value);
+  };
   return (
     <div className="">
       <ReusableForm fields={formFields} onSubmit={handleFormSubmit} />
