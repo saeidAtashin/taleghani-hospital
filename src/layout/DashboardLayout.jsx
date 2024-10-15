@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Children, useState } from "react";
 import "../pages/DashboardPage.css";
 import { Outlet } from "react-router-dom";
+// import { ReactComponent as Dropdown } from "../iconColor/dropdown.svg";
 
 // import { childVariants } from "../animation/RoutesAnimations";
 function DashboardLayout() {
@@ -53,7 +54,7 @@ function DashboardLayout() {
                 {/* <span>بیماران</span> */}
                 بیماران
                 <span>
-                  <img src="./images/dropdown.svg" alt="dd" />
+                  <img src="/images/dropdown.svg" alt="dd" />
                 </span>
               </i>
             </a>
@@ -63,13 +64,13 @@ function DashboardLayout() {
               }`}
             >
               <li className="sidebar-item d-flex">
-                <img src="./images/users.svg" alt="users" />
+                <img src="/images/users.svg" alt="users" />
                 <a href="/dashboard/patients-lists" className="sidebar-link">
                   لیست بیماران
                 </a>
               </li>
               <li className="sidebar-item d-flex">
-                <img src="./images/plus.svg" alt="users" />
+                <img src="/images/plus.svg" alt="users" />
                 <a href="/dashboard/register-patient" className="sidebar-link">
                   افزودن بیمار جدید
                 </a>
@@ -91,7 +92,7 @@ function DashboardLayout() {
                   گزارش <span>گیری</span>
                 </div>
                 <span>
-                  <img src="./images/dropdown.svg" alt="dd" />
+                  <img src="/images/dropdown.svg" alt="dd" />
                 </span>
               </i>
             </a>
@@ -111,7 +112,7 @@ function DashboardLayout() {
                   <span>کاربران و </span>دسترسی‌ <span>ها</span>
                 </div>
                 <span>
-                  <img src="./images/dropdown.svg" alt="dd" />
+                  <img src="/images/dropdown.svg" alt="dd" />
                 </span>
               </i>
             </a>
@@ -131,14 +132,14 @@ function DashboardLayout() {
                   تعاریف <span>پایه</span>
                 </div>
                 <span>
-                  <img src="./images/dropdown.svg" alt="dd" />
+                  <img src="/images/dropdown.svg" alt="dd" />
                 </span>
               </i>
             </a>
           </li>
         </ul>
         <div className="sidebar-footer">
-          <a href="#" className="sidebar-link">
+          <a href="/" className="sidebar-link">
             <i className="lni lni-exit"></i>
             <span>Logout</span>
           </a>
