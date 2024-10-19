@@ -13,10 +13,10 @@ const LoginPage = () => {
         <div className="container-fluid h-custom w-100 ">
           <div className="row d-flex justify-content-center align-items-center h-100">
             <div className="col-md-6 col-lg-6 col-xl-6 offset-xl-1">
-              <div className="mt-4 ">
+              <div className="mt-4 w-50 mx-auto">
                 <h3 className="fw-bold fs-20 ">ورود به پنل</h3>
               </div>
-              <form>
+              <form className=" mx-auto w-50">
                 <div data-mdb-input-init className="form-outline my-4">
                   <label className="form-label" htmlFor="form3Example3">
                     نام کاربری
