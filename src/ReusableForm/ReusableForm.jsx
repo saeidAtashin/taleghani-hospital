@@ -1,24 +1,11 @@
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 // Define the Zod schema for validation
-const formSchema = z.object({
-  username: z
-    .string()
-    .min(1, "Username is required")
-    .max(20, "Username must be 20 characters or less"),
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-  role: z.enum(["admin", "user", "guest"], "Role is required"),
-  termsAccepted: z
-    .boolean()
-    .refine((val) => val === true, "You must accept the terms"),
-});
 
-const ReusableForm = ({ fields, onSubmit }) => {
+const ReusableForm = ({ fields, formSchema, onSubmit }) => {
   const {
     control,
     handleSubmit,
@@ -129,6 +116,7 @@ const ReusableForm = ({ fields, onSubmit }) => {
                   defaultValue={field.defaultValue || ""}
                   render={({ field: controllerField }) => (
                     <select
+                      dir="rtl"
                       {...controllerField}
                       className={`form-control form-select ${
                         errors[field.name] ? "is-invalid" : ""

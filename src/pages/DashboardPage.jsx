@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import "./DashboardPage.css";
 import "../script";
 import ReusableForm from "../ReusableForm/ReusableForm";
+import { z } from "zod";
+
 const DashboardPage = () => {
   const formFields = [
     {
@@ -63,6 +65,19 @@ const DashboardPage = () => {
     },
   ];
 
+  const formSchema = z.object({
+    username: z
+      .string()
+      .min(1, "Username is required")
+      .max(20, "Username must be 20 characters or less"),
+    email: z.string().email("Invalid email address"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    role: z.enum(["admin", "user", "guest"], "Role is required"),
+    termsAccepted: z
+      .boolean()
+      .refine((val) => val === true, "You must accept the terms"),
+  });
+
   const handleFormSubmit = (data) => {
     console.log("Submitted Data:", data);
   };
@@ -73,7 +88,11 @@ const DashboardPage = () => {
   };
   return (
     <div className="">
-      <ReusableForm fields={formFields} onSubmit={handleFormSubmit} />
+      <ReusableForm
+        fields={formFields}
+        formSchema={formSchema}
+        onSubmit={handleFormSubmit}
+      />
     </div>
   );
 };
