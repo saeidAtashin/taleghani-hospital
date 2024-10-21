@@ -62,7 +62,7 @@ function DashboardLayout() {
               onClick={() => toggleSubmenu("patients")}
               aria-expanded={activeSubmenu === "patients"}
             >
-              <i className="fst-normal d-flex align-items-center justify-content-between p-2">
+              <i className="fst-normal d-flex align-items-center  p-2">
                 بیماران
                 <span>
                   <img src="/images/dropdown.svg" alt="dd" />
@@ -104,8 +104,8 @@ function DashboardLayout() {
               onClick={() => toggleSubmenu("reports")}
               aria-expanded={activeSubmenu === "reports"}
             >
-              <i className="fst-normal d-flex align-items-center justify-content-between p-2">
-                گزارش گیری
+              <i className="fst-normal d-flex align-items-center p-2">
+                گزارش <span>گیری</span>
                 <span>
                   <img src="/images/dropdown.svg" alt="dd" />
                 </span>
@@ -133,7 +133,7 @@ function DashboardLayout() {
               onClick={() => toggleSubmenu("users")}
               aria-expanded={activeSubmenu === "users"}
             >
-              <i className="fst-normal d-flex align-items-center justify-content-between p-2">
+              <i className="fst-normal d-flex align-items-center  p-2">
                 کاربران <span className="">و دسترسی‌ها</span>
                 <span>
                   <img src="/images/dropdown.svg" alt="dd" />
@@ -165,8 +165,8 @@ function DashboardLayout() {
               onClick={() => toggleSubmenu("definitions")}
               aria-expanded={activeSubmenu === "definitions"}
             >
-              <i className="fst-normal d-flex align-items-center justify-content-between p-2">
-                تعاریف پایه
+              <i className="fst-normal d-flex align-items-center  p-2">
+                تعاریف <span>پایه</span>
                 <span>
                   <img src="/images/dropdown.svg" alt="dd" />
                 </span>

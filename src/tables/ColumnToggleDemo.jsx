@@ -10,6 +10,8 @@ import { InputNumber } from "primereact/inputnumber";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { Tag } from "primereact/tag";
+import { Button } from "primereact/button";
+import HeaderName from "../components/HeaderName";
 
 export default function ColumnToggleDemo() {
   const columns = [
@@ -592,10 +594,15 @@ export default function ColumnToggleDemo() {
   };
 
   const headerNew = (
-    <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
-      {/* <h4 className="m-0">Manage Products</h4> */}
+    <div className="d-flex flex-wrap gap-2 align-items-center  justify-content-end">
+      <Button
+        label="جستجو"
+        icon="pi pi-search"
+        severity="primary"
+        onClick={openNew2}
+      />
       <IconField iconPosition="left">
-        <InputIcon className="pi pi-search" />
+        {/* <InputIcon className="pi pi-search" /> */}
         <InputText
           type="search"
           onInput={(e) => setGlobalFilter(e.target.value)}
@@ -606,13 +613,8 @@ export default function ColumnToggleDemo() {
   );
 
   return (
-    <div className="card">
-      {/* <DataTable
-      dir="ltr"
-        value={products}
-        header={header}
-        tableStyle={{ minWidth: "50rem" }}
-      > */}
+    <div className="card screen-width p-5">
+      <HeaderName HeaderName="لیست بیماران" />
 
       <DataTable
         stripedRows

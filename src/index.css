@@ -164,7 +164,6 @@ body {
 
 .card {
   background: var(--surface-card);
-  padding: 2rem;
   border-radius: 10px;
   margin-bottom: 1rem;
 }
@@ -182,4 +181,11 @@ body {
   padding: 0 !important;
 }
 
+.HeaderName {
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 42px;
+  margin-bottom: 32px;
+
+}
 
