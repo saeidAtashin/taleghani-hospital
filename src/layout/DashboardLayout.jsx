@@ -1,12 +1,17 @@
 import { motion } from "framer-motion";
-import { Children, useState } from "react";
+import { Children, useEffect, useState } from "react";
 import "../pages/DashboardPage.css";
 import { Outlet } from "react-router-dom";
-// import { ReactComponent as Dropdown } from "../iconColor/dropdown.svg";
+import { useLocalStorage } from "../hooks/useLocalStorage";
 
-// import { childVariants } from "../animation/RoutesAnimations";
 function DashboardLayout() {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const { getItem, setItem } = useLocalStorage("isExpanded");
+  const [isExpanded, setIsExpanded] = useState(
+    getItem() !== undefined ? getItem() : true
+  );
+  useEffect(() => {
+    setItem(isExpanded);
+  }, [isExpanded]);
 
   const handleToggle = () => {
     setIsExpanded(!isExpanded);
