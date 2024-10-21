@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import "./DashboardPage.css";
-import "../script";
 import ReusableForm from "../ReusableForm/ReusableForm";
 import { z } from "zod";
 
@@ -81,11 +79,7 @@ const DashboardPage = () => {
   const handleFormSubmit = (data) => {
     console.log("Submitted Data:", data);
   };
-  const [selectedOption, setSelectedOption] = useState("");
 
-  const handleSelectChange = (event) => {
-    setSelectedOption(event.target.value);
-  };
   return (
     <div className="screen-width">
       <ReusableForm
