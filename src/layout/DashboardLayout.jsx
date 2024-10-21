@@ -27,9 +27,8 @@ function DashboardLayout() {
     setActiveSubmenu((prev) => (prev === submenu ? null : submenu));
   };
 
-  console.log("activeSubmenu", activeSubmenu);
   return (
-    <div className="wrapper screen-height">
+    <div className="wrapper screen-height ">
       <aside
         id="sidebar"
         className={isExpanded ? "expand shadow-sm h-full" : "shadow-sm"}
@@ -78,15 +77,15 @@ function DashboardLayout() {
               }`}
             >
               <li className="sidebar-item minheight d-flex">
-                <img className="" src="/images/users.svg" alt="users" />
                 <a href="/dashboard/patients-lists" className="sidebar-link">
-                  لیست بیماران
+                  <img className="" src="/images/users.svg" alt="users" />
+                  <span>لیست بیماران</span>
                 </a>
               </li>
               <li className="sidebar-item d-flex">
-                <img src="/images/plus.svg" alt="users" />
                 <a href="/dashboard/register-patient" className="sidebar-link">
-                  افزودن بیمار جدید
+                  <img src="/images/plus.svg" alt="users" />
+                  <span>افزودن بیمار جدید</span>{" "}
                 </a>
               </li>
             </ul>
@@ -113,9 +112,9 @@ function DashboardLayout() {
               }`}
             >
               <li className="sidebar-item d-flex">
-                <img src="/images/users.svg" alt="report" />
                 <a href="/dashboard/reports" className="sidebar-link">
-                  مشاهده گزارشات
+                  <img src="/images/users.svg" alt="report" />
+                  <span> مشاهده گزارشات</span>
                 </a>
               </li>
             </ul>
@@ -142,9 +141,9 @@ function DashboardLayout() {
               }`}
             >
               <li className="sidebar-item d-flex">
-                <img src="/images/users.svg" alt="user" />
                 <a href="/dashboard/user-management" className="sidebar-link">
-                  مدیریت کاربران
+                  <img src="/images/users.svg" alt="user" />
+                  <span>مدیریت کاربران</span>{" "}
                 </a>
               </li>
             </ul>
@@ -171,9 +170,9 @@ function DashboardLayout() {
               }`}
             >
               <li className="sidebar-item d-flex">
-                <img src="/images/users.svg" alt="definitions" />
                 <a href="/dashboard/basic-definitions" className="sidebar-link">
-                  مدیریت تعاریف
+                  <img src="/images/users.svg" alt="definitions" />
+                  <span>مدیریت تعاریف</span>
                 </a>
               </li>
             </ul>

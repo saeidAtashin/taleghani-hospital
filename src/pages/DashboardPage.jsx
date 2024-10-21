@@ -87,7 +87,7 @@ const DashboardPage = () => {
     setSelectedOption(event.target.value);
   };
   return (
-    <div className="">
+    <div className="screen-width">
       <ReusableForm
         fields={formFields}
         formSchema={formSchema}
