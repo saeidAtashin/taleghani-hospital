@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./stepper.css";
+import HeaderName from "../components/HeaderName";
 
 const StepperBootstrap = () => {
   const [progress, setProgress] = useState(0);
@@ -13,7 +14,7 @@ const StepperBootstrap = () => {
 
   return (
     <div className="container">
-      <div className="mt-3 fw-bold fs-3 ">ثبت نام بیمار جدید</div>
+      <HeaderName HeaderName="ثبت نام بیمار جدید" className="mt-5" />
       <div className="steps">
         {[...Array(3)].map((_, i) => (
           <div className="step-item mt-4" key={i}>

@@ -1,7 +1,7 @@
 import React from "react";
 
-const HeaderName = ({ HeaderName }) => {
-  return <div className="HeaderName">{HeaderName}</div>;
+const HeaderName = ({ HeaderName, className }) => {
+  return <div className={`HeaderName ${className}`}>{HeaderName}</div>;
 };
 
 export default HeaderName;
