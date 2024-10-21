@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import "../pages/DashboardPage.css";
 import { Outlet } from "react-router-dom";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 
@@ -77,13 +76,19 @@ function DashboardLayout() {
               }`}
             >
               <li className="sidebar-item minheight d-flex">
-                <a href="/dashboard/patients-lists" className="sidebar-link">
+                <a
+                  href="/dashboard/patients-lists"
+                  className="sidebar-link w-100"
+                >
                   <img className="" src="/images/users.svg" alt="users" />
                   <span>لیست بیماران</span>
                 </a>
               </li>
               <li className="sidebar-item d-flex">
-                <a href="/dashboard/register-patient" className="sidebar-link">
+                <a
+                  href="/dashboard/register-patient"
+                  className="sidebar-link w-100"
+                >
                   <img src="/images/plus.svg" alt="users" />
                   <span>افزودن بیمار جدید</span>{" "}
                 </a>
@@ -112,7 +117,7 @@ function DashboardLayout() {
               }`}
             >
               <li className="sidebar-item d-flex">
-                <a href="/dashboard/reports" className="sidebar-link">
+                <a href="/dashboard/reports" className="sidebar-link w-100">
                   <img src="/images/users.svg" alt="report" />
                   <span> مشاهده گزارشات</span>
                 </a>
@@ -141,7 +146,10 @@ function DashboardLayout() {
               }`}
             >
               <li className="sidebar-item d-flex">
-                <a href="/dashboard/user-management" className="sidebar-link">
+                <a
+                  href="/dashboard/user-management"
+                  className="sidebar-link w-100"
+                >
                   <img src="/images/users.svg" alt="user" />
                   <span>مدیریت کاربران</span>{" "}
                 </a>
@@ -170,7 +178,10 @@ function DashboardLayout() {
               }`}
             >
               <li className="sidebar-item d-flex">
-                <a href="/dashboard/basic-definitions" className="sidebar-link">
+                <a
+                  href="/dashboard/basic-definitions"
+                  className="sidebar-link w-100"
+                >
                   <img src="/images/users.svg" alt="definitions" />
                   <span>مدیریت تعاریف</span>
                 </a>
