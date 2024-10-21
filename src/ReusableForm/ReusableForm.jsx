@@ -42,7 +42,9 @@ const ReusableForm = ({ fields, formSchema, onSubmit, inputsPerRow }) => {
             {rowFields.map((field, index) => (
               <div
                 key={index}
-                className={`mt-3 col-md-${Math.floor(12 / rowFields.length)} mb-3`}
+                className={`mt-3 col-md-${Math.floor(
+                  12 / rowFields.length
+                )} mb-3`}
               >
                 {/* Text Input */}
                 {field.type === "text" && (
@@ -77,7 +79,9 @@ const ReusableForm = ({ fields, formSchema, onSubmit, inputsPerRow }) => {
                 {/* Email Input */}
                 {field.type === "email" && (
                   <>
-                    <label htmlFor={field.name}>{field.label}</label>
+                    <label className="label" htmlFor={field.name}>
+                      {field.label}
+                    </label>
                     <Controller
                       name={field.name}
                       control={control}
@@ -105,7 +109,9 @@ const ReusableForm = ({ fields, formSchema, onSubmit, inputsPerRow }) => {
                 {/* Password Input */}
                 {field.type === "password" && (
                   <>
-                    <label htmlFor={field.name}>{field.label}</label>
+                    <label className="label" htmlFor={field.name}>
+                      {field.label}
+                    </label>
                     <Controller
                       name={field.name}
                       control={control}
@@ -133,7 +139,9 @@ const ReusableForm = ({ fields, formSchema, onSubmit, inputsPerRow }) => {
                 {/* Select Dropdown */}
                 {field.type === "select" && (
                   <>
-                    <label htmlFor={field.name}>{field.label}</label>
+                    <label className="label" htmlFor={field.name}>
+                      {field.label}
+                    </label>
                     <Controller
                       name={field.name}
                       control={control}
@@ -200,7 +208,7 @@ const ReusableForm = ({ fields, formSchema, onSubmit, inputsPerRow }) => {
           </div>
         ))}
         <button type="submit" className="btn btn-primary w-100">
-        ثبت اطلاعات و ادامه
+          ثبت اطلاعات و ادامه
         </button>
       </form>
     </div>
