@@ -74,7 +74,7 @@ const StepperBootstrap = () => {
           </div>
         ))}
       </div>
-      <div className="accordion" id="accordionExample">
+      <div className="accordion shadow p-2 pb-5 mb-5" id="accordionExample">
         {[...Array(3)].map((_, i) => (
           <div
             key={i}
