@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import ReusableForm from "../ReusableForm/ReusableForm";
 import { z } from "zod";
+import Lottie from "react-lottie-player";
+import animationData from "../animation-json/developing.json";
+import HeaderName from "../components/HeaderName";
 
 const DashboardPage = () => {
   const formFields = [
@@ -81,13 +84,20 @@ const DashboardPage = () => {
   };
 
   return (
-    <div className="screen-width">
-      {/* <ReusableForm
-        fields={formFields}
-        formSchema={formSchema}
-        onSubmit={handleFormSubmit}
-      /> */}
-      
+    <div className="screen-width d-flex flex-column justify-content-center mx-auto align-items-center">
+      <div className=" position-fixed top-0 position-relative">
+        <HeaderName
+          HeaderName={"در حال توسعه"}
+          className={"mt-5 z-3 text-center position-absolute"}
+        />
+        <Lottie
+          className=""
+          loop
+          play
+          animationData={animationData} // Use the JSON file for the animation
+          // style={{ width: "100%" }}
+        />
+      </div>
     </div>
   );
 };
