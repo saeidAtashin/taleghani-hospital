@@ -1,10 +1,12 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import ReusableForm from "../ReusableForm/ReusableForm";
+import { generateReusableSchema, loginForm } from "../form-fields/FormFields";
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const login = () => {
-    console.log("object");
+  const handleFormSubmit = (data) => {
+    console.log("data", data);
     navigate("/dashboard");
   };
   return (
@@ -16,44 +18,13 @@ const LoginPage = () => {
               <div className="mt-4 w-50 mx-auto">
                 <h3 className="fw-bold fs-20 ">ورود به پنل</h3>
               </div>
-              <form className=" mx-auto w-50">
-                <div data-mdb-input-init className="form-outline my-4">
-                  <label className="form-label" htmlFor="form3Example3">
-                    نام کاربری
-                  </label>
-                  <input
-                    type="email"
-                    id="form3Example3"
-                    className="form-control form-control-lg"
-                    placeholder="نام کاربری خود را وارد نمایید"
-                  />
-                </div>
 
-                {/* <!-- Password input --> */}
-                <div data-mdb-input-init className="form-outline mb-3">
-                  <label className="form-label" htmlFor="form3Example4">
-                    رمز عبور
-                  </label>
-                  <input
-                    type="password"
-                    id="form3Example4"
-                    className="form-control form-control-lg"
-                    placeholder="رمز عبور خود را وارد نمایید"
-                  />
-                </div>
-
-                <div className="text-center text-lg-start mt-4 pt-2 ">
-                  <button
-                    type="button"
-                    data-mdb-button-init
-                    data-mdb-ripple-init
-                    className="btn1 btn btn-primary btn-lg w-100 mb-4"
-                    onClick={login}
-                  >
-                    Login
-                  </button>
-                </div>
-              </form>
+              <ReusableForm
+                fields={loginForm}
+                formSchema={generateReusableSchema(loginForm)}
+                onSubmit={handleFormSubmit}
+                inputsPerRow={[1]}
+              />
             </div>
             <div className="col-md-6 col-lg-6 col-xl-5 position-relative ">
               <img
@@ -70,7 +41,6 @@ const LoginPage = () => {
           </div>
         </div>
         <div className=" responsive-bottom d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 bg-primary">
-          {/* <!-- Copyright --> */}
           <div className="text-white mb-0">
             Copyright © 2020. All rights reserved.
           </div>

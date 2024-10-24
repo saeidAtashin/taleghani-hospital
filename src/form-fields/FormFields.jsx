@@ -398,3 +398,27 @@ export const formPatientsInformationFields = [
     required: false,
   },
 ];
+
+export const loginForm = [
+  {
+    type: "text",
+    label: "نام کاربری",
+    name: "username",
+    placeholder: "نام کاربری را وارد نمایید",
+    defaultValue: "",
+    required: true,
+  },
+  {
+    type: "text",
+    label: "رمز عبور",
+    name: "password",
+    placeholder: "رمز عبور را وارد نمایید",
+    defaultValue: "",
+    required: true,
+  },
+];
+
+export const loginFormSchema = z.object({
+  username: z.string().min(1, "نام کاربری را وارد نمایید"),
+  password: z.string().min(1, "رمز عبور را وارد نمایید"),
+});
