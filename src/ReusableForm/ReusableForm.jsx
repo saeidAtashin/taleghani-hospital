@@ -17,7 +17,7 @@ const ReusableForm = ({ fields, formSchema, onSubmit, inputsPerRow }) => {
     let rows = [];
     let startIndex = 0;
 
-    inputsPerRow.forEach((count) => {
+    inputsPerRow?.forEach((count) => {
       const rowFields = fields.slice(startIndex, startIndex + count);
       rows.push(rowFields);
       startIndex += count;
