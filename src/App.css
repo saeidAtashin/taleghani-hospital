@@ -194,3 +194,9 @@ a.sidebar-link:hover {
 #sidebar.expand + .screen-width {
     min-width: calc(100vw - var(--sidebar-width-expanded)) !important;
 }
+
+
+.custom-input-group .input-group-text {
+    border-radius: 10px  0 0 10px !important; /* Adjust this value as needed */
+  }
+  

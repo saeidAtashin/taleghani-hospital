@@ -7,7 +7,7 @@ export const formFielsIdentity = [
     name: "national_id",
     placeholder: "کد ملی بیمار را وارد نمایید",
     defaultValue: "",
-    required: true,
+    required: false,
   },
   {
     type: "text",
@@ -15,7 +15,7 @@ export const formFielsIdentity = [
     name: "introducing_doctor",
     placeholder: "نام پزشک را وارد نمایید",
     defaultValue: "",
-    required: true,
+    required: false,
   },
   {
     type: "text",
@@ -279,12 +279,26 @@ export const formPatientsFields = [
     required: false,
   },
   {
+    type: "doubleinput", // Dynamic pair input type
+    name1: {
+      label: "Drug Name",
+      name: "drug_name",
+      placeholder: "Enter drug name",
+    },
+    name2: {
+      label: "Drug Dose",
+      name: "drug_dose",
+      placeholder: "Enter drug dose",
+    },
+  },
+  {
     type: "text",
     label: "قد",
     name: "patient_height",
     placeholder: "قد بیمار را وارد نمایید",
     defaultValue: "",
     required: false,
+    append: "cm",
   },
   {
     type: "text",
@@ -293,6 +307,7 @@ export const formPatientsFields = [
     placeholder: "وزن بیمار را  وارد نمایید",
     defaultValue: "",
     required: false,
+    append: "kg",
   },
   {
     type: "text",
@@ -417,4 +432,3 @@ export const loginForm = [
     required: true,
   },
 ];
-

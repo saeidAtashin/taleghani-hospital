@@ -57,15 +57,26 @@ const ReusableForm = ({ fields, formSchema, onSubmit, inputsPerRow }) => {
                       control={control}
                       defaultValue={field.defaultValue || ""}
                       render={({ field: controllerField }) => (
-                        <input
-                          {...controllerField}
-                          type="text"
-                          className={`form-control ${
-                            errors[field.name] ? "is-invalid" : ""
+                        <div
+                          className={`input-group custom-input-group ${
+                            field.append ? "mb-3" : ""
                           }`}
-                          id={field.name}
-                          placeholder={field.placeholder || ""}
-                        />
+                        >
+                          <input
+                            {...controllerField}
+                            type="text"
+                            className={`form-control ${
+                              errors[field.name] ? "is-invalid" : ""
+                            }`}
+                            id={field.name}
+                            placeholder={field.placeholder || ""}
+                          />
+                          {field.append && (
+                            <span className="input-group-text">
+                              {field.append}
+                            </span>
+                          )}
+                        </div>
                       )}
                     />
                     {errors[field.name] && (

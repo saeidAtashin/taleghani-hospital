@@ -13,19 +13,6 @@ import {
 const StepperBootstrap = () => {
   const [activeIndex, setActiveIndex] = useState(0);
 
-  // make stepper clickable
-  // const handleStepClick = (index) => {
-  //   setProgress((index * 100) / 2);
-  //   setActiveIndex(index);
-  //   console.log("object");
-  // };
-
-  // const handleFormSubmit = (data) => {
-  //   console.log("data", data);
-  //   console.log("activeIndex", activeIndex);
-  //   setActiveIndex(activeIndex + 1);
-  // };
-
   const handleFormSubmit = (data) => {
     try {
       // Dynamically generate the schema based on the current step's form fields
