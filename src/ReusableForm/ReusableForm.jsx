@@ -223,7 +223,6 @@ const ReusableForm = ({ fields, formSchema, onSubmit, inputsPerRow }) => {
                 {/* Dynamic Fields for Drug Name and Drug Dose */}
                 {field.type === "doubleinput" && (
                   <div className="">
-                    {/* <div className="row"> */}
                     <label className="col-md-12 label">{field.label}</label>
 
                     {subfields.map((item, index) => (
@@ -290,7 +289,6 @@ const ReusableForm = ({ fields, formSchema, onSubmit, inputsPerRow }) => {
                         افزودن
                       </button>
                     </div>
-                    {/* </div> */}
                   </div>
                 )}
               </div>
