@@ -200,3 +200,7 @@ a.sidebar-link:hover {
     border-radius: 10px  0 0 10px !important; /* Adjust this value as needed */
   }
   
+  .custom-border-radius-btn {
+    border-radius: 10px 0 0 10px !important; /* Set the desired border-radius */
+  }
+  

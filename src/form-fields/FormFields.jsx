@@ -225,7 +225,7 @@ export const formFielsIdentity = [
 // Dynamically construct the Zod schema based on form fields
 export const generateReusableSchema = (formFields) =>
   z.object(
-    formFields.reduce((schema, field) => {
+    formFields?.reduce((schema, field) => {
       switch (field.type) {
         case "text":
           schema[field.name] = field.required
@@ -261,6 +261,19 @@ export const generateReusableSchema = (formFields) =>
             : z.number().optional();
           break;
 
+        case "doubleinput":
+          schema[field.name] = z.array(
+            z.object(
+              field?.subfields?.reduce((subfieldSchema, subfield) => {
+                subfieldSchema[subfield.name] = subfield.required
+                  ? z.string().min(1, `${subfield.label} را وارد نمایید`)
+                  : z.string().optional();
+                return subfieldSchema;
+              }, {})
+            )
+          );
+          break;
+
         // Add cases for other input types as needed (e.g., radio, date, etc.)
         default:
           schema[field.name] = z.any().optional(); // Fallback for unknown types
@@ -278,19 +291,7 @@ export const formPatientsFields = [
     defaultValue: "",
     required: false,
   },
-  {
-    type: "doubleinput", // Dynamic pair input type
-    name1: {
-      label: "Drug Name",
-      name: "drug_name",
-      placeholder: "Enter drug name",
-    },
-    name2: {
-      label: "Drug Dose",
-      name: "drug_dose",
-      placeholder: "Enter drug dose",
-    },
-  },
+
   {
     type: "text",
     label: "قد",
@@ -375,13 +376,22 @@ export const formPatientsFields = [
     defaultValue: "",
     required: false,
   },
+
   {
-    type: "text",
+    type: "doubleinput", // Dynamic pair input type
     label: "سوابق دارویی",
-    name: "province",
-    placeholder: "نام دارو",
-    required: false,
+    name1: {
+      label: "نام دارو",
+      name: "drug_name",
+      placeholder: " نام دارو",
+    },
+    name2: {
+      label: "دور دارو",
+      name: "drug_dose",
+      placeholder: " دور دارو",
+    },
   },
+
   {
     type: "text",
     label: "علت مراجعه",

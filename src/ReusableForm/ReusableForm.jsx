@@ -1,7 +1,8 @@
-import React from "react";
-import { useForm, Controller } from "react-hook-form";
+import React, { Fragment } from "react";
+import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai"; // Import icons for add and remove
 
 const ReusableForm = ({ fields, formSchema, onSubmit, inputsPerRow }) => {
   const {
@@ -10,6 +11,15 @@ const ReusableForm = ({ fields, formSchema, onSubmit, inputsPerRow }) => {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(formSchema),
+  });
+
+  const {
+    fields: subfields,
+    append,
+    remove,
+  } = useFieldArray({
+    control,
+    name: "drugs", // This will be the key for drug_name and drug_dose pairs in the form data
   });
 
   // Helper function to group fields based on inputsPerRow
@@ -86,7 +96,6 @@ const ReusableForm = ({ fields, formSchema, onSubmit, inputsPerRow }) => {
                     )}
                   </>
                 )}
-
                 {/* Email Input */}
                 {field.type === "email" && (
                   <>
@@ -116,7 +125,6 @@ const ReusableForm = ({ fields, formSchema, onSubmit, inputsPerRow }) => {
                     )}
                   </>
                 )}
-
                 {/* Password Input */}
                 {field.type === "password" && (
                   <>
@@ -146,7 +154,6 @@ const ReusableForm = ({ fields, formSchema, onSubmit, inputsPerRow }) => {
                     )}
                   </>
                 )}
-
                 {/* Select Dropdown */}
                 {field.type === "select" && (
                   <>
@@ -184,7 +191,6 @@ const ReusableForm = ({ fields, formSchema, onSubmit, inputsPerRow }) => {
                     )}
                   </>
                 )}
-
                 {/* Checkbox */}
                 {field.type === "checkbox" && (
                   <div className="form-check">
@@ -214,10 +220,84 @@ const ReusableForm = ({ fields, formSchema, onSubmit, inputsPerRow }) => {
                     )}
                   </div>
                 )}
+                {/* Dynamic Fields for Drug Name and Drug Dose */}
+                {field.type === "doubleinput" && (
+                  <div className="">
+                    {/* <div className="row"> */}
+                    <label className="col-md-12 label">{field.label}</label>
+
+                    {subfields.map((item, index) => (
+                      <Fragment key={item.id}>
+                        <div className="d-flex">
+                          <div className="col-md-6 mb-3">
+                            <div className="input-group">
+                              <Controller
+                                name={`drugs[${index}].drug_name`} // Updated name to correctly reference array index
+                                control={control}
+                                defaultValue={item.drug_name || ""}
+                                render={({ field }) => (
+                                  <input
+                                    {...field}
+                                    type="text"
+                                    placeholder={item.placeholder || "نام دارو"}
+                                    className={`form-control ${
+                                      errors.drugs?.[index]?.drug_name
+                                        ? "is-invalid"
+                                        : ""
+                                    }`}
+                                  />
+                                )}
+                              />
+                            </div>
+                          </div>
+                          <div className="col-md-6 mb-3">
+                            <div className="input-group">
+                              <Controller
+                                name={`drugs[${index}].drug_dose`} // Updated name to correctly reference array index
+                                control={control}
+                                defaultValue={item.drug_dose || ""}
+                                render={({ field }) => (
+                                  <input
+                                    {...field}
+                                    type="text"
+                                    placeholder={"دوز دارو"}
+                                    className={`form-control ${
+                                      errors.drugs?.[index]?.drug_dose
+                                        ? "is-invalid"
+                                        : ""
+                                    }`}
+                                  />
+                                )}
+                              />
+                              <button
+                                type="button"
+                                className="btn btn-danger ms-2 custom-border-radius-btn"
+                                onClick={() => remove(index)}
+                              >
+                                حذف
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </Fragment>
+                    ))}
+                    <div className="col-md-12">
+                      <button
+                        type="button"
+                        className="btn btn-secondary"
+                        onClick={() => append({ drug_name: "", drug_dose: "" })}
+                      >
+                        افزودن
+                      </button>
+                    </div>
+                    {/* </div> */}
+                  </div>
+                )}
               </div>
             ))}
           </div>
         ))}
+
         <button type="submit" className="btn btn-primary w-100">
           ثبت اطلاعات و ادامه
         </button>
