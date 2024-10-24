@@ -418,7 +418,3 @@ export const loginForm = [
   },
 ];
 
-export const loginFormSchema = z.object({
-  username: z.string().min(1, "نام کاربری را وارد نمایید"),
-  password: z.string().min(1, "رمز عبور را وارد نمایید"),
-});

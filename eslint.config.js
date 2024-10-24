@@ -1,8 +1,3 @@
-import globals from "globals";
-import react from "eslint-plugin-react";
-import reactHooks from "eslint-plugin-react-hooks";
-import reactRefresh from "eslint-plugin-react-refresh";
-
 export default [
   { ignores: ["dist"] },
   {
@@ -16,7 +11,7 @@ export default [
         sourceType: "module",
       },
     },
-    settings: { react: { version: "18.3" } },
+    settings: { react: { version: "detect" } }, // Automatically detect the React version
     plugins: {
       react,
       "react-hooks": reactHooks,
@@ -25,7 +20,9 @@ export default [
     rules: {
       "react/jsx-uses-react": "off", // React 17+ doesn't need the import
       "react/react-in-jsx-scope": "off", // React 17+ doesn't need the import
-      "no-unused-vars": ["warn", { varsIgnorePattern: "^React$" }],
+      "no-unused-vars": ["warn", { varsIgnorePattern: "^React$" }], // Ignore unused React import
+      "react-hooks/rules-of-hooks": "error", // Enforce React hooks rules
+      "react-hooks/exhaustive-deps": "warn", // Warn about dependencies in React hooks
     },
   },
 ];
