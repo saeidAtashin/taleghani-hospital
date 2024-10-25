@@ -19,11 +19,12 @@ const HorizontalNavbar = () => {
   ];
 
   return (
-    <div className="d-flex flex-column justify-content-around align-items-start gap-3 p-3">
+    <div className="cursor-pointer d-flex flex-column justify-content-around align-items-start gap-3 p-3">
       {items.map((item, index) => (
         <div
+          style={{ cursor: "pointer" }}
           key={index}
-          className="d-flex align-items-center justify-content-between menu-item w-100"
+          className="d-flex align-items-center justify-content-between menu-item w-100 "
         >
           <span>{item}</span>
           <div className="dropdown-icon ms-2">
