@@ -8,7 +8,8 @@ const ReusableForm = ({
   formSchema,
   onSubmit,
   inputsPerRow,
-  isEditable,
+  isEditable = false,
+  onlyPost = false,
 }) => {
   const {
     control,
@@ -52,7 +53,7 @@ const ReusableForm = ({
 
   return (
     <div className="container mt-5">
-      {!editable && (
+      { !onlyPost && !editable ? (
         <button
           type="button"
           className="btn btn-primary"
@@ -60,7 +61,21 @@ const ReusableForm = ({
         >
           ویرایش
         </button>
+      ) : !onlyPost && (
+        <div className="d-flex gap-2">
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={toggleEditable}
+          >
+            لغو
+          </button>
+          <button type="submit" className="btn btn-primary">
+            ذخیره تغییرات
+          </button>
+        </div>
       )}
+
       <form onSubmit={handleSubmit(onSubmit)}>
         {rows.map((rowFields, rowIndex) => (
           <div className="row" key={rowIndex}>
@@ -321,7 +336,7 @@ const ReusableForm = ({
         ))}
 
         <div className="d-flex justify-content-between mt-4">
-          {editable && (
+          {onlyPost && (
             <>
               {/* <button
                 type="button"
