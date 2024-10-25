@@ -419,8 +419,8 @@ export const formPatientsInformationFields = [
     label: "نوع بدخیمی",
     name: "rolesec",
     options: [
-      { value: "1", label: "1" },
-      { value: "2", label: "2" },
+      { value: "Solid", label: "Solid" },
+      { value: "non Solid", label: "non Solid" },
     ],
     placeholder: "نوع سرطان بیمار را انتخاب نمایید",
     defaultValue: "0",
