@@ -8,10 +8,14 @@ import {
   formPatientsFields,
   formPatientsInformationFields,
   generateReusableSchema,
+  nonSolidFields,
+  solidFields,
 } from "../form-fields/FormFields";
 
 const StepperBootstrap = () => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [malignancyType, setMalignancyType] = useState(""); // Default value
+
   const handleFormSubmit = (data) => {
     try {
       // Dynamically generate the schema based on the current step's form fields
@@ -20,7 +24,9 @@ const StepperBootstrap = () => {
           ? formFielsIdentity
           : activeIndex === 1
           ? formPatientsFields
-          : formPatientsInformationFields
+          : formPatientsInformationFields.concat(
+              malignancyType === "Solid" ? solidFields : nonSolidFields
+            )
       );
 
       schema.parse(data); // Validate the form data with the generated schema
@@ -40,6 +46,10 @@ const StepperBootstrap = () => {
         console.log("Unexpected error:", error);
       }
     }
+  };
+
+  const handleSelectChange = (value) => {
+    setMalignancyType(value);
   };
 
   return (
@@ -82,21 +92,29 @@ const StepperBootstrap = () => {
             <ReusableForm
               onlyPost={true}
               isEditable={false}
-              fields={
-                activeIndex === 0
+              fields={[
+                ...(activeIndex === 0
                   ? formFielsIdentity
                   : activeIndex === 1
                   ? formPatientsFields
-                  : formPatientsInformationFields
-              }
+                  : formPatientsInformationFields),
+                ...(activeIndex === 2 && malignancyType === "Solid"
+                  ? solidFields
+                  : activeIndex === 2 && malignancyType === "non Solid"
+                  ? nonSolidFields
+                  : []),
+              ]}
               formSchema={generateReusableSchema(
                 activeIndex === 0
                   ? formFielsIdentity
                   : activeIndex === 1
                   ? formPatientsFields
-                  : formPatientsInformationFields
+                  : formPatientsInformationFields.concat(
+                      malignancyType === "Solid" ? solidFields : nonSolidFields
+                    )
               )}
               onSubmit={handleFormSubmit}
+              onSelectChange={handleSelectChange}
               inputsPerRow={
                 activeIndex === 0
                   ? [2, 3, 2, 2, 2, 2, 3, 2, 1]

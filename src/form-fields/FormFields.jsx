@@ -446,3 +446,17 @@ export const loginForm = [
     required: true,
   },
 ];
+
+export const solidFields = [
+  { type: "text", label: "Field 1", name: "field1_solid", required: true },
+  { type: "text", label: "Field 2", name: "field2_solid", required: true },
+  { type: "text", label: "Field 3", name: "field3_solid", required: true },
+];
+
+export const nonSolidFields = [
+  { type: "text", label: "Field 1", name: "field1_nonSolid", required: true },
+  { type: "text", label: "Field 2", name: "field2_nonSolid", required: true },
+  { type: "text", label: "Field 3", name: "field3_nonSolid", required: true },
+  { type: "text", label: "Field 4", name: "field4_nonSolid", required: true },
+  { type: "text", label: "Field 5", name: "field5_nonSolid", required: true },
+];

@@ -10,6 +10,7 @@ const ReusableForm = ({
   inputsPerRow,
   isEditable = false,
   onlyPost = false,
+  onSelectChange,
 }) => {
   const {
     control,
@@ -53,7 +54,7 @@ const ReusableForm = ({
 
   return (
     <div className="container mt-5">
-      { !onlyPost && !editable ? (
+      {!onlyPost && !editable ? (
         <button
           type="button"
           className="btn btn-primary"
@@ -61,19 +62,21 @@ const ReusableForm = ({
         >
           ویرایش
         </button>
-      ) : !onlyPost && (
-        <div className="d-flex gap-2">
-          <button
-            type="button"
-            className="btn btn-secondary"
-            onClick={toggleEditable}
-          >
-            لغو
-          </button>
-          <button type="submit" className="btn btn-primary">
-            ذخیره تغییرات
-          </button>
-        </div>
+      ) : (
+        !onlyPost && (
+          <div className="d-flex gap-2">
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={toggleEditable}
+            >
+              لغو
+            </button>
+            <button type="submit" className="btn btn-primary">
+              ذخیره تغییرات
+            </button>
+          </div>
+        )
       )}
 
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -205,6 +208,10 @@ const ReusableForm = ({
                           }`}
                           id={field.name}
                           disabled={!editable}
+                          onChange={(e) => {
+                            controllerField.onChange(e);
+                            onSelectChange && onSelectChange(e.target.value); // Call onSelectChange
+                          }}
                         >
                           <option value="">
                             {field.placeholder || "Select an option"}
