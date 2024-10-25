@@ -11,6 +11,9 @@ const LoginPage = React.lazy(() => import("../pages/LoginPage"));
 const DashboardPage = React.lazy(() => import("../pages/DashboardPage"));
 const RegisterPatients = React.lazy(() => import("../pages/RegisterPatients"));
 const PatientsDetails = React.lazy(() => import("../pages/PatientsDetails"));
+const BasicPatientDefinitions = React.lazy(
+  () => import("../pages/BasicPatientDefinitions")
+);
 
 const Fallback = () => (
   <div className="min-h-screen flex items-center justify-center min-w-full">
@@ -48,6 +51,17 @@ export default function RoutesWithAnimation() {
                     </React.Suspense>
                   }
                 />
+
+                <Route
+                  index
+                  path="/dashboard/basic-patient-definitions"
+                  element={
+                    <React.Suspense fallback={<Fallback />}>
+                      <BasicPatientDefinitions />
+                    </React.Suspense>
+                  }
+                />
+
                 <Route
                   index
                   path="/dashboard/patients-lists"

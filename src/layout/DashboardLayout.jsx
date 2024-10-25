@@ -179,11 +179,11 @@ function DashboardLayout() {
             >
               <li className="sidebar-item d-flex">
                 <a
-                  href="/dashboard/basic-definitions"
+                  href="/dashboard/basic-patient-definitions"
                   className="sidebar-link w-100"
                 >
                   <img src="/images/users.svg" alt="definitions" />
-                  <span>مدیریت تعاریف</span>
+                  <span>اطلاعات ثبت نام بیمار</span>
                 </a>
               </li>
             </ul>
