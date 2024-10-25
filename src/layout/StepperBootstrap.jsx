@@ -12,7 +12,6 @@ import {
 
 const StepperBootstrap = () => {
   const [activeIndex, setActiveIndex] = useState(0);
-
   const handleFormSubmit = (data) => {
     try {
       // Dynamically generate the schema based on the current step's form fields
