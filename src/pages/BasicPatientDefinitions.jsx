@@ -1,11 +1,24 @@
-import React from 'react'
+import React from "react";
+import HorizontalNavbar from "../components/HorizontalNavbar";
 
 const BasicPatientDefinitions = () => {
-  return (
-    <div>
-      BasicPatientDefinitions
-    </div>
-  )
-}
+  const links = [
+    { label: "Home", path: "/dashboard/basic-patient-definitions/home" },
+    { label: "About", path: "about" },
+    { label: "Services", path: "services" },
+    { label: "Contact", path: "contact" },
+  ];
 
-export default BasicPatientDefinitions
+  const handleLinkClick = (path) => {
+    console.log(`Navigated to ${path}`);
+    // handle any additional navigation logic if needed
+  };
+
+  return (
+    <>
+      <HorizontalNavbar links={links} onLinkClick={handleLinkClick} />
+    </>
+  );
+};
+
+export default BasicPatientDefinitions;

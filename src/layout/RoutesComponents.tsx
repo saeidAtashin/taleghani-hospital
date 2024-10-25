@@ -52,7 +52,7 @@ export default function RoutesWithAnimation() {
                   }
                 />
 
-                <Route
+                {/* <Route
                   index
                   path="/dashboard/basic-patient-definitions"
                   element={
@@ -60,7 +60,7 @@ export default function RoutesWithAnimation() {
                       <BasicPatientDefinitions />
                     </React.Suspense>
                   }
-                />
+                ></Route> */}
 
                 <Route
                   index
@@ -91,6 +91,36 @@ export default function RoutesWithAnimation() {
                   }
                 />
               </Route>
+              <Route
+                path="/dashboard/basic-patient-definitions"
+                element={<DashboardLayout />}
+              >
+                <Route
+                  index
+                  element={
+                    <React.Suspense fallback={<Fallback />}>
+                      <BasicPatientDefinitions />
+                    </React.Suspense>
+                  }
+                />
+                <Route
+                  path="home"
+                  element={
+                    <React.Suspense fallback={<Fallback />}>
+                      <div>Home Content for Basic Patient Definitions</div>
+                    </React.Suspense>
+                  }
+                />
+                <Route
+                  path="link"
+                  element={
+                    <React.Suspense fallback={<Fallback />}>
+                      <div>Link Content for Basic Patient Definitions</div>
+                    </React.Suspense>
+                  }
+                />
+              </Route>
+
               {/* Patients */}
             </Routes>
           </QueryClientProvider>
