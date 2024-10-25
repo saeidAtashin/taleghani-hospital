@@ -380,16 +380,20 @@ export const formPatientsFields = [
   {
     type: "doubleinput", // Dynamic pair input type
     label: "سوابق دارویی",
-    name1: {
-      label: "نام دارو",
-      name: "drug_name",
-      placeholder: " نام دارو",
-    },
-    name2: {
-      label: "دور دارو",
-      name: "drug_dose",
-      placeholder: " دور دارو",
-    },
+    name: "drugs",
+
+    subfields: [
+      {
+        label: "نام دارو",
+        name: "drug_name",
+        placeholder: " نام دارو",
+      },
+      {
+        label: "دور دارو",
+        name: "drug_dose",
+        placeholder: " دور دارو",
+      },
+    ],
   },
 
   {
