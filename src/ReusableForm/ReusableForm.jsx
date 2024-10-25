@@ -1,9 +1,15 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const ReusableForm = ({ fields, formSchema, onSubmit, inputsPerRow }) => {
+const ReusableForm = ({
+  fields,
+  formSchema,
+  onSubmit,
+  inputsPerRow,
+  isEditable,
+}) => {
   const {
     control,
     handleSubmit,
@@ -20,6 +26,10 @@ const ReusableForm = ({ fields, formSchema, onSubmit, inputsPerRow }) => {
     control,
     name: "drugs",
   });
+
+  const [editable, setEditable] = useState(!isEditable);
+
+  const toggleEditable = () => setEditable((prev) => !prev);
 
   const getFieldsInRows = (fields, inputsPerRow) => {
     let rows = [];
@@ -42,6 +52,15 @@ const ReusableForm = ({ fields, formSchema, onSubmit, inputsPerRow }) => {
 
   return (
     <div className="container mt-5">
+      {!editable && (
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={toggleEditable}
+        >
+          ویرایش
+        </button>
+      )}
       <form onSubmit={handleSubmit(onSubmit)}>
         {rows.map((rowFields, rowIndex) => (
           <div className="row" key={rowIndex}>
@@ -76,6 +95,7 @@ const ReusableForm = ({ fields, formSchema, onSubmit, inputsPerRow }) => {
                             }`}
                             id={field.name}
                             placeholder={field.placeholder || ""}
+                            disabled={!editable}
                           />
                           {field.append && (
                             <span className="input-group-text">
@@ -111,6 +131,7 @@ const ReusableForm = ({ fields, formSchema, onSubmit, inputsPerRow }) => {
                           }`}
                           id={field.name}
                           placeholder={field.placeholder || ""}
+                          disabled={!editable}
                         />
                       )}
                     />
@@ -140,6 +161,7 @@ const ReusableForm = ({ fields, formSchema, onSubmit, inputsPerRow }) => {
                           }`}
                           id={field.name}
                           placeholder={field.placeholder || ""}
+                          disabled={!editable}
                         />
                       )}
                     />
@@ -167,6 +189,7 @@ const ReusableForm = ({ fields, formSchema, onSubmit, inputsPerRow }) => {
                             errors[field.name] ? "is-invalid" : ""
                           }`}
                           id={field.name}
+                          disabled={!editable}
                         >
                           <option value="">
                             {field.placeholder || "Select an option"}
@@ -203,6 +226,7 @@ const ReusableForm = ({ fields, formSchema, onSubmit, inputsPerRow }) => {
                           }`}
                           id={field.name}
                           checked={controllerField.value}
+                          disabled={!editable}
                         />
                       )}
                     />
@@ -240,6 +264,7 @@ const ReusableForm = ({ fields, formSchema, onSubmit, inputsPerRow }) => {
                                         ? "is-invalid"
                                         : ""
                                     }`}
+                                    disabled={!editable}
                                   />
                                 )}
                               />
@@ -261,6 +286,7 @@ const ReusableForm = ({ fields, formSchema, onSubmit, inputsPerRow }) => {
                                         ? "is-invalid"
                                         : ""
                                     }`}
+                                    disabled={!editable}
                                   />
                                 )}
                               />
@@ -268,6 +294,7 @@ const ReusableForm = ({ fields, formSchema, onSubmit, inputsPerRow }) => {
                                 type="button"
                                 className="btn btn-danger ms-2 custom-border-radius-btn"
                                 onClick={() => remove(index)}
+                                disabled={!editable}
                               >
                                 حذف
                               </button>
@@ -281,6 +308,7 @@ const ReusableForm = ({ fields, formSchema, onSubmit, inputsPerRow }) => {
                         type="button"
                         className="btn btn-secondary"
                         onClick={() => append({ drug_name: "", drug_dose: "" })}
+                        disabled={!editable}
                       >
                         افزودن
                       </button>
@@ -292,9 +320,26 @@ const ReusableForm = ({ fields, formSchema, onSubmit, inputsPerRow }) => {
           </div>
         ))}
 
-        <button type="submit" className="btn btn-primary w-100">
+        <div className="d-flex justify-content-between mt-4">
+          {editable && (
+            <>
+              {/* <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={toggleEditable}
+              >
+                لغو
+              </button> */}
+              <button type="submit" className="btn btn-primary w-100">
+                ثبت اطلاعات و ادامه
+              </button>
+            </>
+          )}
+        </div>
+
+        {/* <button type="submit" className="btn btn-primary w-100">
           ثبت اطلاعات و ادامه
-        </button>
+        </button> */}
       </form>
     </div>
   );

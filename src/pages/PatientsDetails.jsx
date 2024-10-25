@@ -1,12 +1,32 @@
 import React from "react";
 import ReusableTabs from "../ReusableForm/ReusableTabs";
+import {
+  formFielsIdentity,
+  generateReusableSchema,
+} from "../form-fields/FormFields";
+import ReusableForm from "../ReusableForm/ReusableForm";
 
 const PatientsDetails = () => {
+  const handleFormSubmit = (data) => {
+    console.log("Final form submission:", data);
+  };
+
   const tabs = [
     {
       key: "اطلاعات هویتی",
       label: "اطلاعات هویتی",
-      content: <div>اطلاعات هویتی </div>,
+      content: (
+        <div>
+          <ReusableForm
+            isEditable={true}
+            fields={formFielsIdentity}
+            formSchema={generateReusableSchema(formFielsIdentity)}
+            onSubmit={handleFormSubmit}
+            inputsPerRow={[2, 3, 2, 2, 2, 2, 3, 2, 1]}
+          />
+          ;
+        </div>
+      ),
     },
     {
       key: "سوابق بیمار",

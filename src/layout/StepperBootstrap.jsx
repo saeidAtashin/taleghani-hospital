@@ -80,6 +80,7 @@ const StepperBootstrap = () => {
             className={`collapse ${activeIndex === i ? "show" : ""}`}
           >
             <ReusableForm
+              isEditable={false}
               fields={
                 activeIndex === 0
                   ? formFielsIdentity
