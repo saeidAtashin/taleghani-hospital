@@ -2,6 +2,7 @@ import React from "react";
 import ReusableTabs from "../ReusableForm/ReusableTabs";
 import {
   formFielsIdentity,
+  formPatientsFields,
   generateReusableSchema,
 } from "../form-fields/FormFields";
 import ReusableForm from "../ReusableForm/ReusableForm";
@@ -30,7 +31,18 @@ const PatientsDetails = () => {
     {
       key: "سوابق بیمار",
       label: "سوابق بیمار",
-      content: <div>سوابق بیمار</div>,
+      content: (
+        <div>
+          {" "}
+          <ReusableForm
+            isEditable={true}
+            fields={formPatientsFields}
+            formSchema={generateReusableSchema(formPatientsFields)}
+            onSubmit={handleFormSubmit}
+            inputsPerRow={[1,2, 2, 2, 2, 1, 3, 2, 1]}
+          />
+        </div>
+      ),
     },
     {
       key: "اطلاعات بیماری",
