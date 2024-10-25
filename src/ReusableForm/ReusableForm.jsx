@@ -2,7 +2,6 @@ import React, { Fragment } from "react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai"; // Import icons for add and remove
 
 const ReusableForm = ({ fields, formSchema, onSubmit, inputsPerRow }) => {
   const {
@@ -19,10 +18,9 @@ const ReusableForm = ({ fields, formSchema, onSubmit, inputsPerRow }) => {
     remove,
   } = useFieldArray({
     control,
-    name: "drugs", // This will be the key for drug_name and drug_dose pairs in the form data
+    name: "drugs",
   });
 
-  // Helper function to group fields based on inputsPerRow
   const getFieldsInRows = (fields, inputsPerRow) => {
     let rows = [];
     let startIndex = 0;
@@ -33,7 +31,6 @@ const ReusableForm = ({ fields, formSchema, onSubmit, inputsPerRow }) => {
       startIndex += count;
     });
 
-    // Handle any remaining fields that weren't accounted for in inputsPerRow
     if (startIndex < fields.length) {
       rows.push(fields.slice(startIndex));
     }
@@ -45,7 +42,6 @@ const ReusableForm = ({ fields, formSchema, onSubmit, inputsPerRow }) => {
 
   return (
     <div className="container mt-5">
-      {/* <h2>Reusable Form</h2> */}
       <form onSubmit={handleSubmit(onSubmit)}>
         {rows.map((rowFields, rowIndex) => (
           <div className="row" key={rowIndex}>
