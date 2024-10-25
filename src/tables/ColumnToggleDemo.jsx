@@ -72,7 +72,7 @@ export default function ColumnToggleDemo() {
       // />
       <button
         type="button"
-        class="btn btn-outline-primary"
+        className="btn btn-outline-primary"
         onClick={() =>
           window.open(`/dashboard/patients-lists/${rowData.id}`, "_blank")
         }

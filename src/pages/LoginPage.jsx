@@ -20,6 +20,8 @@ const LoginPage = () => {
               </div>
 
               <ReusableForm
+                isEditable={false}
+                onlyPost={true}
                 fields={loginForm}
                 formSchema={generateReusableSchema(loginForm)}
                 onSubmit={handleFormSubmit}

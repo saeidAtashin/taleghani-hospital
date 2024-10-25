@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ReusableTabs from "../ReusableForm/ReusableTabs";
 import {
   formFielsIdentity,
@@ -6,8 +6,89 @@ import {
   generateReusableSchema,
 } from "../form-fields/FormFields";
 import ReusableForm from "../ReusableForm/ReusableForm";
+import ColumnToggleDemo from "../tables/ColumnToggleDemo";
+import { DataTable } from "primereact/datatable";
+import { IconField } from "primereact/iconfield";
+import { InputText } from "primereact/inputtext";
+import { Column } from "primereact/column";
+import { ProductService } from "../tables/ProductService";
+import { Button } from "primereact/button";
 
 const PatientsDetails = () => {
+  const columns = [
+    { field: "name", header: "Name" },
+    { field: "category", header: "Category" },
+    { field: "quantity", header: "Quantity" },
+  ];
+  const [products, setProducts] = useState([]);
+  const [visibleColumns, setVisibleColumns] = useState(columns);
+
+  useEffect(() => {
+    ProductService?.getProductsMini().then((data) => setProducts(data));
+  }, []);
+
+  let emptyProduct = {
+    id: null,
+    name: "",
+    image: null,
+    description: "",
+    category: null,
+    price: 0,
+    quantity: 0,
+    rating: 0,
+    inventoryStatus: "INSTOCK",
+  };
+  const [productDialog, setProductDialog] = useState(false);
+  const [product, setProduct] = useState(emptyProduct);
+  const [selectedProducts, setSelectedProducts] = useState(null);
+  const [submitted, setSubmitted] = useState(false);
+  const [globalFilter, setGlobalFilter] = useState(null);
+  const dt = useRef(null);
+
+  const openNew2 = () => {
+    setProduct(emptyProduct);
+    setSubmitted(false);
+    setProductDialog(true);
+  };
+
+  const headerNew = (
+    <div className="d-flex flex-wrap gap-2 align-items-center  justify-content-end">
+      <Button
+        label="ثبت نتیجه تصویربرداری"
+        icon="pi pi-plus"
+        severity="primary"
+        onClick={openNew2}
+      />
+
+      <Button
+        label="ثبت دستور تصویربرداری"
+        icon="pi pi-plus"
+        severity="primary"
+        onClick={openNew2}
+      />
+    </div>
+  );
+
+  // Custom function to render the "Details" button
+  const detailsTemplate = (rowData) => {
+    return (
+      // <Button
+      //   label="مشاهده"
+      //   icon="pi pi-external-link"
+      //   onClick={() => window.open(`/details/${rowData.id}`, "_blank")}
+      // />
+      <button
+        type="button"
+        className="btn btn-outline-primary"
+        onClick={() =>
+          window.open(`/dashboard/patients-lists/${rowData.id}`, "_blank")
+        }
+      >
+        مشاهده
+      </button>
+    );
+  };
+
   const handleFormSubmit = (data) => {
     console.log("Final form submission:", data);
   };
@@ -39,7 +120,7 @@ const PatientsDetails = () => {
             fields={formPatientsFields}
             formSchema={generateReusableSchema(formPatientsFields)}
             onSubmit={handleFormSubmit}
-            inputsPerRow={[1,2, 2, 2, 2, 1, 3, 2, 1]}
+            inputsPerRow={[1, 2, 2, 2, 2, 1, 3, 2, 1]}
           />
         </div>
       ),
@@ -52,7 +133,41 @@ const PatientsDetails = () => {
     {
       key: "تصویربرداری",
       label: "تصویربرداری",
-      content: <div>تصویربرداری</div>,
+      content: (
+        <div className="mt-5">
+          <DataTable
+            stripedRows
+            dir="ltr"
+            ref={dt}
+            value={products}
+            selection={selectedProducts}
+            onSelectionChange={(e) => setSelectedProducts(e.value)}
+            dataKey="id"
+            paginator
+            rows={10}
+            rowsPerPageOptions={[5, 10, 25]}
+            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+            currentPageReportTemplate="نمایش {first} تا {last} از {totalRecords} اطلاعات"
+            globalFilter={globalFilter}
+            header={headerNew}
+          >
+            <Column field="code" header="Code" />
+            {visibleColumns.map((col) => (
+              <Column
+                sortable
+                key={col.field}
+                field={col.field}
+                header={col.header}
+              />
+            ))}
+            {/* Add the Details column */}
+            <Column
+              header="Details"
+              body={detailsTemplate} // Use custom template for rendering button
+            />
+          </DataTable>
+        </div>
+      ),
     },
     {
       key: "آزمایشات",

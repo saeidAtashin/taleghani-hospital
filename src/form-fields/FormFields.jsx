@@ -1,5 +1,65 @@
 import { z } from "zod";
 
+// Dynamically construct the Zod schema based on form fields
+export const generateReusableSchema = (formFields) =>
+  z.object(
+    formFields?.reduce((schema, field) => {
+      switch (field.type) {
+        case "text":
+          schema[field.name] = field.required
+            ? z.string().min(1, `${field.label} را وارد نمایید`)
+            : z.string().optional();
+          break;
+
+        case "select":
+          schema[field.name] = field.required
+            ? z.string().min(1, `Please select a value for ${field.label}`)
+            : z.string().optional().default(field.defaultValue);
+          break;
+
+        case "checkbox":
+          schema[field.name] = field.required
+            ? z
+                .boolean()
+                .refine((val) => val === true, `${field.label} را وارد نمایید`)
+            : z.boolean().optional();
+          break;
+
+        case "date":
+          schema[field.name] = field.required
+            ? z
+                .string()
+                .refine((val) => !isNaN(Date.parse(val)), "Invalid date")
+            : z.string().optional();
+          break;
+
+        case "number":
+          schema[field.name] = field.required
+            ? z.number().min(0, `${field.label} must be a positive number`)
+            : z.number().optional();
+          break;
+
+        case "doubleinput":
+          schema[field.name] = z.array(
+            z.object(
+              field?.subfields?.reduce((subfieldSchema, subfield) => {
+                subfieldSchema[subfield.name] = subfield.required
+                  ? z.string().min(1, `${subfield.label} را وارد نمایید`)
+                  : z.string().optional();
+                return subfieldSchema;
+              }, {})
+            )
+          );
+          break;
+
+        // Add cases for other input types as needed (e.g., radio, date, etc.)
+        default:
+          schema[field.name] = z.any().optional(); // Fallback for unknown types
+      }
+      return schema;
+    }, {})
+  );
+
 export const formFielsIdentity = [
   {
     type: "text",
@@ -7,7 +67,7 @@ export const formFielsIdentity = [
     name: "national_id",
     placeholder: "کد ملی بیمار را وارد نمایید",
     defaultValue: "",
-    required: false,
+    required: true,
   },
   {
     type: "text",
@@ -221,66 +281,6 @@ export const formFielsIdentity = [
     required: false,
   },
 ];
-
-// Dynamically construct the Zod schema based on form fields
-export const generateReusableSchema = (formFields) =>
-  z.object(
-    formFields?.reduce((schema, field) => {
-      switch (field.type) {
-        case "text":
-          schema[field.name] = field.required
-            ? z.string().min(1, `${field.label} را وارد نمایید`)
-            : z.string().optional();
-          break;
-
-        case "select":
-          schema[field.name] = field.required
-            ? z.string().min(1, `Please select a value for ${field.label}`)
-            : z.string().optional().default(field.defaultValue);
-          break;
-
-        case "checkbox":
-          schema[field.name] = field.required
-            ? z
-                .boolean()
-                .refine((val) => val === true, `${field.label} را وارد نمایید`)
-            : z.boolean().optional();
-          break;
-
-        case "date":
-          schema[field.name] = field.required
-            ? z
-                .string()
-                .refine((val) => !isNaN(Date.parse(val)), "Invalid date")
-            : z.string().optional();
-          break;
-
-        case "number":
-          schema[field.name] = field.required
-            ? z.number().min(0, `${field.label} must be a positive number`)
-            : z.number().optional();
-          break;
-
-        case "doubleinput":
-          schema[field.name] = z.array(
-            z.object(
-              field?.subfields?.reduce((subfieldSchema, subfield) => {
-                subfieldSchema[subfield.name] = subfield.required
-                  ? z.string().min(1, `${subfield.label} را وارد نمایید`)
-                  : z.string().optional();
-                return subfieldSchema;
-              }, {})
-            )
-          );
-          break;
-
-        // Add cases for other input types as needed (e.g., radio, date, etc.)
-        default:
-          schema[field.name] = z.any().optional(); // Fallback for unknown types
-      }
-      return schema;
-    }, {})
-  );
 
 export const formPatientsFields = [
   {
