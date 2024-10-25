@@ -37,13 +37,6 @@ export default function ColumnToggleDemo() {
   const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
   const dt = useRef(null);
-  useEffect(() => {
-    ProductService.getProducts().then((data) => setProducts(data));
-  }, []);
-
-  useEffect(() => {
-    ProductService.getProducts().then((data) => setProducts(data));
-  }, []);
 
   const openNew2 = () => {
     setProduct(emptyProduct);
@@ -60,7 +53,6 @@ export default function ColumnToggleDemo() {
         onClick={openNew2}
       />
       <IconField iconPosition="left">
-        {/* <InputIcon className="pi pi-search" /> */}
         <InputText
           type="search"
           onInput={(e) => setGlobalFilter(e.target.value)}
@@ -69,6 +61,26 @@ export default function ColumnToggleDemo() {
       </IconField>
     </div>
   );
+
+  // Custom function to render the "Details" button
+  const detailsTemplate = (rowData) => {
+    return (
+      // <Button
+      //   label="مشاهده"
+      //   icon="pi pi-external-link"
+      //   onClick={() => window.open(`/details/${rowData.id}`, "_blank")}
+      // />
+      <button
+        type="button"
+        class="btn btn-outline-primary"
+        onClick={() =>
+          window.open(`/dashboard/patients-lists/${rowData.id}`, "_blank")
+        }
+      >
+        مشاهده
+      </button>
+    );
+  };
 
   return (
     <div className="card screen-width p-5">
@@ -99,6 +111,11 @@ export default function ColumnToggleDemo() {
             header={col.header}
           />
         ))}
+        {/* Add the Details column */}
+        <Column
+          header="Details"
+          body={detailsTemplate} // Use custom template for rendering button
+        />
       </DataTable>
     </div>
   );

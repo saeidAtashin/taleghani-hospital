@@ -10,6 +10,7 @@ import ColumnToggleDemo from "../tables/ColumnToggleDemo";
 const LoginPage = React.lazy(() => import("../pages/LoginPage"));
 const DashboardPage = React.lazy(() => import("../pages/DashboardPage"));
 const RegisterPatients = React.lazy(() => import("../pages/RegisterPatients"));
+const PatientsDetails = React.lazy(() => import("../pages/PatientsDetails"));
 
 const Fallback = () => (
   <div className="min-h-screen flex items-center justify-center min-w-full">
@@ -53,6 +54,16 @@ export default function RoutesWithAnimation() {
                   element={
                     <React.Suspense fallback={<Fallback />}>
                       <ColumnToggleDemo />
+                    </React.Suspense>
+                  }
+                />
+
+                <Route
+                  index
+                  path="/dashboard/patients-lists/:id"
+                  element={
+                    <React.Suspense fallback={<Fallback />}>
+                      <PatientsDetails />
                     </React.Suspense>
                   }
                 />
