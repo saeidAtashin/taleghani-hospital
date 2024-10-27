@@ -122,7 +122,7 @@ export const formFielsIdentity = [
   {
     type: "select",
     label: "وضعیت تاهل",
-    name: "rolesec",
+    name: "marital-status",
     options: [
       { value: "مجرد", label: "مجرد" },
       { value: "متاهل", label: "متاهل" },
@@ -134,7 +134,7 @@ export const formFielsIdentity = [
   {
     type: "select",
     label: "استان محل تولد",
-    name: "province-birth",
+    name: "province",
     options: [
       { value: "استان1", label: "استان1" },
       { value: "استان2", label: "استان2" },
@@ -147,7 +147,7 @@ export const formFielsIdentity = [
   {
     type: "select",
     label: "شهر محل تولد",
-    name: "city-birth",
+    name: "city",
     options: [
       { value: "شهر1", label: "شهر1" },
       { value: "شهر2", label: "شهر2" },
@@ -210,7 +210,7 @@ export const formFielsIdentity = [
   {
     type: "select",
     label: "سطح تحصیلات",
-    name: "edu",
+    name: "education",
     options: [
       { value: "1", label: "1" },
       { value: "2", label: "2" },
@@ -223,7 +223,7 @@ export const formFielsIdentity = [
   {
     type: "select",
     label: "رشته تحصیلی",
-    name: "edu2",
+    name: "major-field",
     options: [
       { value: "1", label: "1" },
       { value: "2", label: "2" },
@@ -249,7 +249,7 @@ export const formFielsIdentity = [
   {
     type: "select",
     label: "تعداد فرزندان",
-    name: "child_number",
+    name: "num-of-children",
     options: [
       { value: "1", label: "1" },
       { value: "2", label: "2" },
@@ -329,7 +329,7 @@ export const formPatientsFields = [
   {
     type: "select",
     label: "بیماری‌های زمینه‌ای",
-    name: "gender",
+    name: "underlying-disease",
     options: [
       { value: "زن", label: "زن" },
       { value: "مرد", label: "مرد" },
@@ -341,7 +341,7 @@ export const formPatientsFields = [
   {
     type: "select",
     label: "عادات",
-    name: "rolesec",
+    name: "habit-disease",
     options: [
       { value: "مجرد", label: "مجرد" },
       { value: "متاهل", label: "متاهل" },
@@ -353,7 +353,7 @@ export const formPatientsFields = [
   {
     type: "select",
     label: "سابقه خانوادگی",
-    name: "province-birth",
+    name: "family-history",
     options: [
       { value: "استان1", label: "استان1" },
       { value: "استان2", label: "استان2" },
@@ -366,7 +366,7 @@ export const formPatientsFields = [
   {
     type: "select",
     label: "سوابق جراحی",
-    name: "city-birth",
+    name: "surgery",
     options: [
       { value: "شهر1", label: "شهر1" },
       { value: "شهر2", label: "شهر2" },

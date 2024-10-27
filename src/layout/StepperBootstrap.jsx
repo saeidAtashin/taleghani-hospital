@@ -63,7 +63,7 @@ const StepperBootstrap = () => {
                 activeIndex >= i ? "done" : ""
               }`}
               type="button"
-              onClick={() => handleStepClick(i)}
+              onClick={() => setActiveIndex(i)}
               aria-expanded={activeIndex === i}
               data-bs-toggle="collapse"
               data-bs-target={`#collapse${i + 1}`}

@@ -55,21 +55,9 @@ const ReusableForm = ({
   const rows = getFieldsInRows(fields, inputsPerRow);
 
   const fetchOptions = async (fieldName) => {
+    console.log("fieldName", fieldName);
     try {
-      let url = "";
-
-      // Define API endpoint based on field name
-      switch (fieldName) {
-        case "gender":
-          url = "https://cancerreg.ir/api/v1/common/gender/";
-          break;
-        case "maritalStatus":
-          url = "https://cancerreg.ir/api/v1/common/marital-status/";
-          break;
-        // Add more cases for other fields as needed
-        default:
-          return;
-      }
+      let url = `https://cancerreg.ir/api/v1/common/${fieldName}/`;
 
       const response = await axios.get(url);
       const fetchedOptions = response.data.data.results.map((item) => ({
