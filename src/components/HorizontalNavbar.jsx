@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./HorizontalNavbar.css";
-import axios from "axios";
+import apiRequest from "../api/apiService";
 import Swal from "sweetalert2";
 
 const HorizontalNavbar = () => {
   const [selectedItem, setSelectedItem] = useState(null);
-  const [inputs, setInputs] = useState({});
   const [data, setData] = useState([]);
   const [newItem, setNewItem] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const items = [
     { name: "جنسیت", endpoint: "gender" },
@@ -27,91 +27,61 @@ const HorizontalNavbar = () => {
 
   const handleClick = async (item) => {
     setSelectedItem(item);
-
+    setLoading(true);
     try {
-      const response = await axios.get(
-        `https://cancerreg.ir/api/v1/common/${item.endpoint}/`
-      );
+      const response = await apiRequest("get", item.endpoint);
       setData(response.data.data.results);
     } catch (error) {
       console.error(`Error fetching data for ${item.name}:`, error);
     }
+    setLoading(false);
   };
 
-  console.log("selectedItem", selectedItem);
-
   const comonDefFetch = async (id) => {
+    setLoading(true);
     try {
-      await axios.delete(
-        `https://cancerreg.ir/api/v1/common/${selectedItem.endpoint}/${id}`
-      );
-      const response = await axios.get(
-        `https://cancerreg.ir/api/v1/common/${selectedItem.endpoint}/`
-      );
-
-      if (response?.status >= 200 && response?.status < 300) {
-        setData(response.data.data.results);
-        console.log("response.data.data.results", response.data.data.results);
-        Swal.fire({
-          title: "لوگو فروشگاه تغییر کرد.",
-          icon: "success",
-          showConfirmButton: false,
-          timer: 2000,
-        });
-      } else {
-        Swal.fire({
-          title: "مشکلی پیش آمده است.",
-          icon: "error",
-          showConfirmButton: false,
-          timer: 2000,
-        });
-        console.error(
-          "ERROR in acceptRules:",
-          response.data || response.statusText
-        );
-      }
-    } catch (error) {
+      await apiRequest("delete", `${selectedItem.endpoint}/${id}`);
+      const response = await apiRequest("get", selectedItem.endpoint);
+      setData(response.data.data.results);
       Swal.fire({
-        title: "مشکلی پیش آمده است.",
-        icon: "error",
+        title: "عملیات با موفقیت انجام شد.",
+        icon: "success",
         showConfirmButton: false,
         timer: 2000,
       });
-
+    } catch (error) {
       console.error(`Error deleting data for ${selectedItem.name}:`, error);
     }
+    setLoading(false);
   };
+
   const handleDelete = async (item) => {
+    console.log("item", item);
     Swal.fire({
-      title: `آیا از حذف ${item.name} اطمینان دارید؟ `,
+      title: `آیا از حذف ${item?.name} اطمینان دارید؟`,
       icon: "question",
       showCancelButton: true,
       confirmButtonText: "بله",
       cancelButtonText: "لغو",
     }).then((result) => {
       if (result.isConfirmed) {
-        comonDefFetch(item.id);
+        comonDefFetch(item?.id);
       }
     });
   };
 
   const handleAddInput = async () => {
     if (newItem.trim()) {
+      setLoading(true);
       try {
-        await axios.post(
-          `https://cancerreg.ir/api/v1/common/${selectedItem.endpoint}/`,
-          {
-            name: newItem,
-          }
-        );
-        const response = await axios.get(
-          `https://cancerreg.ir/api/v1/common/${selectedItem.endpoint}/`
-        );
+        await apiRequest("post", selectedItem.endpoint, { name: newItem });
+        const response = await apiRequest("get", selectedItem.endpoint);
         setData(response.data.data.results);
         setNewItem(""); // Clear the input
       } catch (error) {
         console.error(`Error adding new item for ${selectedItem.name}:`, error);
       }
+      setLoading(false);
     }
   };
 
@@ -151,6 +121,13 @@ const HorizontalNavbar = () => {
                   </span>
                 </span>
               ))}
+              {loading && (
+                <div className="text-center">
+                  <div className="spinner-border text-primary" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
