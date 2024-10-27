@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./HorizontalNavbar.css";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const HorizontalNavbar = () => {
   const [selectedItem, setSelectedItem] = useState(null);
@@ -27,7 +28,6 @@ const HorizontalNavbar = () => {
   const handleClick = async (item) => {
     setSelectedItem(item);
 
-    // Fetch data for the selected item
     try {
       const response = await axios.get(
         `https://cancerreg.ir/api/v1/common/${item.endpoint}/`
@@ -38,24 +38,61 @@ const HorizontalNavbar = () => {
     }
   };
 
-  const handleDelete = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this item?"
-    );
-    if (confirmDelete) {
-      try {
-        await axios.delete(
-          `https://cancerreg.ir/api/v1/common/${selectedItem.endpoint}/${id}`
-        );
-        // Refresh data after delete
-        const response = await axios.get(
-          `https://cancerreg.ir/api/v1/common/${selectedItem.endpoint}/`
-        );
+  console.log("selectedItem", selectedItem);
+
+  const comonDefFetch = async (id) => {
+    try {
+      await axios.delete(
+        `https://cancerreg.ir/api/v1/common/${selectedItem.endpoint}/${id}`
+      );
+      const response = await axios.get(
+        `https://cancerreg.ir/api/v1/common/${selectedItem.endpoint}/`
+      );
+
+      if (response?.status >= 200 && response?.status < 300) {
         setData(response.data.data.results);
-      } catch (error) {
-        console.error(`Error deleting data for ${selectedItem.name}:`, error);
+        console.log("response.data.data.results", response.data.data.results);
+        Swal.fire({
+          title: "لوگو فروشگاه تغییر کرد.",
+          icon: "success",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      } else {
+        Swal.fire({
+          title: "مشکلی پیش آمده است.",
+          icon: "error",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        console.error(
+          "ERROR in acceptRules:",
+          response.data || response.statusText
+        );
       }
+    } catch (error) {
+      Swal.fire({
+        title: "مشکلی پیش آمده است.",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+
+      console.error(`Error deleting data for ${selectedItem.name}:`, error);
     }
+  };
+  const handleDelete = async (item) => {
+    Swal.fire({
+      title: `آیا از حذف ${item.name} اطمینان دارید؟ `,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "بله",
+      cancelButtonText: "لغو",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        comonDefFetch(item.id);
+      }
+    });
   };
 
   const handleAddInput = async () => {
@@ -67,7 +104,6 @@ const HorizontalNavbar = () => {
             name: newItem,
           }
         );
-        // Refresh data after adding new item
         const response = await axios.get(
           `https://cancerreg.ir/api/v1/common/${selectedItem.endpoint}/`
         );
@@ -109,7 +145,7 @@ const HorizontalNavbar = () => {
                   {item.name}
                   <span
                     className="ms-2 text-danger cursor-pointer"
-                    onClick={() => handleDelete(item.id)}
+                    onClick={() => handleDelete(item)}
                   >
                     ✕
                   </span>
