@@ -16,7 +16,7 @@ const BasicPatientDefinitions = () => {
 
   return (
     <>
-      <HorizontalNavbar links={links} onLinkClick={handleLinkClick} />
+      <HorizontalNavbar />
     </>
   );
 };

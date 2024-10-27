@@ -1,7 +1,8 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import "bootstrap/dist/css/bootstrap.min.css";
+import axios from "axios";
 
 const ReusableForm = ({
   fields,
@@ -30,6 +31,7 @@ const ReusableForm = ({
   });
 
   const [editable, setEditable] = useState(!isEditable);
+  const [options, setOptions] = useState({});
 
   const toggleEditable = () => setEditable((prev) => !prev);
 
@@ -51,6 +53,38 @@ const ReusableForm = ({
   };
 
   const rows = getFieldsInRows(fields, inputsPerRow);
+
+  const fetchOptions = async (fieldName) => {
+    try {
+      let url = "";
+
+      // Define API endpoint based on field name
+      switch (fieldName) {
+        case "gender":
+          url = "https://cancerreg.ir/api/v1/common/gender/";
+          break;
+        case "maritalStatus":
+          url = "https://cancerreg.ir/api/v1/common/marital-status/";
+          break;
+        // Add more cases for other fields as needed
+        default:
+          return;
+      }
+
+      const response = await axios.get(url);
+      const fetchedOptions = response.data.data.results.map((item) => ({
+        value: item.id,
+        label: item.name,
+      }));
+
+      setOptions((prevOptions) => ({
+        ...prevOptions,
+        [fieldName]: fetchedOptions,
+      }));
+    } catch (error) {
+      console.error(`Error fetching options for ${fieldName}:`, error);
+    }
+  };
 
   return (
     <div className="container mt-5">
@@ -200,30 +234,36 @@ const ReusableForm = ({
                       name={field.name}
                       control={control}
                       defaultValue={field.defaultValue || ""}
-                      render={({ field: controllerField }) => (
-                        <select
-                          {...controllerField}
-                          className={`form-control form-select ${
-                            errors[field.name] ? "is-invalid" : ""
-                          }`}
-                          id={field.name}
-                          disabled={!editable}
-                          onChange={(e) => {
-                            controllerField.onChange(e);
-                            onSelectChange && onSelectChange(e.target.value); // Call onSelectChange
-                          }}
-                        >
-                          <option value="">
-                            {field.placeholder || "Select an option"}
-                          </option>
-                          {field.options &&
-                            field.options.map((option, idx) => (
+                      render={({ field: controllerField }) => {
+                        // Fetch options when the component mounts or field.name changes
+                        useEffect(() => {
+                          fetchOptions(field.name);
+                        }, [field.name]);
+
+                        return (
+                          <select
+                            {...controllerField}
+                            className={`form-control form-select ${
+                              errors[field.name] ? "is-invalid" : ""
+                            }`}
+                            id={field.name}
+                            disabled={!editable}
+                            onChange={(e) => {
+                              controllerField.onChange(e);
+                              onSelectChange && onSelectChange(e.target.value);
+                            }}
+                          >
+                            <option value="">
+                              {field.placeholder || "Select an option"}
+                            </option>
+                            {options[field.name]?.map((option, idx) => (
                               <option key={idx} value={option.value}>
                                 {option.label}
                               </option>
                             ))}
-                        </select>
-                      )}
+                          </select>
+                        );
+                      }}
                     />
                     {errors[field.name] && (
                       <div className="invalid-feedback">
