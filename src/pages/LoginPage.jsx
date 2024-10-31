@@ -13,20 +13,22 @@ const LoginPage = () => {
     <>
       <section className="vh-100 vw-100  bg-image overflow-hidden">
         <div className="container-fluid h-custom w-100 ">
-          <div className="row d-flex justify-content-center align-items-center h-100">
-            <div className="col-md-6 col-lg-6 col-xl-6 offset-xl-1">
-              <div className="mt-4 w-50 mx-auto">
+          <div className="row d-flex justify-content-between align-items-center h-100 w-100">
+            <div className="col-md-6 col-lg-6 col-xl-6 ">
+              <div className="mt-4 w-50 mx-auto ">
                 <h3 className="fw-bold fs-20 ">ورود به پنل</h3>
               </div>
 
-              <ReusableForm
-                isEditable={false}
-                onlyPost={true}
-                fields={loginForm}
-                formSchema={generateReusableSchema(loginForm)}
-                onSubmit={handleFormSubmit}
-                inputsPerRow={[1]}
-              />
+              <div className="w-50 mx-auto">
+                <ReusableForm
+                  isEditable={false}
+                  onlyPost={true}
+                  fields={loginForm}
+                  formSchema={generateReusableSchema(loginForm)}
+                  onSubmit={handleFormSubmit}
+                  inputsPerRow={[1]}
+                />
+              </div>
             </div>
             <div className="col-md-6 col-lg-6 col-xl-5 position-relative ">
               <img
