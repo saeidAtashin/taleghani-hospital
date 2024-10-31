@@ -3,7 +3,7 @@ import { z } from "zod";
 // Dynamically construct the Zod schema based on form fields
 export const generateReusableSchema = (formFields) =>
   z.object(
-    formFields?.reduce((schema, field) => {
+    formFields.reduce((schema, field) => {
       switch (field.type) {
         case "text":
           schema[field.name] = field.required
@@ -13,8 +13,11 @@ export const generateReusableSchema = (formFields) =>
 
         case "select":
           schema[field.name] = field.required
-            ? z.string().min(1, `Please select a value for ${field.label}`)
-            : z.string().optional().default(field.defaultValue);
+            ? z.string().min(1, `${field.label} را انتخاب کنید`)
+            : z
+                .string()
+                .optional()
+                .default(field.defaultValue || "");
           break;
 
         case "checkbox":
@@ -29,31 +32,36 @@ export const generateReusableSchema = (formFields) =>
           schema[field.name] = field.required
             ? z
                 .string()
-                .refine((val) => !isNaN(Date.parse(val)), "Invalid date")
+                .refine(
+                  (val) => !isNaN(Date.parse(val)),
+                  `${field.label} تاریخ معتبری نیست`
+                )
             : z.string().optional();
           break;
 
         case "number":
           schema[field.name] = field.required
-            ? z.number().min(0, `${field.label} must be a positive number`)
+            ? z.number().min(0, `${field.label} باید عددی مثبت باشد`)
             : z.number().optional();
           break;
 
         case "doubleinput":
-          schema[field.name] = z.array(
-            z.object(
-              field?.subfields?.reduce((subfieldSchema, subfield) => {
-                subfieldSchema[subfield.name] = subfield.required
-                  ? z.string().min(1, `${subfield.label} را وارد نمایید`)
-                  : z.string().optional();
-                return subfieldSchema;
-              }, {})
+          schema[field.name] = z
+            .array(
+              z.object(
+                field?.subfields?.reduce((subfieldSchema, subfield) => {
+                  subfieldSchema[subfield.name] = subfield.required
+                    ? z.string().min(1, `${subfield.label} را وارد نمایید`)
+                    : z.string().optional();
+                  return subfieldSchema;
+                }, {})
+              )
             )
-          );
+            .optional();
           break;
 
-        // Add cases for other input types as needed (e.g., radio, date, etc.)
         default:
+          console.warn(`Unknown field type "${field.type}" encountered.`);
           schema[field.name] = z.any().optional(); // Fallback for unknown types
       }
       return schema;
@@ -436,6 +444,7 @@ export const loginForm = [
     placeholder: "نام کاربری را وارد نمایید",
     defaultValue: "",
     required: true,
+    message: "test"
   },
   {
     type: "text",

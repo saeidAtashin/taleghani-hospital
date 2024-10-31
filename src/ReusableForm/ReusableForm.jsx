@@ -55,7 +55,6 @@ const ReusableForm = ({
   const rows = getFieldsInRows(fields, inputsPerRow);
 
   const fetchOptions = async (fieldName) => {
-    console.log("fieldName", fieldName);
     try {
       let url = `https://cancerreg.ir/api/v1/common/${fieldName}/`;
 
@@ -145,11 +144,12 @@ const ReusableForm = ({
                         </div>
                       )}
                     />
-                    {errors[field.name] && (
-                      <div className="invalid-feedback">
-                        {errors[field.name].message}
-                      </div>
-                    )}
+                    {/* {errors[field.name] && ( */}
+                    <div className="text-danger">
+                      {errors?.[field?.name]?.message}
+                    </div>
+                    {/* )} */}
+                    {/* {errors[field?.name]?.message} */}
                   </>
                 )}
                 {/* Email Input */}

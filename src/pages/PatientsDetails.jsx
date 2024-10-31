@@ -104,7 +104,7 @@ const PatientsDetails = () => {
             fields={formFielsIdentity}
             formSchema={generateReusableSchema(formFielsIdentity)}
             onSubmit={handleFormSubmit}
-            inputsPerRow={[2, 3, 2, 2, 2, 2, 3, 2, 1]}
+            inputsPerRow={[1,2, 3, 2, 2, 2, 2, 3, 2, 1]}
           />
         </div>
       ),
