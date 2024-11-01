@@ -1,17 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { IconField } from "primereact/iconfield";
-import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
-import HeaderName from "../components/HeaderName";
-// Import jalali-moment for Persian date conversion
 import moment from "jalali-moment";
 
 export default function AzmayeshatTable() {
+  const [products, setProducts] = useState([]);
+  const [selectedProducts, setSelectedProducts] = useState([]); // Multi-selection
+  const dt = useRef(null);
+
   const numberTemplate = (rowData, { rowIndex }) => {
     return <span>{rowIndex + 1}</span>; // Display row index as the row number
   };
+
   const persianDateTemplate = (rowData) => {
     return (
       <span>
@@ -24,39 +25,28 @@ export default function AzmayeshatTable() {
 
   function nameTemplate(rowData) {
     const names = Array.isArray(rowData?.name) ? rowData.name : [];
-
     return (
       <div>
-        {names.map((nameItem, index) => {
-          if (typeof nameItem?.value !== "string") {
-            console.warn(
-              `Expected a string in nameItem.value, found:`,
-              nameItem
-            );
-            return null; // Skip invalid entries
-          }
-
-          return (
-            <span
-              key={index}
-              onClick={() => console.log(nameItem.value)}
-              style={{
-                cursor: "pointer",
-                color:
-                  nameItem.type === "primary"
-                    ? "blue"
-                    : nameItem.type === "secondary"
-                    ? "green"
-                    : nameItem.type === "info"
-                    ? "purple"
-                    : "black",
-                marginRight: "8px",
-              }}
-            >
-              {nameItem.value}
-            </span>
-          );
-        })}
+        {names.map((nameItem, index) => (
+          <span
+            key={index}
+            onClick={() => console.log(nameItem.value)}
+            style={{
+              cursor: "pointer",
+              color:
+                nameItem.type === "primary"
+                  ? "blue"
+                  : nameItem.type === "secondary"
+                  ? "green"
+                  : nameItem.type === "info"
+                  ? "purple"
+                  : "black",
+              marginRight: "8px",
+            }}
+          >
+            {nameItem.value}
+          </span>
+        ))}
       </div>
     );
   }
@@ -68,15 +58,6 @@ export default function AzmayeshatTable() {
     { field: "persianDate", header: "تاریخ ثبت", body: persianDateTemplate },
   ];
 
-  const [products, setProducts] = useState([]);
-  const [visibleColumns, setVisibleColumns] = useState(columns);
-  const [productDialog, setProductDialog] = useState(false);
-  const [selectedProducts, setSelectedProducts] = useState(null);
-  const [submitted, setSubmitted] = useState(false);
-  const [globalFilter, setGlobalFilter] = useState(null);
-  const dt = useRef(null);
-
-  // Mock data with date field
   useEffect(() => {
     const newData = [
       {
@@ -84,7 +65,7 @@ export default function AzmayeshatTable() {
         name: [{ value: "خون", type: "primary" }],
         category: "General",
         quantity: 10,
-        date: "2024-11-01", // Sample Gregorian date
+        date: "2024-11-01",
       },
       {
         id: 2,
@@ -115,18 +96,17 @@ export default function AzmayeshatTable() {
         quantity: 8,
         date: "2024-11-03",
       },
-      // Add more items as needed
     ];
     setProducts(newData);
   }, []);
 
-  const openNew = () => {
-    setSubmitted(false);
-    setProductDialog(true);
+  const handlePrint = () => {
+    console.log("Printing:", selectedProducts);
+    // Add your print logic here
   };
 
   const headerNew = (
-    <div className="d-flex flex-wrap gap-2 align-items-center  justify-content-end">
+    <div className="d-flex flex-wrap gap-2 align-items-center  justify-content-start">
       <Button
         label="ثبت دستور آزمایش"
         icon="pi pi-plus"
@@ -144,22 +124,17 @@ export default function AzmayeshatTable() {
     </div>
   );
 
-  const detailsTemplate = (rowData) => (
-    <button
-      type="button"
-      className="btn btn-outline-primary"
-      onClick={() =>
-        window.open(`/dashboard/patients-lists/${rowData.id}`, "_blank")
-      }
-    >
-      مشاهده
-    </button>
-  );
+  const handleDelete = () => {
+    setProducts(
+      products.filter((product) => !selectedProducts.includes(product))
+    );
+    setSelectedProducts([]); // Clear selection after delete
+  };
 
   return (
-    <div className="card screen-width p-5 ">
+    <div className="card screen-width p-5" style={{ direction: "rtl" }}>
       <DataTable
-        dir="ltr"
+        dir="rtl"
         ref={dt}
         value={products}
         selection={selectedProducts}
@@ -170,20 +145,56 @@ export default function AzmayeshatTable() {
         rowsPerPageOptions={[5, 10, 25]}
         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
         currentPageReportTemplate="نمایش {first} تا {last} از {totalRecords} اطلاعات"
-        globalFilter={globalFilter}
+        globalFilter={null}
         header={headerNew}
       >
-        {visibleColumns?.map((col) => (
+        <Column
+          selectionMode="multiple"
+          headerStyle={{ width: "3em" }}
+        ></Column>
+        {columns?.map((col) => (
           <Column
             sortable
             key={col.field}
             field={col.field}
             header={col.header}
-            body={col.body} // Use custom body template if provided
+            body={col.body}
+            style={{ textAlign: "right", direction: "rtl" }}
           />
         ))}
-        <Column header="عملیات" body={detailsTemplate} />
+        <Column
+          header="عملیات"
+          body={(rowData) => (
+            <button
+              type="button"
+              className="btn btn-outline-primary"
+              onClick={() =>
+                window.open(`/dashboard/patients-lists/${rowData.id}`, "_blank")
+              }
+            >
+              مشاهده
+            </button>
+          )}
+        />
       </DataTable>
+
+      {/* Footer with conditional buttons */}
+      {selectedProducts.length > 0 && (
+        <div className="mt-3 d-flex justify-content-end gap-2">
+          <Button
+            label="چاپ"
+            icon="pi pi-print"
+            onClick={handlePrint}
+            className="p-button-success"
+          />
+          <Button
+            label="حذف"
+            icon="pi pi-trash"
+            onClick={handleDelete}
+            className="p-button-danger"
+          />
+        </div>
+      )}
     </div>
   );
 }
