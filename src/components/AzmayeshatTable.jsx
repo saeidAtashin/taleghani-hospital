@@ -108,23 +108,20 @@ export default function AzmayeshatTable() {
     // Add your print logic here
   };
 
-  const changePage = () => {
-    setShowAzmayeshPAge("orderRegister");
-  };
   const headerNew = (
     <div className="d-flex flex-wrap gap-2 align-items-center  justify-content-start">
       <Button
         label="ثبت نتیجه آزمایش"
         icon="pi pi-plus"
         severity="primary"
-        onClick={changePage}
+        onClick={() => setShowAzmayeshPAge("orderRegister")}
         className="rounded-3 "
       />
       <Button
         label="ثبت دستور آزمایش"
         icon="pi pi-plus"
         severity="primary"
-        // onClick={openNew2}
+        onClick={() => setShowAzmayeshPAge("orderRegisterOrder")}
         className="rounded-3 "
       />
     </div>
@@ -209,12 +206,27 @@ export default function AzmayeshatTable() {
             </div>
           )}
         </div>
+      ) : showAzmayeshPAge === "orderRegister" ? (
+        <>
+          <div className="container mt-5">
+            <div className="d-flex justify-content-between align-items-center">
+              <h2 className="m-2 pb-3">ثبت نتیجه آزمایش</h2>
+              <span
+                className="text-danger cursor-pointer"
+                onClick={() => setShowAzmayeshPAge("home")}
+              >
+                x
+              </span>
+            </div>
+            <PillsTabs tabs={tabsInnerImage} />
+          </div>
+        </>
       ) : (
-        showAzmayeshPAge === "orderRegister" && (
+        showAzmayeshPAge === "orderRegisterOrder" && (
           <>
             <div className="container mt-5">
               <div className="d-flex justify-content-between align-items-center">
-                <h2 className="m-2 pb-3">ثبت نتیجه آزمایش</h2>
+                <h2 className="m-2 pb-3">ثبت دستور آزمایش</h2>
                 <span
                   className="text-danger cursor-pointer"
                   onClick={() => setShowAzmayeshPAge("home")}
@@ -222,7 +234,7 @@ export default function AzmayeshatTable() {
                   x
                 </span>
               </div>
-              <PillsTabs tabs={tabsInnerImage} />
+              orderRegisterOrder{" "}
             </div>
           </>
         )
