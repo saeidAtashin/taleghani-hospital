@@ -1,0 +1,31 @@
+import React, { useState } from "react";
+import { Tab, Nav } from "react-bootstrap";
+
+const PillsTabs = ({ tabs }) => {
+  const [activeTab, setActiveTab] = useState(tabs[0]?.eventKey || "");
+
+  const handleSelect = (eventKey) => {
+    setActiveTab(eventKey);
+  };
+
+  return (
+    <Tab.Container activeKey={activeTab} onSelect={handleSelect}>
+      <Nav variant="pills" className="">
+        {tabs.map((tab, index) => (
+          <Nav.Item key={index} className="m-2">
+            <Nav.Link className="border" eventKey={tab.eventKey}>{tab.title}</Nav.Link>
+          </Nav.Item>
+        ))}
+      </Nav>
+      <Tab.Content className="mt-3">
+        {tabs.map((tab, index) => (
+          <Tab.Pane eventKey={tab.eventKey} key={index}>
+            {tab.content}
+          </Tab.Pane>
+        ))}
+      </Tab.Content>
+    </Tab.Container>
+  );
+};
+
+export default PillsTabs;
