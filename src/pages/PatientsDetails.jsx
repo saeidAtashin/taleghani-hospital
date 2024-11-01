@@ -210,7 +210,15 @@ const PatientsDetails = () => {
         ) : itemToDisplay === "recordImagingResult" ? (
           <>
             <div className="container mt-5">
-              <h2 className="m-2 pb-3">ثبت نتیجه تصویربرداری</h2>
+              <div className="d-flex justify-content-between align-items-center">
+                <h2 className="m-2 pb-3">ثبت نتیجه تصویربرداری</h2>
+                <span
+                  className="text-danger cursor-pointer"
+                  onClick={() => setItemToDisplay("home")}
+                >
+                  x
+                </span>
+              </div>
               <PillsTabs tabs={tabsInnerImage} />
             </div>
           </>
