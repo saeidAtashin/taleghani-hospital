@@ -6,7 +6,7 @@ import moment from "jalali-moment";
 
 export default function AzmayeshatTable() {
   const [products, setProducts] = useState([]);
-  const [selectedProducts, setSelectedProducts] = useState([]); // Multi-selection
+  const [selectedProducts, setSelectedProducts] = useState([]);
   const dt = useRef(null);
 
   const numberTemplate = (rowData, { rowIndex }) => {
@@ -70,7 +70,7 @@ export default function AzmayeshatTable() {
       {
         id: 2,
         name: [
-          { value: "Jane Smith", type: "secondary" },
+          { value: "تومور مارکرها", type: "secondary" },
           { value: "گروه خون", type: "info" },
         ],
         category: "Special",
@@ -108,14 +108,14 @@ export default function AzmayeshatTable() {
   const headerNew = (
     <div className="d-flex flex-wrap gap-2 align-items-center  justify-content-start">
       <Button
-        label="ثبت دستور آزمایش"
+        label="ثبت نتیجه آزمایش"
         icon="pi pi-plus"
         severity="primary"
         // onClick={openNew2}
         className="rounded-3 "
       />
       <Button
-        label="ثبت نتیجه آزمایش"
+        label="ثبت دستور آزمایش"
         icon="pi pi-plus"
         severity="primary"
         // onClick={openNew2}
@@ -150,7 +150,7 @@ export default function AzmayeshatTable() {
       >
         <Column
           selectionMode="multiple"
-          headerStyle={{ width: "3em" }}
+          headerStyle={{ width: "3em", borderBottom: "2px solid black" }}
         ></Column>
         {columns?.map((col) => (
           <Column
@@ -160,10 +160,12 @@ export default function AzmayeshatTable() {
             header={col.header}
             body={col.body}
             style={{ textAlign: "right", direction: "rtl" }}
+            headerStyle={{ borderBottom: "2px solid black" }}
           />
         ))}
         <Column
           header="عملیات"
+          headerStyle={{ borderBottom: "2px solid black" }}
           body={(rowData) => (
             <button
               type="button"
