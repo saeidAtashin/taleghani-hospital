@@ -9,9 +9,9 @@ import HeaderName from "../components/HeaderName";
 
 export default function ColumnToggleDemo() {
   const columns = [
-    { field: "name", header: "Name" },
-    { field: "category", header: "Category" },
-    { field: "quantity", header: "Quantity" },
+    { field: "name", header: "نام" }, // Translate header text to Persian
+    { field: "category", header: "دسته‌بندی" },
+    { field: "quantity", header: "تعداد" },
   ];
   const [products, setProducts] = useState([]);
   const [visibleColumns, setVisibleColumns] = useState(columns);
@@ -45,7 +45,10 @@ export default function ColumnToggleDemo() {
   };
 
   const headerNew = (
-    <div className="d-flex flex-wrap gap-2 align-items-center  justify-content-end">
+    <div
+      className="d-flex flex-wrap gap-2 align-items-center justify-content-start"
+      style={{ direction: "rtl" }}
+    >
       <Button
         label="جستجو"
         icon="pi pi-search"
@@ -57,6 +60,7 @@ export default function ColumnToggleDemo() {
           type="search"
           onInput={(e) => setGlobalFilter(e.target.value)}
           placeholder="جستجوی کد ملی"
+          style={{ textAlign: "right" }}
         />
       </IconField>
     </div>
@@ -65,11 +69,6 @@ export default function ColumnToggleDemo() {
   // Custom function to render the "Details" button
   const detailsTemplate = (rowData) => {
     return (
-      // <Button
-      //   label="مشاهده"
-      //   icon="pi pi-external-link"
-      //   onClick={() => window.open(`/details/${rowData.id}`, "_blank")}
-      // />
       <button
         type="button"
         className="btn btn-outline-primary"
@@ -83,12 +82,12 @@ export default function ColumnToggleDemo() {
   };
 
   return (
-    <div className="card screen-width p-5">
+    <div className="card screen-width p-5" style={{ direction: "rtl" }}>
       <HeaderName HeaderName="لیست بیماران" />
 
       <DataTable
         stripedRows
-        dir="ltr"
+        dir="rtl" // Set RTL for DataTable
         ref={dt}
         value={products}
         selection={selectedProducts}
@@ -102,19 +101,21 @@ export default function ColumnToggleDemo() {
         globalFilter={globalFilter}
         header={headerNew}
       >
-        <Column field="code" header="Code" />
+        <Column field="code" header="کد" style={{ textAlign: "right" }} />
         {visibleColumns.map((col) => (
           <Column
             sortable
             key={col.field}
             field={col.field}
             header={col.header}
+            style={{ textAlign: "right", direction: "rtl" }}
           />
         ))}
         {/* Add the Details column */}
         <Column
-          header="Details"
+          header="جزئیات"
           body={detailsTemplate} // Use custom template for rendering button
+          // style={{ textAlign: "center" }}
         />
       </DataTable>
     </div>
