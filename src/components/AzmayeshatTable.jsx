@@ -3,10 +3,13 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import moment from "jalali-moment";
+import PillsTabs from "./PillsTabs";
+import { tabsInnerImage } from "../pages/PatientsDetails";
 
 export default function AzmayeshatTable() {
   const [products, setProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
+  const [showAzmayeshPAge, setShowAzmayeshPAge] = useState("home");
   const dt = useRef(null);
 
   const numberTemplate = (rowData, { rowIndex }) => {
@@ -105,13 +108,16 @@ export default function AzmayeshatTable() {
     // Add your print logic here
   };
 
+  const changePage = () => {
+    setShowAzmayeshPAge("orderRegister");
+  };
   const headerNew = (
     <div className="d-flex flex-wrap gap-2 align-items-center  justify-content-start">
       <Button
         label="ثبت نتیجه آزمایش"
         icon="pi pi-plus"
         severity="primary"
-        // onClick={openNew2}
+        onClick={changePage}
         className="rounded-3 "
       />
       <Button
@@ -132,71 +138,95 @@ export default function AzmayeshatTable() {
   };
 
   return (
-    <div className="card screen-width p-5" style={{ direction: "rtl" }}>
-      <DataTable
-        dir="rtl"
-        ref={dt}
-        value={products}
-        selection={selectedProducts}
-        onSelectionChange={(e) => setSelectedProducts(e.value)}
-        dataKey="id"
-        paginator
-        rows={10}
-        rowsPerPageOptions={[5, 10, 25]}
-        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-        currentPageReportTemplate="نمایش {first} تا {last} از {totalRecords} اطلاعات"
-        globalFilter={null}
-        header={headerNew}
-      >
-        <Column
-          selectionMode="multiple"
-          headerStyle={{ width: "3em", borderBottom: "2px solid black" }}
-        ></Column>
-        {columns?.map((col) => (
-          <Column
-            sortable
-            key={col.field}
-            field={col.field}
-            header={col.header}
-            body={col.body}
-            style={{ textAlign: "right", direction: "rtl" }}
-            headerStyle={{ borderBottom: "2px solid black" }}
-          />
-        ))}
-        <Column
-          header="عملیات"
-          headerStyle={{ borderBottom: "2px solid black" }}
-          body={(rowData) => (
-            <button
-              type="button"
-              className="btn btn-outline-primary"
-              onClick={() =>
-                window.open(`/dashboard/patients-lists/${rowData.id}`, "_blank")
-              }
-            >
-              مشاهده
-            </button>
-          )}
-        />
-      </DataTable>
+    <>
+      {showAzmayeshPAge === "home" ? (
+        <div className="card screen-width p-5" style={{ direction: "rtl" }}>
+          <DataTable
+            dir="rtl"
+            ref={dt}
+            value={products}
+            selection={selectedProducts}
+            onSelectionChange={(e) => setSelectedProducts(e.value)}
+            dataKey="id"
+            paginator
+            rows={10}
+            rowsPerPageOptions={[5, 10, 25]}
+            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+            currentPageReportTemplate="نمایش {first} تا {last} از {totalRecords} اطلاعات"
+            globalFilter={null}
+            header={headerNew}
+          >
+            <Column
+              selectionMode="multiple"
+              headerStyle={{ width: "3em", borderBottom: "2px solid black" }}
+            ></Column>
+            {columns?.map((col) => (
+              <Column
+                sortable
+                key={col.field}
+                field={col.field}
+                header={col.header}
+                body={col.body}
+                style={{ textAlign: "right", direction: "rtl" }}
+                headerStyle={{ borderBottom: "2px solid black" }}
+              />
+            ))}
+            <Column
+              header="عملیات"
+              headerStyle={{ borderBottom: "2px solid black" }}
+              body={(rowData) => (
+                <button
+                  type="button"
+                  className="btn btn-outline-primary"
+                  onClick={() =>
+                    window.open(
+                      `/dashboard/patients-lists/${rowData.id}`,
+                      "_blank"
+                    )
+                  }
+                >
+                  مشاهده
+                </button>
+              )}
+            />
+          </DataTable>
 
-      {/* Footer with conditional buttons */}
-      {selectedProducts.length > 0 && (
-        <div className="mt-3 d-flex justify-content-end gap-2">
-          <Button
-            label="چاپ"
-            icon="pi pi-print"
-            onClick={handlePrint}
-            className="p-button-success"
-          />
-          <Button
-            label="حذف"
-            icon="pi pi-trash"
-            onClick={handleDelete}
-            className="p-button-danger"
-          />
+          {/* Footer with conditional buttons */}
+          {selectedProducts.length > 0 && (
+            <div className="mt-3 d-flex justify-content-end gap-2">
+              <Button
+                label="چاپ"
+                icon="pi pi-print"
+                onClick={handlePrint}
+                className="p-button-success"
+              />
+              <Button
+                label="حذف"
+                icon="pi pi-trash"
+                onClick={handleDelete}
+                className="p-button-danger"
+              />
+            </div>
+          )}
         </div>
+      ) : (
+        showAzmayeshPAge === "orderRegister" && (
+          <>
+            <div className="container mt-5">
+              <div className="d-flex justify-content-between align-items-center">
+                <h2 className="m-2 pb-3">ثبت نتیجه آزمایش</h2>
+                <span
+                  className="text-danger cursor-pointer"
+                  onClick={() => setShowAzmayeshPAge("home")}
+                >
+                  x
+                </span>
+              </div>
+              <PillsTabs tabs={tabsInnerImage} />
+            </div>
+          </>
+        )
       )}
-    </div>
+    </>
   );
 }

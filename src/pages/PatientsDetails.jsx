@@ -4,6 +4,8 @@ import {
   formFielsIdentity,
   formPatientsFields,
   generateReusableSchema,
+  InnerAzmayesh,
+  loginForm,
 } from "../form-fields/FormFields";
 import ReusableForm from "../ReusableForm/ReusableForm";
 import ColumnToggleDemo from "../tables/ColumnToggleDemo";
@@ -15,6 +17,60 @@ import { ProductService } from "../tables/ProductService";
 import { Button } from "primereact/button";
 import PillsTabs from "../components/PillsTabs";
 import AzmayeshatTable from "../components/AzmayeshatTable";
+
+const handleFormSubmit = (data) => {
+  console.log("data", data);
+  navigate("/dashboard");
+};
+
+export const tabsInnerImage = [
+  {
+    eventKey: "home",
+    title: "سونوگرافی",
+    content: (
+      <>
+        <ReusableForm
+          isEditable={false}
+          onlyPost={true}
+          fields={InnerAzmayesh}
+          formSchema={generateReusableSchema(InnerAzmayesh)}
+          onSubmit={handleFormSubmit}
+          inputsPerRow={[1, 2]}
+        />{" "}
+      </>
+    ),
+  },
+  {
+    eventKey: "ماموگرافی",
+    title: "ماموگرافی",
+    content: <div>This is the profile content.</div>,
+  },
+  {
+    eventKey: "MRI",
+    title: "MRI",
+    content: <div>This is the profile content.</div>,
+  },
+  {
+    eventKey: "profile",
+    title: "CT-Scan",
+    content: <div>This is the profile content.</div>,
+  },
+  {
+    eventKey: "اسکن هسته ای",
+    title: "اسکن هسته ای",
+    content: <div>This is the profile content.</div>,
+  },
+  {
+    eventKey: "PET-Scan",
+    title: "PET-Scan",
+    content: <div>This is the profile content.</div>,
+  },
+  {
+    eventKey: "گرافی ساده",
+    title: "گرافی ساده",
+    content: <div>This is the contact content.</div>,
+  },
+];
 
 const PatientsDetails = () => {
   const columns = [
@@ -46,44 +102,6 @@ const PatientsDetails = () => {
   const [submitted, setSubmitted] = useState(false);
   const [itemToDisplay, setItemToDisplay] = useState("home");
   const dt = useRef(null);
-
-  const tabsInnerImage = [
-    {
-      eventKey: "home",
-      title: "سونوگرافی",
-      content: <div>سونوگرافی</div>,
-    },
-    {
-      eventKey: "ماموگرافی",
-      title: "ماموگرافی",
-      content: <div>This is the profile content.</div>,
-    },
-    {
-      eventKey: "MRI",
-      title: "MRI",
-      content: <div>This is the profile content.</div>,
-    },
-    {
-      eventKey: "profile",
-      title: "CT-Scan",
-      content: <div>This is the profile content.</div>,
-    },
-    {
-      eventKey: "اسکن هسته ای",
-      title: "اسکن هسته ای",
-      content: <div>This is the profile content.</div>,
-    },
-    {
-      eventKey: "PET-Scan",
-      title: "PET-Scan",
-      content: <div>This is the profile content.</div>,
-    },
-    {
-      eventKey: "گرافی ساده",
-      title: "گرافی ساده",
-      content: <div>This is the contact content.</div>,
-    },
-  ];
 
   const openNew2 = () => {
     console.log("ytytytyty");
@@ -230,7 +248,11 @@ const PatientsDetails = () => {
     {
       key: "آزمایشات",
       label: "آزمایشات",
-      content: <><AzmayeshatTable /></>,
+      content: (
+        <>
+          <AzmayeshatTable />
+        </>
+      ),
     },
     {
       key: "درمان",

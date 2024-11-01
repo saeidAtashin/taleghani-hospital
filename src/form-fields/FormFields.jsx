@@ -444,7 +444,7 @@ export const loginForm = [
     placeholder: "نام کاربری را وارد نمایید",
     defaultValue: "",
     required: true,
-    message: "test"
+    message: "test",
   },
   {
     type: "text",
@@ -453,6 +453,42 @@ export const loginForm = [
     placeholder: "رمز عبور را وارد نمایید",
     defaultValue: "",
     required: true,
+  },
+];
+
+export const InnerAzmayesh = [
+  {
+    type: "text",
+    label: "تاریخ",
+    name: "date",
+    placeholder: "تاریخ را وارد نمایید",
+    defaultValue: "",
+    required: true,
+    message: "test",
+  },
+  {
+    type: "select",
+    label: "Blood Group",
+    name: "Blood-Group",
+    options: [
+      { value: "Solid", label: "Solid" },
+      { value: "non Solid", label: "non Solid" },
+    ],
+    placeholder: "از زیرمنو انتخاب کنید",
+    defaultValue: "0",
+    required: false,
+  },
+  {
+    type: "select",
+    label: "RH",
+    name: "RH",
+    options: [
+      { value: "Solid", label: "Solid" },
+      { value: "non Solid", label: "non Solid" },
+    ],
+    placeholder: "از زیرمنو انتخاب کنید",
+    defaultValue: "0",
+    required: false,
   },
 ];
 
