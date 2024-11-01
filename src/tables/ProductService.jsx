@@ -1217,5 +1217,6 @@ export const ProductService = {
     getProductsWithOrders() {
         return Promise.resolve(this.getProductsWithOrdersData());
     }
+    
 };
 

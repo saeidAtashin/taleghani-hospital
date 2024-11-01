@@ -14,6 +14,7 @@ import { Column } from "primereact/column";
 import { ProductService } from "../tables/ProductService";
 import { Button } from "primereact/button";
 import PillsTabs from "../components/PillsTabs";
+import AzmayeshatTable from "../components/AzmayeshatTable";
 
 const PatientsDetails = () => {
   const columns = [
@@ -102,7 +103,7 @@ const PatientsDetails = () => {
         label="ثبت نتیجه تصویربرداری"
         icon="pi pi-plus"
         severity="primary"
-        onClick={openNew2}
+        // onClick={openNew2}
         className="rounded-3 "
       />
     </div>
@@ -229,7 +230,7 @@ const PatientsDetails = () => {
     {
       key: "آزمایشات",
       label: "آزمایشات",
-      content: <div>آزمایشات</div>,
+      content: <><AzmayeshatTable /></>,
     },
     {
       key: "درمان",
