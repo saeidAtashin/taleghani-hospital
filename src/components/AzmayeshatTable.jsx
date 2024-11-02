@@ -5,6 +5,8 @@ import { Button } from "primereact/button";
 import moment from "jalali-moment";
 import PillsTabs from "./PillsTabs";
 import { tabsInnerImage } from "../pages/PatientsDetails";
+import BadgeIcon from "./BadgeIcon";
+import SelectableIconItem from "./BadgeIcon";
 
 export default function AzmayeshatTable() {
   const [products, setProducts] = useState([]);
@@ -36,14 +38,7 @@ export default function AzmayeshatTable() {
             onClick={() => console.log(nameItem.value)}
             style={{
               cursor: "pointer",
-              color:
-                nameItem.type === "primary"
-                  ? "blue"
-                  : nameItem.type === "secondary"
-                  ? "green"
-                  : nameItem.type === "info"
-                  ? "purple"
-                  : "black",
+              color: nameItem.type === "secondary" ? "green" : "orange",
               marginRight: "8px",
             }}
           >
@@ -65,7 +60,7 @@ export default function AzmayeshatTable() {
     const newData = [
       {
         id: 1,
-        name: [{ value: "خون", type: "primary" }],
+        name: [{ value: "خون", type: "secondary" }],
         category: "General",
         quantity: 10,
         date: "2024-11-01",
@@ -83,9 +78,9 @@ export default function AzmayeshatTable() {
       {
         id: 3,
         name: [
-          { value: "تومور مارکرها", type: "primary" },
+          { value: "تومور مارکرها", type: "secondary" },
           { value: "روتین ", type: "secondary" },
-          { value: "مولکولار", type: "info" },
+          { value: "مولکولار", type: "secondary" },
           { value: "گروه خون", type: "primary" },
         ],
         category: "General",
@@ -133,6 +128,19 @@ export default function AzmayeshatTable() {
     );
     setSelectedProducts([]); // Clear selection after delete
   };
+
+  const [selectedOptions, setSelectedOptions] = useState(["opt1"]);
+
+  const handleSelectionChange = (selected) => {
+    setSelectedOptions(selected);
+    console.log("Selected values:", selected);
+  };
+
+  const options = [
+    { value: "opt1", label: "CEA" },
+    { value: "opt2", label: "CA125" },
+    { value: "opt3", label: "CA19-9" },
+  ];
 
   return (
     <>
@@ -234,7 +242,16 @@ export default function AzmayeshatTable() {
                   x
                 </span>
               </div>
-              orderRegisterOrder{" "}
+              <SelectableIconItem
+                icon="pi pi-check"
+                header="تومور مارکرها"
+                options={options}
+                type="bordered"
+                selectedValues={selectedOptions}
+                onChange={handleSelectionChange}
+                iconColor="green"
+                size="1.2rem"
+              />
             </div>
           </>
         )
