@@ -11,18 +11,18 @@ const HorizontalNavbar = () => {
   const [loading, setLoading] = useState(false);
 
   const items = [
-    { name: "جنسیت", endpoint: "gender" },
-    { name: "وضعیت تاهل", endpoint: "marital-status" },
-    { name: "شغل", endpoint: "job" },
-    { name: "استان", endpoint: "province" },
-    { name: "شهر", endpoint: "city" },
-    { name: "سطح تحصیلات", endpoint: "education" },
-    { name: "رشته تحصیلی", endpoint: "major-field" },
-    { name: "تعداد فرزندان", endpoint: "num-of-children" },
-    { name: "بیماری‌های زمینه‌ای", endpoint: "underlying-disease" },
-    { name: "عادات", endpoint: "habit-disease" },
-    { name: "سابقه خانوادگی", endpoint: "family-history" },
-    { name: "جراحی‌ها", endpoint: "surgery" },
+    { name: "جنسیت", endpoint: "/common/gender" },
+    { name: "وضعیت تاهل", endpoint: "/common/marital-status" },
+    { name: "شغل", endpoint: "/common/job" },
+    { name: "استان", endpoint: "/common/province" },
+    { name: "شهر", endpoint: "/common/city" },
+    { name: "سطح تحصیلات", endpoint: "/common/education" },
+    { name: "رشته تحصیلی", endpoint: "/common/major-field" },
+    { name: "تعداد فرزندان", endpoint: "/common/num-of-children" },
+    { name: "بیماری‌های زمینه‌ای", endpoint: "/common/underlying-disease" },
+    { name: "عادات", endpoint: "/common/habit-disease" },
+    { name: "سابقه خانوادگی", endpoint: "/common/family-history" },
+    { name: "جراحی‌ها", endpoint: "/common/surgery" },
   ];
 
   const handleClick = async (item) => {

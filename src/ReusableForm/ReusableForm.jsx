@@ -12,6 +12,7 @@ const ReusableForm = ({
   isEditable = false,
   onlyPost = false,
   onSelectChange,
+  isLoading = false,
 }) => {
   const {
     control,
@@ -380,7 +381,11 @@ const ReusableForm = ({
               >
                 لغو
               </button> */}
-              <button type="submit" className="btn btn-primary w-100">
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="btn btn-primary w-100"
+              >
                 ثبت اطلاعات و ادامه
               </button>
             </>

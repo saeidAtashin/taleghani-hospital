@@ -1,11 +1,17 @@
 import axios from "axios";
 import Swal from "sweetalert2";
 
-const apiRequest = async (method, endpoint, data = null) => {
+const apiRequest = async (
+  method,
+  endpoint,
+  data = null,
+  baseURL = "https://cancerreg.ir/api/v1"
+) => {
   try {
     const response = await axios({
       method,
-      url: `https://cancerreg.ir/api/v1/common/${endpoint}/`,
+      // url: `https://cancerreg.ir/api/v1/common/${endpoint}/`,
+      url: `${baseURL}${endpoint}/`,
       data,
     });
     return response;

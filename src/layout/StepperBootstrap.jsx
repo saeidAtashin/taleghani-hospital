@@ -11,12 +11,15 @@ import {
   nonSolidFields,
   solidFields,
 } from "../form-fields/FormFields";
+import { PATIENT_INFO } from "../api/apiClient";
+import axios from "axios";
 
 const StepperBootstrap = () => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   const [malignancyType, setMalignancyType] = useState(""); // Default value
 
-  const handleFormSubmit = (data) => {
+  const handleFormSubmit = async (data) => {
     try {
       // Dynamically generate the schema based on the current step's form fields
       const schema = generateReusableSchema(
@@ -35,11 +38,25 @@ const StepperBootstrap = () => {
 
       // If form is valid, proceed to the next step
       if (activeIndex < 2) {
-        setActiveIndex(activeIndex + 1); // Move to the next step if there is one
+        setIsLoading(true);
+        try {
+          const response = await axios.post(
+            "https://cancerreg.ir/api/v1" + PATIENT_INFO,
+            data
+          );
+
+          console.log("API response:", response);
+          setActiveIndex(activeIndex + 1); // Move to the next step if there is one
+        } catch (error) {
+          console.error("Error submitting data:", error);
+          setIsLoading(false);
+        }
       } else {
+        setIsLoading(false);
         console.log("Final form submission:", data);
       }
     } catch (error) {
+      setIsLoading(false);
       if (error instanceof z.ZodError) {
         console.log("Validation errors:", error.errors);
       } else {
@@ -90,6 +107,7 @@ const StepperBootstrap = () => {
             className={`collapse ${activeIndex === i ? "show" : ""}`}
           >
             <ReusableForm
+              isLoading={isLoading}
               onlyPost={true}
               isEditable={false}
               fields={[

@@ -80,7 +80,7 @@ export const formFielsIdentity = [
   {
     type: "text",
     label: "نام پزشک معرف",
-    name: "introducing_doctor",
+    name: "referring_doctor",
     placeholder: "نام پزشک را وارد نمایید",
     defaultValue: "",
     required: false,
@@ -88,7 +88,7 @@ export const formFielsIdentity = [
   {
     type: "text",
     label: "نام",
-    name: "name",
+    name: "first_name",
     placeholder: "نام بیمار را وارد نمایید",
     defaultValue: "",
     required: false,
@@ -104,14 +104,14 @@ export const formFielsIdentity = [
   {
     type: "select",
     label: "تاریخ تولد",
-    name: "birthdate",
+    name: "birth_date",
     options: [
       { value: "ادیت", label: "ادیت" },
       { value: "ادیت2", label: "ادیت2" },
       { value: "ادیت3", label: "ادیت3" },
     ],
     placeholder: "تاریخ تولد را انتحاب نمایید",
-    defaultValue: "ادیت",
+    defaultValue: "",
     required: false,
   },
 
@@ -124,19 +124,19 @@ export const formFielsIdentity = [
       { value: "مرد", label: "مرد" },
     ],
     placeholder: "جنسیت را انتخاب نمایید",
-    defaultValue: "مرد",
+    defaultValue: "",
     required: false,
   },
   {
     type: "select",
     label: "وضعیت تاهل",
-    name: "marital-status",
+    name: "marital_status",
     options: [
       { value: "مجرد", label: "مجرد" },
       { value: "متاهل", label: "متاهل" },
     ],
     placeholder: "وضعیت تاهل را انتخاب نمایید",
-    defaultValue: "مجرد",
+    defaultValue: "",
     required: false,
   },
   {
@@ -149,20 +149,20 @@ export const formFielsIdentity = [
       { value: "استان3", label: "استان3" },
     ],
     placeholder: "استان  را انتخاب نمایید",
-    defaultValue: "استان1",
+    defaultValue: "",
     required: false,
   },
   {
     type: "select",
     label: "شهر محل تولد",
-    name: "city",
+    name: "birth_city",
     options: [
       { value: "شهر1", label: "شهر1" },
       { value: "شهر2", label: "شهر2" },
       { value: "شهر3", label: "شهر3" },
     ],
     placeholder: "شهر را انتخاب نمایید",
-    defaultValue: "شهر1",
+    defaultValue: "",
     required: false,
   },
   {
@@ -175,20 +175,20 @@ export const formFielsIdentity = [
       { value: "3", label: "3" },
     ],
     placeholder: "استان محل زندگی را انتخاب نمایید",
-    defaultValue: "0",
+    defaultValue: "",
     required: false,
   },
   {
     type: "select",
     label: "شهر محل زندگی",
-    name: "city",
+    name: "residential_city",
     options: [
       { value: "1", label: "1" },
       { value: "2", label: "2" },
       { value: "3", label: "3" },
     ],
     placeholder: "شهر محل زندگی را انتخاب نمایید",
-    defaultValue: "3",
+    defaultValue: "",
     required: false,
   },
 
@@ -210,7 +210,7 @@ export const formFielsIdentity = [
   {
     type: "text",
     label: "شماره تلفن ثابت",
-    name: "phone",
+    name: "tell_number",
     placeholder: "شماره تلفن ثابت  را وارد نمایید",
     defaultValue: "",
     required: false,
@@ -231,7 +231,7 @@ export const formFielsIdentity = [
   {
     type: "select",
     label: "رشته تحصیلی",
-    name: "major-field",
+    name: "major_field",
     options: [
       { value: "1", label: "1" },
       { value: "2", label: "2" },
@@ -257,7 +257,7 @@ export const formFielsIdentity = [
   {
     type: "select",
     label: "تعداد فرزندان",
-    name: "num-of-children",
+    name: "num_children",
     options: [
       { value: "1", label: "1" },
       { value: "2", label: "2" },
@@ -270,7 +270,7 @@ export const formFielsIdentity = [
   {
     type: "select",
     label: "تاریخ فوت",
-    name: "rolesec",
+    name: "death_date",
     options: [
       { value: "1", label: "1" },
       { value: "2", label: "2" },
@@ -283,7 +283,7 @@ export const formFielsIdentity = [
   {
     type: "text",
     label: "آدرس",
-    name: "address_patient",
+    name: "address",
     placeholder: "آدرس بیمار را وارد نمایید",
     defaultValue: "",
     required: false,
@@ -431,7 +431,7 @@ export const formPatientsInformationFields = [
       { value: "non Solid", label: "non Solid" },
     ],
     placeholder: "نوع سرطان بیمار را انتخاب نمایید",
-    defaultValue: "0",
+    defaultValue: "",
     required: false,
   },
 ];
@@ -475,7 +475,7 @@ export const InnerAzmayesh = [
       { value: "non Solid", label: "non Solid" },
     ],
     placeholder: "از زیرمنو انتخاب کنید",
-    defaultValue: "0",
+    defaultValue: "",
     required: false,
   },
   {
@@ -487,7 +487,7 @@ export const InnerAzmayesh = [
       { value: "non Solid", label: "non Solid" },
     ],
     placeholder: "از زیرمنو انتخاب کنید",
-    defaultValue: "0",
+    defaultValue: "",
     required: false,
   },
 ];
