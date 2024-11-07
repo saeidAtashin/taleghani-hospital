@@ -130,13 +130,13 @@ export const formFielsIdentity = [
   {
     type: "select",
     label: "وضعیت تاهل",
-    name: "marital-status",
+    name: "marital_status",
     options: [
       { value: "مجرد", label: "مجرد" },
       { value: "متاهل", label: "متاهل" },
     ],
     placeholder: "وضعیت تاهل را انتخاب نمایید",
-    defaultValue: "",
+    defaultValue: "t",
     required: false,
   },
   {
