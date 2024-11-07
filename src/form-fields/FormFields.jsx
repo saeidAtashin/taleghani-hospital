@@ -130,7 +130,7 @@ export const formFielsIdentity = [
   {
     type: "select",
     label: "وضعیت تاهل",
-    name: "marital_status",
+    name: "marital-status",
     options: [
       { value: "مجرد", label: "مجرد" },
       { value: "متاهل", label: "متاهل" },
@@ -155,7 +155,7 @@ export const formFielsIdentity = [
   {
     type: "select",
     label: "شهر محل تولد",
-    name: "birth_city",
+    name: "city",
     options: [
       { value: "شهر1", label: "شهر1" },
       { value: "شهر2", label: "شهر2" },
@@ -181,7 +181,7 @@ export const formFielsIdentity = [
   {
     type: "select",
     label: "شهر محل زندگی",
-    name: "residential_city",
+    name: "city",
     options: [
       { value: "1", label: "1" },
       { value: "2", label: "2" },
@@ -231,7 +231,7 @@ export const formFielsIdentity = [
   {
     type: "select",
     label: "رشته تحصیلی",
-    name: "major_field",
+    name: "major-field",
     options: [
       { value: "1", label: "1" },
       { value: "2", label: "2" },
@@ -257,7 +257,7 @@ export const formFielsIdentity = [
   {
     type: "select",
     label: "تعداد فرزندان",
-    name: "num_children",
+    name: "num-of-children",
     options: [
       { value: "1", label: "1" },
       { value: "2", label: "2" },
