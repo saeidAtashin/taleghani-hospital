@@ -138,8 +138,8 @@ const HorizontalNavbar = () => {
               value={selectedProvince || ""}
             >
               <option value="">انتخاب کنید</option>
-              {provinces.map((province) => (
-                <option key={province.id} value={province.id}>
+              {provinces.map((province, index) => (
+                <option key={index} value={province.id}>
                   {province.name}
                 </option>
               ))}
@@ -166,9 +166,9 @@ const HorizontalNavbar = () => {
         <div>
           {selectedItem && data.length > 0 && (
             <div className="badge-container mt-3 d-flex flex-column">
-              {data?.map((item) => (
+              {data?.map((item, index) => (
                 <span
-                  key={item.id}
+                  key={index}
                   className="badge bg-primary me-2 d-flex align-items-center justify-content-between"
                 >
                   {item.name}

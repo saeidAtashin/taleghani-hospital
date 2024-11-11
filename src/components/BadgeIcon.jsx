@@ -32,9 +32,9 @@ const SelectableIconItem = ({
   return (
     <div style={{ ...style }}>
       {header && <h3 style={{ marginBottom: "0.5em" }}>{header}</h3>}
-      {options.map((option) => (
+      {options.map((option, index) => (
         <div
-          key={option.value}
+          key={index}
           style={{
             display: "flex",
             alignItems: "center",

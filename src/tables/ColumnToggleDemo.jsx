@@ -103,10 +103,10 @@ export default function ColumnToggleDemo() {
         globalFilter={globalFilter}
         header={headerNew}
       >
-        {visibleColumns.map((col) => (
+        {visibleColumns.map((col, index) => (
           <Column
             sortable
-            key={col.field}
+            key={index}
             field={col.field}
             header={col.header}
             body={

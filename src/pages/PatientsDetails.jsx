@@ -18,6 +18,7 @@ import { Button } from "primereact/button";
 import PillsTabs from "../components/PillsTabs";
 import AzmayeshatTable from "../components/AzmayeshatTable";
 import { useParams } from "react-router-dom";
+import apiRequest from "../api/apiService";
 
 const handleFormSubmit = (data) => {
   console.log("data", data);
@@ -77,16 +78,33 @@ const PatientsDetails = () => {
   const { uid } = useParams();
 
   console.log("uid", uid);
+
   const columns = [
-    { field: "name", header: "Name" },
-    { field: "category", header: "Category" },
-    { field: "quantity", header: "Quantity" },
+    { field: "uid", header: "کد ملی" },
+    { field: "first_name", header: "نام" },
+    { field: "last_name", header: "نام خانوادگی" },
+    { field: "created_at", header: "تاریخ ثبت" },
+    { field: "updated_at", header: "تاریخ بروزرسانی" },
   ];
+
   const [products, setProducts] = useState([]);
   const [visibleColumns, setVisibleColumns] = useState(columns);
 
   useEffect(() => {
-    ProductService?.getProductsMini().then((data) => setProducts(data));
+    const fetchData = async () => {
+      try {
+        const response = await apiRequest(
+          "GET",
+          `/records/batch-records/${uid}`
+        );
+        const patients = response.data.data.results;
+        setProducts(patients);
+        console.log("patients", patients);
+      } catch (error) {
+        console.error("Error fetching patient data:", error);
+      }
+    };
+    fetchData();
   }, []);
 
   let emptyProduct = {
@@ -100,10 +118,9 @@ const PatientsDetails = () => {
     rating: 0,
     inventoryStatus: "INSTOCK",
   };
-  const [productDialog, setProductDialog] = useState(false);
-  const [product, setProduct] = useState(emptyProduct);
+  // const [productDialog, setProductDialog] = useState(false);
+  // const [product, setProduct] = useState(emptyProduct);
   const [selectedProducts, setSelectedProducts] = useState(null);
-  const [submitted, setSubmitted] = useState(false);
   const [itemToDisplay, setItemToDisplay] = useState("home");
   const dt = useRef(null);
 
@@ -131,14 +148,8 @@ const PatientsDetails = () => {
     </div>
   );
 
-  // Custom function to render the "Details" button
   const detailsTemplate = (rowData) => {
     return (
-      // <Button
-      //   label="مشاهده"
-      //   icon="pi pi-external-link"
-      //   onClick={() => window.open(`/details/${rowData.id}`, "_blank")}
-      // />
       <button
         type="button"
         className="btn btn-outline-primary"
@@ -151,9 +162,23 @@ const PatientsDetails = () => {
     );
   };
 
+  const createdAtTemplate = (rowData) => {
+    const formattedDate = new Date(rowData.created_at).toLocaleDateString(
+      "fa-IR",
+      {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }
+    );
+    return formattedDate;
+  };
+
   const handleFormSubmit = (data) => {
     console.log("Final form submission:", data);
   };
+
+  // /
 
   const tabs = [
     {
@@ -198,7 +223,7 @@ const PatientsDetails = () => {
       content:
         itemToDisplay === "home" ? (
           <div className="mt-5">
-            <DataTable
+            {/* <DataTable
               stripedRows
               dir="ltr"
               ref={dt}
@@ -213,21 +238,44 @@ const PatientsDetails = () => {
               currentPageReportTemplate="نمایش {first} تا {last} از {totalRecords} اطلاعات"
               // globalFilter={globalFilter}
               header={headerNew}
+            > */}
+
+            <DataTable
+              stripedRows
+              dir="rtl"
+              ref={dt}
+              value={products}
+              selection={selectedProducts}
+              onSelectionChange={(e) => setSelectedProducts(e.value)}
+              dataKey="uid"
+              paginator
+              rows={10}
+              rowsPerPageOptions={[5, 10, 25]}
+              paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+              currentPageReportTemplate="نمایش {first} تا {last} از {totalRecords} اطلاعات"
+              // globalFilter={globalFilter}
+              header={headerNew}
             >
               <Column field="code" header="Code" />
-              {visibleColumns.map((col) => (
+              {visibleColumns.map((col, index) => (
                 <Column
                   sortable
-                  key={col.field}
+                  key={index}
                   field={col.field}
                   header={col.header}
+                  body={
+                    col.field === "created_at" || col.field === "updated_at"
+                      ? createdAtTemplate
+                      : undefined
+                  }
+                  style={{ textAlign: "right", direction: "rtl" }}
                 />
               ))}
               {/* Add the Details column */}
-              <Column
+              {/* <Column
                 header="Details"
                 body={detailsTemplate} // Use custom template for rendering button
-              />
+              /> */}
             </DataTable>
           </div>
         ) : itemToDisplay === "recordImagingResult" ? (

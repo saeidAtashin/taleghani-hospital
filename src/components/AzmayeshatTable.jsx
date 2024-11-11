@@ -53,7 +53,7 @@ export default function AzmayeshatTable() {
     { field: "number", header: "ردیف", body: numberTemplate },
     { field: "name", header: "آزمایش‌ها", body: nameTemplate },
     { field: "persianDate", header: "تاریخ انجام", body: persianDateTemplate },
-    { field: "persianDate", header: "تاریخ ثبت", body: persianDateTemplate },
+    // { field: "persianDate", header: "تاریخ ثبت", body: persianDateTemplate },
   ];
 
   useEffect(() => {
@@ -165,10 +165,10 @@ export default function AzmayeshatTable() {
               selectionMode="multiple"
               headerStyle={{ width: "3em", borderBottom: "2px solid black" }}
             ></Column>
-            {columns?.map((col) => (
+            {columns?.map((col, index) => (
               <Column
                 sortable
-                key={col.field}
+                key={index}
                 field={col.field}
                 header={col.header}
                 body={col.body}
