@@ -11,7 +11,7 @@ import {
   nonSolidFields,
   solidFields,
 } from "../form-fields/FormFields";
-import { PATIENT_INFO } from "../api/apiClient";
+import { PATIENT_INFO, PATIENT_RECORDS } from "../api/apiClient";
 import axios from "axios";
 
 const StepperBootstrap = () => {
@@ -19,6 +19,7 @@ const StepperBootstrap = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [malignancyType, setMalignancyType] = useState("");
 
+  const patient_uid_info = localStorage.getItem("patient_uid_info");
   // Function to transform field names before sending to the API
   const transformDataForApi = (data, fields) => {
     let transformedData = {};
@@ -50,8 +51,6 @@ const StepperBootstrap = () => {
         : []),
     ];
 
-    const transformedData = transformDataForApi(data, currentFields);
-
     try {
       const schema = generateReusableSchema(
         activeIndex === 0
@@ -65,12 +64,41 @@ const StepperBootstrap = () => {
 
       schema.parse(data);
 
-      if (activeIndex < 2) {
+      if (activeIndex === 0) {
+        const transformedData = transformDataForApi(data, currentFields);
+
         setIsLoading(true);
         try {
           const response = await axios.post(
             "https://cancerreg.ir/api/v1" + PATIENT_INFO,
             transformedData
+          );
+
+          console.log("API response:", response);
+
+          console.log("uid", response?.data?.data?.uid);
+
+          localStorage.setItem("patient_uid_info", response?.data?.data?.uid);
+
+          setActiveIndex(activeIndex + 1);
+        } catch (error) {
+          console.error("Error submitting data:", error);
+          setIsLoading(false);
+        }
+      }
+      if (activeIndex === 1) {
+        const transformedData = transformDataForApi(data, currentFields);
+
+        const formattedData = {
+          ...transformedData,
+          patient_uid: patient_uid_info,
+        };
+
+        setIsLoading(true);
+        try {
+          const response = await axios.post(
+            "https://cancerreg.ir/api/v1" + PATIENT_RECORDS,
+            formattedData
           );
 
           console.log("API response:", response);

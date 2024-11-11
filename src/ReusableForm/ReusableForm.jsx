@@ -3,6 +3,7 @@ import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
+import { MultiSelect } from "primereact/multiselect";
 
 const ReusableForm = ({
   fields,
@@ -389,6 +390,48 @@ const ReusableForm = ({
                     </div>
                   </div>
                 )}
+
+                {/* MultiSelect Input */}
+                {field.type === "multi-select" && (
+                  <div className="">
+                    <label className="col-md-12 label" htmlFor={field.name}>
+                      {field.label}
+                    </label>
+                    <Controller
+                      name={field.name}
+                      control={control}
+                      defaultValue={[]}
+                      render={({ field: controllerField }) => {
+                        // Fetch options when the component mounts or field.name changes
+                        useEffect(() => {
+                          fetchOptions(field.name);
+                        }, [field.name]);
+
+                        return (
+                          <MultiSelect
+                            value={controllerField.value}
+                            onChange={(e) => {
+                              controllerField.onChange(e.value);
+                              setSelectedCities(e.value);
+                            }}
+                            options={options[field.name] || []}
+                            optionLabel="label"
+                            placeholder={`${field.label} را وارد نمایید`}
+                            display="chip"
+                            maxSelectedLabels={3}
+                            className="w-100"
+                            disabled={!editable}
+                          />
+                        );
+                      }}
+                    />
+                    {errors[field.name] && (
+                      <div className="invalid-feedback">
+                        {errors[field.name].message}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -397,27 +440,12 @@ const ReusableForm = ({
         <div className="d-flex justify-content-between mt-4">
           {onlyPost && (
             <>
-              {/* <button
-                type="button"
-                className="btn btn-secondary"
-                onClick={toggleEditable}
-              >
-                لغو
-              </button> */}
-              <button
-                type="submit"
-                // disabled={isLoading}
-                className="btn btn-primary w-100"
-              >
+              <button type="submit" className="btn btn-primary w-100">
                 ثبت اطلاعات و ادامه
               </button>
             </>
           )}
         </div>
-
-        {/* <button type="submit" className="btn btn-primary w-100">
-          ثبت اطلاعات و ادامه
-        </button> */}
       </form>
     </div>
   );

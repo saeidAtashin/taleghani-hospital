@@ -290,7 +290,7 @@ export const formPatientsFields = [
   {
     type: "text",
     label: "نام پزشک معالج",
-    name: "doctor_name",
+    name: "treating_physician",
     placeholder: "نام  پزشک معالج را وارد نمایید",
     defaultValue: "",
     required: false,
@@ -299,7 +299,7 @@ export const formPatientsFields = [
   {
     type: "text",
     label: "قد",
-    name: "patient_height",
+    name: "height",
     placeholder: "قد بیمار را وارد نمایید",
     defaultValue: "",
     required: false,
@@ -331,33 +331,28 @@ export const formPatientsFields = [
     required: false,
   },
   {
-    type: "select",
+    type: "multi-select",
     label: "بیماری‌های زمینه‌ای",
     name: "underlying-disease",
-    options: [
-      { value: "زن", label: "زن" },
-      { value: "مرد", label: "مرد" },
-    ],
+    name_to_send_api: "underlying_diseases",
     placeholder: "بیماری‌های زمینه ای را انتخاب نمایید",
     defaultValue: "",
     required: false,
   },
   {
-    type: "select",
+    type: "multi-select",
     label: "عادات",
     name: "habit-disease",
-    options: [
-      { value: "مجرد", label: "مجرد" },
-      { value: "متاهل", label: "متاهل" },
-    ],
+    name_to_send_api: "habits",
     placeholder: "عادات بیمار را انتخاب نمایید",
     defaultValue: "",
     required: false,
   },
   {
-    type: "select",
+    type: "multi-select",
     label: "سابقه خانوادگی",
     name: "family-history",
+    name_to_send_api: "family_history",
     options: [
       { value: "استان1", label: "استان1" },
       { value: "استان2", label: "استان2" },
@@ -368,9 +363,10 @@ export const formPatientsFields = [
     required: false,
   },
   {
-    type: "select",
+    type: "multi-select",
     label: "سوابق جراحی",
     name: "surgery",
+    name_to_send_api: "surgeries",
     options: [
       { value: "شهر1", label: "شهر1" },
       { value: "شهر2", label: "شهر2" },
@@ -385,6 +381,7 @@ export const formPatientsFields = [
     type: "doubleinput", // Dynamic pair input type
     label: "سوابق دارویی",
     name: "drugs",
+    name_to_send_api: "drugs_records",
 
     subfields: [
       {
@@ -403,14 +400,14 @@ export const formPatientsFields = [
   {
     type: "text",
     label: "علت مراجعه",
-    name: "res",
+    name: "refer_reason",
     placeholder: "علت مراجعه را وارد نمایید",
     required: false,
   },
   {
     type: "text",
     label: "توضیحات",
-    name: "desc",
+    name: "description",
     placeholder: "توضیحات مرتبط به سوابق بیمار را وارد نمایید",
     defaultValue: "",
     required: false,
