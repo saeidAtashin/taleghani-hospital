@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-// Dynamically construct the Zod schema based on form fields
 export const generateReusableSchema = (formFields) =>
   z.object(
     formFields.reduce((schema, field) => {
