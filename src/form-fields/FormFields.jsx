@@ -420,7 +420,8 @@ export const formPatientsInformationFields = [
   {
     type: "select",
     label: "نوع بدخیمی",
-    name: "rolesec",
+    name: "badkhimi",
+    localOptions: true, // Use local options
     options: [
       { value: "Solid", label: "Solid" },
       { value: "non Solid", label: "non Solid" },

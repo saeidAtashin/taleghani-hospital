@@ -235,13 +235,40 @@ const ReusableForm = ({
                       control={control}
                       defaultValue={field.defaultValue || ""}
                       render={({ field: controllerField }) => {
-                        // Fetch options when the component mounts or field.name changes
-                        useEffect(() => {
-                          fetchOptions(field.name);
-                        }, [field.name]);
+                        // Check if options are provided locally
+                        if (field.localOptions) {
+                          // Render local options
+                          return (
+                            <select
+                              {...controllerField}
+                              className={`form-control form-select ${
+                                errors[field.name] ? "is-invalid" : ""
+                              }`}
+                              id={field.name}
+                              disabled={!editable}
+                              onChange={(e) => {
+                                controllerField.onChange(e);
+                                onSelectChange &&
+                                  onSelectChange(e.target.value);
+                              }}
+                            >
+                              <option value="">
+                                {field.placeholder || "Select an option"}
+                              </option>
+                              {field.options?.map((option, idx) => (
+                                <option key={idx} value={option.value}>
+                                  {option.label}
+                                </option>
+                              ))}
+                            </select>
+                          );
+                        } else {
+                          // Fetch options from the API when the component mounts or field.name changes
+                          useEffect(() => {
+                            fetchOptions(field.name);
+                          }, [field.name]);
 
-                        return (
-                          <div className="position-relative">
+                          return (
                             <select
                               {...controllerField}
                               className={`form-control form-select ${
@@ -264,17 +291,8 @@ const ReusableForm = ({
                                 </option>
                               ))}
                             </select>
-                            {errorFields[field.name] && (
-                              <button
-                                type="button"
-                                className="btn btn-warning btn-sm mt-2"
-                                onClick={() => fetchOptions(field.name)}
-                              >
-                                تلاش مجدد
-                              </button>
-                            )}
-                          </div>
-                        );
+                          );
+                        }
                       }}
                     />
                     {errors[field.name] && (

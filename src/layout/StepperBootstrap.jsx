@@ -109,7 +109,31 @@ const StepperBootstrap = () => {
           console.error("Error submitting data:", error);
           setIsLoading(false);
         }
-      } else {
+      }
+
+      // if (activeIndex === 2) {
+      //   const transformedData = transformDataForApi(data, currentFields);
+
+      //   const formattedData = {
+      //     ...transformedData,
+      //     patient_uid: patient_uid_info,
+      //   };
+
+      //   setIsLoading(true);
+      //   try {
+      //     const response = await axios.post(
+      //       "https://cancerreg.ir/api/v1" + PATIENT_RECORDS,
+      //       formattedData
+      //     );
+
+      //     console.log("API response:", response);
+      //     setActiveIndex(activeIndex + 1);
+      //   } catch (error) {
+      //     console.error("Error submitting data:", error);
+      //     setIsLoading(false);
+      //   }
+      // }
+      else {
         setIsLoading(false);
         console.log("Final form submission:", data);
       }
