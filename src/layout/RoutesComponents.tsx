@@ -74,7 +74,7 @@ export default function RoutesWithAnimation() {
 
                 <Route
                   index
-                  path="/dashboard/patients-lists/:id"
+                  path="/dashboard/patients-lists/:uid"
                   element={
                     <React.Suspense fallback={<Fallback />}>
                       <PatientsDetails />

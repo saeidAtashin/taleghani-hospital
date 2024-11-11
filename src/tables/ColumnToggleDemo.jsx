@@ -14,7 +14,6 @@ export default function ColumnToggleDemo() {
     { field: "last_name", header: "نام خانوادگی" },
     { field: "created_at", header: "تاریخ ثبت" },
     { field: "updated_at", header: "تاریخ بروزرسانی" },
-    // updated_at
   ];
 
   const [products, setProducts] = useState([]);

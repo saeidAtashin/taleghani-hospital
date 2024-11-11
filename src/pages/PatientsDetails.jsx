@@ -17,10 +17,11 @@ import { ProductService } from "../tables/ProductService";
 import { Button } from "primereact/button";
 import PillsTabs from "../components/PillsTabs";
 import AzmayeshatTable from "../components/AzmayeshatTable";
+import { useParams } from "react-router-dom";
 
 const handleFormSubmit = (data) => {
   console.log("data", data);
-  navigate("/dashboard");
+  // navigate("/dashboard");
 };
 
 export const tabsInnerImage = [
@@ -73,6 +74,9 @@ export const tabsInnerImage = [
 ];
 
 const PatientsDetails = () => {
+  const { uid } = useParams();
+
+  console.log("uid", uid);
   const columns = [
     { field: "name", header: "Name" },
     { field: "category", header: "Category" },
