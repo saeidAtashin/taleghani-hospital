@@ -25,6 +25,7 @@ const HorizontalNavbar = () => {
     { name: "عادات", endpoint: "/common/habit-disease" },
     { name: "سابقه خانوادگی", endpoint: "/common/family-history" },
     { name: "جراحی‌ها", endpoint: "/common/surgery" },
+    { name: "تشخیص", endpoint: "/common/diagnosis" },
   ];
 
   const handleClick = async (item) => {
