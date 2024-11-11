@@ -101,19 +101,19 @@ export const formFielsIdentity = [
     required: false,
   },
   {
-    type: "select",
+    type: "text",
     label: "تاریخ تولد",
     name: "birth_date",
-    options: [
-      { value: "ادیت", label: "ادیت" },
-      { value: "ادیت2", label: "ادیت2" },
-      { value: "ادیت3", label: "ادیت3" },
-    ],
+    name_to_send_api: "birth_date",
+    // options: [
+    //   { value: "ادیت", label: "ادیت" },
+    //   { value: "ادیت2", label: "ادیت2" },
+    //   { value: "ادیت3", label: "ادیت3" },
+    // ],
     placeholder: "تاریخ تولد را انتحاب نمایید",
     defaultValue: "1990-02-05",
     required: false,
   },
-
   {
     type: "select",
     label: "جنسیت",
@@ -156,6 +156,7 @@ export const formFielsIdentity = [
     type: "select",
     label: "شهر محل تولد",
     name: "city",
+    name_to_send_api: "birth_city",
     options: [
       { value: "شهر1", label: "شهر1" },
       { value: "شهر2", label: "شهر2" },
@@ -182,6 +183,7 @@ export const formFielsIdentity = [
     type: "select",
     label: "شهر محل زندگی",
     name: "city",
+    name_to_send_api: "residential_city",
     options: [
       { value: "1", label: "1" },
       { value: "2", label: "2" },
@@ -191,14 +193,6 @@ export const formFielsIdentity = [
     defaultValue: "",
     required: false,
   },
-
-  // {
-  //   type: "checkbox",
-  //   label: "Accept terms and conditions",
-  //   name: "termsAccepted",
-  //   defaultValue: false,
-  // },
-
   {
     type: "text",
     label: "شماره تلفن همراه",
@@ -270,14 +264,14 @@ export const formFielsIdentity = [
     required: false,
   },
   {
-    type: "select",
+    type: "text",
     label: "تاریخ فوت",
     name: "death_date",
-    options: [
-      { value: "1", label: "1" },
-      { value: "2", label: "2" },
-      { value: "3", label: "3" },
-    ],
+    // options: [
+    //   { value: "1", label: "1" },
+    //   { value: "2", label: "2" },
+    //   { value: "3", label: "3" },
+    // ],
     placeholder: "تاریخ فوت را انتخاب نمایید",
     defaultValue: "1990-02-05",
     required: false,

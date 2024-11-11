@@ -8,6 +8,8 @@ const HorizontalNavbar = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [data, setData] = useState([]);
   const [newItem, setNewItem] = useState("");
+  const [selectedProvince, setSelectedProvince] = useState(null);
+  const [provinces, setProvinces] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const items = [
@@ -28,13 +30,48 @@ const HorizontalNavbar = () => {
   const handleClick = async (item) => {
     setSelectedItem(item);
     setLoading(true);
+
     try {
       const response = await apiRequest("get", item.endpoint);
+      if (item.name === "استان") {
+        setProvinces(response.data.data.results);
+      }
       setData(response.data.data.results);
     } catch (error) {
       console.error(`Error fetching data for ${item.name}:`, error);
     }
     setLoading(false);
+  };
+
+  const handleAddInput = async () => {
+    if (newItem.trim()) {
+      setLoading(true);
+
+      try {
+        if (selectedItem.name === "شهر" && !selectedProvince) {
+          Swal.fire({
+            title: "لطفاً ابتدا یکی از استان‌ها را انتخاب کنید.",
+            icon: "warning",
+            showConfirmButton: true,
+          });
+          setLoading(false);
+          return;
+        }
+
+        const payload =
+          selectedItem.name === "شهر"
+            ? { name: newItem, province_id: selectedProvince }
+            : { name: newItem };
+
+        await apiRequest("post", selectedItem.endpoint, payload);
+        const response = await apiRequest("get", selectedItem.endpoint);
+        setData(response.data.data.results);
+        setNewItem(""); // Clear the input
+      } catch (error) {
+        console.error(`Error adding new item for ${selectedItem.name}:`, error);
+      }
+      setLoading(false);
+    }
   };
 
   const comonDefFetch = async (id) => {
@@ -70,21 +107,6 @@ const HorizontalNavbar = () => {
     });
   };
 
-  const handleAddInput = async () => {
-    if (newItem.trim()) {
-      setLoading(true);
-      try {
-        await apiRequest("post", selectedItem.endpoint, { name: newItem });
-        const response = await apiRequest("get", selectedItem.endpoint);
-        setData(response.data.data.results);
-        setNewItem(""); // Clear the input
-      } catch (error) {
-        console.error(`Error adding new item for ${selectedItem.name}:`, error);
-      }
-      setLoading(false);
-    }
-  };
-
   return (
     <>
       <div className="cursor-pointer d-flex flex-column justify-content-around align-items-start gap-3 p-3">
@@ -103,14 +125,50 @@ const HorizontalNavbar = () => {
           </div>
         ))}
       </div>
+
       <div>
+        {selectedItem && selectedItem.name === "شهر" && (
+          <div className="mt-3">
+            <label htmlFor="provinceSelect">انتخاب استان:</label>
+            <select
+              id="provinceSelect"
+              className="form-select"
+              onChange={(e) => setSelectedProvince(e.target.value)}
+              value={selectedProvince || ""}
+            >
+              <option value="">انتخاب کنید</option>
+              {provinces.map((province) => (
+                <option key={province.id} value={province.id}>
+                  {province.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {selectedItem && (
+          <div className="input-section mt-3">
+            <h5>{selectedItem.name}</h5>
+            <input
+              type="text"
+              value={newItem}
+              onChange={(e) => setNewItem(e.target.value)}
+              className="form-control my-2"
+              placeholder={`${selectedItem.name} را وارد نمایید`}
+            />
+            <button onClick={handleAddInput} className="btn btn-primary">
+              افزودن
+            </button>
+          </div>
+        )}
+
         <div>
           {selectedItem && data.length > 0 && (
-            <div className="badge-container mt-3">
+            <div className="badge-container mt-3 d-flex flex-column">
               {data?.map((item) => (
                 <span
                   key={item.id}
-                  className="badge bg-primary me-2 d-flex align-items-center"
+                  className="badge bg-primary me-2 d-flex align-items-center justify-content-between"
                 >
                   {item.name}
                   <span
@@ -128,23 +186,6 @@ const HorizontalNavbar = () => {
                   </div>
                 </div>
               )}
-            </div>
-          )}
-        </div>
-        <div>
-          {selectedItem && (
-            <div className="input-section mt-3">
-              <h5>{selectedItem.name}</h5>
-              <input
-                type="text"
-                value={newItem}
-                onChange={(e) => setNewItem(e.target.value)}
-                className="form-control my-2"
-                placeholder={`${selectedItem.name} را وارد نمایید`}
-              />
-              <button onClick={handleAddInput} className="btn btn-primary">
-                Add Item
-              </button>
             </div>
           )}
         </div>

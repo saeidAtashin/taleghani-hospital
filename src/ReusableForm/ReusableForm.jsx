@@ -33,6 +33,7 @@ const ReusableForm = ({
 
   const [editable, setEditable] = useState(!isEditable);
   const [options, setOptions] = useState({});
+  const [errorFields, setErrorFields] = useState({}); // Track errors for individual select inputs
 
   const toggleEditable = () => setEditable((prev) => !prev);
 
@@ -69,8 +70,16 @@ const ReusableForm = ({
         ...prevOptions,
         [fieldName]: fetchedOptions,
       }));
+      setErrorFields((prevErrors) => ({
+        ...prevErrors,
+        [fieldName]: false, // Clear the error for this field
+      }));
     } catch (error) {
       console.error(`Error fetching options for ${fieldName}:`, error);
+      setErrorFields((prevErrors) => ({
+        ...prevErrors,
+        [fieldName]: true, // Set error for this field
+      }));
     }
   };
 
@@ -213,6 +222,7 @@ const ReusableForm = ({
                     )}
                   </>
                 )}
+
                 {/* Select Dropdown */}
                 {field.type === "select" && (
                   <>
@@ -230,27 +240,39 @@ const ReusableForm = ({
                         }, [field.name]);
 
                         return (
-                          <select
-                            {...controllerField}
-                            className={`form-control form-select ${
-                              errors[field.name] ? "is-invalid" : ""
-                            }`}
-                            id={field.name}
-                            disabled={!editable}
-                            onChange={(e) => {
-                              controllerField.onChange(e);
-                              onSelectChange && onSelectChange(e.target.value);
-                            }}
-                          >
-                            <option value="">
-                              {field.placeholder || "Select an option"}
-                            </option>
-                            {options[field.name]?.map((option, idx) => (
-                              <option key={idx} value={option.value}>
-                                {option.label}
+                          <div className="position-relative">
+                            <select
+                              {...controllerField}
+                              className={`form-control form-select ${
+                                errors[field.name] ? "is-invalid" : ""
+                              }`}
+                              id={field.name}
+                              disabled={!editable}
+                              onChange={(e) => {
+                                controllerField.onChange(e);
+                                onSelectChange &&
+                                  onSelectChange(e.target.value);
+                              }}
+                            >
+                              <option value="">
+                                {field.placeholder || "Select an option"}
                               </option>
-                            ))}
-                          </select>
+                              {options[field.name]?.map((option, idx) => (
+                                <option key={idx} value={option.value}>
+                                  {option.label}
+                                </option>
+                              ))}
+                            </select>
+                            {errorFields[field.name] && (
+                              <button
+                                type="button"
+                                className="btn btn-warning btn-sm mt-2"
+                                onClick={() => fetchOptions(field.name)}
+                              >
+                                تلاش مجدد
+                              </button>
+                            )}
+                          </div>
                         );
                       }}
                     />
@@ -261,6 +283,7 @@ const ReusableForm = ({
                     )}
                   </>
                 )}
+
                 {/* Checkbox */}
                 {field.type === "checkbox" && (
                   <div className="form-check">
@@ -383,7 +406,7 @@ const ReusableForm = ({
               </button> */}
               <button
                 type="submit"
-                disabled={isLoading}
+                // disabled={isLoading}
                 className="btn btn-primary w-100"
               >
                 ثبت اطلاعات و ادامه
