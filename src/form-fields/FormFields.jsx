@@ -111,7 +111,7 @@ export const formFielsIdentity = [
       { value: "ادیت3", label: "ادیت3" },
     ],
     placeholder: "تاریخ تولد را انتحاب نمایید",
-    defaultValue: "",
+    defaultValue: "1990-02-05",
     required: false,
   },
 
@@ -130,7 +130,8 @@ export const formFielsIdentity = [
   {
     type: "select",
     label: "وضعیت تاهل",
-    name: "marital_status",
+    name: "marital-status",
+    name_to_send_api: "marital_status",
     options: [
       { value: "مجرد", label: "مجرد" },
       { value: "متاهل", label: "متاهل" },
@@ -232,6 +233,7 @@ export const formFielsIdentity = [
     type: "select",
     label: "رشته تحصیلی",
     name: "major-field",
+    name_to_send_api: "major_field",
     options: [
       { value: "1", label: "1" },
       { value: "2", label: "2" },
@@ -258,6 +260,7 @@ export const formFielsIdentity = [
     type: "select",
     label: "تعداد فرزندان",
     name: "num-of-children",
+    name_to_send_api: "num_children",
     options: [
       { value: "1", label: "1" },
       { value: "2", label: "2" },
@@ -277,7 +280,7 @@ export const formFielsIdentity = [
       { value: "3", label: "3" },
     ],
     placeholder: "تاریخ فوت را انتخاب نمایید",
-    defaultValue: "0",
+    defaultValue: "1990-02-05",
     required: false,
   },
   {
@@ -462,7 +465,7 @@ export const InnerAzmayesh = [
     label: "تاریخ",
     name: "date",
     placeholder: "تاریخ را وارد نمایید",
-    defaultValue: "",
+    defaultValue: "1990-02-05",
     required: true,
     message: "test",
   },

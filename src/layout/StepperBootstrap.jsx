@@ -17,11 +17,42 @@ import axios from "axios";
 const StepperBootstrap = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const [malignancyType, setMalignancyType] = useState(""); // Default value
+  const [malignancyType, setMalignancyType] = useState("");
+
+  // Function to transform field names before sending to the API
+  const transformDataForApi = (data, fields) => {
+    let transformedData = {};
+
+    // Iterate through each field and map to `name_to_send_api`
+    fields.forEach((field) => {
+      const { name, name_to_send_api } = field;
+      if (name_to_send_api) {
+        transformedData[name_to_send_api] = data[name];
+      } else {
+        transformedData[name] = data[name];
+      }
+    });
+
+    return transformedData;
+  };
 
   const handleFormSubmit = async (data) => {
+    const currentFields = [
+      ...(activeIndex === 0
+        ? formFielsIdentity
+        : activeIndex === 1
+        ? formPatientsFields
+        : formPatientsInformationFields),
+      ...(activeIndex === 2 && malignancyType === "Solid"
+        ? solidFields
+        : activeIndex === 2 && malignancyType === "non Solid"
+        ? nonSolidFields
+        : []),
+    ];
+
+    const transformedData = transformDataForApi(data, currentFields);
+
     try {
-      // Dynamically generate the schema based on the current step's form fields
       const schema = generateReusableSchema(
         activeIndex === 0
           ? formFielsIdentity
@@ -32,21 +63,18 @@ const StepperBootstrap = () => {
             )
       );
 
-      schema.parse(data); // Validate the form data with the generated schema
+      schema.parse(data);
 
-      console.log("Form data is valid for step:", activeIndex, data);
-
-      // If form is valid, proceed to the next step
       if (activeIndex < 2) {
         setIsLoading(true);
         try {
           const response = await axios.post(
             "https://cancerreg.ir/api/v1" + PATIENT_INFO,
-            data
+            transformedData
           );
 
           console.log("API response:", response);
-          setActiveIndex(activeIndex + 1); // Move to the next step if there is one
+          setActiveIndex(activeIndex + 1);
         } catch (error) {
           console.error("Error submitting data:", error);
           setIsLoading(false);
