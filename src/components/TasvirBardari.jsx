@@ -8,6 +8,7 @@ import BadgeIcon from "./BadgeIcon";
 import SelectableIconItem from "./BadgeIcon";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { tabsInnerImage } from "../pages/PatientsDetails";
 
 export default function TasvirBardari() {
   const [products, setProducts] = useState([]);
@@ -83,14 +84,14 @@ export default function TasvirBardari() {
   const headerNew = (
     <div className="d-flex flex-wrap gap-2 align-items-center justify-content-start">
       <Button
-        label="ثبت نتیجه آزمایش"
+        label="ثبت نتیجه تصویربرداری"
         icon="pi pi-plus"
         severity="primary"
         onClick={() => setShowAzmayeshPAge("orderRegister")}
         className="rounded-3"
       />
       <Button
-        label="ثبت دستور آزمایش"
+        label="ثبت دستور تصویربرداری"
         icon="pi pi-plus"
         severity="primary"
         onClick={() => setShowAzmayeshPAge("orderRegisterOrder")}
@@ -122,7 +123,7 @@ export default function TasvirBardari() {
   return (
     <>
       {showAzmayeshPAge === "home" ? (
-        <div className="card screen-width p-5" style={{ direction: "rtl" }}>
+        <div className="card " style={{ direction: "rtl" }}>
           <DataTable
             dir="rtl"
             ref={dt}
@@ -193,7 +194,7 @@ export default function TasvirBardari() {
       ) : showAzmayeshPAge === "orderRegister" ? (
         <div className="container mt-5">
           <div className="d-flex justify-content-between align-items-center">
-            <h2 className="m-2 pb-3">ثبت نتیجه آزمایش</h2>
+            <h2 className="m-2 pb-3">ثبت نتیجه تصویربرداری</h2>
             <span
               className="text-danger cursor-pointer"
               onClick={() => setShowAzmayeshPAge("home")}
@@ -201,13 +202,13 @@ export default function TasvirBardari() {
               x
             </span>
           </div>
-          <PillsTabs />
+          <PillsTabs tabs={tabsInnerImage} />
         </div>
       ) : (
         showAzmayeshPAge === "orderRegisterOrder" && (
           <div className="container mt-5">
             <div className="d-flex justify-content-between align-items-center">
-              <h2 className="m-2 pb-3">ثبت دستور آزمایش</h2>
+              <h2 className="m-2 pb-3">ثبت دستور تصویربرداری</h2>
               <span
                 className="text-danger cursor-pointer"
                 onClick={() => setShowAzmayeshPAge("home")}

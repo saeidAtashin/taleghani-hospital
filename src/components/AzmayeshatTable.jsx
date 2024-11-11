@@ -145,7 +145,7 @@ export default function AzmayeshatTable() {
   return (
     <>
       {showAzmayeshPAge === "home" ? (
-        <div className="card screen-width p-5" style={{ direction: "rtl" }}>
+        <div className="card" style={{ direction: "rtl" }}>
           <DataTable
             dir="rtl"
             ref={dt}
