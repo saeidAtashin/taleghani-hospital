@@ -326,16 +326,16 @@ const ReusableForm = ({
                           <div className="col-md-6 mb-3">
                             <div className="input-group">
                               <Controller
-                                name={`drugs[${index}].drug_name`} // Updated name to correctly reference array index
+                                name={`drugs[${index}].name`} // Updated name to correctly reference array index
                                 control={control}
-                                defaultValue={item.drug_name || ""}
+                                defaultValue={item.name || ""}
                                 render={({ field }) => (
                                   <input
                                     {...field}
                                     type="text"
                                     placeholder={item.placeholder || "نام دارو"}
                                     className={`form-control ${
-                                      errors.drugs?.[index]?.drug_name
+                                      errors.drugs?.[index]?.name
                                         ? "is-invalid"
                                         : ""
                                     }`}
@@ -348,16 +348,16 @@ const ReusableForm = ({
                           <div className="col-md-6 mb-3">
                             <div className="input-group">
                               <Controller
-                                name={`drugs[${index}].drug_dose`} // Updated name to correctly reference array index
+                                name={`drugs[${index}].dose`} // Updated name to correctly reference array index
                                 control={control}
-                                defaultValue={item.drug_dose || ""}
+                                defaultValue={item.dose || ""}
                                 render={({ field }) => (
                                   <input
                                     {...field}
                                     type="text"
                                     placeholder={"دوز دارو"}
                                     className={`form-control ${
-                                      errors.drugs?.[index]?.drug_dose
+                                      errors.drugs?.[index]?.dose
                                         ? "is-invalid"
                                         : ""
                                     }`}
@@ -382,7 +382,7 @@ const ReusableForm = ({
                       <button
                         type="button"
                         className="btn btn-secondary"
-                        onClick={() => append({ drug_name: "", drug_dose: "" })}
+                        onClick={() => append({ name: "", dose: "" })}
                         disabled={!editable}
                       >
                         افزودن

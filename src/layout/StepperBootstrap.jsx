@@ -26,11 +26,13 @@ const StepperBootstrap = () => {
 
     // Iterate through each field and map to `name_to_send_api`
     fields.forEach((field) => {
-      const { name, name_to_send_api } = field;
-      if (name_to_send_api) {
-        transformedData[name_to_send_api] = data[name];
-      } else {
-        transformedData[name] = data[name];
+      const { name, name_to_send_api, dontSendApi } = field;
+      if (!dontSendApi) {
+        if (name_to_send_api) {
+          transformedData[name_to_send_api] = data[name];
+        } else {
+          transformedData[name] = data[name];
+        }
       }
     });
 

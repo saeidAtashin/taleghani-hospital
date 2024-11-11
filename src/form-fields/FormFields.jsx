@@ -321,6 +321,7 @@ export const formPatientsFields = [
     placeholder: "طبق قد و وزن محاسبه می‌شود",
     defaultValue: "",
     required: false,
+    dontSendApi: true,
   },
   {
     type: "text",
@@ -329,6 +330,7 @@ export const formPatientsFields = [
     placeholder: "طبق قد و وزن محاسبه می‌شود",
     defaultValue: "",
     required: false,
+    dontSendApi: true,
   },
   {
     type: "multi-select",
@@ -386,12 +388,12 @@ export const formPatientsFields = [
     subfields: [
       {
         label: "نام دارو",
-        name: "drug_name",
+        name: "name",
         placeholder: " نام دارو",
       },
       {
         label: "دور دارو",
-        name: "drug_dose",
+        name: "dose",
         placeholder: " دور دارو",
       },
     ],
