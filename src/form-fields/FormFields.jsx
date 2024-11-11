@@ -495,9 +495,65 @@ export const solidFields = [
 ];
 
 export const nonSolidFields = [
-  { type: "text", label: "Field 1", name: "field1_nonSolid", required: true },
-  { type: "text", label: "Field 2", name: "field2_nonSolid", required: true },
-  { type: "text", label: "Field 3", name: "field3_nonSolid", required: true },
-  { type: "text", label: "Field 4", name: "field4_nonSolid", required: true },
-  { type: "text", label: "Field 5", name: "field5_nonSolid", required: true },
+  {
+    type: "select",
+    label: "تشخیص",
+    name: "diagnosis",
+    name_to_send_api: "diagnosis_uid",
+    required: false,
+  },
+
+  {
+    type: "doubleinput", // Dynamic pair input type
+    label: "LN involment",
+    name: "drugs",
+    name_to_send_api: "lymph_nodes",
+
+    subfields: [
+      {
+        label: "نام دارو",
+        name: "site",
+        placeholder: " نام دارو",
+      },
+      {
+        label: "دور دارو",
+        name: "size",
+        placeholder: " دور دارو",
+      },
+    ],
+  },
+
+  {
+    type: "select",
+    label: "spleen",
+    name: "spleen",
+    required: false,
+    localOptions: true,
+    options: [
+      { value: "I-A", label: "I-A" },
+      { value: "I-B", label: "I-B" },
+      { value: "I-C", label: "I-C" },
+      { value: "II-A", label: "II-A" },
+      { value: "II-B", label: "II-B" },
+      { value: "II-C", label: "II-C" },
+      { value: "III-A", label: "III-A" },
+      { value: "III-B", label: "III-B" },
+      { value: "III-C", label: "III-C" },
+      { value: "IV-A", label: "IV-A" },
+      { value: "IV-B", label: "IV-B" },
+      { value: "IV-C", label: "IV-C" },
+    ],
+  },
+  {
+    type: "select",
+    label: "b_symptoms",
+    name: "b_symptoms",
+    required: false,
+    localOptions: true,
+    options: [
+      { value: "+", label: "+" },
+      { value: "-", label: "-" },
+    ],
+  },
+  { type: "text", label: "stage", name: "stage", required: false },
 ];
