@@ -4,15 +4,17 @@ import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import moment from "jalali-moment";
 import PillsTabs from "./PillsTabs";
-import { tabsInnerImage } from "../pages/PatientsDetails";
 import BadgeIcon from "./BadgeIcon";
 import SelectableIconItem from "./BadgeIcon";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-export default function AzmayeshatTable() {
+export default function TasvirBardari() {
   const [products, setProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [showAzmayeshPAge, setShowAzmayeshPAge] = useState("home");
   const dt = useRef(null);
+  const navigate = useNavigate(); // Use history for navigation
 
   const numberTemplate = (rowData, { rowIndex }) => {
     return <span>{rowIndex + 1}</span>; // Display row index as the row number
@@ -21,33 +23,33 @@ export default function AzmayeshatTable() {
   const persianDateTemplate = (rowData) => {
     return (
       <span>
-        {moment(rowData.date, "YYYY-MM-DD")
+        {moment(rowData.created_at, "YYYY-MM-DD")
           .locale("fa")
           .format("jYYYY/jMM/jDD")}
       </span>
     );
   };
 
-  function nameTemplate(rowData) {
-    const names = Array.isArray(rowData?.name) ? rowData.name : [];
+  const nameTemplate = (rowData) => {
     return (
       <div>
-        {names.map((nameItem, index) => (
+        {rowData.records.map((record, index) => (
           <span
             key={index}
-            onClick={() => console.log(nameItem.value)}
+            onClick={() => navigate(`/dashboard/record/${record.uid}`)} // Navigate on click
             style={{
               cursor: "pointer",
-              color: nameItem.type === "secondary" ? "green" : "orange",
+              color:
+                record.record_type === "graphicrecord" ? "green" : "orange",
               marginRight: "8px",
             }}
           >
-            {nameItem.value}
+            {record.record_type}
           </span>
         ))}
       </div>
     );
-  }
+  };
 
   const columns = [
     { field: "number", header: "ردیف", body: numberTemplate },
@@ -57,45 +59,20 @@ export default function AzmayeshatTable() {
   ];
 
   useEffect(() => {
-    const newData = [
-      {
-        id: 1,
-        name: [{ value: "خون", type: "secondary" }],
-        category: "General",
-        quantity: 10,
-        date: "2024-11-01",
-      },
-      {
-        id: 2,
-        name: [
-          { value: "تومور مارکرها", type: "secondary" },
-          { value: "گروه خون", type: "info" },
-        ],
-        category: "Special",
-        quantity: 5,
-        date: "2024-11-02",
-      },
-      {
-        id: 3,
-        name: [
-          { value: "تومور مارکرها", type: "secondary" },
-          { value: "روتین ", type: "secondary" },
-          { value: "مولکولار", type: "secondary" },
-          { value: "گروه خون", type: "primary" },
-        ],
-        category: "General",
-        quantity: 8,
-        date: "2024-11-03",
-      },
-      {
-        id: 3,
-        name: [{ value: "تومور مارکرها", type: "primary" }],
-        category: "General",
-        quantity: 8,
-        date: "2024-11-03",
-      },
-    ];
-    setProducts(newData);
+    // Fetch data from the API
+    axios
+      .get(
+        "https://cancerreg.ir/api/v1/records/batch-records/f8807538-e9cd-455d-a7d2-c36f10410d9d/"
+      )
+      .then((response) => {
+        const fetchedData = response.data.results.map((item) => ({
+          ...item,
+          records: item.records,
+          created_at: moment().format("YYYY-MM-DD"), // Example date, replace with actual if available
+        }));
+        setProducts(fetchedData);
+      })
+      .catch((error) => console.error("Error fetching data:", error));
   }, []);
 
   const handlePrint = () => {
@@ -104,20 +81,20 @@ export default function AzmayeshatTable() {
   };
 
   const headerNew = (
-    <div className="d-flex flex-wrap gap-2 align-items-center  justify-content-start">
+    <div className="d-flex flex-wrap gap-2 align-items-center justify-content-start">
       <Button
         label="ثبت نتیجه آزمایش"
         icon="pi pi-plus"
         severity="primary"
         onClick={() => setShowAzmayeshPAge("orderRegister")}
-        className="rounded-3 "
+        className="rounded-3"
       />
       <Button
         label="ثبت دستور آزمایش"
         icon="pi pi-plus"
         severity="primary"
         onClick={() => setShowAzmayeshPAge("orderRegisterOrder")}
-        className="rounded-3 "
+        className="rounded-3"
       />
     </div>
   );
@@ -152,7 +129,7 @@ export default function AzmayeshatTable() {
             value={products}
             selection={selectedProducts}
             onSelectionChange={(e) => setSelectedProducts(e.value)}
-            dataKey="id"
+            dataKey="uid"
             paginator
             rows={10}
             rowsPerPageOptions={[5, 10, 25]}
@@ -185,7 +162,7 @@ export default function AzmayeshatTable() {
                   className="btn btn-outline-primary"
                   onClick={() =>
                     window.open(
-                      `/dashboard/patients-lists/${rowData.id}`,
+                      `/dashboard/patients/batch-graphic-records/${rowData.uid}`,
                       "_blank"
                     )
                   }
@@ -196,7 +173,6 @@ export default function AzmayeshatTable() {
             />
           </DataTable>
 
-          {/* Footer with conditional buttons */}
           {selectedProducts.length > 0 && (
             <div className="mt-3 d-flex justify-content-end gap-2">
               <Button
@@ -215,10 +191,23 @@ export default function AzmayeshatTable() {
           )}
         </div>
       ) : showAzmayeshPAge === "orderRegister" ? (
-        <>
+        <div className="container mt-5">
+          <div className="d-flex justify-content-between align-items-center">
+            <h2 className="m-2 pb-3">ثبت نتیجه آزمایش</h2>
+            <span
+              className="text-danger cursor-pointer"
+              onClick={() => setShowAzmayeshPAge("home")}
+            >
+              x
+            </span>
+          </div>
+          <PillsTabs />
+        </div>
+      ) : (
+        showAzmayeshPAge === "orderRegisterOrder" && (
           <div className="container mt-5">
             <div className="d-flex justify-content-between align-items-center">
-              <h2 className="m-2 pb-3">ثبت نتیجه آزمایش</h2>
+              <h2 className="m-2 pb-3">ثبت دستور آزمایش</h2>
               <span
                 className="text-danger cursor-pointer"
                 onClick={() => setShowAzmayeshPAge("home")}
@@ -226,34 +215,17 @@ export default function AzmayeshatTable() {
                 x
               </span>
             </div>
-            <PillsTabs tabs={tabsInnerImage} />
+            <SelectableIconItem
+              icon="pi pi-check"
+              header="تومور مارکرها"
+              options={options}
+              type="bordered"
+              selectedValues={selectedOptions}
+              onChange={handleSelectionChange}
+              iconColor="green"
+              size="1.2rem"
+            />
           </div>
-        </>
-      ) : (
-        showAzmayeshPAge === "orderRegisterOrder" && (
-          <>
-            <div className="container mt-5">
-              <div className="d-flex justify-content-between align-items-center">
-                <h2 className="m-2 pb-3">ثبت دستور آزمایش</h2>
-                <span
-                  className="text-danger cursor-pointer"
-                  onClick={() => setShowAzmayeshPAge("home")}
-                >
-                  x
-                </span>
-              </div>
-              <SelectableIconItem
-                icon="pi pi-check"
-                header="تومور مارکرها"
-                options={options}
-                type="bordered"
-                selectedValues={selectedOptions}
-                onChange={handleSelectionChange}
-                iconColor="green"
-                size="1.2rem"
-              />
-            </div>
-          </>
         )
       )}
     </>

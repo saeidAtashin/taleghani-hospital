@@ -19,6 +19,7 @@ import PillsTabs from "../components/PillsTabs";
 import AzmayeshatTable from "../components/AzmayeshatTable";
 import { useParams } from "react-router-dom";
 import apiRequest from "../api/apiService";
+import TasvirBardari from "../components/TasvirBardari";
 
 const handleFormSubmit = (data) => {
   console.log("data", data);
@@ -221,81 +222,7 @@ const PatientsDetails = () => {
       key: "تصویربرداری",
       label: "تصویربرداری",
       content:
-        itemToDisplay === "home" ? (
-          <div className="mt-5">
-            {/* <DataTable
-              stripedRows
-              dir="ltr"
-              ref={dt}
-              value={products}
-              selection={selectedProducts}
-              onSelectionChange={(e) => setSelectedProducts(e.value)}
-              dataKey="id"
-              paginator
-              rows={10}
-              rowsPerPageOptions={[5, 10, 25]}
-              paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-              currentPageReportTemplate="نمایش {first} تا {last} از {totalRecords} اطلاعات"
-              // globalFilter={globalFilter}
-              header={headerNew}
-            > */}
-
-            <DataTable
-              stripedRows
-              dir="rtl"
-              ref={dt}
-              value={products}
-              selection={selectedProducts}
-              onSelectionChange={(e) => setSelectedProducts(e.value)}
-              dataKey="uid"
-              paginator
-              rows={10}
-              rowsPerPageOptions={[5, 10, 25]}
-              paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-              currentPageReportTemplate="نمایش {first} تا {last} از {totalRecords} اطلاعات"
-              // globalFilter={globalFilter}
-              header={headerNew}
-            >
-              <Column field="code" header="Code" />
-              {visibleColumns.map((col, index) => (
-                <Column
-                  sortable
-                  key={index}
-                  field={col.field}
-                  header={col.header}
-                  body={
-                    col.field === "created_at" || col.field === "updated_at"
-                      ? createdAtTemplate
-                      : undefined
-                  }
-                  style={{ textAlign: "right", direction: "rtl" }}
-                />
-              ))}
-              {/* Add the Details column */}
-              {/* <Column
-                header="Details"
-                body={detailsTemplate} // Use custom template for rendering button
-              /> */}
-            </DataTable>
-          </div>
-        ) : itemToDisplay === "recordImagingResult" ? (
-          <>
-            <div className="container mt-5">
-              <div className="d-flex justify-content-between align-items-center">
-                <h2 className="m-2 pb-3">ثبت نتیجه تصویربرداری</h2>
-                <span
-                  className="text-danger cursor-pointer"
-                  onClick={() => setItemToDisplay("home")}
-                >
-                  x
-                </span>
-              </div>
-              <PillsTabs tabs={tabsInnerImage} />
-            </div>
-          </>
-        ) : (
-          <></>
-        ),
+      <TasvirBardari />
     },
     {
       key: "آزمایشات",

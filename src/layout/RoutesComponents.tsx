@@ -6,6 +6,7 @@ import LocationProvider from "./LocationProvider";
 import { UserContextProvider } from "./UserContextProvider";
 import DashboardLayout from "./DashboardLayout";
 import ColumnToggleDemo from "../tables/ColumnToggleDemo";
+import GraphicRecord from "../pages/GraphicRecord";
 
 const LoginPage = React.lazy(() => import("../pages/LoginPage"));
 const DashboardPage = React.lazy(() => import("../pages/DashboardPage"));
@@ -52,15 +53,15 @@ export default function RoutesWithAnimation() {
                   }
                 />
 
-                {/* <Route
+                <Route
                   index
-                  path="/dashboard/basic-patient-definitions"
+                  path="/dashboard/patients/batch-graphic-records/:uid"
                   element={
                     <React.Suspense fallback={<Fallback />}>
-                      <BasicPatientDefinitions />
+                      <GraphicRecord />
                     </React.Suspense>
                   }
-                ></Route> */}
+                ></Route>
 
                 <Route
                   index
