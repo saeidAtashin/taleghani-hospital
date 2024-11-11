@@ -474,6 +474,4 @@ const ReusableForm = ({
 
 export default ReusableForm;
 
-
-
 // in this code, I have 2 input with name of city, when enter one of them,  set both value at the same time.

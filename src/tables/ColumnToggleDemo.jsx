@@ -1,48 +1,41 @@
 import React, { useState, useEffect, useRef } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { ProductService } from "./ProductService";
 import { IconField } from "primereact/iconfield";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import HeaderName from "../components/HeaderName";
+import apiRequest from "../api/apiService";
 
 export default function ColumnToggleDemo() {
   const columns = [
-    { field: "name", header: "نام" }, // Translate header text to Persian
-    { field: "category", header: "دسته‌بندی" },
-    { field: "quantity", header: "تعداد" },
+    { field: "national_id", header: "کد ملی" },
+    { field: "first_name", header: "نام" },
+    { field: "last_name", header: "نام خانوادگی" },
+    { field: "created_at", header: "تاریخ ثبت" },
+    { field: "updated_at", header: "تاریخ بروزرسانی" },
+    // updated_at
   ];
+
   const [products, setProducts] = useState([]);
   const [visibleColumns, setVisibleColumns] = useState(columns);
 
   useEffect(() => {
-    ProductService?.getProductsMini().then((data) => setProducts(data));
+    const fetchData = async () => {
+      try {
+        const response = await apiRequest("GET", "/patient/patient-info");
+        const patients = response.data.data.results;
+        setProducts(patients);
+      } catch (error) {
+        console.error("Error fetching patient data:", error);
+      }
+    };
+    fetchData();
   }, []);
 
-  let emptyProduct = {
-    id: null,
-    name: "",
-    image: null,
-    description: "",
-    category: null,
-    price: 0,
-    quantity: 0,
-    rating: 0,
-    inventoryStatus: "INSTOCK",
-  };
-  const [productDialog, setProductDialog] = useState(false);
-  const [product, setProduct] = useState(emptyProduct);
   const [selectedProducts, setSelectedProducts] = useState(null);
-  const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
   const dt = useRef(null);
-
-  const openNew2 = () => {
-    setProduct(emptyProduct);
-    setSubmitted(false);
-    setProductDialog(true);
-  };
 
   const headerNew = (
     <div
@@ -53,7 +46,7 @@ export default function ColumnToggleDemo() {
         label="جستجو"
         icon="pi pi-search"
         severity="primary"
-        onClick={openNew2}
+        onClick={() => console.log("Search button clicked")}
       />
       <IconField iconPosition="left">
         <InputText
@@ -66,19 +59,29 @@ export default function ColumnToggleDemo() {
     </div>
   );
 
-  // Custom function to render the "Details" button
-  const detailsTemplate = (rowData) => {
-    return (
-      <button
-        type="button"
-        className="btn btn-outline-primary"
-        onClick={() =>
-          window.open(`/dashboard/patients-lists/${rowData.id}`, "_blank")
-        }
-      >
-        مشاهده
-      </button>
+  const detailsTemplate = (rowData) => (
+    <button
+      type="button"
+      className="btn btn-outline-primary"
+      onClick={() =>
+        window.open(`/dashboard/patients-lists/${rowData.uid}`, "_blank")
+      }
+    >
+      مشاهده
+    </button>
+  );
+
+  // Custom rendering function for the created_at column
+  const createdAtTemplate = (rowData) => {
+    const formattedDate = new Date(rowData.created_at).toLocaleDateString(
+      "fa-IR",
+      {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }
     );
+    return formattedDate;
   };
 
   return (
@@ -87,12 +90,12 @@ export default function ColumnToggleDemo() {
 
       <DataTable
         stripedRows
-        dir="rtl" // Set RTL for DataTable
+        dir="rtl"
         ref={dt}
         value={products}
         selection={selectedProducts}
         onSelectionChange={(e) => setSelectedProducts(e.value)}
-        dataKey="id"
+        dataKey="uid"
         paginator
         rows={10}
         rowsPerPageOptions={[5, 10, 25]}
@@ -101,22 +104,21 @@ export default function ColumnToggleDemo() {
         globalFilter={globalFilter}
         header={headerNew}
       >
-        <Column field="code" header="کد" style={{ textAlign: "right" }} />
         {visibleColumns.map((col) => (
           <Column
             sortable
             key={col.field}
             field={col.field}
             header={col.header}
+            body={
+              col.field === "created_at" || col.field === "updated_at"
+                ? createdAtTemplate
+                : undefined
+            }
             style={{ textAlign: "right", direction: "rtl" }}
           />
         ))}
-        {/* Add the Details column */}
-        <Column
-          header="جزئیات"
-          body={detailsTemplate} // Use custom template for rendering button
-          // style={{ textAlign: "center" }}
-        />
+        <Column header="جزئیات" body={detailsTemplate} />
       </DataTable>
     </div>
   );
