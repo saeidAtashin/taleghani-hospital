@@ -163,6 +163,7 @@ const ReusableForm = ({
                     {/* {errors[field?.name]?.message} */}
                   </>
                 )}
+
                 {/* Email Input */}
                 {field.type === "email" && (
                   <>
@@ -193,6 +194,7 @@ const ReusableForm = ({
                     )}
                   </>
                 )}
+
                 {/* Password Input */}
                 {field.type === "password" && (
                   <>
@@ -333,6 +335,7 @@ const ReusableForm = ({
                     )}
                   </div>
                 )}
+
                 {/* Dynamic Fields for Drug Name and Drug Dose */}
                 {field.type === "doubleinput" && (
                   <div className="">
@@ -470,3 +473,7 @@ const ReusableForm = ({
 };
 
 export default ReusableForm;
+
+
+
+// in this code, I have 2 input with name of city, when enter one of them,  set both value at the same time.
