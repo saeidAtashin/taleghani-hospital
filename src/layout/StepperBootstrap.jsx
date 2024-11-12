@@ -151,6 +151,8 @@ const StepperBootstrap = () => {
     setMalignancyType(value);
   };
 
+  const userIdentityData = {}
+
   return (
     <div className="container">
       <HeaderName HeaderName="ثبت نام بیمار جدید" className="mt-5" />
@@ -222,6 +224,7 @@ const StepperBootstrap = () => {
                   ? [1, 2, 2, 3, 1, 1, 1, 1]
                   : [1]
               }
+              defaultValuesFromBackend={userIdentityData} // Pass default values here
             />
           </div>
         ))}

@@ -14,11 +14,13 @@ const ReusableForm = ({
   onlyPost = false,
   onSelectChange,
   isLoading = false,
+  defaultValuesFromBackend,
 }) => {
   const {
     control,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm({
     resolver: zodResolver(formSchema),
   });
@@ -37,6 +39,16 @@ const ReusableForm = ({
   const [errorFields, setErrorFields] = useState({});
 
   const toggleEditable = () => setEditable((prev) => !prev);
+
+  useEffect(() => {
+    // Set default values from backend when they are available
+    if (
+      defaultValuesFromBackend &&
+      Object.keys(defaultValuesFromBackend).length > 0
+    ) {
+      reset(defaultValuesFromBackend); // Reset form with backend values
+    }
+  }, [defaultValuesFromBackend, reset]);
 
   const getFieldsInRows = (fields, inputsPerRow) => {
     let rows = [];
@@ -59,7 +71,9 @@ const ReusableForm = ({
 
   const fetchOptions = async (fieldName) => {
     try {
-      let url = `https://cancerreg.ir/api/v1/common/${fieldName}/`;
+      let url = `https://cancerreg.ir/api/v1/common/${
+        fieldName.name ? fieldName.name : fieldName.name_to_send_api
+      }/`;
 
       const response = await axios.get(url);
       const fetchedOptions = response.data.data.results.map((item) => ({
@@ -130,7 +144,12 @@ const ReusableForm = ({
                     <Controller
                       name={field.name}
                       control={control}
-                      defaultValue={field.defaultValue || ""}
+                      // defaultValue={field.defaultValue || ""}
+                      defaultValue={
+                        defaultValuesFromBackend[field?.name] !== undefined
+                          ? defaultValuesFromBackend[field?.name] // Use value from backend if available
+                          : field?.defaultValue || "" // Fallback to field default value
+                      }
                       render={({ field: controllerField }) => (
                         <div
                           className={`input-group custom-input-group ${
@@ -170,7 +189,12 @@ const ReusableForm = ({
                     <Controller
                       name={field.name}
                       control={control}
-                      defaultValue={field.defaultValue || ""}
+                      // defaultValue={field.defaultValue || ""}
+                      defaultValue={
+                        defaultValuesFromBackend[field.name] !== undefined
+                          ? defaultValuesFromBackend[field.name] // Use value from backend if available
+                          : field.defaultValue || "" // Fallback to field default value
+                      }
                       render={({ field: controllerField }) => (
                         <input
                           {...controllerField}
@@ -201,7 +225,12 @@ const ReusableForm = ({
                     <Controller
                       name={field.name}
                       control={control}
-                      defaultValue={field.defaultValue || ""}
+                      // defaultValue={field.defaultValue || ""}
+                      defaultValue={
+                        defaultValuesFromBackend[field.name] !== undefined
+                          ? defaultValuesFromBackend[field.name] // Use value from backend if available
+                          : field.defaultValue || "" // Fallback to field default value
+                      }
                       render={({ field: controllerField }) => (
                         <input
                           {...controllerField}
@@ -232,7 +261,11 @@ const ReusableForm = ({
                     <Controller
                       name={field.name}
                       control={control}
-                      defaultValue={field.defaultValue || ""}
+                      defaultValue={
+                        defaultValuesFromBackend[field.name] !== undefined
+                          ? defaultValuesFromBackend[field.name] // Use value from backend if available
+                          : field.defaultValue || "" // Fallback to field default value
+                      }
                       render={({ field: controllerField }) => {
                         if (field.localOptions) {
                           return (
@@ -261,8 +294,8 @@ const ReusableForm = ({
                           );
                         } else {
                           useEffect(() => {
-                            fetchOptions(field.name);
-                          }, [field.name]);
+                            fetchOptions(field);
+                          }, [field]);
 
                           return (
                             <select
@@ -305,7 +338,12 @@ const ReusableForm = ({
                     <Controller
                       name={field.name}
                       control={control}
-                      defaultValue={field.defaultValue || false}
+                      // defaultValue={field.defaultValue || false}
+                      defaultValue={
+                        defaultValuesFromBackend[field.name] !== undefined
+                          ? defaultValuesFromBackend[field.name] // Use value from backend if available
+                          : field.defaultValue || "" // Fallback to field default value
+                      }
                       render={({ field: controllerField }) => (
                         <input
                           {...controllerField}
@@ -343,7 +381,13 @@ const ReusableForm = ({
                               <Controller
                                 name={`drugs[${index}].name`}
                                 control={control}
-                                defaultValue={item.name || ""}
+                                // defaultValue={item.name || ""}
+                                defaultValue={
+                                  defaultValuesFromBackend[field.name] !==
+                                  undefined
+                                    ? defaultValuesFromBackend[field.name] // Use value from backend if available
+                                    : field.defaultValue || "" // Fallback to field default value
+                                }
                                 render={({ field }) => (
                                   <input
                                     {...field}
@@ -365,7 +409,13 @@ const ReusableForm = ({
                               <Controller
                                 name={`drugs[${index}].dose`}
                                 control={control}
-                                defaultValue={item.dose || ""}
+                                // defaultValue={item.dose || ""}
+                                defaultValue={
+                                  defaultValuesFromBackend[field.name] !==
+                                  undefined
+                                    ? defaultValuesFromBackend[field.name] // Use value from backend if available
+                                    : field.defaultValue || "" // Fallback to field default value
+                                }
                                 render={({ field }) => (
                                   <input
                                     {...field}
@@ -415,7 +465,12 @@ const ReusableForm = ({
                     <Controller
                       name={field.name}
                       control={control}
-                      defaultValue={[]}
+                      // defaultValue={[]}
+                      defaultValue={
+                        defaultValuesFromBackend[field.name] !== undefined
+                          ? defaultValuesFromBackend[field.name] // Use value from backend if available
+                          : field.defaultValue || "" // Fallback to field default value
+                      }
                       render={({ field: controllerField }) => {
                         useEffect(() => {
                           fetchOptions(field.name);
@@ -467,4 +522,4 @@ const ReusableForm = ({
 
 export default ReusableForm;
 
-// in this code, I have 2 input with name of city, when enter one of them,  set both value at the same time.
+// in this code,  default value is comming from api of backend, but because of delay, dont set default value currect

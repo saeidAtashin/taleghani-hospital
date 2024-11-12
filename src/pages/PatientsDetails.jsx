@@ -77,6 +77,7 @@ const PatientsDetails = () => {
   ];
 
   const [products, setProducts] = useState([]);
+  const [userIdentityData, setUserIdentityData] = useState([]);
   // const [visibleColumns, setVisibleColumns] = useState(columns);
 
   useEffect(() => {
@@ -102,6 +103,30 @@ const PatientsDetails = () => {
     console.log("Final form submission:", data);
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await apiRequest(
+          "GET",
+          `/patient/patient-info/${uid}`
+        );
+        const identityData = response.data.data;
+        setUserIdentityData(identityData);
+        console.log("identityData", identityData);
+      } catch (error) {
+        console.error("Error fetching patient data:", error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const defaultValues = {
+    birth_province: "someValueFromBackend",
+    birth_city: "anotherValueFromBackend",
+    residential_province: "yetAnotherValue",
+    residential_city: "finalValue",
+  };
+
   const tabs = [
     {
       key: "اطلاعات هویتی",
@@ -114,8 +139,10 @@ const PatientsDetails = () => {
             formSchema={generateReusableSchema(formFielsIdentity)}
             onSubmit={handleFormSubmit}
             inputsPerRow={[1, 2, 3, 2, 2, 2, 2, 3, 2, 1]}
+            defaultValuesFromBackend={userIdentityData} // Pass default values here
           />
         </div>
+        // in this code, I want that inputs, have value, set them when came from back, and set them as default value.
       ),
     },
     {
