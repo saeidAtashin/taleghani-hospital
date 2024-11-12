@@ -23,6 +23,7 @@ const ReusableForm = ({
     reset,
   } = useForm({
     resolver: zodResolver(formSchema),
+    defaultValues: defaultValuesFromBackend,
   });
 
   const {
@@ -190,14 +191,15 @@ const ReusableForm = ({
                       name={field.name}
                       control={control}
                       // defaultValue={field.defaultValue || ""}
-                      defaultValue={
-                        defaultValuesFromBackend[field.name] !== undefined
-                          ? defaultValuesFromBackend[field.name] // Use value from backend if available
-                          : field.defaultValue || "" // Fallback to field default value
-                      }
+                      defaultValue={defaultValuesFromBackend[field.name] || ""} // Default to empty string if no value
                       render={({ field: controllerField }) => (
                         <input
                           {...controllerField}
+                          value={
+                            controllerField.value ||
+                            defaultValuesFromBackend[field.name] ||
+                            ""
+                          } // Ensure the select value is correctly set
                           type="email"
                           className={`form-control ${
                             errors[field.name] ? "is-invalid" : ""
@@ -283,7 +285,9 @@ const ReusableForm = ({
                               }}
                             >
                               <option value="">
-                                {field.placeholder || "Select an option"}
+                                {defaultValuesFromBackend[field.name]
+                                  ? defaultValuesFromBackend[field.name]
+                                  : field.placeholder || "Select an option"}
                               </option>
                               {field.options?.map((option, idx) => (
                                 <option key={idx} value={option.value}>

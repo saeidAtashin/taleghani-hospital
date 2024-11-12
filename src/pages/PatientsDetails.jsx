@@ -194,7 +194,10 @@ const PatientsDetails = () => {
 
   return (
     <div className="container mt-5">
-      <h2 className="mb-5">بیمار امیررضا موحدی - 0024534961</h2>
+      <h2 className="mb-5">
+        بیمار {userIdentityData?.first_name} / {userIdentityData?.last_name} /
+        {userIdentityData?.phone_number}{" "}
+      </h2>
       <ReusableTabs tabs={tabs} defaultActiveKey="اطلاعات هویتی" />
     </div>
   );
