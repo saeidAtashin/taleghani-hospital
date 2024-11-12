@@ -34,7 +34,7 @@ const ReusableForm = ({
 
   const [editable, setEditable] = useState(!isEditable);
   const [options, setOptions] = useState({});
-  const [errorFields, setErrorFields] = useState({}); // Track errors for individual select inputs
+  const [errorFields, setErrorFields] = useState({});
 
   const toggleEditable = () => setEditable((prev) => !prev);
 
@@ -73,13 +73,13 @@ const ReusableForm = ({
       }));
       setErrorFields((prevErrors) => ({
         ...prevErrors,
-        [fieldName]: false, // Clear the error for this field
+        [fieldName]: false,
       }));
     } catch (error) {
       console.error(`Error fetching options for ${fieldName}:`, error);
       setErrorFields((prevErrors) => ({
         ...prevErrors,
-        [fieldName]: true, // Set error for this field
+        [fieldName]: true,
       }));
     }
   };
@@ -155,12 +155,9 @@ const ReusableForm = ({
                         </div>
                       )}
                     />
-                    {/* {errors[field.name] && ( */}
                     <div className="text-danger">
                       {errors?.[field?.name]?.message}
                     </div>
-                    {/* )} */}
-                    {/* {errors[field?.name]?.message} */}
                   </>
                 )}
 
@@ -237,9 +234,7 @@ const ReusableForm = ({
                       control={control}
                       defaultValue={field.defaultValue || ""}
                       render={({ field: controllerField }) => {
-                        // Check if options are provided locally
                         if (field.localOptions) {
-                          // Render local options
                           return (
                             <select
                               {...controllerField}
@@ -265,7 +260,6 @@ const ReusableForm = ({
                             </select>
                           );
                         } else {
-                          // Fetch options from the API when the component mounts or field.name changes
                           useEffect(() => {
                             fetchOptions(field.name);
                           }, [field.name]);
@@ -347,7 +341,7 @@ const ReusableForm = ({
                           <div className="col-md-6 mb-3">
                             <div className="input-group">
                               <Controller
-                                name={`drugs[${index}].name`} // Updated name to correctly reference array index
+                                name={`drugs[${index}].name`}
                                 control={control}
                                 defaultValue={item.name || ""}
                                 render={({ field }) => (
@@ -369,7 +363,7 @@ const ReusableForm = ({
                           <div className="col-md-6 mb-3">
                             <div className="input-group">
                               <Controller
-                                name={`drugs[${index}].dose`} // Updated name to correctly reference array index
+                                name={`drugs[${index}].dose`}
                                 control={control}
                                 defaultValue={item.dose || ""}
                                 render={({ field }) => (
@@ -423,7 +417,6 @@ const ReusableForm = ({
                       control={control}
                       defaultValue={[]}
                       render={({ field: controllerField }) => {
-                        // Fetch options when the component mounts or field.name changes
                         useEffect(() => {
                           fetchOptions(field.name);
                         }, [field.name]);

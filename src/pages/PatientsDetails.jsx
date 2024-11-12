@@ -5,17 +5,8 @@ import {
   formPatientsFields,
   generateReusableSchema,
   InnerAzmayesh,
-  loginForm,
 } from "../form-fields/FormFields";
 import ReusableForm from "../ReusableForm/ReusableForm";
-import ColumnToggleDemo from "../tables/ColumnToggleDemo";
-import { DataTable } from "primereact/datatable";
-import { IconField } from "primereact/iconfield";
-import { InputText } from "primereact/inputtext";
-import { Column } from "primereact/column";
-import { ProductService } from "../tables/ProductService";
-import { Button } from "primereact/button";
-import PillsTabs from "../components/PillsTabs";
 import AzmayeshatTable from "../components/AzmayeshatTable";
 import { useParams } from "react-router-dom";
 import apiRequest from "../api/apiService";
@@ -23,7 +14,6 @@ import TasvirBardari from "../components/TasvirBardari";
 
 const handleFormSubmit = (data) => {
   console.log("data", data);
-  // navigate("/dashboard");
 };
 
 export const tabsInnerImage = [
@@ -78,8 +68,6 @@ export const tabsInnerImage = [
 const PatientsDetails = () => {
   const { uid } = useParams();
 
-  console.log("uid", uid);
-
   const columns = [
     { field: "uid", header: "کد ملی" },
     { field: "first_name", header: "نام" },
@@ -89,7 +77,7 @@ const PatientsDetails = () => {
   ];
 
   const [products, setProducts] = useState([]);
-  const [visibleColumns, setVisibleColumns] = useState(columns);
+  // const [visibleColumns, setVisibleColumns] = useState(columns);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -108,78 +96,11 @@ const PatientsDetails = () => {
     fetchData();
   }, []);
 
-  let emptyProduct = {
-    id: null,
-    name: "",
-    image: null,
-    description: "",
-    category: null,
-    price: 0,
-    quantity: 0,
-    rating: 0,
-    inventoryStatus: "INSTOCK",
-  };
-  // const [productDialog, setProductDialog] = useState(false);
-  // const [product, setProduct] = useState(emptyProduct);
-  const [selectedProducts, setSelectedProducts] = useState(null);
-  const [itemToDisplay, setItemToDisplay] = useState("home");
   const dt = useRef(null);
-
-  const openNew2 = () => {
-    console.log("ytytytyty");
-    setItemToDisplay("recordImagingResult");
-  };
-
-  const headerNew = (
-    <div className="d-flex flex-wrap gap-2 align-items-center  justify-content-end">
-      <Button
-        label="ثبت دستور تصویربرداری"
-        icon="pi pi-plus"
-        severity="primary"
-        onClick={openNew2}
-        className="rounded-3 "
-      />
-      <Button
-        label="ثبت نتیجه تصویربرداری"
-        icon="pi pi-plus"
-        severity="primary"
-        // onClick={openNew2}
-        className="rounded-3 "
-      />
-    </div>
-  );
-
-  const detailsTemplate = (rowData) => {
-    return (
-      <button
-        type="button"
-        className="btn btn-outline-primary"
-        onClick={() =>
-          window.open(`/dashboard/patients-lists/${rowData.id}`, "_blank")
-        }
-      >
-        مشاهده
-      </button>
-    );
-  };
-
-  const createdAtTemplate = (rowData) => {
-    const formattedDate = new Date(rowData.created_at).toLocaleDateString(
-      "fa-IR",
-      {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      }
-    );
-    return formattedDate;
-  };
 
   const handleFormSubmit = (data) => {
     console.log("Final form submission:", data);
   };
-
-  // /
 
   const tabs = [
     {
@@ -221,8 +142,7 @@ const PatientsDetails = () => {
     {
       key: "تصویربرداری",
       label: "تصویربرداری",
-      content:
-      <TasvirBardari />
+      content: <TasvirBardari />,
     },
     {
       key: "آزمایشات",
