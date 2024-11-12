@@ -18,14 +18,18 @@ export default function ColumnToggleDemo() {
 
   const [products, setProducts] = useState([]);
   const [visibleColumns, setVisibleColumns] = useState(columns);
+  const [loading, setLoading] = useState(columns);
 
   useEffect(() => {
+    setLoading(true);
     const fetchData = async () => {
       try {
         const response = await apiRequest("GET", "/patient/patient-info");
         const patients = response.data.data.results;
         setProducts(patients);
+        setLoading(false);
       } catch (error) {
+        setLoading(false);
         console.error("Error fetching patient data:", error);
       }
     };
@@ -87,38 +91,42 @@ export default function ColumnToggleDemo() {
     <div className="card screen-width p-5" style={{ direction: "rtl" }}>
       <HeaderName HeaderName="لیست بیماران" />
 
-      <DataTable
-        stripedRows
-        dir="rtl"
-        ref={dt}
-        value={products}
-        selection={selectedProducts}
-        onSelectionChange={(e) => setSelectedProducts(e.value)}
-        dataKey="uid"
-        paginator
-        rows={10}
-        rowsPerPageOptions={[5, 10, 25]}
-        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-        currentPageReportTemplate="نمایش {first} تا {last} از {totalRecords} اطلاعات"
-        globalFilter={globalFilter}
-        header={headerNew}
-      >
-        {visibleColumns.map((col, index) => (
-          <Column
-            sortable
-            key={index}
-            field={col.field}
-            header={col.header}
-            body={
-              col.field === "created_at" || col.field === "updated_at"
-                ? createdAtTemplate
-                : undefined
-            }
-            style={{ textAlign: "right", direction: "rtl" }}
-          />
-        ))}
-        <Column header="جزئیات" body={detailsTemplate} />
-      </DataTable>
+      {loading ? (
+        <div>در حال دریافت اطلاعات ... </div>
+      ) : (
+        <DataTable
+          stripedRows
+          dir="rtl"
+          ref={dt}
+          value={products}
+          selection={selectedProducts}
+          onSelectionChange={(e) => setSelectedProducts(e.value)}
+          dataKey="uid"
+          paginator
+          rows={10}
+          rowsPerPageOptions={[5, 10, 25]}
+          paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+          currentPageReportTemplate="نمایش {first} تا {last} از {totalRecords} اطلاعات"
+          globalFilter={globalFilter}
+          header={headerNew}
+        >
+          {visibleColumns.map((col, index) => (
+            <Column
+              sortable
+              key={index}
+              field={col.field}
+              header={col.header}
+              body={
+                col.field === "created_at" || col.field === "updated_at"
+                  ? createdAtTemplate
+                  : undefined
+              }
+              style={{ textAlign: "right", direction: "rtl" }}
+            />
+          ))}
+          <Column header="جزئیات" body={detailsTemplate} />
+        </DataTable>
+      )}
     </div>
   );
 }
