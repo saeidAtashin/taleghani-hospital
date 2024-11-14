@@ -6,7 +6,6 @@ const GraphicRecord = () => {
   const [products, setProducts] = useState([]);
   const { uid } = useParams();
 
-  console.log("uid", uid);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -17,7 +16,6 @@ const GraphicRecord = () => {
         );
         const patients = response.data.data.results;
         setProducts(patients);
-        console.log("patients", patients);
       } catch (error) {
         console.error("Error fetching patient data:", error);
       }

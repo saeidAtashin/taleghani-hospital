@@ -55,7 +55,6 @@ const StepperBootstrap = () => {
 
       setIsLoading(false);
     } catch (error) {
-      console.log("error.response", error.response.status);
       if (error.response && error.response.status === 400) {
         const errorDetails = error.response.data?.errors;
         if (errorDetails && errorDetails.length > 0) {
@@ -178,7 +177,7 @@ const StepperBootstrap = () => {
   const handleSelectChange = (value) => {
     setMalignancyType(value);
   };
-  
+
   const userIdentityData = {};
 
   return (

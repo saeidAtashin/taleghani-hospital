@@ -81,6 +81,7 @@ const ReusableForm = ({
         label: item.name,
       }));
 
+      console.log("fetchedOptions", fetchedOptions);
       setOptions((prevOptions) => ({
         ...prevOptions,
         [fieldName.name]: fetchedOptions,
@@ -98,7 +99,6 @@ const ReusableForm = ({
       }));
     }
   };
-
 
   return (
     <div className="container mt-5">
@@ -126,7 +126,6 @@ const ReusableForm = ({
           </div>
         )
       )}
-
       <form onSubmit={handleSubmit(onSubmit)}>
         {rows.map((rowFields, rowIndex) => (
           <div className="row" key={rowIndex}>
@@ -156,7 +155,7 @@ const ReusableForm = ({
                           <input
                             {...controllerField}
                             type="text"
-                            className={`form-control ${
+                            className={`form-control ${controllerField.name} ${
                               errors[field.name] ? "is-invalid" : ""
                             }`}
                             id={field.name}
@@ -174,73 +173,6 @@ const ReusableForm = ({
                     <div className="text-danger">
                       {errors?.[field?.name]?.message}
                     </div>
-                  </>
-                )}
-
-                {/* Email Input */}
-                {field.type === "email" && (
-                  <>
-                    <label className="label" htmlFor={field.name}>
-                      {field.label}
-                    </label>
-                    <Controller
-                      name={field.name}
-                      control={control}
-                      defaultValue={field.defaultValue || undefined}
-                      render={({ field: controllerField }) => (
-                        <input
-                          {...controllerField}
-                          value={
-                            controllerField.value ||
-                            defaultValuesFromBackend[field.name] ||
-                            ""
-                          } // Ensure the select value is correctly set
-                          type="email"
-                          className={`form-control ${
-                            errors[field.name] ? "is-invalid" : ""
-                          }`}
-                          id={field.name}
-                          placeholder={field.placeholder || ""}
-                          disabled={!editable}
-                        />
-                      )}
-                    />
-                    {errors[field.name] && (
-                      <div className="invalid-feedback">
-                        {errors[field.name].message}
-                      </div>
-                    )}
-                  </>
-                )}
-
-                {/* Password Input */}
-                {field.type === "password" && (
-                  <>
-                    <label className="label" htmlFor={field.name}>
-                      {field.label}
-                    </label>
-                    <Controller
-                      name={field.name}
-                      control={control}
-                      defaultValue={field.defaultValue || undefined}
-                      render={({ field: controllerField }) => (
-                        <input
-                          {...controllerField}
-                          type="password"
-                          className={`form-control ${
-                            errors[field.name] ? "is-invalid" : ""
-                          }`}
-                          id={field.name}
-                          placeholder={field.placeholder || ""}
-                          disabled={!editable}
-                        />
-                      )}
-                    />
-                    {errors[field.name] && (
-                      <div className="invalid-feedback">
-                        {errors[field.name].message}
-                      </div>
-                    )}
                   </>
                 )}
 
@@ -468,6 +400,36 @@ const ReusableForm = ({
                       </div>
                     )}
                   </div>
+                )}
+                {/* Password Input */}
+                {field.type === "password" && (
+                  <>
+                    <label className="label" htmlFor={field.name}>
+                      {field.label}
+                    </label>
+                    <Controller
+                      name={field.name}
+                      control={control}
+                      defaultValue={field.defaultValue || undefined}
+                      render={({ field: controllerField }) => (
+                        <input
+                          {...controllerField}
+                          type="password"
+                          className={`form-control ${
+                            errors[field.name] ? "is-invalid" : ""
+                          }`}
+                          id={field.name}
+                          placeholder={field.placeholder || ""}
+                          disabled={!editable}
+                        />
+                      )}
+                    />
+                    {errors[field.name] && (
+                      <div className="invalid-feedback">
+                        {errors[field.name].message}
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             ))}

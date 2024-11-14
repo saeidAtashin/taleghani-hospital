@@ -12,9 +12,7 @@ import { useParams } from "react-router-dom";
 import apiRequest from "../api/apiService";
 import TasvirBardari from "../components/TasvirBardari";
 
-const handleFormSubmit = (data) => {
-  console.log("data", data);
-};
+const handleFormSubmit = (data) => {};
 
 export const tabsInnerImage = [
   {
@@ -89,7 +87,6 @@ const PatientsDetails = () => {
         );
         const patients = response.data.data.results;
         setProducts(patients);
-        console.log("patients", patients);
       } catch (error) {
         console.error("Error fetching patient data:", error);
       }
@@ -112,7 +109,6 @@ const PatientsDetails = () => {
         );
         const identityData = response.data.data;
         setUserIdentityData(identityData);
-        console.log("identityData", identityData);
       } catch (error) {
         console.error("Error fetching patient data:", error);
       }

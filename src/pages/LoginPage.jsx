@@ -6,7 +6,6 @@ import { generateReusableSchema, loginForm } from "../form-fields/FormFields";
 const LoginPage = () => {
   const navigate = useNavigate();
   const handleFormSubmit = (data) => {
-    console.log("data", data);
     navigate("/dashboard");
   };
   return (

@@ -111,7 +111,6 @@ export default function TasvirBardari() {
 
   const handleSelectionChange = (selected) => {
     setSelectedOptions(selected);
-    console.log("Selected values:", selected);
   };
 
   const options = [

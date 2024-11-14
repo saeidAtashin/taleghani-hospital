@@ -133,7 +133,6 @@ export default function AzmayeshatTable() {
 
   const handleSelectionChange = (selected) => {
     setSelectedOptions(selected);
-    console.log("Selected values:", selected);
   };
 
   const options = [

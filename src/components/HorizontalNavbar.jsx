@@ -94,7 +94,6 @@ const HorizontalNavbar = () => {
   };
 
   const handleDelete = async (item) => {
-    console.log("item", item);
     Swal.fire({
       title: `آیا از حذف ${item?.name} اطمینان دارید؟`,
       icon: "question",
