@@ -13,6 +13,7 @@ import {
 } from "../form-fields/FormFields";
 import { PATIENT_INFO, PATIENT_RECORDS } from "../api/apiClient";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const StepperBootstrap = () => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -37,6 +38,41 @@ const StepperBootstrap = () => {
     });
 
     return transformedData;
+  };
+
+  const makeApiRequest = async (
+    url,
+    requestData,
+    successCallback,
+    errorCallback
+  ) => {
+    setIsLoading(true);
+    try {
+      const response = await axios.post(url, requestData);
+
+      // Execute the success callback if provided
+      if (successCallback) successCallback(response);
+
+      setIsLoading(false);
+    } catch (error) {
+      console.log("error.response", error.response.status);
+      if (error.response && error.response.status === 400) {
+        const errorDetails = error.response.data?.errors;
+        if (errorDetails && errorDetails.length > 0) {
+          toast.warning(errorDetails[0].message || "Invalid inputs");
+        } else {
+          toast.warning("Invalid inputs");
+        }
+      } else {
+        toast.warning("An error occurred while submitting data.");
+      }
+
+      console.error("Error submitting data:", error);
+
+      if (errorCallback) errorCallback(error);
+
+      setIsLoading(false);
+    }
   };
 
   const handleFormSubmit = async (data) => {
@@ -68,26 +104,23 @@ const StepperBootstrap = () => {
 
       if (activeIndex === 0) {
         const transformedData = transformDataForApi(data, currentFields);
+        const url = "https://cancerreg.ir/api/v1" + PATIENT_INFO;
 
-        setIsLoading(true);
-        try {
-          const response = await axios.post(
-            "https://cancerreg.ir/api/v1" + PATIENT_INFO,
-            transformedData
-          );
-
-          console.log("API response:", response);
-
-          console.log("uid", response?.data?.data?.uid);
-
-          localStorage.setItem("patient_uid_info", response?.data?.data?.uid);
-
-          setActiveIndex(activeIndex + 1);
-        } catch (error) {
-          console.error("Error submitting data:", error);
-          setIsLoading(false);
-        }
+        makeApiRequest(
+          url,
+          transformedData,
+          (response) => {
+            // Success callback: handle the response
+            localStorage.setItem("patient_uid_info", response?.data?.data?.uid);
+            setActiveIndex(activeIndex + 1);
+          },
+          (error) => {
+            // Error callback: handle the error
+            setIsLoading(false);
+          }
+        );
       }
+
       if (activeIndex === 1) {
         const transformedData = transformDataForApi(data, currentFields);
 
@@ -103,7 +136,6 @@ const StepperBootstrap = () => {
             formattedData
           );
 
-          console.log("API response:", response);
           setActiveIndex(activeIndex + 1);
         } catch (error) {
           console.error("Error submitting data:", error);
@@ -126,7 +158,6 @@ const StepperBootstrap = () => {
       //       formattedData
       //     );
 
-      //     console.log("API response:", response);
       //     setActiveIndex(activeIndex + 1);
       //   } catch (error) {
       //     console.error("Error submitting data:", error);
@@ -135,14 +166,11 @@ const StepperBootstrap = () => {
       // }
       else {
         setIsLoading(false);
-        console.log("Final form submission:", data);
       }
     } catch (error) {
       setIsLoading(false);
       if (error instanceof z.ZodError) {
-        console.log("Validation errors:", error.errors);
       } else {
-        console.log("Unexpected error:", error);
       }
     }
   };
@@ -151,7 +179,7 @@ const StepperBootstrap = () => {
     setMalignancyType(value);
   };
 
-  const userIdentityData = {}
+  const userIdentityData = {};
 
   return (
     <div className="container">

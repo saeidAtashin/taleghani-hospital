@@ -2,23 +2,24 @@ import React, { useMemo } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-// Define a custom interface for Axios config (optional, for TypeScript)
-// If you're using JavaScript, this interface can be skipped.
 export const BASE_URL = process.env.REACT_APP_API_KEY;
 const BASE_URL_APP_VERSION = `${process.env.REACT_APP_API_KEY}/api/${process.env.REACT_APP_VERSION}`;
 
-// Custom Error Handler Function
 const handleError = (error) => {
   if (!error?.config?.globalErrorHandler) return;
 
   if (error.response) {
     switch (error?.response?.status) {
       case 400:
-        toast.warning(
-          error.response?.data?.details?.[0]?.message ||
-            error.response.data?.message ||
-            error.message
-        );
+        // Handle the specific error structure for status 400
+        const errorDetails = error.response.data?.errors;
+        if (errorDetails && errorDetails.length > 0) {
+          // Display the first error message from the errors array
+          toast.warning(errorDetails[0].message || "Invalid inputs");
+        } else {
+          // Fallback to a generic message
+          toast.warning(error.response.data?.message || "Invalid inputs");
+        }
         break;
       case 401:
         toast.error(
@@ -71,7 +72,6 @@ const axiosInstance = axios.create({
   withCredentials: true,
 });
 
-// Apply Error Handling Interceptor to Axios Instance
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -80,7 +80,6 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-// Custom Hook for Creating Axios Instance
 export const useAxiosInstance = () => {
   return useMemo(() => {
     return axios.create({

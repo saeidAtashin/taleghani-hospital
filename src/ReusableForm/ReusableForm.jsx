@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import { MultiSelect } from "primereact/multiselect";
+import { toast } from "react-toastify";
 
 const ReusableForm = ({
   fields,
@@ -85,7 +86,6 @@ const ReusableForm = ({
         [fieldName.name]: fetchedOptions,
       }));
 
-      console.log("fetchedOptions", response.data.data.results);
       setErrorFields((prevErrors) => ({
         ...prevErrors,
         [fieldName.name]: false,
@@ -99,7 +99,6 @@ const ReusableForm = ({
     }
   };
 
-  console.log("options", options);
 
   return (
     <div className="container mt-5">
