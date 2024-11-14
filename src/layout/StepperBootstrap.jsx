@@ -178,7 +178,7 @@ const StepperBootstrap = () => {
   const handleSelectChange = (value) => {
     setMalignancyType(value);
   };
-
+  
   const userIdentityData = {};
 
   return (
@@ -252,7 +252,7 @@ const StepperBootstrap = () => {
                   ? [1, 2, 2, 3, 1, 1, 1, 1]
                   : [1]
               }
-              defaultValuesFromBackend={userIdentityData} // Pass default values here
+              defaultValuesFromBackend={userIdentityData}
             />
           </div>
         ))}
