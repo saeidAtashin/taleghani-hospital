@@ -16,7 +16,7 @@ export const generateReusableSchema = (formFields) =>
             : z
                 .string()
                 .optional()
-                .default(field.defaultValue || "");
+                .default(field.defaultValue || undefined);
           break;
 
         case "checkbox":
@@ -113,12 +113,9 @@ export const formFielsIdentity = [
     type: "select",
     label: "جنسیت",
     name: "gender",
-    options: [
-      { value: "زن", label: "زن" },
-      { value: "مرد", label: "مرد" },
-    ],
+
     placeholder: "جنسیت را انتخاب نمایید",
-    defaultValue: "",
+    defaultValue: undefined,
     required: false,
   },
   {
@@ -126,12 +123,9 @@ export const formFielsIdentity = [
     label: "وضعیت تاهل",
     name: "marital-status",
     name_to_send_api: "marital_status",
-    options: [
-      { value: "مجرد", label: "مجرد" },
-      { value: "متاهل", label: "متاهل" },
-    ],
+
     placeholder: "وضعیت تاهل را انتخاب نمایید",
-    defaultValue: "t",
+    defaultValue: undefined,
     required: false,
   },
   {
@@ -149,11 +143,6 @@ export const formFielsIdentity = [
     label: "شهر محل تولد",
     name: "city",
     name_to_send_api: "birth_city",
-    options: [
-      { value: "شهر1", label: "شهر1" },
-      { value: "شهر2", label: "شهر2" },
-      { value: "شهر3", label: "شهر3" },
-    ],
     placeholder: "شهر را انتخاب نمایید",
     defaultValue: "",
     required: false,
@@ -172,11 +161,7 @@ export const formFielsIdentity = [
     label: "شهر محل زندگی",
     name: "city",
     name_to_send_api: "residential_city",
-    options: [
-      { value: "1", label: "1" },
-      { value: "2", label: "2" },
-      { value: "3", label: "3" },
-    ],
+
     placeholder: "شهر را انتخاب نمایید",
     defaultValue: "",
     required: false,
@@ -201,13 +186,9 @@ export const formFielsIdentity = [
     type: "select",
     label: "سطح تحصیلات",
     name: "education",
-    options: [
-      { value: "1", label: "1" },
-      { value: "2", label: "2" },
-      { value: "3", label: "3" },
-    ],
+
     placeholder: "سطح تحصیلات را انتخاب نمایید",
-    defaultValue: "0",
+    defaultValue: "",
     required: false,
   },
   {
@@ -215,26 +196,18 @@ export const formFielsIdentity = [
     label: "رشته تحصیلی",
     name: "major-field",
     name_to_send_api: "major_field",
-    options: [
-      { value: "1", label: "1" },
-      { value: "2", label: "2" },
-      { value: "3", label: "3" },
-    ],
+
     placeholder: "رشته تحصیلی را انتخاب نمایید",
-    defaultValue: "0",
+    defaultValue: "",
     required: false,
   },
   {
     type: "select",
     label: "شغل",
     name: "job",
-    options: [
-      { value: "1", label: "1" },
-      { value: "2", label: "2" },
-      { value: "3", label: "3" },
-    ],
+
     placeholder: "شغل بیمار را انتخاب نمایید",
-    defaultValue: "0",
+    defaultValue: "",
     required: false,
   },
   {
@@ -242,24 +215,16 @@ export const formFielsIdentity = [
     label: "تعداد فرزندان",
     name: "num-of-children",
     name_to_send_api: "num_children",
-    options: [
-      { value: "1", label: "1" },
-      { value: "2", label: "2" },
-      { value: "3", label: "3" },
-    ],
+
     placeholder: "تعداد فرزندان را انتخاب نمایید ",
-    defaultValue: "0",
+    defaultValue: "",
     required: false,
   },
   {
     type: "text",
     label: "تاریخ فوت",
     name: "death_date",
-    // options: [
-    //   { value: "1", label: "1" },
-    //   { value: "2", label: "2" },
-    //   { value: "3", label: "3" },
-    // ],
+
     placeholder: "تاریخ فوت را انتخاب نمایید",
     defaultValue: "1990-02-05",
     required: false,
@@ -283,7 +248,6 @@ export const formPatientsFields = [
   //   defaultValue: "",
   //   required: false,
   // },
-
   // {
   //   type: "text",
   //   label: "قد",
@@ -343,11 +307,6 @@ export const formPatientsFields = [
   //   label: "سابقه خانوادگی",
   //   name: "family-history",
   //   name_to_send_api: "family_history",
-  //   options: [
-  //     { value: "استان1", label: "استان1" },
-  //     { value: "استان2", label: "استان2" },
-  //     { value: "استان3", label: "استان3" },
-  //   ],
   //   placeholder: "افراد با سابقه سرطان را انتخاب نمایید",
   //   defaultValue: "",
   //   required: false,
@@ -357,22 +316,15 @@ export const formPatientsFields = [
   //   label: "سوابق جراحی",
   //   name: "surgery",
   //   name_to_send_api: "surgeries",
-  //   options: [
-  //     { value: "شهر1", label: "شهر1" },
-  //     { value: "شهر2", label: "شهر2" },
-  //     { value: "شهر3", label: "شهر3" },
-  //   ],
   //   placeholder: "جراحی‌ها را انتخاب نمایید",
   //   defaultValue: "",
   //   required: false,
   // },
-
   // {
   //   type: "doubleinput", // Dynamic pair input type
   //   label: "سوابق دارویی",
   //   name: "drugs",
   //   name_to_send_api: "drugs_records",
-
   //   subfields: [
   //     {
   //       label: "نام دارو",
@@ -386,7 +338,6 @@ export const formPatientsFields = [
   //     },
   //   ],
   // },
-
   // {
   //   type: "text",
   //   label: "علت مراجعه",
@@ -454,10 +405,7 @@ export const InnerAzmayesh = [
     type: "select",
     label: "Blood Group",
     name: "Blood-Group",
-    options: [
-      { value: "Solid", label: "Solid" },
-      { value: "non Solid", label: "non Solid" },
-    ],
+
     placeholder: "از زیرمنو انتخاب کنید",
     defaultValue: "",
     required: false,
@@ -466,10 +414,7 @@ export const InnerAzmayesh = [
     type: "select",
     label: "RH",
     name: "RH",
-    options: [
-      { value: "Solid", label: "Solid" },
-      { value: "non Solid", label: "non Solid" },
-    ],
+
     placeholder: "از زیرمنو انتخاب کنید",
     defaultValue: "",
     required: false,

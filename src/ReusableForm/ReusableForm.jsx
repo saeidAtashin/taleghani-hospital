@@ -72,9 +72,7 @@ const ReusableForm = ({
 
   const fetchOptions = async (fieldName) => {
     try {
-      let url = `https://cancerreg.ir/api/v1/common/${
-        fieldName.name ? fieldName.name : fieldName.name_to_send_api
-      }/`;
+      let url = `https://cancerreg.ir/api/v1/common/${fieldName.name}/`;
 
       const response = await axios.get(url);
       const fetchedOptions = response.data.data.results.map((item) => ({
@@ -84,20 +82,24 @@ const ReusableForm = ({
 
       setOptions((prevOptions) => ({
         ...prevOptions,
-        [fieldName]: fetchedOptions,
+        [fieldName.name]: fetchedOptions,
       }));
+
+      console.log("fetchedOptions", response.data.data.results);
       setErrorFields((prevErrors) => ({
         ...prevErrors,
-        [fieldName]: false,
+        [fieldName.name]: false,
       }));
     } catch (error) {
-      console.error(`Error fetching options for ${fieldName}:`, error);
+      console.error(`Error fetching options for ${fieldName.name}:`, error);
       setErrorFields((prevErrors) => ({
         ...prevErrors,
-        [fieldName]: true,
+        [fieldName.name]: true,
       }));
     }
   };
+
+  console.log("options", options);
 
   return (
     <div className="container mt-5">
@@ -145,12 +147,7 @@ const ReusableForm = ({
                     <Controller
                       name={field.name}
                       control={control}
-                      // defaultValue={field.defaultValue || ""}
-                      defaultValue={
-                        defaultValuesFromBackend[field?.name] !== undefined
-                          ? defaultValuesFromBackend[field?.name] // Use value from backend if available
-                          : field?.defaultValue || "" // Fallback to field default value
-                      }
+                      defaultValue={field.defaultValue || undefined}
                       render={({ field: controllerField }) => (
                         <div
                           className={`input-group custom-input-group ${
@@ -190,8 +187,7 @@ const ReusableForm = ({
                     <Controller
                       name={field.name}
                       control={control}
-                      // defaultValue={field.defaultValue || ""}
-                      defaultValue={defaultValuesFromBackend[field.name] || ""} // Default to empty string if no value
+                      defaultValue={field.defaultValue || undefined}
                       render={({ field: controllerField }) => (
                         <input
                           {...controllerField}
@@ -227,12 +223,7 @@ const ReusableForm = ({
                     <Controller
                       name={field.name}
                       control={control}
-                      // defaultValue={field.defaultValue || ""}
-                      defaultValue={
-                        defaultValuesFromBackend[field.name] !== undefined
-                          ? defaultValuesFromBackend[field.name] // Use value from backend if available
-                          : field.defaultValue || "" // Fallback to field default value
-                      }
+                      defaultValue={field.defaultValue || undefined}
                       render={({ field: controllerField }) => (
                         <input
                           {...controllerField}
@@ -263,11 +254,7 @@ const ReusableForm = ({
                     <Controller
                       name={field.name}
                       control={control}
-                      defaultValue={
-                        defaultValuesFromBackend[field.name] !== undefined
-                          ? defaultValuesFromBackend[field.name] // Use value from backend if available
-                          : field.defaultValue || "" // Fallback to field default value
-                      }
+                      defaultValue={field.defaultValue || undefined}
                       render={({ field: controllerField }) => {
                         if (field.localOptions) {
                           return (
@@ -284,7 +271,7 @@ const ReusableForm = ({
                                   onSelectChange(e.target.value);
                               }}
                             >
-                              <option value="">
+                              <option value={undefined}>
                                 {defaultValuesFromBackend[field.name]
                                   ? defaultValuesFromBackend[field.name]
                                   : field.placeholder || "Select an option"}
@@ -315,7 +302,7 @@ const ReusableForm = ({
                                   onSelectChange(e.target.value);
                               }}
                             >
-                              <option value="">
+                              <option value={undefined}>
                                 {field.placeholder || "Select an option"}
                               </option>
                               {options[field.name]?.map((option, idx) => (
@@ -342,12 +329,7 @@ const ReusableForm = ({
                     <Controller
                       name={field.name}
                       control={control}
-                      // defaultValue={field.defaultValue || false}
-                      defaultValue={
-                        defaultValuesFromBackend[field.name] !== undefined
-                          ? defaultValuesFromBackend[field.name] // Use value from backend if available
-                          : field.defaultValue || "" // Fallback to field default value
-                      }
+                      defaultValue={field.defaultValue || false}
                       render={({ field: controllerField }) => (
                         <input
                           {...controllerField}
@@ -385,13 +367,7 @@ const ReusableForm = ({
                               <Controller
                                 name={`drugs[${index}].name`}
                                 control={control}
-                                // defaultValue={item.name || ""}
-                                defaultValue={
-                                  defaultValuesFromBackend[field.name] !==
-                                  undefined
-                                    ? defaultValuesFromBackend[field.name] // Use value from backend if available
-                                    : field.defaultValue || "" // Fallback to field default value
-                                }
+                                defaultValue={item.name || ""}
                                 render={({ field }) => (
                                   <input
                                     {...field}
@@ -413,13 +389,7 @@ const ReusableForm = ({
                               <Controller
                                 name={`drugs[${index}].dose`}
                                 control={control}
-                                // defaultValue={item.dose || ""}
-                                defaultValue={
-                                  defaultValuesFromBackend[field.name] !==
-                                  undefined
-                                    ? defaultValuesFromBackend[field.name] // Use value from backend if available
-                                    : field.defaultValue || "" // Fallback to field default value
-                                }
+                                defaultValue={item.dose || ""}
                                 render={({ field }) => (
                                   <input
                                     {...field}
@@ -469,12 +439,7 @@ const ReusableForm = ({
                     <Controller
                       name={field.name}
                       control={control}
-                      // defaultValue={[]}
-                      defaultValue={
-                        defaultValuesFromBackend[field.name] !== undefined
-                          ? defaultValuesFromBackend[field.name] // Use value from backend if available
-                          : field.defaultValue || "" // Fallback to field default value
-                      }
+                      defaultValue={[]}
                       render={({ field: controllerField }) => {
                         useEffect(() => {
                           fetchOptions(field.name);
@@ -525,5 +490,3 @@ const ReusableForm = ({
 };
 
 export default ReusableForm;
-
-// in this code,  default value is comming from api of backend, but because of delay, dont set default value currect
