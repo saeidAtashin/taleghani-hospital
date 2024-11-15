@@ -17,6 +17,7 @@ export default function TasvirBardari() {
   const dt = useRef(null);
   const navigate = useNavigate();
   const { uid } = useParams();
+  const [loading, setLoading] = useState(false);
 
   const numberTemplate = (rowData, { rowIndex }) => {
     return <span>{rowIndex + 1}</span>;
@@ -35,7 +36,7 @@ export default function TasvirBardari() {
   const nameTemplate = (rowData) => {
     return (
       <div>
-        {rowData.records.map((record, index) => (
+        {rowData?.records?.map((record, index) => (
           <span
             key={index}
             onClick={() => navigate(`/dashboard/record/${record.uid}`)}
@@ -60,7 +61,8 @@ export default function TasvirBardari() {
     { field: "persianDate", header: "تاریخ ثبت", body: persianDateTemplate },
   ];
 
-  useEffect(() => {
+  const fetchData = () => {
+    setLoading(true); // Start loading
     axios
       .get(`https://cancerreg.ir/api/v1/records/batch-records/${uid}/`)
       .then((response) => {
@@ -71,8 +73,16 @@ export default function TasvirBardari() {
         }));
         setProducts(fetchedData);
       })
-      .catch((error) => console.error("Error fetching data:", error));
-  }, []);
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+        toast.error("خطا در بارگذاری داده‌ها");
+      })
+      .finally(() => setLoading(false)); // End loading
+  };
+
+  useEffect(() => {
+    fetchData(); // Fetch data when component mounts
+  }, [uid]);
 
   const handlePrint = () => {
     console.log("Printing:", selectedProducts);
@@ -99,7 +109,7 @@ export default function TasvirBardari() {
 
   const handleDelete = () => {
     setProducts(
-      products.filter((product) => !selectedProducts.includes(product))
+      products?.filter((product) => !selectedProducts.includes(product))
     );
     setSelectedProducts([]);
   };
@@ -117,7 +127,15 @@ export default function TasvirBardari() {
     { value: "sonography", label: "سونوگرافی" },
     { value: "petscan", label: "PET-Scan" },
     { value: "mri", label: "MRI" },
+    { value: "corescan", label: "اسکن هسته ای" },
+    { value: "ctscan", label: "CT-Scan" },
+    { value: "mammography", label: "ماموگرافی" },
+    { value: "othergraphy", label: "گرافی ساده" },
   ];
+
+  const handleRefresh = () => {
+    fetchData(); // Refetch data on button click
+  };
 
   const handleSubmit = () => {
     const payload = {
@@ -131,6 +149,7 @@ export default function TasvirBardari() {
       .then((response) => {
         console.log("Data submitted successfully:", response.data);
         setShowAzmayeshPAge("home");
+        handleRefresh();
       })
       .catch((error) => {
         console.error("Error submitting data:", error);
@@ -229,7 +248,7 @@ export default function TasvirBardari() {
             <div className="d-flex justify-content-between align-items-center">
               <h2 className="m-2 pb-3">ثبت دستور تصویربرداری</h2>
               <span
-                className="text-danger cursor-pointer"
+                className="text-danger cursor-pointer "
                 onClick={() => setShowAzmayeshPAge("home")}
               >
                 x
