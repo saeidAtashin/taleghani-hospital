@@ -12,6 +12,9 @@ import AzmayeshatTable from "../components/AzmayeshatTable";
 import { useParams } from "react-router-dom";
 import apiRequest from "../api/apiService";
 import TasvirBardari from "../components/TasvirBardari";
+import SonographyForm from "../components/SonographyForm";
+import Mammography from "../components/Mammography";
+import Mri from "../components/Mri";
 
 const handleFormSubmit = (data) => {};
 
@@ -21,26 +24,27 @@ export const tabsInnerImage = [
     title: "سونوگرافی",
     content: (
       <>
-        <ReusableForm
-          isEditable={false}
-          onlyPost={true}
-          fields={InnerAzmayesh}
-          formSchema={generateReusableSchema(InnerAzmayesh)}
-          onSubmit={handleFormSubmit}
-          inputsPerRow={[1, 2]}
-        />{" "}
+        <SonographyForm />
       </>
     ),
   },
   {
     eventKey: "ماموگرافی",
     title: "ماموگرافی",
-    content: <div>This is the profile content.</div>,
+    content: (
+      <>
+        <Mammography />
+      </>
+    ),
   },
   {
     eventKey: "MRI",
     title: "MRI",
-    content: <div>This is the profile content.</div>,
+    content: (
+      <>
+        <Mri />
+      </>
+    ),
   },
   {
     eventKey: "profile",
