@@ -8,6 +8,7 @@ import SelectableIconItem from "./BadgeIcon";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { tabsInnerImage } from "../pages/PatientsDetails";
+import { toast } from "react-toastify";
 
 export default function TasvirBardari() {
   const [products, setProducts] = useState([]);
@@ -104,12 +105,13 @@ export default function TasvirBardari() {
     setSelectedProducts([]);
   };
 
-  const [selectedOptions, setSelectedOptions] = useState(["petscan"]);
+  const [selectedOptions, setSelectedOptions] = useState([]);
 
   const handleSelectionChange = (selected) => {
     setSelectedOptions(selected);
   };
 
+  console.log("selectedOptions", selectedOptions);
   const { uid } = useParams();
   const [description, setDescreption] = useState("");
 
@@ -123,18 +125,19 @@ export default function TasvirBardari() {
     const payload = {
       patient_uid: uid,
       description: description,
-      content_types: ["sonography", "petscan", "mri"],
+      content_types: selectedOptions,
     };
 
     axios
       .post(`https://cancerreg.ir/api/v1/records/records-order/`, payload)
       .then((response) => {
         console.log("Data submitted successfully:", response.data);
-        // Handle success
+        setShowAzmayeshPAge("home");
       })
       .catch((error) => {
         console.error("Error submitting data:", error);
         // Handle error
+        toast.warning("مشکلی پیش آمده است.");
       });
   };
 
