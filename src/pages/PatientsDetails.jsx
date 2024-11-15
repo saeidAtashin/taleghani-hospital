@@ -3,6 +3,7 @@ import ReusableTabs from "../ReusableForm/ReusableTabs";
 import {
   formFielsIdentity,
   formPatientsFields,
+  formPatientsInformationFields,
   generateReusableSchema,
   InnerAzmayesh,
 } from "../form-fields/FormFields";
@@ -76,7 +77,8 @@ const PatientsDetails = () => {
 
   const [products, setProducts] = useState([]);
   const [userIdentityData, setUserIdentityData] = useState([]);
-  // const [visibleColumns, setVisibleColumns] = useState(columns);
+  const [userRecords, setuserRecords] = useState([]);
+  const [solidIdentityData, setsolidIdentityData] = useState(columns);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -109,6 +111,38 @@ const PatientsDetails = () => {
         );
         const identityData = response.data.data;
         setUserIdentityData(identityData);
+      } catch (error) {
+        console.error("Error fetching patient data:", error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchDataRecord = async () => {
+      try {
+        const response = await apiRequest(
+          "GET",
+          `/patient/patient-records/${uid}`
+        );
+        const recordsData = response.data.data;
+        setuserRecords(recordsData);
+      } catch (error) {
+        console.error("Error fetching patient data:", error);
+      }
+    };
+    fetchDataRecord();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await apiRequest(
+          "GET",
+          `/patient/patient-info/${uid}`
+        );
+        const solidData = response.data.data;
+        setsolidIdentityData(solidData);
       } catch (error) {
         console.error("Error fetching patient data:", error);
       }
@@ -153,6 +187,7 @@ const PatientsDetails = () => {
             formSchema={generateReusableSchema(formPatientsFields)}
             onSubmit={handleFormSubmit}
             inputsPerRow={[1, 2, 2, 2, 2, 1, 3, 2, 1]}
+            defaultValuesFromBackend={userRecords} // Pass default values here
           />
         </div>
       ),
@@ -160,7 +195,19 @@ const PatientsDetails = () => {
     {
       key: "اطلاعات بیماری",
       label: "اطلاعات بیماری",
-      content: <div>اطلاعات بیماری</div>,
+      content: (
+        <div>
+          <ReusableForm
+            isEditable={true}
+            fields={formPatientsInformationFields}
+            formSchema={generateReusableSchema(formPatientsInformationFields)}
+            onSubmit={handleFormSubmit}
+            inputsPerRow={[1, 2, 3, 2, 2, 2, 2, 3, 2, 1]}
+            defaultValuesFromBackend={solidIdentityData} // Pass default values here
+          />
+        </div>
+        // in this code, I want that inputs, have value, set them when came from back, and set them as default value.
+      ),
     },
     {
       key: "تصویربرداری",

@@ -4,10 +4,9 @@ import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import moment from "jalali-moment";
 import PillsTabs from "./PillsTabs";
-import BadgeIcon from "./BadgeIcon";
 import SelectableIconItem from "./BadgeIcon";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { tabsInnerImage } from "../pages/PatientsDetails";
 
 export default function TasvirBardari() {
@@ -15,10 +14,10 @@ export default function TasvirBardari() {
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [showAzmayeshPAge, setShowAzmayeshPAge] = useState("home");
   const dt = useRef(null);
-  const navigate = useNavigate(); // Use history for navigation
+  const navigate = useNavigate();
 
   const numberTemplate = (rowData, { rowIndex }) => {
-    return <span>{rowIndex + 1}</span>; // Display row index as the row number
+    return <span>{rowIndex + 1}</span>;
   };
 
   const persianDateTemplate = (rowData) => {
@@ -37,7 +36,7 @@ export default function TasvirBardari() {
         {rowData.records.map((record, index) => (
           <span
             key={index}
-            onClick={() => navigate(`/dashboard/record/${record.uid}`)} // Navigate on click
+            onClick={() => navigate(`/dashboard/record/${record.uid}`)}
             style={{
               cursor: "pointer",
               color:
@@ -60,7 +59,6 @@ export default function TasvirBardari() {
   ];
 
   useEffect(() => {
-    // Fetch data from the API
     axios
       .get(
         "https://cancerreg.ir/api/v1/records/batch-records/f8807538-e9cd-455d-a7d2-c36f10410d9d/"
@@ -69,7 +67,7 @@ export default function TasvirBardari() {
         const fetchedData = response.data.results.map((item) => ({
           ...item,
           records: item.records,
-          created_at: moment().format("YYYY-MM-DD"), // Example date, replace with actual if available
+          created_at: moment().format("YYYY-MM-DD"),
         }));
         setProducts(fetchedData);
       })
@@ -78,7 +76,6 @@ export default function TasvirBardari() {
 
   const handlePrint = () => {
     console.log("Printing:", selectedProducts);
-    // Add your print logic here
   };
 
   const headerNew = (
@@ -104,20 +101,42 @@ export default function TasvirBardari() {
     setProducts(
       products.filter((product) => !selectedProducts.includes(product))
     );
-    setSelectedProducts([]); // Clear selection after delete
+    setSelectedProducts([]);
   };
 
-  const [selectedOptions, setSelectedOptions] = useState(["opt1"]);
+  const [selectedOptions, setSelectedOptions] = useState(["petscan"]);
 
   const handleSelectionChange = (selected) => {
     setSelectedOptions(selected);
   };
 
+  const { uid } = useParams();
+  const [description, setDescreption] = useState("");
+
   const options = [
-    { value: "opt1", label: "CEA" },
-    { value: "opt2", label: "CA125" },
-    { value: "opt3", label: "CA19-9" },
+    { value: "sonography", label: "سونوگرافی" },
+    { value: "petscan", label: "PET-Scan" },
+    { value: "mri", label: "MRI" },
   ];
+
+  const handleSubmit = () => {
+    const payload = {
+      patient_uid: uid,
+      description: description,
+      content_types: ["sonography", "petscan", "mri"],
+    };
+
+    axios
+      .post(`https://cancerreg.ir/api/v1/records/records-order/`, payload)
+      .then((response) => {
+        console.log("Data submitted successfully:", response.data);
+        // Handle success
+      })
+      .catch((error) => {
+        console.error("Error submitting data:", error);
+        // Handle error
+      });
+  };
 
   return (
     <>
@@ -228,6 +247,32 @@ export default function TasvirBardari() {
           </div>
         )
       )}
+      <div className="m-2">
+        <label htmlFor="description" className="label">
+          توضیحات
+        </label>
+        <textarea
+          type="text"
+          className={`form-control controllerdecrepton`}
+          id="description"
+          placeholder={"توضیحات مرتبط با آزمایش را وارد کنید"}
+          disabled={false}
+          onChange={(e) => {
+            setDescreption(e.target.value);
+          }}
+        />
+      </div>
+      <div className="m-2 d-flex justify-content-between mt-4">
+        <>
+          <button
+            onClick={handleSubmit}
+            type="submit"
+            className="btn btn-primary w-100"
+          >
+            تایید و ثبت دستور تصویربرداری ها
+          </button>
+        </>
+      </div>
     </>
   );
 }
