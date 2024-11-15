@@ -16,6 +16,7 @@ export default function TasvirBardari() {
   const [showAzmayeshPAge, setShowAzmayeshPAge] = useState("home");
   const dt = useRef(null);
   const navigate = useNavigate();
+  const { uid } = useParams();
 
   const numberTemplate = (rowData, { rowIndex }) => {
     return <span>{rowIndex + 1}</span>;
@@ -61,9 +62,7 @@ export default function TasvirBardari() {
 
   useEffect(() => {
     axios
-      .get(
-        "https://cancerreg.ir/api/v1/records/batch-records/f8807538-e9cd-455d-a7d2-c36f10410d9d/"
-      )
+      .get(`https://cancerreg.ir/api/v1/records/batch-records/${uid}/`)
       .then((response) => {
         const fetchedData = response.data.results.map((item) => ({
           ...item,
@@ -112,7 +111,6 @@ export default function TasvirBardari() {
   };
 
   console.log("selectedOptions", selectedOptions);
-  const { uid } = useParams();
   const [description, setDescreption] = useState("");
 
   const options = [
