@@ -247,35 +247,35 @@ export default function TasvirBardari() {
               iconColor="green"
               size="1.2rem"
             />
+            <div className="">
+              <label htmlFor="description" className="label">
+                توضیحات
+              </label>
+              <textarea
+                type="text"
+                className={`form-control controllerdecrepton`}
+                id="description"
+                placeholder={"توضیحات مرتبط با آزمایش را وارد کنید"}
+                disabled={false}
+                onChange={(e) => {
+                  setDescreption(e.target.value);
+                }}
+              />
+            </div>
+            <div className="d-flex justify-content-between mt-4">
+              <>
+                <button
+                  onClick={handleSubmit}
+                  type="submit"
+                  className="btn btn-primary w-100"
+                >
+                  تایید و ثبت دستور تصویربرداری ها
+                </button>
+              </>
+            </div>
           </div>
         )
       )}
-      <div className="m-2">
-        <label htmlFor="description" className="label">
-          توضیحات
-        </label>
-        <textarea
-          type="text"
-          className={`form-control controllerdecrepton`}
-          id="description"
-          placeholder={"توضیحات مرتبط با آزمایش را وارد کنید"}
-          disabled={false}
-          onChange={(e) => {
-            setDescreption(e.target.value);
-          }}
-        />
-      </div>
-      <div className="m-2 d-flex justify-content-between mt-4">
-        <>
-          <button
-            onClick={handleSubmit}
-            type="submit"
-            className="btn btn-primary w-100"
-          >
-            تایید و ثبت دستور تصویربرداری ها
-          </button>
-        </>
-      </div>
     </>
   );
 }
