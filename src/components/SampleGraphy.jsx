@@ -3,16 +3,13 @@ import axios from "axios";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 
-const Mammography = () => {
+const SampleGraphy = () => {
   const { uid } = useParams();
   const [formData, setFormData] = useState({
     patient_uid: uid,
     date: "",
-    sizes: [{ size: "", site: "" }],
+    title: "",
     description: "",
-    // batch_uid: "",
-    // birads: "",
-    // echogenicity: "",
   });
 
   const handleInputChange = (index, event) => {
@@ -27,13 +24,6 @@ const Mammography = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const addInputFields = () => {
-    setFormData({
-      ...formData,
-      sizes: [...formData.sizes, { size: "", site: "" }],
-    });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formattedData = {
@@ -44,7 +34,7 @@ const Mammography = () => {
 
     try {
       const response = await axios.post(
-        "https://cancerreg.ir/api/v1/records/mammography/",
+        "https://cancerreg.ir/api/v1/records/other-graphy/",
         formattedData
       );
       alert("Data submitted successfully");
@@ -67,38 +57,16 @@ const Mammography = () => {
         />
       </Form.Group>
 
-      {formData.sizes.map((field, index) => (
-        <Row key={index} className="my-3">
-          <Col>
-            <Form.Group>
-              <Form.Label>Size</Form.Label>
-              <Form.Control
-                type="number"
-                name="size"
-                value={field.size}
-                onChange={(e) => handleInputChange(index, e)}
-                required
-              />
-            </Form.Group>
-          </Col>
-          <Col>
-            <Form.Group>
-              <Form.Label>Site</Form.Label>
-              <Form.Control
-                type="text"
-                name="site"
-                value={field.site}
-                onChange={(e) => handleInputChange(index, e)}
-                required
-              />
-            </Form.Group>
-          </Col>
-        </Row>
-      ))}
-
-      <Button variant="secondary" onClick={addInputFields}>
-        Add More
-      </Button>
+      <Form.Group>
+        <Form.Label>عنوان</Form.Label>
+        <Form.Control
+          type="text"
+          name="title"
+          value={formData.title}
+          onChange={(e) => handleInputChange(index, e)}
+          required
+        />
+      </Form.Group>
 
       <Row>
         <Col>
@@ -123,4 +91,4 @@ const Mammography = () => {
   );
 };
 
-export default Mammography;
+export default SampleGraphy;

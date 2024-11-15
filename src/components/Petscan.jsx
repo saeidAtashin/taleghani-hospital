@@ -3,16 +3,14 @@ import axios from "axios";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 
-const Mammography = () => {
+const Petscan = () => {
   const { uid } = useParams();
   const [formData, setFormData] = useState({
     patient_uid: uid,
     date: "",
+    suv_max: "",
     sizes: [{ size: "", site: "" }],
     description: "",
-    // batch_uid: "",
-    // birads: "",
-    // echogenicity: "",
   });
 
   const handleInputChange = (index, event) => {
@@ -44,7 +42,7 @@ const Mammography = () => {
 
     try {
       const response = await axios.post(
-        "https://cancerreg.ir/api/v1/records/mammography/",
+        "https://cancerreg.ir/api/v1/records/corescan/",
         formattedData
       );
       alert("Data submitted successfully");
@@ -63,7 +61,6 @@ const Mammography = () => {
           name="date"
           value={formData.date}
           onChange={handleFieldChange}
-          required
         />
       </Form.Group>
 
@@ -77,7 +74,6 @@ const Mammography = () => {
                 name="size"
                 value={field.size}
                 onChange={(e) => handleInputChange(index, e)}
-                required
               />
             </Form.Group>
           </Col>
@@ -89,7 +85,6 @@ const Mammography = () => {
                 name="site"
                 value={field.site}
                 onChange={(e) => handleInputChange(index, e)}
-                required
               />
             </Form.Group>
           </Col>
@@ -99,6 +94,17 @@ const Mammography = () => {
       <Button variant="secondary" onClick={addInputFields}>
         Add More
       </Button>
+
+      <Form.Group className="my-4">
+        <Form.Label>SUV max</Form.Label>
+        <Form.Control
+          type="text"
+          name="suv_max"
+          value={formData.suv_max}
+          onChange={(e) => handleInputChange(index, e)}
+          placeholder="مقدار SUV max را وارد نمایید"
+        />
+      </Form.Group>
 
       <Row>
         <Col>
@@ -110,7 +116,6 @@ const Mammography = () => {
               name="description"
               value={formData.description}
               onChange={handleFieldChange}
-              required
               placeholder="توضیحات مرتبط با آزمایش را وارد کنید"
             />
           </Form.Group>
@@ -123,4 +128,4 @@ const Mammography = () => {
   );
 };
 
-export default Mammography;
+export default Petscan;

@@ -13,10 +13,14 @@ const PillsTabs = ({ tabs }) => {
       <Nav variant="pills" className="">
         {tabs.map((tab, index) => (
           <Nav.Item key={index} className="m-2">
-            <Nav.Link className="border" eventKey={tab.eventKey}>{tab.title}</Nav.Link>
+            <Nav.Link className="border" eventKey={tab.eventKey}>
+              {tab.title}
+            </Nav.Link>
           </Nav.Item>
         ))}
       </Nav>
+      <h4 className="my-4 mx-2">ثبت {activeTab} جدید</h4>
+
       <Tab.Content className="mt-3">
         {tabs.map((tab, index) => (
           <Tab.Pane eventKey={tab.eventKey} key={index}>

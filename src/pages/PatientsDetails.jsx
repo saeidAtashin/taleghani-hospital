@@ -15,12 +15,16 @@ import TasvirBardari from "../components/TasvirBardari";
 import SonographyForm from "../components/SonographyForm";
 import Mammography from "../components/Mammography";
 import Mri from "../components/Mri";
+import Ctscan from "../components/Ctscan";
+import ScanHastei from "../components/ScanHastei";
+import Petscan from "../components/Petscan";
+import SampleGraphy from "../components/SampleGraphy";
 
 const handleFormSubmit = (data) => {};
 
 export const tabsInnerImage = [
   {
-    eventKey: "home",
+    eventKey: "سونوگرافی",
     title: "سونوگرافی",
     content: (
       <>
@@ -47,24 +51,40 @@ export const tabsInnerImage = [
     ),
   },
   {
-    eventKey: "profile",
+    eventKey: "CT-Scan",
     title: "CT-Scan",
-    content: <div>This is the profile content.</div>,
+    content: (
+      <>
+        <Ctscan />
+      </>
+    ),
   },
   {
     eventKey: "اسکن هسته ای",
     title: "اسکن هسته ای",
-    content: <div>This is the profile content.</div>,
+    content: (
+      <>
+        <ScanHastei />
+      </>
+    ),
   },
   {
     eventKey: "PET-Scan",
     title: "PET-Scan",
-    content: <div>This is the profile content.</div>,
+    content: (
+      <>
+        <Petscan />
+      </>
+    ),
   },
   {
     eventKey: "گرافی ساده",
     title: "گرافی ساده",
-    content: <div>This is the contact content.</div>,
+    content: (
+      <>
+        <SampleGraphy />
+      </>
+    ),
   },
 ];
 

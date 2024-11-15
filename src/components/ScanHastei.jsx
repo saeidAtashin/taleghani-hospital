@@ -3,16 +3,13 @@ import axios from "axios";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 
-const Mammography = () => {
+const ScanHastei = () => {
   const { uid } = useParams();
   const [formData, setFormData] = useState({
     patient_uid: uid,
     date: "",
     sizes: [{ size: "", site: "" }],
     description: "",
-    // batch_uid: "",
-    // birads: "",
-    // echogenicity: "",
   });
 
   const handleInputChange = (index, event) => {
@@ -44,7 +41,7 @@ const Mammography = () => {
 
     try {
       const response = await axios.post(
-        "https://cancerreg.ir/api/v1/records/mammography/",
+        "https://cancerreg.ir/api/v1/records/corescan/",
         formattedData
       );
       alert("Data submitted successfully");
@@ -123,4 +120,4 @@ const Mammography = () => {
   );
 };
 
-export default Mammography;
+export default ScanHastei;
