@@ -72,6 +72,7 @@ export default function TasvirBardari() {
           created_at: moment().format("YYYY-MM-DD"),
         }));
         setProducts(fetchedData);
+        setSelectedOptions([]);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -94,14 +95,20 @@ export default function TasvirBardari() {
         label="ثبت نتیجه تصویربرداری"
         icon="pi pi-plus"
         severity="primary"
-        onClick={() => setShowAzmayeshPAge("orderRegister")}
+        onClick={() => {
+          setSelectedOptions([]);
+          setShowAzmayeshPAge("orderRegister");
+        }}
         className="rounded-3"
       />
       <Button
         label="ثبت دستور تصویربرداری"
         icon="pi pi-plus"
         severity="primary"
-        onClick={() => setShowAzmayeshPAge("orderRegisterOrder")}
+        onClick={() => {
+          setSelectedOptions([]);
+          setShowAzmayeshPAge("orderRegisterOrder");
+        }}
         className="rounded-3"
       />
     </div>
@@ -235,7 +242,11 @@ export default function TasvirBardari() {
             <h2 className="m-2 pb-3">ثبت نتیجه تصویربرداری</h2>
             <span
               className="text-danger cursor-pointer"
-              onClick={() => setShowAzmayeshPAge("home")}
+              style={{ fontSize: "32px" }}
+              onClick={() => {
+                setSelectedOptions([]);
+                setShowAzmayeshPAge("home");
+              }}
             >
               x
             </span>
@@ -248,8 +259,12 @@ export default function TasvirBardari() {
             <div className="d-flex justify-content-between align-items-center">
               <h2 className="m-2 pb-3">ثبت دستور تصویربرداری</h2>
               <span
+                style={{ fontSize: "32px" }}
                 className="text-danger cursor-pointer "
-                onClick={() => setShowAzmayeshPAge("home")}
+                onClick={() => {
+                  setSelectedOptions([]);
+                  setShowAzmayeshPAge("home");
+                }}
               >
                 x
               </span>
@@ -285,6 +300,7 @@ export default function TasvirBardari() {
                   onClick={handleSubmit}
                   type="submit"
                   className="btn btn-primary w-100"
+                  disabled={loading}
                 >
                   تایید و ثبت دستور تصویربرداری ها
                 </button>

@@ -129,7 +129,7 @@ export default function AzmayeshatTable() {
     setSelectedProducts([]); // Clear selection after delete
   };
 
-  const [selectedOptions, setSelectedOptions] = useState(["opt1"]);
+  const [selectedOptions, setSelectedOptions] = useState([]);
 
   const handleSelectionChange = (selected) => {
     setSelectedOptions(selected);
@@ -220,7 +220,11 @@ export default function AzmayeshatTable() {
               <h2 className="m-2 pb-3">ثبت نتیجه آزمایش</h2>
               <span
                 className="text-danger cursor-pointer"
-                onClick={() => setShowAzmayeshPAge("home")}
+                style={{ fontSize: "32px" }}
+                onClick={() => {
+                  setSelectedOptions([]);
+                  setShowAzmayeshPAge("home");
+                }}
               >
                 x
               </span>
@@ -236,7 +240,11 @@ export default function AzmayeshatTable() {
                 <h2 className="m-2 pb-3">ثبت دستور آزمایش</h2>
                 <span
                   className="text-danger cursor-pointer"
-                  onClick={() => setShowAzmayeshPAge("home")}
+                  style={{ fontSize: "32px" }}
+                  onClick={() => {
+                    setSelectedOptions([]);
+                    setShowAzmayeshPAge("home");
+                  }}
                 >
                   x
                 </span>
