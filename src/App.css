@@ -228,3 +228,15 @@ a.sidebar-link:hover {
     direction: rtl;    /* Set RTL direction for each cell */
   }
   
+
+  .p-menuitem-link {
+    display: flex;
+    gap: 4px;
+}
+
+.p-menuitem-link {
+    color: #838383 !important;
+}
+.p-highlight .p-menuitem-link{
+    color: #0D6EFD !important;
+}

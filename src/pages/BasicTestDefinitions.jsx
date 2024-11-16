@@ -1,7 +1,12 @@
 import React from "react";
+import TabComponent from "../components/TabComponent";
 
 const BasicTestDefinitions = () => {
-  return <div>BasicTestDefinitions</div>;
+  return (
+    <>
+      <TabComponent />
+    </>
+  );
 };
 
 export default BasicTestDefinitions;
