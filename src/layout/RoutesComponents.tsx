@@ -7,6 +7,7 @@ import { UserContextProvider } from "./UserContextProvider";
 import DashboardLayout from "./DashboardLayout";
 import ColumnToggleDemo from "../tables/ColumnToggleDemo";
 import GraphicRecord from "../pages/GraphicRecord";
+import BasicTestDefinitions from "../pages/BasicTestDefinitions";
 
 const LoginPage = React.lazy(() => import("../pages/LoginPage"));
 const DashboardPage = React.lazy(() => import("../pages/DashboardPage"));
@@ -92,11 +93,9 @@ export default function RoutesWithAnimation() {
                   }
                 />
               </Route>
-              <Route
-                path="/dashboard/basic-patient-definitions"
-                element={<DashboardLayout />}
-              >
+              <Route element={<DashboardLayout />}>
                 <Route
+                  path="/dashboard/basic-patient-definitions"
                   index
                   element={
                     <React.Suspense fallback={<Fallback />}>
@@ -104,6 +103,19 @@ export default function RoutesWithAnimation() {
                     </React.Suspense>
                   }
                 />
+
+                {/*  */}
+
+                <Route
+                  path="/dashboard/basic-test-definitions"
+                  index
+                  element={
+                    <React.Suspense fallback={<Fallback />}>
+                      <BasicTestDefinitions />
+                    </React.Suspense>
+                  }
+                />
+
                 <Route
                   path="home"
                   element={

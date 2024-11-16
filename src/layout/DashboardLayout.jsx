@@ -187,6 +187,21 @@ function DashboardLayout() {
                 </a>
               </li>
             </ul>
+            <ul
+              className={`sidebar-dropdown list-unstyled ${
+                activeSubmenu === "definitions" ? "show" : "d-none"
+              }`}
+            >
+              <li className="sidebar-item d-flex">
+                <a
+                  href="/dashboard/basic-test-definitions"
+                  className="sidebar-link w-100"
+                >
+                  <img src="/images/test.svg" alt="definitions" />
+                  <span>اطلاعات آزمایشات</span>
+                </a>
+              </li>
+            </ul>
           </li>
         </ul>
         <div className="sidebar-footer">
