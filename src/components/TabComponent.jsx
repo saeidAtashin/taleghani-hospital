@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { TabMenu } from "primereact/tabmenu";
-import { Dialog } from "primereact/dialog"; // Import PrimeReact Dialog
-import { InputText } from "primereact/inputtext"; // Import PrimeReact InputText
-import { Button } from "primereact/button"; // Import PrimeReact Button
+import { Dialog } from "primereact/dialog";
+import { InputText } from "primereact/inputtext";
+import { Button } from "primereact/button";
 import axios from "axios";
+import Swal from "sweetalert2";
 import TabsComponents from "./TabsComponents";
 
 export default function TabComponent() {
   const [activeIndex, setActiveIndex] = useState(3);
-  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refresh, setRefresh] = useState(false);
   const [items, setItems] = useState([
@@ -18,6 +18,12 @@ export default function TabComponent() {
       command: () => openModal(),
     },
   ]);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [name, setName] = useState("");
+  const [ordering, setOrdering] = useState("");
+  const [selectedItemUid, setSelectedItemUid] = useState(null);
+
   useEffect(() => {
     const fetchCategoryList = async () => {
       try {
@@ -25,11 +31,25 @@ export default function TabComponent() {
           "https://cancerreg.ir/api/v1/tests/category/"
         );
 
-        // Transform the response data into the format needed for items
         const fetchedItems = response?.data?.data?.results.map((item) => ({
           label: item.name,
           icon: "pi pi-cog",
           uid: item.uid,
+          template: (
+            <div>
+              {item.name} {" "}
+              <i
+                className="pi pi-pencil"
+                style={{ marginLeft: "10px", cursor: "pointer" }}
+                onClick={() => openEditModal(item)}
+              />
+              <i
+                className="pi pi-trash"
+                style={{ marginLeft: "10px", cursor: "pointer" }}
+                onClick={() => handleDelete(item.uid)}
+              />
+            </div>
+          ),
         }));
 
         setItems([
@@ -40,8 +60,6 @@ export default function TabComponent() {
           },
           ...fetchedItems,
         ]);
-
-        console.log("response.data", response?.data?.data?.results);
       } catch (err) {
         console.error(err.message);
       } finally {
@@ -52,53 +70,69 @@ export default function TabComponent() {
     fetchCategoryList();
   }, [refresh]);
 
-  console.log("itrms", items);
-  const [isModalVisible, setModalVisible] = useState(false);
-  const [name, setName] = useState("");
-  const [ordering, setOrdering] = useState("");
-  // setRefresh
-  // Function to open the modal
   const openModal = () => {
+    setIsEditMode(false);
     setModalVisible(true);
+    setName("");
+    setOrdering("");
+    setSelectedItemUid(null);
   };
 
-  // Function to close the modal
+  const openEditModal = (item) => {
+    setIsEditMode(true);
+    setModalVisible(true);
+    setName(item.name);
+    setOrdering(item.ordering || "");
+    setSelectedItemUid(item.uid);
+  };
+
   const closeModal = () => {
     setModalVisible(false);
   };
 
-  // Function to handle API submission
   const handleSubmit = async () => {
     try {
-      // Example API call
-      const response = await fetch(
-        "https://cancerreg.ir/api/v1/tests/mng-category/",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ name, ordering }),
-        }
-      );
-
-      const data = await response.json();
-
-      if (response?.status >= 200 && response?.status < 400) {
-        // Close the modal and reset inputs
-        closeModal();
-        setName("");
-        setOrdering("");
-        setRefresh(!refresh);
+      if (isEditMode && selectedItemUid) {
+        await axios.put(
+          `https://cancerreg.ir/api/v1/tests/mng-category/${selectedItemUid}`,
+          { name, ordering }
+        );
+      } else {
+        await axios.post("https://cancerreg.ir/api/v1/tests/mng-category/", {
+          name,
+          ordering,
+        });
       }
-      // Add the response data to items
-      // setItems((prevItems) => [
-      //   { label: data.label || name, icon: "pi pi-cog" }, // Use the response label or name
-      //   ...prevItems,
-      // ]);
+      closeModal();
+      setRefresh(!refresh);
     } catch (error) {
       console.error("Error submitting data:", error);
     }
+  };
+
+  const handleDelete = (uid) => {
+    Swal.fire({
+      title: "از حذف اطمینان دارید؟",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "حذف",
+      cancelButtonText: "لغو",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await axios.delete(
+            `https://cancerreg.ir/api/v1/tests/mng-category/${uid}`
+          );
+          Swal.fire("حذف شد", "این مورد با موفقیت حذف شد", "success");
+          setRefresh(!refresh);
+        } catch (error) {
+          console.error("Error deleting item:", error);
+          Swal.fire("Error!", "Failed to delete the item.", "error");
+        }
+      }
+    });
   };
 
   return (
@@ -107,7 +141,11 @@ export default function TabComponent() {
       <TabMenu
         className=""
         scrollable
-        model={items}
+        model={items.map((item) => ({
+          label: item.template || item.label,
+          icon: item.icon,
+          command: item.command,
+        }))}
         activeIndex={activeIndex}
         onTabChange={(e) => setActiveIndex(e.index)}
       />
@@ -120,9 +158,8 @@ export default function TabComponent() {
         <div>test2</div>
       )}
 
-      {/* Modal for adding a new group */}
       <Dialog
-        header="Add New Group"
+        header={isEditMode ? "Edit Group" : "Add New Group"}
         visible={isModalVisible}
         style={{ width: "30vw" }}
         onHide={closeModal}
