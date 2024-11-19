@@ -20,8 +20,8 @@ const TabsComponents = () => {
           </Tab>
         </TabList>
 
-        <TabPanel>
-          <div className="panel-content">
+        <TabPanel >
+          <div className="panel-content h-100 d-flex align-items-center justify-content-center border">
             <h2>Any content 1</h2>
           </div>
         </TabPanel>

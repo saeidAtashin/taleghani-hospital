@@ -289,6 +289,9 @@ a.sidebar-link:hover {
   .react-tabs__tab-panel {
     display: none;
     width: 100%;
+    margin: 24px;
+    border-radius: 8px;
+
   }
   
   .react-tabs__tab-panel--selected {
