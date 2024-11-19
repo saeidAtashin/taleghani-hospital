@@ -34,13 +34,16 @@ export default function TabComponent() {
   const handleSubmit = async () => {
     try {
       // Example API call
-      const response = await fetch("https://cancerreg.ir/api/v1/tests/mng-category/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, ordering }),
-      });
+      const response = await fetch(
+        "https://cancerreg.ir/api/v1/tests/mng-category/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name, ordering }),
+        }
+      );
 
       const data = await response.json();
 
@@ -69,6 +72,8 @@ export default function TabComponent() {
         activeIndex={activeIndex}
         onTabChange={(e) => setActiveIndex(e.index)}
       />
+
+      {activeIndex === 1 ? <div>test</div> : <div>test2</div>}
 
       {/* Modal for adding a new group */}
       <Dialog
