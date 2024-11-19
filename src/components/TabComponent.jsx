@@ -1,25 +1,62 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TabMenu } from "primereact/tabmenu";
 import { Dialog } from "primereact/dialog"; // Import PrimeReact Dialog
 import { InputText } from "primereact/inputtext"; // Import PrimeReact InputText
 import { Button } from "primereact/button"; // Import PrimeReact Button
+import axios from "axios";
+import TabsComponents from "./TabsComponents";
 
 export default function TabComponent() {
   const [activeIndex, setActiveIndex] = useState(3);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [refresh, setRefresh] = useState(false);
   const [items, setItems] = useState([
     {
-      label: "اضافه کردن گروه جدید",
+      label: "گروه جدید",
       icon: "pi pi-plus-circle",
-      command: () => openModal(), // Call openModal function
+      command: () => openModal(),
     },
-    { label: "Transactions", icon: "pi pi-cog" },
-    { label: "Products", icon: "pi pi-cog" },
   ]);
+  useEffect(() => {
+    const fetchCategoryList = async () => {
+      try {
+        const response = await axios.get(
+          "https://cancerreg.ir/api/v1/tests/category/"
+        );
 
+        // Transform the response data into the format needed for items
+        const fetchedItems = response?.data?.data?.results.map((item) => ({
+          label: item.name,
+          icon: "pi pi-cog",
+          uid: item.uid,
+        }));
+
+        setItems([
+          {
+            label: "گروه جدید",
+            icon: "pi pi-plus-circle",
+            command: () => openModal(),
+          },
+          ...fetchedItems,
+        ]);
+
+        console.log("response.data", response?.data?.data?.results);
+      } catch (err) {
+        console.error(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategoryList();
+  }, [refresh]);
+
+  console.log("itrms", items);
   const [isModalVisible, setModalVisible] = useState(false);
   const [name, setName] = useState("");
   const [ordering, setOrdering] = useState("");
-
+  // setRefresh
   // Function to open the modal
   const openModal = () => {
     setModalVisible(true);
@@ -47,16 +84,18 @@ export default function TabComponent() {
 
       const data = await response.json();
 
+      if (response?.status >= 200 && response?.status < 400) {
+        // Close the modal and reset inputs
+        closeModal();
+        setName("");
+        setOrdering("");
+        setRefresh(!refresh);
+      }
       // Add the response data to items
-      setItems((prevItems) => [
-        { label: data.label || name, icon: "pi pi-cog" }, // Use the response label or name
-        ...prevItems,
-      ]);
-
-      // Close the modal and reset inputs
-      closeModal();
-      setName("");
-      setOrdering("");
+      // setItems((prevItems) => [
+      //   { label: data.label || name, icon: "pi pi-cog" }, // Use the response label or name
+      //   ...prevItems,
+      // ]);
     } catch (error) {
       console.error("Error submitting data:", error);
     }
@@ -73,7 +112,13 @@ export default function TabComponent() {
         onTabChange={(e) => setActiveIndex(e.index)}
       />
 
-      {activeIndex === 1 ? <div>test</div> : <div>test2</div>}
+      {activeIndex === 1 ? (
+        <>
+          <TabsComponents />
+        </>
+      ) : (
+        <div>test2</div>
+      )}
 
       {/* Modal for adding a new group */}
       <Dialog
