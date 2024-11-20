@@ -8,7 +8,7 @@ import Swal from "sweetalert2";
 import TabsComponents from "./TabsComponents";
 
 export default function TabComponent() {
-  const [activeIndex, setActiveIndex] = useState(3);
+  const [activeIndex, setActiveIndex] = useState(1);
   const [loading, setLoading] = useState(true);
   const [refresh, setRefresh] = useState(false);
   const [items, setItems] = useState([
@@ -37,7 +37,7 @@ export default function TabComponent() {
           uid: item.uid,
           template: (
             <div>
-              {item.name} {" "}
+              {item.name}{" "}
               <i
                 className="pi pi-pencil"
                 style={{ marginLeft: "10px", cursor: "pointer" }}
@@ -149,14 +149,8 @@ export default function TabComponent() {
         activeIndex={activeIndex}
         onTabChange={(e) => setActiveIndex(e.index)}
       />
-
-      {activeIndex === 1 ? (
-        <>
-          <TabsComponents />
-        </>
-      ) : (
-        <div>test2</div>
-      )}
+      {/* TabsComponents is rendered for all tabs */}
+      <TabsComponents />
 
       <Dialog
         header={isEditMode ? "Edit Group" : "Add New Group"}
