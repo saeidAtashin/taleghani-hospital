@@ -146,7 +146,7 @@ export default function TabComponent() {
           icon: item.icon,
           command: item.command,
         }))}
-        activeIndex={activeIndex}
+        activeIndex={activeIndex === 0 ? 1 : activeIndex}
         onTabChange={(e) => setActiveIndex(e.index)}
       />
       {/* TabsComponents is rendered for all tabs */}
