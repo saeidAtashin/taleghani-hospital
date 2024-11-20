@@ -21,7 +21,7 @@ export default function TabComponent() {
   const [isModalVisible, setModalVisible] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [name, setName] = useState("");
-  const [ordering, setOrdering] = useState("");
+  const [ordering, setOrdering] = useState(0);
   const [selectedItemUid, setSelectedItemUid] = useState(null);
 
   useEffect(() => {
@@ -74,7 +74,7 @@ export default function TabComponent() {
     setIsEditMode(false);
     setModalVisible(true);
     setName("");
-    setOrdering("");
+    setOrdering(0);
     setSelectedItemUid(null);
   };
 
@@ -82,7 +82,7 @@ export default function TabComponent() {
     setIsEditMode(true);
     setModalVisible(true);
     setName(item.name);
-    setOrdering(item.ordering || "");
+    setOrdering(item.ordering || 0);
     setSelectedItemUid(item.uid);
   };
 
@@ -153,28 +153,42 @@ export default function TabComponent() {
       <TabsComponents />
 
       <Dialog
-        header={isEditMode ? "Edit Group" : "Add New Group"}
+        header={isEditMode ? "Edit Group" : "اضافه کردن گروه جدید"}
         visible={isModalVisible}
         style={{ width: "30vw" }}
         onHide={closeModal}
       >
-        <div className="p-field">
-          <label htmlFor="name">Name</label>
-          <InputText
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
+        <div className="d-flex flex-column">
+          <div className="p-field d-flex flex-column mb-4">
+            <label htmlFor="name">نام گروه</label>
+            <InputText
+              id="name"
+              placeholder="نام گروه را وارد نمایید"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+          <div className="p-field d-flex flex-column mb-4">
+            <label htmlFor="ordering">ترتیب</label>
+            <InputText
+              id="ordering"
+              value={ordering}
+              onChange={(e) => setOrdering(e.target.value)}
+            />
+          </div>
+          <div className="d-flex flex-row-reverse gap-2">
+            <Button
+              className="align-left rounded-3"
+              label="اضافه کردن"
+              onClick={handleSubmit}
+            />
+            <Button
+              className="align-left rounded-3 bg-white text-dark border"
+              label="لغو"
+              onClick={closeModal}
+            />
+          </div>
         </div>
-        <div className="p-field">
-          <label htmlFor="ordering">Ordering</label>
-          <InputText
-            id="ordering"
-            value={ordering}
-            onChange={(e) => setOrdering(e.target.value)}
-          />
-        </div>
-        <Button label="Submit" onClick={handleSubmit} />
       </Dialog>
     </div>
   );
