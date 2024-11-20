@@ -32,16 +32,13 @@ const TabsComponents = () => {
                 <Button
                   className="align-left rounded-3"
                   label="ذخیره تغییرات"
-                  // onClick={handleSubmit}
                 />
                 <Button
                   className="align-left rounded-3 bg-white text-dark border"
                   label="لغو"
-                  // onClick={closeModal}
                 />
               </div>
               <div className="p-field d-flex flex-column mb-4 w-100">
-                {/* <label htmlFor="name">نام گروه</label> */}
                 <InputText
                   className="rounded-2"
                   placeholder="زیرگروه "

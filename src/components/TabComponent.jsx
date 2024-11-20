@@ -149,7 +149,6 @@ export default function TabComponent() {
         activeIndex={activeIndex === 0 ? 1 : activeIndex}
         onTabChange={(e) => setActiveIndex(e.index)}
       />
-      {/* TabsComponents is rendered for all tabs */}
       <TabsComponents />
 
       <Dialog
