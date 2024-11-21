@@ -3,7 +3,7 @@ import { InputText } from "primereact/inputtext";
 import React, { useState } from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 
-const TabsComponents = () => {
+const TabsComponents = ({ onSaveChanges }) => {
   const [name, setName] = useState("");
   const [ordering, setOrdering] = useState(0);
 
@@ -32,6 +32,7 @@ const TabsComponents = () => {
                 <Button
                   className="align-left rounded-3"
                   label="ذخیره تغییرات"
+                  onClick={() => onSaveChanges(name, ordering)} // Call the prop function
                 />
                 <Button
                   className="align-left rounded-3 bg-white text-dark border"

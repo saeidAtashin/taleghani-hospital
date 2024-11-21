@@ -6,6 +6,7 @@ import { Button } from "primereact/button";
 import axios from "axios";
 import Swal from "sweetalert2";
 import TabsComponents from "./TabsComponents";
+import { toast } from "react-toastify";
 
 export default function TabComponent() {
   const [activeIndex, setActiveIndex] = useState(1);
@@ -135,6 +136,56 @@ export default function TabComponent() {
     });
   };
 
+  const handleSaveChanges = async (name, ordering) => {
+    try {
+      const categoryUid = items[activeIndex]?.uid; // Adjust based on TabMenu index offset
+
+      if (!categoryUid) {
+        toast.error("ابتدا گروه مورد نظر را انتخاب نمایید.");
+        return;
+      }
+
+      const response = await axios.post(
+        `https://cancerreg.ir/api/v1/tests/mng-sub-category/`,
+        {
+          category_uid: categoryUid,
+          name,
+          ordering,
+        }
+      );
+
+      console.log("response", response?.data);
+      console.log("categoryUid", categoryUid);
+      // Optional: close the modal and refresh the data
+      // closeModal();
+      // setRefresh(!refresh);
+    } catch (error) {
+      console.error("Error submitting data:", error);
+    }
+
+    console.log("Name:", name);
+    console.log("Ordering:", ordering);
+    // Add your save logic here
+  };
+
+  useEffect(() => {
+    const fetchCategoryList = async () => {
+      try {
+        const response = await axios.get(
+          "https://cancerreg.ir/api/v1/tests/mng-sub-category/"
+        );
+
+        console.log("response", response?.data?.data?.results);
+      } catch (err) {
+        console.error(err.message);
+      } finally {
+        // setLoading(false);
+      }
+    };
+
+    fetchCategoryList();
+  }, []);
+
   return (
     <div className="w-75 mx-5">
       <div className="my-5" />
@@ -149,7 +200,8 @@ export default function TabComponent() {
         activeIndex={activeIndex === 0 ? 1 : activeIndex}
         onTabChange={(e) => setActiveIndex(e.index)}
       />
-      <TabsComponents />
+      <TabsComponents onSaveChanges={handleSaveChanges} />
+      <div className="mt-5 w-100">test test</div>
 
       <Dialog
         header={isEditMode ? "Edit Group" : "اضافه کردن گروه جدید"}
