@@ -278,9 +278,6 @@ export default function TabComponent() {
     }
   }, [titles, activeIndex, items]);
 
-  // console.log("categories", categories);
-  // console.log("filteredTitles", filteredTitles);
-
   const convertFilteredTitlesToCategories = (filteredTitles) => {
     return filteredTitles.reduce((acc, title) => {
       const categoryUid = title.sub_category.category.uid;
@@ -309,6 +306,37 @@ export default function TabComponent() {
     }, {});
   };
 
+  const handleSaveChangestitle = async (name, ordering, selectedCategory) => {
+    try {
+      if (!selectedCategory) {
+        toast.error("لطفاً یک زیرگروه انتخاب کنید.");
+        return;
+      }
+      const categoryUid = items[activeIndex]?.uid; // Adjust based on TabMenu index offset
+
+      if (!categoryUid) {
+        toast.error("مجددا گروه مورد نظر را انتخاب نمایید.");
+        return;
+      }
+
+      const response = await axios.post(
+        `https://cancerreg.ir/api/v1/tests/mng-title/`,
+        {
+          // category_uid: categoryUid,
+          sub_category_uid: selectedCategory,
+          name,
+          ordering,
+        }
+      );
+      setRefreshTitle(!refreshTitle);
+      console.log("response", response?.data);
+      console.log("categoryUid", categoryUid);
+      // Optional: close the modal and refresh the data
+      // closeModal();
+      // setRefreshSub(!refreshSub);
+    } catch (error) {}
+  };
+
   return (
     <div className="w-75 mx-5">
       <div className="my-5" />
@@ -330,6 +358,7 @@ export default function TabComponent() {
         activeIndex={activeIndex}
         showWhatGet={showWhatGet}
         setShowWhatGet={setShowWhatGet}
+        onSaveChangestitle={handleSaveChangestitle}
       />
       {showWhatGet === "showSub" ? (
         <DragAndDropOrdering
