@@ -3,18 +3,30 @@ import { InputText } from "primereact/inputtext";
 import React, { useState } from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 
-const TabsComponents = ({ onSaveChanges }) => {
+const TabsComponents = ({
+  onSaveChanges,
+  onSaveChangesSub,
+  categories,
+  items,
+  activeIndex,
+  setShowWhatGet,
+}) => {
   const [name, setName] = useState("");
+  const [nameSub, setNameSub] = useState("");
   const [ordering, setOrdering] = useState(0);
+  const [orderingSub, setOrderingSub] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState(""); // For the select input
 
+  console.log("categories", categories);
+  console.log("items", items);
   return (
     <div className="w-100 shadow-lg">
       <Tabs>
         <TabList>
-          <Tab>
+          <Tab onClick={() => setShowWhatGet("")}>
             <p>زیرگروه‌ها</p>
           </Tab>
-          <Tab>
+          <Tab onClick={() => setShowWhatGet("showSub")}>
             <p>عنوان</p>
           </Tab>
           <Tab>
@@ -32,17 +44,25 @@ const TabsComponents = ({ onSaveChanges }) => {
                 <Button
                   className="align-left rounded-3"
                   label="ذخیره تغییرات"
-                  onClick={() => onSaveChanges(name, ordering)} // Call the prop function
+                  onClick={() => {
+                    if (!selectedCategory) {
+                      alert("لطفاً یک دسته‌بندی انتخاب کنید.");
+                      return;
+                    }
+                    onSaveChanges(name, ordering, selectedCategory);
+                    setName("");
+                  }}
                 />
                 <Button
                   className="align-left rounded-3 bg-white text-dark border"
                   label="لغو"
+                  onClick={() => setName("")}
                 />
               </div>
               <div className="p-field d-flex flex-column mb-4 w-100">
                 <InputText
                   className="rounded-2"
-                  placeholder="زیرگروه "
+                  placeholder="زیرگروه"
                   autoComplete="false"
                   id="name"
                   value={name}
@@ -61,8 +81,72 @@ const TabsComponents = ({ onSaveChanges }) => {
           </div>
         </TabPanel>
         <TabPanel>
-          <div className="panel-content">
-            <h2>Any content 2</h2>
+          <div className="panel-content h-100 d-flex align-items-start justify-content-start border p-4">
+            <div className="d-flex flex-column align-items-start justify-content-between h-100 w-100">
+              <div className="d-flex gap-2">
+                <Button
+                  className="align-left rounded-3"
+                  label="ذخیره تغییرات"
+                  onClick={() => {
+                    onSaveChangesSub(nameSub, orderingSub, selectedCategory);
+                    setNameSub("");
+                    setSelectedCategory(""); // Reset the selected category after submission
+                  }}
+                />
+                <Button
+                  className="align-left rounded-3 bg-white text-dark border"
+                  label="لغو"
+                />
+              </div>
+              <div className="p-field d-flex align-items-end gap-2 mb-4 w-100">
+                <InputText
+                  className="rounded-2 w-50 "
+                  placeholder="عنوان"
+                  autoComplete="false"
+                  id="nameSub"
+                  value={nameSub}
+                  onChange={(e) => setNameSub(e.target.value)}
+                />
+                <div className="p-field d-flex flex-column w-50">
+                  <label htmlFor="categorySelect">انتخاب دسته‌بندی</label>
+                  <select
+                    id="categorySelect"
+                    className="form-select rounded-2"
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                  >
+                    <option value="">یک دسته‌بندی انتخاب کنید</option>
+
+                    {Object.entries(categories).map(([uid, category]) => {
+                      if (uid === items[activeIndex]?.uid) {
+                        return (
+                          <React.Fragment key={uid}>
+                            {category?.items?.map((item, index) => (
+                              <option
+                                key={item.uid || index} // Use a unique identifier for items
+                                value={item.uid} // Assuming item.uid uniquely identifies the item
+                              >
+                                {item.name}
+                                {/* (Subcategory) */}
+                              </option>
+                            ))}
+                          </React.Fragment>
+                        );
+                      }
+                      return null; // Don't render categories that don't match the active index
+                    })}
+                  </select>
+                </div>
+              </div>
+              <div className="p-field d-flex flex-column mb-4 d-none">
+                <label htmlFor="orderingSub">ترتیب</label>
+                <InputText
+                  id="orderingSub"
+                  value={orderingSub}
+                  onChange={(e) => setOrderingSub(e.target.value)}
+                />
+              </div>
+            </div>
           </div>
         </TabPanel>
         <TabPanel>
@@ -73,11 +157,6 @@ const TabsComponents = ({ onSaveChanges }) => {
         <TabPanel>
           <div className="panel-content">
             <h2>Any content 4</h2>
-          </div>
-        </TabPanel>
-        <TabPanel>
-          <div className="panel-content">
-            <h2>Any content 5</h2>
           </div>
         </TabPanel>
       </Tabs>

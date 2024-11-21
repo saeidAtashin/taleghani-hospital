@@ -7,6 +7,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import TabsComponents from "./TabsComponents";
 import { toast } from "react-toastify";
+import DragAndDropOrdering from "./DragAndDropOrdering";
 
 export default function TabComponent() {
   const [activeIndex, setActiveIndex] = useState(1);
@@ -24,6 +25,13 @@ export default function TabComponent() {
   const [name, setName] = useState("");
   const [ordering, setOrdering] = useState(0);
   const [selectedItemUid, setSelectedItemUid] = useState(null);
+  const [refreshSub, setRefreshSub] = useState(false);
+  const [refreshTitle, setRefreshTitle] = useState(false);
+  const [categories, setCategories] = useState({});
+  const [showWhatGet, setShowWhatGet] = useState({});
+  const [titles, setTitles] = useState([]);
+  const [filteredTitles, setFilteredTitles] = useState([]);
+  const [titleUid, setTitleUid] = useState(null);
 
   useEffect(() => {
     const fetchCategoryList = async () => {
@@ -141,7 +149,7 @@ export default function TabComponent() {
       const categoryUid = items[activeIndex]?.uid; // Adjust based on TabMenu index offset
 
       if (!categoryUid) {
-        toast.error("ابتدا گروه مورد نظر را انتخاب نمایید.");
+        toast.error("مجددا گروه مورد نظر را انتخاب نمایید.");
         return;
       }
 
@@ -158,7 +166,7 @@ export default function TabComponent() {
       console.log("categoryUid", categoryUid);
       // Optional: close the modal and refresh the data
       // closeModal();
-      // setRefresh(!refresh);
+      setRefreshSub(!refreshSub);
     } catch (error) {
       console.error("Error submitting data:", error);
     }
@@ -168,29 +176,143 @@ export default function TabComponent() {
     // Add your save logic here
   };
 
+  const handleSaveChangesSub = async (name, ordering, selectedCategory) => {
+    try {
+      if (!selectedCategory) {
+        toast.error("لطفاً یک زیرگروه انتخاب کنید.");
+        return;
+      }
+      const categoryUid = items[activeIndex]?.uid; // Adjust based on TabMenu index offset
+
+      if (!categoryUid) {
+        toast.error("مجددا گروه مورد نظر را انتخاب نمایید.");
+        return;
+      }
+
+      const response = await axios.post(
+        `https://cancerreg.ir/api/v1/tests/mng-title/`,
+        {
+          // category_uid: categoryUid,
+          sub_category_uid: selectedCategory,
+          name,
+          ordering,
+        }
+      );
+      setRefreshTitle(!refreshTitle);
+      console.log("response", response?.data);
+      console.log("categoryUid", categoryUid);
+      // Optional: close the modal and refresh the data
+      // closeModal();
+      // setRefreshSub(!refreshSub);
+    } catch (error) {}
+  };
+
   useEffect(() => {
-    const fetchCategoryList = async () => {
+    const fetchData = async () => {
       try {
         const response = await axios.get(
           "https://cancerreg.ir/api/v1/tests/mng-sub-category/"
         );
 
-        console.log("response", response?.data?.data?.results);
-      } catch (err) {
-        console.error(err.message);
-      } finally {
-        // setLoading(false);
+        const results = response.data.data.results;
+
+        // Group by category_uid
+        const grouped = results.reduce((acc, item) => {
+          const categoryUid = item?.category?.uid;
+          if (!acc[categoryUid]) {
+            acc[categoryUid] = {
+              categoryName: item.category.name,
+              items: [],
+            };
+          }
+          acc[categoryUid].items.push(item);
+          return acc;
+        }, {});
+
+        setCategories(grouped);
+        console.log("grouped", grouped);
+      } catch (error) {
+        console.error("Error fetching data:", error);
       }
     };
 
-    fetchCategoryList();
-  }, []);
+    fetchData();
+  }, [refreshSub]);
+
+  const handleDragEnd = (result) => {
+    if (!result.destination) return;
+    const { source, destination } = result;
+    const updatedCategories = { ...categories };
+    const sourceCategory = updatedCategories[source.droppableId];
+    const destinationCategory = updatedCategories[destination.droppableId];
+    const [movedItem] = sourceCategory.items.splice(source.index, 1);
+    destinationCategory.items.splice(destination.index, 0, movedItem);
+    setCategories(updatedCategories);
+  };
+
+  useEffect(() => {
+    const fetchTitles = async () => {
+      try {
+        const response = await axios.get(
+          "https://cancerreg.ir/api/v1/tests/mng-title/"
+        );
+        const results = response.data.data.results;
+
+        setTitles(results);
+      } catch (error) {
+        console.error("Error fetching titles:", error);
+      }
+    };
+
+    fetchTitles();
+  }, [refreshTitle]);
+
+  useEffect(() => {
+    if (titles.length > 0 && activeIndex) {
+      const activeUid = items[activeIndex]?.uid;
+      const filtered = titles.filter(
+        (title) => title.sub_category?.category?.uid === activeUid
+      );
+      setFilteredTitles(filtered);
+      console.log("filtered", filtered);
+    }
+  }, [titles, activeIndex, items]);
+
+  // console.log("categories", categories);
+  // console.log("filteredTitles", filteredTitles);
+
+  const convertFilteredTitlesToCategories = (filteredTitles) => {
+    return filteredTitles.reduce((acc, title) => {
+      const categoryUid = title.sub_category.category.uid;
+
+      // If the category UID doesn't exist, initialize it
+      if (!acc[categoryUid]) {
+        acc[categoryUid] = {
+          categoryName: title.sub_category.category.name,
+          items: [],
+        };
+      }
+
+      // Push the title into the appropriate category's items array
+      acc[categoryUid].items.push({
+        name: title.name,
+        uid: title.uid,
+        ordering: title.ordering,
+        category: {
+          name: title.sub_category.category.name,
+          uid: title.sub_category.category.uid,
+          ordering: title.sub_category.category.ordering,
+        },
+      });
+
+      return acc;
+    }, {});
+  };
 
   return (
     <div className="w-75 mx-5">
       <div className="my-5" />
       <TabMenu
-        className=""
         scrollable
         model={items.map((item) => ({
           label: item.template || item.label,
@@ -200,8 +322,34 @@ export default function TabComponent() {
         activeIndex={activeIndex === 0 ? 1 : activeIndex}
         onTabChange={(e) => setActiveIndex(e.index)}
       />
-      <TabsComponents onSaveChanges={handleSaveChanges} />
-      <div className="mt-5 w-100">test test</div>
+      <TabsComponents
+        onSaveChanges={handleSaveChanges}
+        onSaveChangesSub={handleSaveChangesSub}
+        categories={categories}
+        items={items}
+        activeIndex={activeIndex}
+        showWhatGet={showWhatGet}
+        setShowWhatGet={setShowWhatGet}
+      />
+      {showWhatGet === "showSub" ? (
+        <DragAndDropOrdering
+          sub={items[activeIndex]?.uid}
+          categories={convertFilteredTitlesToCategories(filteredTitles)} // Pass the filteredTitles
+          handleDragEnd={handleDragEnd}
+          refreshSub={refreshTitle}
+          setRefreshSub={setRefreshTitle}
+          url="tests/mng-title"
+        />
+      ) : (
+        <DragAndDropOrdering
+          url="tests/mng-sub-category"
+          sub={items[activeIndex]?.uid}
+          categories={categories}
+          handleDragEnd={handleDragEnd}
+          refreshSub={refreshSub}
+          setRefreshSub={setRefreshSub}
+        />
+      )}
 
       <Dialog
         header={isEditMode ? "Edit Group" : "اضافه کردن گروه جدید"}
