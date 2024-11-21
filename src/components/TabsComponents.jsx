@@ -36,7 +36,7 @@ const TabsComponents = ({
           <Tab onClick={() => setShowWhatGet("showTitle")}>
             <p>نام آزمایش</p>
           </Tab>
-          <Tab>
+          <Tab onClick={() => setShowWhatGet("new")}>
             <p>آیتم‌ها</p>
           </Tab>
         </TabList>
@@ -195,10 +195,8 @@ const TabsComponents = ({
                   >
                     <option value="">انتخاب نوع</option>
                     <option value="CHAR">CHAR</option>
-                    <option value="INT">INT</option>
                     <option value="FLOAT">FLOAT</option>
-                    <option value="DATE">DATE</option>
-                    {/* Add more options as needed */}
+                    <option value="PERCENTAGE">PERCENTAGE</option>
                   </select>
                 </div>
                 <div className="p-field d-flex flex-column w-50">

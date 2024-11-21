@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 import TabsComponents from "./TabsComponents";
 import { toast } from "react-toastify";
 import DragAndDropOrdering from "./DragAndDropOrdering";
+import TreeView from "./TreeView";
 
 export default function TabComponent() {
   const [activeIndex, setActiveIndex] = useState(1);
@@ -403,14 +404,9 @@ export default function TabComponent() {
           setRefreshSub={setRefreshSub}
         />
       ) : showWhatGet === "new" ? (
-        <DragAndDropOrdering
-          url="tests/mng-field"
-          sub={items[activeIndex]?.uid}
-          categories={categories}
-          handleDragEnd={handleDragEnd}
-          refreshSub={refreshSub}
-          setRefreshSub={setRefreshSub}
-        />
+        <>
+          <TreeView />
+        </>
       ) : (
         <DragAndDropOrdering
           url="tests/mng-sub-category"
