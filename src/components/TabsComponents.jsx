@@ -49,10 +49,10 @@ const TabsComponents = ({
                   className="align-left rounded-3"
                   label="ذخیره تغییرات"
                   onClick={() => {
-                    if (!selectedCategory) {
-                      alert("لطفاً یک دسته‌بندی انتخاب کنید.");
-                      return;
-                    }
+                    // if (!selectedCategory) {
+                    //   alert("لطفاً یک دسته‌بندی انتخاب کنید.");
+                    //   return;
+                    // }
                     onSaveChanges(name, ordering, selectedCategory);
                     setName("");
                   }}
