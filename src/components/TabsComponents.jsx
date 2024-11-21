@@ -184,7 +184,7 @@ const TabsComponents = ({
                   value={nametitle}
                   onChange={(e) => setNametitle(e.target.value)}
                 />
-                <div className="p-field d-flex flex-column w-50 mb-4">
+                <div className="p-field d-flex flex-column w-50">
                   <label htmlFor="typeSelect">انتخاب نوع</label>
                   <select
                     id="typeSelect"
