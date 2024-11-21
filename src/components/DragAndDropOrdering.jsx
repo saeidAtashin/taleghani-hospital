@@ -13,6 +13,8 @@ const DragAndDropOrdering = ({
   url,
   titles,
 }) => {
+  console.log("categories in draaag", categories);
+  console.log("sub in draaag", sub);
   const handleDelete = async (uid) => {
     Swal.fire({
       title: "آیا از حذف این مورد مطمئن هستید؟",
@@ -29,7 +31,6 @@ const DragAndDropOrdering = ({
           await axios.delete(`https://cancerreg.ir/api/v1/${url}/${uid}/`);
           Swal.fire("حذف شد", "آیتم مورد نظر با موفقیت حذف شد", "success");
           setRefreshSub(!refreshSub);
-          // Optionally refresh the categories or handle state update
         } catch (error) {
           Swal.fire("خطا", "حذف آیتم با خطا مواجه شد", "error");
           console.error("Error deleting item:", error);
@@ -38,7 +39,6 @@ const DragAndDropOrdering = ({
     });
   };
 
-  // console.log("titles", titles);
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
       {categories &&
@@ -50,7 +50,6 @@ const DragAndDropOrdering = ({
                 style={{ marginBottom: "20px" }}
                 className="mt-4"
               >
-                {/* <h3>{categoryData.categoryName}</h3> */}
                 <Droppable droppableId={categoryUid}>
                   {(provided) => (
                     <div

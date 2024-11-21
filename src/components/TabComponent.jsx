@@ -31,7 +31,7 @@ export default function TabComponent() {
   const [showWhatGet, setShowWhatGet] = useState({});
   const [titles, setTitles] = useState([]);
   const [filteredTitles, setFilteredTitles] = useState([]);
-  const [titleUid, setTitleUid] = useState(null);
+  const [fields, setFields] = useState({});
 
   useEffect(() => {
     const fetchCategoryList = async () => {
@@ -162,18 +162,10 @@ export default function TabComponent() {
         }
       );
 
-      console.log("response", response?.data);
-      console.log("categoryUid", categoryUid);
-      // Optional: close the modal and refresh the data
-      // closeModal();
       setRefreshSub(!refreshSub);
     } catch (error) {
       console.error("Error submitting data:", error);
     }
-
-    console.log("Name:", name);
-    console.log("Ordering:", ordering);
-    // Add your save logic here
   };
 
   const handleSaveChangesSub = async (name, ordering, selectedCategory) => {
@@ -199,11 +191,6 @@ export default function TabComponent() {
         }
       );
       setRefreshTitle(!refreshTitle);
-      console.log("response", response?.data);
-      console.log("categoryUid", categoryUid);
-      // Optional: close the modal and refresh the data
-      // closeModal();
-      // setRefreshSub(!refreshSub);
     } catch (error) {}
   };
 
@@ -230,7 +217,6 @@ export default function TabComponent() {
         }, {});
 
         setCategories(grouped);
-        console.log("grouped", grouped);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -249,6 +235,40 @@ export default function TabComponent() {
     destinationCategory.items.splice(destination.index, 0, movedItem);
     setCategories(updatedCategories);
   };
+
+  useEffect(() => {
+    const fetchFields = async () => {
+      try {
+        const response = await axios.get(
+          "https://cancerreg.ir/api/v1/tests/mng-field/"
+        );
+        const results = response.data.data.results;
+
+        console.log("results", results);
+        // Group by category_uid
+        const grouped = results.reduce((acc, item) => {
+          const categoryUid = item?.title?.sub_category?.category?.uid;
+          if (!acc[categoryUid]) {
+            acc[categoryUid] = {
+              categoryName: item?.title?.sub_category?.category?.name,
+              items: [],
+            };
+          }
+          acc[categoryUid].items.push(item);
+          return acc;
+        }, {});
+
+        setFields(grouped);
+
+        console.log("grouped grouped grouped", grouped);
+        console.log("categoru", categories);
+      } catch (error) {
+        console.error("Error fetching fields:", error);
+      }
+    };
+
+    fetchFields();
+  }, [refreshSub, refreshTitle]);
 
   useEffect(() => {
     const fetchTitles = async () => {
@@ -274,7 +294,6 @@ export default function TabComponent() {
         (title) => title.sub_category?.category?.uid === activeUid
       );
       setFilteredTitles(filtered);
-      console.log("filtered", filtered);
     }
   }, [titles, activeIndex, items]);
 
@@ -306,7 +325,12 @@ export default function TabComponent() {
     }, {});
   };
 
-  const handleSaveChangestitle = async (name, ordering, selectedCategory) => {
+  const handleSaveChangestitle = async (
+    name,
+    type,
+    ordering,
+    selectedCategory
+  ) => {
     try {
       if (!selectedCategory) {
         toast.error("لطفاً یک زیرگروه انتخاب کنید.");
@@ -320,23 +344,22 @@ export default function TabComponent() {
       }
 
       const response = await axios.post(
-        `https://cancerreg.ir/api/v1/tests/mng-title/`,
+        `https://cancerreg.ir/api/v1/tests/mng-field/`,
         {
           // category_uid: categoryUid,
-          sub_category_uid: selectedCategory,
+          title_uid: selectedCategory,
           name,
+          type,
           ordering,
         }
       );
-      setRefreshTitle(!refreshTitle);
-      console.log("response", response?.data);
-      console.log("categoryUid", categoryUid);
-      // Optional: close the modal and refresh the data
-      // closeModal();
-      // setRefreshSub(!refreshSub);
+      setRefreshSub(!refreshSub);
     } catch (error) {}
   };
 
+  console.log("fields", fields);
+  console.log("showWhatGet", showWhatGet);
+  // showWhatGet
   return (
     <div className="w-75 mx-5">
       <div className="my-5" />
@@ -372,7 +395,16 @@ export default function TabComponent() {
         />
       ) : showWhatGet === "showTitle" ? (
         <DragAndDropOrdering
-          url="tests/mng-sub-category"
+          url="tests/mng-field"
+          sub={items[activeIndex]?.uid}
+          categories={fields}
+          handleDragEnd={handleDragEnd}
+          refreshSub={refreshSub}
+          setRefreshSub={setRefreshSub}
+        />
+      ) : showWhatGet === "new" ? (
+        <DragAndDropOrdering
+          url="tests/mng-field"
           sub={items[activeIndex]?.uid}
           categories={categories}
           handleDragEnd={handleDragEnd}

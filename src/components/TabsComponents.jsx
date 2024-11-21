@@ -23,10 +23,6 @@ const TabsComponents = ({
   const [selectedType, setSelectedType] = useState("");
   const [orderingtitle, setOrderingtitle] = useState(0);
 
-  console.log("categories", categories);
-  console.log("items", items);
-  console.log("titles", titles);
-
   return (
     <div className="w-100 shadow-lg">
       <Tabs>
@@ -165,7 +161,12 @@ const TabsComponents = ({
                   className="align-left rounded-3"
                   label="ذخیره تغییرات"
                   onClick={() => {
-                    onSaveChangestitle(nametitle, orderingtitle, selectedtitle);
+                    onSaveChangestitle(
+                      nametitle,
+                      selectedType,
+                      orderingtitle,
+                      selectedtitle
+                    );
                     setNametitle("");
                     setSelectedtitle(""); // Reset the selected category after titlemission
                   }}
