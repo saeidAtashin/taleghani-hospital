@@ -194,9 +194,9 @@ const TabsComponents = ({
                     onChange={(e) => setSelectedType(e.target.value)}
                   >
                     <option value="">انتخاب نوع</option>
-                    <option value="CHAR">CHAR</option>
-                    <option value="FLOAT">FLOAT</option>
-                    <option value="PERCENTAGE">PERCENTAGE</option>
+                    <option value="CHAR">متنی</option>
+                    <option value="FLOAT">آیتم‌دار</option>
+                    <option value="PERCENTAGE">درصدی</option>
                   </select>
                 </div>
                 <div className="p-field d-flex flex-column w-50">
