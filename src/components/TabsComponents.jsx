@@ -11,18 +11,22 @@ const TabsComponents = ({
   activeIndex,
   setShowWhatGet,
   onSaveChangestitle,
+  titles,
 }) => {
   const [name, setName] = useState("");
   const [nameSub, setNameSub] = useState("");
   const [ordering, setOrdering] = useState(0);
   const [orderingSub, setOrderingSub] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState(""); // For the select input
+  const [selectedtitle, setSelectedtitle] = useState(""); // For the select input
   const [nametitle, setNametitle] = useState("");
   const [selectedType, setSelectedType] = useState("");
   const [orderingtitle, setOrderingtitle] = useState(0);
 
   console.log("categories", categories);
   console.log("items", items);
+  console.log("titles", titles);
+
   return (
     <div className="w-100 shadow-lg">
       <Tabs>
@@ -161,13 +165,9 @@ const TabsComponents = ({
                   className="align-left rounded-3"
                   label="ذخیره تغییرات"
                   onClick={() => {
-                    onSaveChangestitle(
-                      nametitle,
-                      orderingtitle,
-                      selectedCategory
-                    );
+                    onSaveChangestitle(nametitle, orderingtitle, selectedtitle);
                     setNametitle("");
-                    setSelectedCategory(""); // Reset the selected category after titlemission
+                    setSelectedtitle(""); // Reset the selected category after titlemission
                   }}
                 />
                 <Button
@@ -201,32 +201,29 @@ const TabsComponents = ({
                   </select>
                 </div>
                 <div className="p-field d-flex flex-column w-50">
-                  <label htmlFor="categorySelect">انتخاب دسته‌بندی</label>
+                  <label htmlFor="categorySelect">انتخاب عنوان</label>
                   <select
                     id="categorySelect"
                     className="form-select rounded-2"
-                    value={selectedCategory}
-                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    value={selectedtitle}
+                    onChange={(e) => setSelectedtitle(e.target.value)}
                   >
                     <option value="">عنوان مربوطه</option>
 
-                    {Object.entries(categories).map(([uid, category]) => {
-                      if (uid === items[activeIndex]?.uid) {
-                        return (
-                          <React.Fragment key={uid}>
-                            {category?.items?.map((item, index) => (
-                              <option
-                                key={item.uid || index} // Use a unique identifier for items
-                                value={item.uid} // Assuming item.uid uniquely identifies the item
-                              >
-                                {item.name}
-                              </option>
-                            ))}
-                          </React.Fragment>
-                        );
-                      }
-                      return null;
-                    })}
+                    {titles
+                      .filter(
+                        (title) =>
+                          title?.sub_category?.category?.uid ===
+                          items[activeIndex]?.uid
+                      )
+                      .map((filteredTitle) => (
+                        <option
+                          key={filteredTitle.uid}
+                          value={filteredTitle.uid}
+                        >
+                          {filteredTitle.name}
+                        </option>
+                      ))}
                   </select>
                 </div>
               </div>

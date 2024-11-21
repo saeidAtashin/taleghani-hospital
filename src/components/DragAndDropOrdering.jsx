@@ -38,7 +38,7 @@ const DragAndDropOrdering = ({
     });
   };
 
-  console.log("titles", titles);
+  // console.log("titles", titles);
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
       {categories &&

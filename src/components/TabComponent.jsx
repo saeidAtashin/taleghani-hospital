@@ -359,6 +359,7 @@ export default function TabComponent() {
         showWhatGet={showWhatGet}
         setShowWhatGet={setShowWhatGet}
         onSaveChangestitle={handleSaveChangestitle}
+        titles={titles}
       />
       {showWhatGet === "showSub" ? (
         <DragAndDropOrdering
