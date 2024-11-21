@@ -29,7 +29,7 @@ const TabsComponents = ({
           <Tab onClick={() => setShowWhatGet("showSub")}>
             <p>عنوان</p>
           </Tab>
-          <Tab>
+          <Tab onClick={() => setShowWhatGet("showTitle")}>
             <p>نام آزمایش</p>
           </Tab>
           <Tab>

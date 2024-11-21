@@ -340,6 +340,15 @@ export default function TabComponent() {
           setRefreshSub={setRefreshTitle}
           url="tests/mng-title"
         />
+      ) : showWhatGet === "showTitle" ? (
+        <DragAndDropOrdering
+          url="tests/mng-sub-category"
+          sub={items[activeIndex]?.uid}
+          categories={categories}
+          handleDragEnd={handleDragEnd}
+          refreshSub={refreshSub}
+          setRefreshSub={setRefreshSub}
+        />
       ) : (
         <DragAndDropOrdering
           url="tests/mng-sub-category"
