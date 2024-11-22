@@ -42,8 +42,7 @@ export default function TasvirBardari() {
             onClick={() => navigate(`/dashboard/record/${record.uid}`)}
             style={{
               cursor: "pointer",
-              color:
-                record.record_type === "graphicrecord" ? "green" : "orange",
+              color: record?.state === "IN_PROGRESS" ? "#FF7518" : "green",
               marginRight: "8px",
             }}
           >
