@@ -4,6 +4,7 @@ import { Tree } from "react-d3-tree";
 
 const TreeView = () => {
   const [treeData, setTreeData] = useState(null);
+  const [translate, setTranslate] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     // Transform API response to hierarchical structure
@@ -74,6 +75,10 @@ const TreeView = () => {
         // Transform the data
         const transformedData = transformResponseToTree(results);
         setTreeData(transformedData);
+        setTranslate({
+          x: window.innerWidth / 2,
+          y: 100, // Adjust the vertical position here
+        });
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -86,8 +91,15 @@ const TreeView = () => {
   return (
     <div>
       {treeData ? (
-        <div style={{ width: "100%", height: "500px" }}>
-          <Tree draggable orientation="vertical" data={treeData} />
+        <div style={{ width: "100%", height: "5000px" }}>
+          <Tree
+            draggable
+            orientation="vertical"
+            data={treeData}
+            translate={translate} // Set the initial position of the tree
+            zoomable={true}
+            pathFunc="diagonal" // Adjust path style if needed
+          />
         </div>
       ) : (
         <p>Loading...</p>

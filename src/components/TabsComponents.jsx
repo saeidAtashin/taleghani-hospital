@@ -53,6 +53,7 @@ const TabsComponents = ({
                     //   alert("لطفاً یک دسته‌بندی انتخاب کنید.");
                     //   return;
                     // }
+                    console.log("selectedCategory", selectedCategory);
                     onSaveChanges(name, ordering, selectedCategory);
                     setName("");
                   }}
