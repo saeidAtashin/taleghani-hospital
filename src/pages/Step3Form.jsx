@@ -46,6 +46,13 @@ const Step3Form = ({ patient_uid, onNext }) => {
     { label: "C-I", value: "C-I" },
   ];
 
+  const b_symptomsOptions = [
+    { label: "+", value: "+" },
+    { label: "-", value: "-" },
+  ];
+
+  // b_symptomsOptions
+
   const addArrayItem = (field) => {
     setFormData((prev) => ({
       ...prev,
@@ -188,24 +195,31 @@ const Step3Form = ({ patient_uid, onNext }) => {
               className="w-100 mb-3"
             />
           </div>
-          {renderArrayField("lymph_nodes", "N")}
-          <div className="p-field">
-            <label>Spleen</label>
-            <InputText
-              value={formData.spleen}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, spleen: e.target.value }))
-              }
-            />
-          </div>
-          <div className="p-field">
-            <label>B symptoms</label>
-            <InputText
-              value={formData.b_symptoms}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, b_symptoms: e.target.value }))
-              }
-            />
+          {renderArrayField("lymph_nodes", "LN involmentN")}
+
+          <div className="d-flex w-100 align-items-center justify-content-center gap-4 mt-4">
+            <div className="w-100 ">
+              <label>B symptoms</label>
+              <Dropdown
+                value={formData.b_symptoms}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, b_symptoms: e.value }))
+                }
+                options={b_symptomsOptions}
+                placeholder="انتخاب نمایید"
+                className="w-100 mb-3"
+              />
+            </div>
+            <div className="w-100 ">
+              <label>Spleen</label>
+              <InputText
+                value={formData.spleen}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, spleen: e.target.value }))
+                }
+                className="w-100 mb-3"
+              />
+            </div>
           </div>
         </div>
       )}
@@ -241,7 +255,7 @@ const Step3Form = ({ patient_uid, onNext }) => {
         </div>
       )}
       <Button
-        label="ارسال"
+        label="ثبت اطلاعات و اتمام ثبت نام"
         icon="pi pi-check"
         onClick={handleSubmit}
         disabled={!formType || !selectedDiagnosis}
