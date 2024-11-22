@@ -171,10 +171,10 @@ export default function TabComponent() {
 
   const handleSaveChangesSub = async (name, ordering, selectedCategory) => {
     try {
-      if (!selectedCategory) {
-        toast.error("لطفاً یک زیرگروه انتخاب کنید.");
-        return;
-      }
+      // if (!selectedCategory) {
+      //   toast.error("لطفاً یک زیرگروه انتخاب کنید.");
+      //   return;
+      // }
       const categoryUid = items[activeIndex]?.uid; // Adjust based on TabMenu index offset
 
       if (!categoryUid) {
@@ -185,8 +185,10 @@ export default function TabComponent() {
       const response = await axios.post(
         `https://cancerreg.ir/api/v1/tests/mng-title/`,
         {
-          // category_uid: categoryUid,
-          sub_category_uid: selectedCategory,
+          category_uid: items[activeIndex]?.uid
+            ? items[activeIndex]?.uid
+            : undefined,
+          sub_category_uid: selectedCategory ? selectedCategory : undefined,
           name,
           ordering,
         }
