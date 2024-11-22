@@ -8,7 +8,7 @@ const Mammography = () => {
   const [formData, setFormData] = useState({
     patient_uid: uid,
     date: "",
-    sizes: [{ size: "", site: "", description: "" }], // Added description
+    sizes: [{ size: null, site: "", description: "" }], // Added description
     description: "",
     batch_uid: undefined,
   });
@@ -28,7 +28,7 @@ const Mammography = () => {
   const addInputFields = () => {
     setFormData({
       ...formData,
-      sizes: [...formData.sizes, { size: "", site: "", description: "" }],
+      sizes: [...formData.sizes, { size: null, site: "", description: "" }],
     });
   };
 
@@ -37,9 +37,9 @@ const Mammography = () => {
 
     // Map sizes to involvements
     const involvements = formData.sizes.map((item) => ({
-      additionalProp1: item.site,
-      additionalProp2: item.size,
-      additionalProp3: item.description,
+      site: item.site,
+      size: item.size,
+      // additionalProp3: item.description,
     }));
 
     const formattedData = {

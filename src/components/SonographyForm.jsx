@@ -8,7 +8,7 @@ const SonographyForm = () => {
   const [formData, setFormData] = useState({
     patient_uid: uid,
     date: "",
-    sizes: [{ size: "", site: "", description: "" }],
+    sizes: [{ size: null, site: "", description: "" }],
     description: "",
     batch_uid: undefined,
     birads: "",
@@ -30,7 +30,7 @@ const SonographyForm = () => {
   const addInputFields = () => {
     setFormData({
       ...formData,
-      sizes: [...formData.sizes, { size: "", site: "", description: "" }],
+      sizes: [...formData.sizes, { size: null, site: "", description: "" }],
     });
   };
 
@@ -39,9 +39,9 @@ const SonographyForm = () => {
 
     // Map sizes to the required involvements format
     const involvements = formData.sizes.map((item) => ({
-      additionalProp1: item.site,
-      additionalProp2: item.size,
-      additionalProp3: item.description,
+      site: item.site,
+      size: item.size,
+      // additionalProp3: item.description,
     }));
 
     const formattedData = {
@@ -102,7 +102,7 @@ const SonographyForm = () => {
               />
             </Form.Group>
           </Col>
-          <Col>
+          {/* <Col>
             <Form.Group>
               <Form.Label>Description</Form.Label>
               <Form.Control
@@ -112,7 +112,7 @@ const SonographyForm = () => {
                 onChange={(e) => handleInputChange(index, e)}
               />
             </Form.Group>
-          </Col>
+          </Col> */}
         </Row>
       ))}
 

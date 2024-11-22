@@ -133,7 +133,7 @@ const Mri = () => {
         </Form.Select>
       </Form.Group>
 
-      <Form.Group className="my-3">
+      {/* <Form.Group className="my-3">
         <Form.Label>Batch UID</Form.Label>
         <Form.Control
           type="text"
@@ -141,7 +141,7 @@ const Mri = () => {
           value={formData.batch_uid}
           onChange={handleFieldChange}
         />
-      </Form.Group>
+      </Form.Group> */}
 
       <Row>
         <Col>

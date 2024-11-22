@@ -196,7 +196,7 @@ const TabsComponents = ({
                   >
                     <option value="">انتخاب نوع</option>
                     <option value="CHAR">متنی</option>
-                    <option value="FLOAT">آیتم‌دار</option>
+                    <option value="FLOAT">عددی</option>
                     <option value="PERCENTAGE">درصدی</option>
                   </select>
                 </div>
