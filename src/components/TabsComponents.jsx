@@ -128,10 +128,10 @@ const TabsComponents = ({
                           <React.Fragment key={uid}>
                             {category?.items?.map((item, index) => (
                               <option
-                                key={item.uid || index} // Use a unique identifier for items
-                                value={item.uid} // Assuming item.uid uniquely identifies the item
+                                key={item?.uid || index} // Use a unique identifier for items
+                                value={item?.uid} // Assuming item.uid uniquely identifies the item
                               >
-                                {item.name}
+                                {item?.name}
                                 {/* (Subcategory) */}
                               </option>
                             ))}
