@@ -409,6 +409,8 @@ export default function TabComponent() {
         </>
       ) : (
         <DragAndDropOrdering
+          items={items}
+          activeIndex={activeIndex}
           url="tests/mng-sub-category"
           sub={items[activeIndex]?.uid}
           categories={categories}

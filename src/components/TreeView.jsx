@@ -2,12 +2,11 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Tree } from "react-d3-tree";
 
-const TreeView = () => {
+const TreeView = ({ items, activeIndex }) => {
   const [treeData, setTreeData] = useState(null);
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    // Transform API response to hierarchical structure
     const transformResponseToTree = (results) => {
       const tree = {};
 
@@ -62,7 +61,11 @@ const TreeView = () => {
         };
       };
 
-      return Object.values(tree).map(convertToTreeFormat);
+      // Wrap all nodes under a single root
+      return {
+        name: "Root", // Name of the single root node
+        children: Object.values(tree).map(convertToTreeFormat),
+      };
     };
 
     const fetchData = async () => {
@@ -72,6 +75,7 @@ const TreeView = () => {
         );
         const results = response.data.data.results;
 
+        console.log("response.data.data.results", response.data.data.results);
         // Transform the data
         const transformedData = transformResponseToTree(results);
         setTreeData(transformedData);
@@ -88,6 +92,8 @@ const TreeView = () => {
   }, []);
 
   // Render the tree
+
+  console.log("treeData", treeData);
   return (
     <div>
       {treeData ? (
