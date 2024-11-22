@@ -6,26 +6,21 @@ import ReusableForm from "../ReusableForm/ReusableForm";
 import {
   formFielsIdentity,
   formPatientsFields,
-  formPatientsInformationFields,
   generateReusableSchema,
-  nonSolidFields,
-  solidFields,
 } from "../form-fields/FormFields";
 import { PATIENT_INFO, PATIENT_RECORDS } from "../api/apiClient";
 import axios from "axios";
 import { toast } from "react-toastify";
+import Step3Form from "../pages/Step3Form";
 
 const StepperBootstrap = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const [malignancyType, setMalignancyType] = useState("");
 
   const patient_uid_info = localStorage.getItem("patient_uid_info");
-  // Function to transform field names before sending to the API
+
   const transformDataForApi = (data, fields) => {
     let transformedData = {};
-
-    // Iterate through each field and map to `name_to_send_api`
     fields.forEach((field) => {
       const { name, name_to_send_api, dontSendApi } = field;
       if (!dontSendApi) {
@@ -36,7 +31,6 @@ const StepperBootstrap = () => {
         }
       }
     });
-
     return transformedData;
   };
 
@@ -49,56 +43,27 @@ const StepperBootstrap = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(url, requestData);
-
-      // Execute the success callback if provided
       if (successCallback) successCallback(response);
-
       setIsLoading(false);
     } catch (error) {
       if (error.response && error.response.status === 400) {
         const errorDetails = error.response.data?.errors;
-        if (errorDetails && errorDetails.length > 0) {
-          toast.warning(errorDetails[0].message || "Invalid inputs");
-        } else {
-          toast.warning("Invalid inputs");
-        }
+        toast.warning(errorDetails?.[0]?.message || "Invalid inputs");
       } else {
         toast.warning("An error occurred while submitting data.");
       }
-
       console.error("Error submitting data:", error);
-
       if (errorCallback) errorCallback(error);
-
       setIsLoading(false);
     }
   };
 
   const handleFormSubmit = async (data) => {
-    const currentFields = [
-      ...(activeIndex === 0
-        ? formFielsIdentity
-        : activeIndex === 1
-        ? formPatientsFields
-        : formPatientsInformationFields),
-      ...(activeIndex === 2 && malignancyType === "Solid"
-        ? solidFields
-        : activeIndex === 2 && malignancyType === "non Solid"
-        ? nonSolidFields
-        : []),
-    ];
+    const currentFields =
+      activeIndex === 0 ? formFielsIdentity : formPatientsFields;
 
     try {
-      const schema = generateReusableSchema(
-        activeIndex === 0
-          ? formFielsIdentity
-          : activeIndex === 1
-          ? formPatientsFields
-          : formPatientsInformationFields.concat(
-              malignancyType === "Solid" ? solidFields : nonSolidFields
-            )
-      );
-
+      const schema = generateReusableSchema(currentFields);
       schema.parse(data);
 
       if (activeIndex === 0) {
@@ -109,20 +74,15 @@ const StepperBootstrap = () => {
           url,
           transformedData,
           (response) => {
-            // Success callback: handle the response
             localStorage.setItem("patient_uid_info", response?.data?.data?.uid);
             setActiveIndex(activeIndex + 1);
           },
-          (error) => {
-            // Error callback: handle the error
-            setIsLoading(false);
-          }
+          () => setIsLoading(false)
         );
       }
 
       if (activeIndex === 1) {
         const transformedData = transformDataForApi(data, currentFields);
-
         const formattedData = {
           ...transformedData,
           patient_uid: patient_uid_info,
@@ -130,55 +90,23 @@ const StepperBootstrap = () => {
 
         setIsLoading(true);
         try {
-          const response = await axios.post(
+          await axios.post(
             "https://cancerreg.ir/api/v1" + PATIENT_RECORDS,
             formattedData
           );
-
           setActiveIndex(activeIndex + 1);
         } catch (error) {
           console.error("Error submitting data:", error);
           setIsLoading(false);
         }
-      }
-
-      // if (activeIndex === 2) {
-      //   const transformedData = transformDataForApi(data, currentFields);
-
-      //   const formattedData = {
-      //     ...transformedData,
-      //     patient_uid: patient_uid_info,
-      //   };
-
-      //   setIsLoading(true);
-      //   try {
-      //     const response = await axios.post(
-      //       "https://cancerreg.ir/api/v1" + PATIENT_RECORDS,
-      //       formattedData
-      //     );
-
-      //     setActiveIndex(activeIndex + 1);
-      //   } catch (error) {
-      //     console.error("Error submitting data:", error);
-      //     setIsLoading(false);
-      //   }
-      // }
-      else {
+      } else {
         setIsLoading(false);
       }
     } catch (error) {
       setIsLoading(false);
-      if (error instanceof z.ZodError) {
-      } else {
-      }
+      console.error("Validation error:", error);
     }
   };
-
-  const handleSelectChange = (value) => {
-    setMalignancyType(value);
-  };
-
-  const userIdentityData = {};
 
   return (
     <div className="container">
@@ -212,49 +140,27 @@ const StepperBootstrap = () => {
         ))}
       </div>
       <div className="accordion shadow p-2 pb-5 mb-5" id="accordionExample">
-        {[...Array(3)].map((_, i) => (
-          <div
-            key={i}
-            className={`collapse ${activeIndex === i ? "show" : ""}`}
-          >
-            <ReusableForm
-              isLoading={isLoading}
-              onlyPost={true}
-              isEditable={false}
-              fields={[
-                ...(activeIndex === 0
-                  ? formFielsIdentity
-                  : activeIndex === 1
-                  ? formPatientsFields
-                  : formPatientsInformationFields),
-                ...(activeIndex === 2 && malignancyType === "Solid"
-                  ? solidFields
-                  : activeIndex === 2 && malignancyType === "non Solid"
-                  ? nonSolidFields
-                  : []),
-              ]}
-              formSchema={generateReusableSchema(
-                activeIndex === 0
-                  ? formFielsIdentity
-                  : activeIndex === 1
-                  ? formPatientsFields
-                  : formPatientsInformationFields.concat(
-                      malignancyType === "Solid" ? solidFields : nonSolidFields
-                    )
-              )}
-              onSubmit={handleFormSubmit}
-              onSelectChange={handleSelectChange}
-              inputsPerRow={
-                activeIndex === 0
-                  ? [2, 3, 2, 2, 2, 2, 3, 2, 1]
-                  : activeIndex === 1
-                  ? [1, 2, 2, 3, 1, 1, 1, 1]
-                  : [1]
-              }
-              defaultValuesFromBackend={userIdentityData}
-            />
-          </div>
-        ))}
+        {activeIndex === 2 ? (
+          <Step3Form
+            patient_uid={patient_uid_info}
+            diagnosis_uid={null} // Replace null with actual diagnosis_uid if applicable
+            onNext={() => setActiveIndex(activeIndex + 1)}
+          />
+        ) : (
+          <ReusableForm
+            isLoading={isLoading}
+            onlyPost={true}
+            isEditable={false}
+            fields={activeIndex === 0 ? formFielsIdentity : formPatientsFields}
+            formSchema={generateReusableSchema(
+              activeIndex === 0 ? formFielsIdentity : formPatientsFields
+            )}
+            onSubmit={handleFormSubmit}
+            inputsPerRow={
+              activeIndex === 0 ? [2, 3, 2, 2, 2, 2, 3, 2, 1] : [1, 2, 2, 3, 1]
+            }
+          />
+        )}
       </div>
     </div>
   );
