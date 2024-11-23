@@ -111,7 +111,7 @@ const PatientsDetails = () => {
           "GET",
           `/records/batch-records/${uid}`
         );
-        const patients = response.data.data.results;
+        const patients = response?.data?.data?.results;
         setProducts(patients);
       } catch (error) {
         console.error("Error fetching patient data:", error);
