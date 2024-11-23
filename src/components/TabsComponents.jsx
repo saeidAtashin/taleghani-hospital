@@ -2,6 +2,7 @@ import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import React, { useState } from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
+import TestOptionForm from "./TestOptionForm";
 
 const TabsComponents = ({
   onSaveChanges,
@@ -285,7 +286,7 @@ const TabsComponents = ({
         </TabPanel>
         <TabPanel>
           <div className="panel-content">
-            <h2>Any content 4</h2>
+            <TestOptionForm />
           </div>
         </TabPanel>
       </Tabs>

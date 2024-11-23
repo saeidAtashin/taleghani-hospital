@@ -247,7 +247,6 @@ export default function TabComponent() {
         );
         const results = response.data.data.results;
 
-        console.log("results", results);
         // Group by category_uid
         const grouped = results.reduce((acc, item) => {
           const categoryUid = item?.title?.sub_category?.category?.uid;
@@ -262,9 +261,6 @@ export default function TabComponent() {
         }, {});
 
         setFields(grouped);
-
-        console.log("grouped grouped grouped", grouped);
-        console.log("categoru", categories);
       } catch (error) {
         console.error("Error fetching fields:", error);
       }
@@ -368,9 +364,6 @@ export default function TabComponent() {
     }
   };
 
-  console.log("fields", fields);
-  console.log("showWhatGet", showWhatGet);
-  // showWhatGet
   return (
     <div className="w-75 mx-5">
       <div className="my-5" />
@@ -415,7 +408,7 @@ export default function TabComponent() {
         />
       ) : showWhatGet === "new" ? (
         <>
-          <TreeView />
+          {/* <TreeView /> */}
         </>
       ) : (
         <DragAndDropOrdering

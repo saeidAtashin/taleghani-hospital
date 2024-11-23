@@ -66,7 +66,6 @@ const TreeView = () => {
         );
         const results = response.data.data.results;
 
-        console.log("results", response.data.data.results);
         // Transform the data
         const transformedData = transformResponseToTree(results);
         setTreeData(transformedData);
