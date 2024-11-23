@@ -18,11 +18,14 @@ const TabsComponents = ({
   const [ordering, setOrdering] = useState(0);
   const [orderingSub, setOrderingSub] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState(""); // For the select input
+  const [selectedCategory2, setSelectedCategory2] = useState(""); // For the select input
   const [selectedtitle, setSelectedtitle] = useState(""); // For the select input
   const [nametitle, setNametitle] = useState("");
   const [selectedType, setSelectedType] = useState("");
   const [orderingtitle, setOrderingtitle] = useState(0);
 
+  // console.log("items", items[activeIndex].label);
+  console.log("object", selectedtitle);
   return (
     <div className="w-100 shadow-lg">
       <Tabs>
@@ -53,7 +56,6 @@ const TabsComponents = ({
                     //   alert("لطفاً یک دسته‌بندی انتخاب کنید.");
                     //   return;
                     // }
-                    console.log("selectedCategory", selectedCategory);
                     onSaveChanges(name, ordering, selectedCategory);
                     setName("");
                   }}
@@ -103,44 +105,57 @@ const TabsComponents = ({
                   label="لغو"
                 />
               </div>
-              <div className="p-field d-flex align-items-end gap-2 mb-4 w-100">
-                <InputText
-                  className="rounded-2 w-50 "
-                  placeholder="عنوان"
-                  autoComplete="false"
-                  id="nameSub"
-                  value={nameSub}
-                  onChange={(e) => setNameSub(e.target.value)}
-                />
-                <div className="p-field d-flex flex-column w-50">
-                  <label htmlFor="categorySelect">انتخاب دسته‌بندی</label>
-                  <select
-                    id="categorySelect"
-                    className="form-select rounded-2"
-                    value={selectedCategory}
-                    onChange={(e) => setSelectedCategory(e.target.value)}
-                  >
-                    <option value="">یک دسته‌بندی انتخاب کنید</option>
+              <div className="w-100">
+                <div>
+                  <p>
+                    در صورت عدم انتخاب زیرگروه، عنوان به{" "}
+                    <span className="text-info">
+                      {items &&
+                        items?.[activeIndex] &&
+                        items?.[activeIndex].label}
+                    </span>{" "}
+                    وصل خواهد شد
+                  </p>
+                </div>
+                <div className="p-field d-flex align-items-end gap-2 mb-4 w-100">
+                  <InputText
+                    className="rounded-2 w-50 "
+                    placeholder="عنوان"
+                    autoComplete="false"
+                    id="nameSub"
+                    value={nameSub}
+                    onChange={(e) => setNameSub(e.target.value)}
+                  />
+                  <div className="p-field d-flex flex-column w-50">
+                    {/* <label htmlFor="categorySelect">انتخاب دسته‌بندی</label> */}
+                    <select
+                      id="categorySelect"
+                      className="form-select rounded-2"
+                      value={selectedCategory}
+                      onChange={(e) => setSelectedCategory(e.target.value)}
+                    >
+                      <option value="">زیرگروه مربوطه</option>
 
-                    {Object.entries(categories).map(([uid, category]) => {
-                      if (uid === items[activeIndex]?.uid) {
-                        return (
-                          <React.Fragment key={uid}>
-                            {category?.items?.map((item, index) => (
-                              <option
-                                key={item?.uid || index} // Use a unique identifier for items
-                                value={item?.uid} // Assuming item.uid uniquely identifies the item
-                              >
-                                {item?.name}
-                                {/* (Subcategory) */}
-                              </option>
-                            ))}
-                          </React.Fragment>
-                        );
-                      }
-                      return null; // Don't render categories that don't match the active index
-                    })}
-                  </select>
+                      {Object.entries(categories).map(([uid, category]) => {
+                        if (uid === items[activeIndex]?.uid) {
+                          return (
+                            <React.Fragment key={uid}>
+                              {category?.items?.map((item, index) => (
+                                <option
+                                  key={item?.uid || index} // Use a unique identifier for items
+                                  value={item?.uid} // Assuming item.uid uniquely identifies the item
+                                >
+                                  {item?.name}
+                                  {/* (Subcategory) */}
+                                </option>
+                              ))}
+                            </React.Fragment>
+                          );
+                        }
+                        return null; // Don't render categories that don't match the active index
+                      })}
+                    </select>
+                  </div>
                 </div>
               </div>
               <div className="p-field d-flex flex-column mb-4 d-none">
@@ -166,10 +181,12 @@ const TabsComponents = ({
                       nametitle,
                       selectedType,
                       orderingtitle,
-                      selectedtitle
+                      selectedtitle,
+                      selectedCategory2
                     );
                     setNametitle("");
                     setSelectedtitle(""); // Reset the selected category after titlemission
+                    setSelectedCategory2(""); // Reset the selected category after submission
                   }}
                 />
                 <Button
@@ -187,21 +204,21 @@ const TabsComponents = ({
                   onChange={(e) => setNametitle(e.target.value)}
                 />
                 <div className="p-field d-flex flex-column w-50">
-                  <label htmlFor="typeSelect">انتخاب نوع</label>
+                  {/* <label htmlFor="typeSelect">نوع فیلد آزمایش</label> */}
                   <select
                     id="typeSelect"
                     className="form-select rounded-2"
                     value={selectedType}
                     onChange={(e) => setSelectedType(e.target.value)}
                   >
-                    <option value="">انتخاب نوع</option>
+                    <option value="">نوع فیلد آزمایش</option>
                     <option value="CHAR">متنی</option>
                     <option value="FLOAT">عددی</option>
                     <option value="PERCENTAGE">درصدی</option>
                   </select>
                 </div>
                 <div className="p-field d-flex flex-column w-50">
-                  <label htmlFor="categorySelect">انتخاب عنوان</label>
+                  {/* <label htmlFor="categorySelect">انتخاب عنوان</label> */}
                   <select
                     id="categorySelect"
                     className="form-select rounded-2"
@@ -224,6 +241,36 @@ const TabsComponents = ({
                           {filteredTitle.name}
                         </option>
                       ))}
+                  </select>
+                </div>
+                <div className="p-field d-flex flex-column w-50">
+                  {/* <label htmlFor="categorySelect">انتخاب دسته‌بندی</label> */}
+                  <select
+                    id="categorySelect"
+                    className="form-select rounded-2"
+                    value={selectedCategory2}
+                    onChange={(e) => setSelectedCategory2(e.target.value)}
+                  >
+                    <option value="">زیرگروه مربوطه</option>
+
+                    {Object.entries(categories).map(([uid, category]) => {
+                      if (uid === items[activeIndex]?.uid) {
+                        return (
+                          <React.Fragment key={uid}>
+                            {category?.items?.map((item, index) => (
+                              <option
+                                key={item?.uid || index} // Use a unique identifier for items
+                                value={item?.uid} // Assuming item.uid uniquely identifies the item
+                              >
+                                {item?.name}
+                                {/* (Subcategory) */}
+                              </option>
+                            ))}
+                          </React.Fragment>
+                        );
+                      }
+                      return null; // Don't render categories that don't match the active index
+                    })}
                   </select>
                 </div>
               </div>

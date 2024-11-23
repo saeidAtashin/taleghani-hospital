@@ -332,32 +332,40 @@ export default function TabComponent() {
     name,
     type,
     ordering,
-    selectedCategory
+    selectedTitle,
+    selectedSubCategory
   ) => {
     try {
-      if (!selectedCategory) {
-        toast.error("لطفاً یک زیرگروه انتخاب کنید.");
-        return;
-      }
+      let payload = {
+        name,
+        type,
+        ordering,
+      };
+
       const categoryUid = items[activeIndex]?.uid; // Adjust based on TabMenu index offset
 
-      if (!categoryUid) {
-        toast.error("مجددا گروه مورد نظر را انتخاب نمایید.");
+      // Determine which key to include in the payload
+      if (selectedTitle) {
+        payload.title_uid = selectedTitle;
+      } else if (selectedSubCategory) {
+        payload.sub_category_uid = selectedSubCategory;
+      } else if (categoryUid) {
+        payload.category_uid = categoryUid;
+      } else {
+        toast.error("لطفاً یک گروه، زیرگروه یا عنوان را انتخاب کنید.");
         return;
       }
 
       const response = await axios.post(
         `https://cancerreg.ir/api/v1/tests/mng-field/`,
-        {
-          // category_uid: categoryUid,
-          title_uid: selectedCategory,
-          name,
-          type,
-          ordering,
-        }
+        payload
       );
+
       setRefreshSub(!refreshSub);
-    } catch (error) {}
+      toast.success("تغییرات با موفقیت ذخیره شد.");
+    } catch (error) {
+      toast.error("خطایی در ارسال داده‌ها رخ داد.");
+    }
   };
 
   console.log("fields", fields);
