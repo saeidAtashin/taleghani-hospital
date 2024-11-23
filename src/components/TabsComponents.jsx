@@ -24,8 +24,6 @@ const TabsComponents = ({
   const [selectedType, setSelectedType] = useState("");
   const [orderingtitle, setOrderingtitle] = useState(0);
 
-  // console.log("items", items[activeIndex].label);
-  console.log("object", selectedtitle);
   return (
     <div className="w-100 shadow-lg">
       <Tabs>
