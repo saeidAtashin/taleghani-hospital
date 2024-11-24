@@ -4,7 +4,7 @@ import PillsTabs from "../components/PillsTabs";
 
 const BasicTestDefinitions = () => {
   return (
-    <div className="d-flex flex-column">
+    <div className="d-flex flex-column w-100">
       <TabComponent />
       <PillsTabs />
     </div>
