@@ -17,7 +17,7 @@ export default function TabComponent() {
   const [items, setItems] = useState([
     {
       label: "گروه جدید",
-      icon: "pi pi-plus-circle",
+      // icon: "pi pi-plus-circle",
       command: () => openModal(),
     },
   ]);
@@ -43,7 +43,7 @@ export default function TabComponent() {
 
         const fetchedItems = response?.data?.data?.results.map((item) => ({
           label: item.name,
-          icon: "pi pi-cog",
+          // icon: "pi pi-cog",
           uid: item.uid,
           template: (
             <div>
@@ -65,7 +65,7 @@ export default function TabComponent() {
         setItems([
           {
             label: "گروه جدید",
-            icon: "pi pi-plus-circle",
+            // icon: "pi pi-plus-circle",
             command: () => openModal(),
           },
           ...fetchedItems,
@@ -371,7 +371,7 @@ export default function TabComponent() {
         scrollable
         model={items.map((item) => ({
           label: item.template || item.label,
-          icon: item.icon,
+          // icon: item.icon,
           command: item.command,
         }))}
         activeIndex={activeIndex === 0 ? 1 : activeIndex}
@@ -407,9 +407,7 @@ export default function TabComponent() {
           setRefreshSub={setRefreshSub}
         />
       ) : showWhatGet === "new" ? (
-        <>
-          {/* <TreeView /> */}
-        </>
+        <>{/* <TreeView /> */}</>
       ) : (
         <DragAndDropOrdering
           items={items}
