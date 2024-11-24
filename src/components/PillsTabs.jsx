@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { Tab, Nav } from "react-bootstrap";
+import { SelectButton } from "primereact/selectbutton";
 import apiRequest from "../api/apiService";
 
 const PillsTabs = () => {
   const [tabsNew, settabsNew] = useState();
   const [apiResponse, setApiResponse] = useState([]);
+  const [activeTab, setActiveTab] = useState("");
+  const [selectedSubCategory, setSelectedSubCategory] = useState(null);
 
   const transformResponse = (response) => {
     const transformed = [];
-
     response?.forEach((category) => {
-      // Process root fields
       category?.field?.forEach((field) => {
         transformed.push({
           name: field?.name ?? "Unknown Field",
@@ -21,13 +22,12 @@ const PillsTabs = () => {
               uid: option?.uid ?? "",
             })) ?? [],
           type: field?.type ?? "Unknown Type",
-          categoryUid: category?.uid ?? "", // Add category UID for matching activeTab
+          categoryUid: category?.uid ?? "",
           categoryName: category?.name ?? "Unknown Category",
           ordering: field?.ordering ?? 0,
         });
       });
 
-      // Process sub-category fields
       category?.sub_category?.forEach((subCategory) => {
         subCategory?.field?.forEach((field) => {
           transformed.push({
@@ -40,20 +40,18 @@ const PillsTabs = () => {
               })) ?? [],
             type: field?.type ?? "Unknown Type",
             categoryUid: category?.uid ?? "",
-            subCategoryUid: subCategory?.name ?? "Unknown Sub-Category",
+            subCategoryUid: subCategory?.uid ?? "",
             subCategoryName: subCategory?.name ?? "Unknown Sub-Category",
             ordering: field?.ordering ?? 0,
           });
         });
       });
     });
-
-    console.log("Transformed Response:", transformed); // Debugging
     return transformed;
   };
 
   const groupByOrdering = (fields) => {
-    const grouped = fields.reduce((groups, field) => {
+    return fields.reduce((groups, field) => {
       const order = field?.ordering ?? 0;
       if (!groups[order]) {
         groups[order] = [];
@@ -61,9 +59,6 @@ const PillsTabs = () => {
       groups[order].push(field);
       return groups;
     }, {});
-
-    console.log("Grouped Fields:", grouped); // Debugging
-    return grouped;
   };
 
   useEffect(() => {
@@ -71,11 +66,8 @@ const PillsTabs = () => {
       try {
         const response = await apiRequest("GET", `/tests/category-details`);
         const list = response?.data?.data?.results ?? [];
-
-        console.log("Fetched Data:", list); // Debugging
-
-        settabsNew(list); // Tabs for navigation
-        setApiResponse(transformResponse(list)); // Transformed data
+        settabsNew(list);
+        setApiResponse(transformResponse(list));
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -83,23 +75,34 @@ const PillsTabs = () => {
     fetchDataCategory();
   }, []);
 
-  const [activeTab, setActiveTab] = useState("");
-
-  const handleSelect = (eventKey) => {
-    setActiveTab(eventKey);
-  };
-
   useEffect(() => {
     setActiveTab(tabsNew?.[0]?.uid ?? "");
   }, [tabsNew]);
+
+  const handleSelect = (eventKey) => {
+    setActiveTab(eventKey);
+    setSelectedSubCategory(null); // Reset sub-category selection on tab change
+  };
 
   const filteredFields = apiResponse.filter(
     (field) => field?.categoryUid === activeTab
   );
 
-  console.log("Filtered Fields:", filteredFields); // Debugging
+  const groupedFields = groupByOrdering(
+    selectedSubCategory
+      ? filteredFields.filter(
+          (field) => field?.subCategoryName === selectedSubCategory
+        )
+      : filteredFields
+  );
 
-  const groupedFields = groupByOrdering(filteredFields);
+  const subCategoryOptions = [
+    ...new Set(
+      filteredFields
+        .map((field) => field?.subCategoryName)
+        .filter((name) => name) // Remove undefined values
+    ),
+  ];
 
   return (
     <Tab.Container activeKey={activeTab} onSelect={handleSelect}>
@@ -113,6 +116,18 @@ const PillsTabs = () => {
         ))}
       </Nav>
       <h4 className="my-4 mx-2">ثبت {activeTab} جدید</h4>
+      {subCategoryOptions.length > 0 && (
+        <div className="mb-3">
+          <SelectButton
+            value={selectedSubCategory}
+            options={subCategoryOptions.map((name) => ({
+              label: name,
+              value: name,
+            }))}
+            onChange={(e) => setSelectedSubCategory(e.value)}
+          />
+        </div>
+      )}
       <div className="p-4">
         <h1>Dynamic Form</h1>
         {Object.keys(groupedFields).length > 0 ? (
@@ -122,8 +137,8 @@ const PillsTabs = () => {
                 <div key={fieldIndex} className="m-2">
                   <label>
                     {field?.subCategoryName
-                      ? `subCategoryName ${field?.subCategoryName} - field ${field?.name} ?.name`
-                      : `categoryName ${field?.categoryName} - field ${field?.name} ?.name`}
+                      ? `subCategoryName ${field?.subCategoryName} - field ${field?.name}`
+                      : `categoryName ${field?.categoryName} - field ${field?.name}`}
                   </label>
                   <input
                     type={field?.type === "CHAR" ? "text" : "number"}

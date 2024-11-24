@@ -3,6 +3,7 @@ import { InputText } from "primereact/inputtext";
 import React, { useState } from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import TestOptionForm from "./TestOptionForm";
+import { toast } from "react-toastify";
 
 const TabsComponents = ({
   onSaveChanges,
@@ -25,11 +26,7 @@ const TabsComponents = ({
   const [selectedType, setSelectedType] = useState("");
   const [orderingtitle, setOrderingtitle] = useState(0);
 
-
-
-  console.log("test",items?.[activeIndex]?.uid )
-
-
+  console.log("test", items?.[activeIndex]?.uid);
 
   return (
     <div className="w-100 shadow-lg">
@@ -182,6 +179,11 @@ const TabsComponents = ({
                   className="align-left rounded-3"
                   label="ذخیره تغییرات"
                   onClick={() => {
+                    if (!selectedType) {
+                      toast.warning("لطفاً نوع فیلد آزمایش را انتخاب کنید"); // Show an alert or handle validation error
+                      return; // Stop further execution if validation fails
+                    }
+
                     onSaveChangestitle(
                       nametitle,
                       selectedType,
@@ -190,8 +192,8 @@ const TabsComponents = ({
                       selectedCategory2
                     );
                     setNametitle("");
-                    setSelectedtitle(""); // Reset the selected category after titlemission
-                    setSelectedCategory2(""); // Reset the selected category after submission
+                    // setSelectedtitle(""); // Reset the selected category after titlemission
+                    // setSelectedCategory2(""); // Reset the selected category after submission
                   }}
                 />
                 <Button
@@ -292,7 +294,7 @@ const TabsComponents = ({
         </TabPanel>
         <TabPanel>
           <div className="panel-content">
-            <TestOptionForm selectedCategory={items?.[activeIndex]?.uid}/>
+            <TestOptionForm selectedCategory={items?.[activeIndex]?.uid} />
           </div>
         </TabPanel>
       </Tabs>
