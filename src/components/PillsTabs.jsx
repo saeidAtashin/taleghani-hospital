@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Tab, Nav } from "react-bootstrap";
 import apiRequest from "../api/apiService";
-import DynamicForm from "./DynamicForm";
 
 const PillsTabs = ({ tabs }) => {
   const [tabsNew, settabsNew] = useState();
@@ -22,7 +21,9 @@ const PillsTabs = ({ tabs }) => {
               uid: option?.uid ?? "",
             })) ?? [],
           type: field?.type ?? "Unknown Type",
-          category: category?.name ?? "Unknown Category", // Adding category for context
+          categoryUid: category?.uid ?? "", // Add category UID for matching activeTab
+          categoryName: category?.name ?? "Unknown Category",
+          ordering: field?.ordering ?? 0,
         });
       });
 
@@ -38,28 +39,31 @@ const PillsTabs = ({ tabs }) => {
                 uid: option?.uid ?? "",
               })) ?? [],
             type: field?.type ?? "Unknown Type",
-            subCategory: subCategory?.name ?? "Unknown Sub-Category", // Adding sub-category for context
-          });
-        });
-
-        // Process title fields if present
-        subCategory?.title?.forEach((title) => {
-          transformed.push({
-            name: title?.name ?? "Unknown Title",
-            uid: title?.uid ?? "",
-            options:
-              title?.options?.map((option) => ({
-                name: option?.name ?? "Unknown Option",
-                uid: option?.uid ?? "",
-              })) ?? [],
-            type: title?.type ?? "Unknown Type",
-            subCategory: subCategory?.name ?? "Unknown Sub-Category", // Adding sub-category for context
+            categoryUid: category?.uid ?? "",
+            subCategoryUid: subCategory?.name ?? "Unknown Sub-Category",
+            subCategoryName: subCategory?.name ?? "Unknown Sub-Category",
+            ordering: field?.ordering ?? 0,
           });
         });
       });
     });
 
+    console.log("Transformed Response:", transformed); // Debugging
     return transformed;
+  };
+
+  const groupByOrdering = (fields) => {
+    const grouped = fields.reduce((groups, field) => {
+      const order = field?.ordering ?? 0;
+      if (!groups[order]) {
+        groups[order] = [];
+      }
+      groups[order].push(field);
+      return groups;
+    }, {});
+
+    console.log("Grouped Fields:", grouped); // Debugging
+    return grouped;
   };
 
   useEffect(() => {
@@ -68,10 +72,7 @@ const PillsTabs = ({ tabs }) => {
         const response = await apiRequest("GET", `/tests/category-details`);
         const list = response?.data?.data?.results ?? [];
 
-        console.log(
-          "response?.data?.data tttttttttttttttttttttttttttttttttttttttttttt",
-          response?.data?.data?.results
-        );
+        console.log("Fetched Data:", list); // Debugging
 
         settabsNew(list); // Tabs for navigation
         setApiResponse(transformResponse(list)); // Transformed data
@@ -92,9 +93,17 @@ const PillsTabs = ({ tabs }) => {
     setActiveTab(tabsNew?.[0]?.uid ?? "");
   }, [tabsNew]);
 
+  const filteredFields = apiResponse.filter(
+    (field) => field?.categoryUid === activeTab
+  );
+
+  console.log("Filtered Fields:", filteredFields); // Debugging
+
+  const groupedFields = groupByOrdering(filteredFields);
+
   return (
     <Tab.Container activeKey={activeTab} onSelect={handleSelect}>
-      <Nav variant="pills" className="">
+      <Nav variant="pills" className="mb-3">
         {tabsNew?.map((tab, index) => (
           <Nav.Item key={index} className="m-2">
             <Nav.Link className="border" eventKey={tab?.uid ?? ""}>
@@ -106,7 +115,28 @@ const PillsTabs = ({ tabs }) => {
       <h4 className="my-4 mx-2">ثبت {activeTab} جدید</h4>
       <div className="p-4">
         <h1>Dynamic Form</h1>
-        <DynamicForm data={apiResponse} />
+        {Object.keys(groupedFields).length > 0 ? (
+          Object.entries(groupedFields).map(([order, fields], rowIndex) => (
+            <div key={rowIndex} className="d-flex flex-wrap mb-3">
+              {fields.map((field, fieldIndex) => (
+                <div key={fieldIndex} className="m-2">
+                  <label>
+                    {field?.subCategoryName
+                      ? `${field?.subCategoryName} - ${field?.name}`
+                      : `${field?.categoryName} - ${field?.name}`}
+                  </label>
+                  <input
+                    type={field?.type === "CHAR" ? "text" : "number"}
+                    className="form-control"
+                    placeholder={field?.name}
+                  />
+                </div>
+              ))}
+            </div>
+          ))
+        ) : (
+          <p>No inputs available for this tab.</p>
+        )}
       </div>
       <Tab.Content className="mt-3">
         {tabs.map((tab, index) => (
@@ -121,6 +151,4 @@ const PillsTabs = ({ tabs }) => {
 
 export default PillsTabs;
 
-// I want all field sub_category.field, title.field, if its root field, show a category side of input, if its sub_category.field show a sub_category side of field and ...
-
-// make all response like apiResponse object
+// in input naem, I want that for example for name: "ejbar", show parent label, in this response ejbar should have sub_category in input name also, base on ordering, arrange inputs in row, for example all ordering 0 showed in first row, and ordering 1 show all in next row
