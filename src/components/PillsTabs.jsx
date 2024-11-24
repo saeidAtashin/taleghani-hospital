@@ -88,14 +88,6 @@ const PillsTabs = () => {
     (field) => field?.categoryUid === activeTab
   );
 
-  const groupedFields = groupByOrdering(
-    selectedSubCategory
-      ? filteredFields.filter(
-          (field) => field?.subCategoryName === selectedSubCategory
-        )
-      : filteredFields
-  );
-
   const subCategoryOptions = [
     ...new Set(
       filteredFields
@@ -103,6 +95,21 @@ const PillsTabs = () => {
         .filter((name) => name) // Remove undefined values
     ),
   ];
+
+  useEffect(() => {
+    // Set the default subcategory only if none is selected
+    if (!selectedSubCategory && subCategoryOptions.length > 0) {
+      setSelectedSubCategory(subCategoryOptions[0]);
+    }
+  }, [subCategoryOptions, selectedSubCategory]);
+
+  const groupedFields = groupByOrdering(
+    selectedSubCategory
+      ? filteredFields.filter(
+          (field) => field?.subCategoryName === selectedSubCategory
+        )
+      : filteredFields
+  );
 
   return (
     <Tab.Container activeKey={activeTab} onSelect={handleSelect}>
