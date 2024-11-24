@@ -5,7 +5,7 @@ import { Dropdown } from "primereact/dropdown";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const TestOptionForm = () => {
+const TestOptionForm = ({ selectedCategory }) => {
   const [fields, setFields] = useState([]);
   const [selectedField, setSelectedField] = useState(null); // PrimeReact Dropdown uses objects
   const [inputValue, setInputValue] = useState("");
@@ -31,6 +31,8 @@ const TestOptionForm = () => {
           });
         });
         setFields(fieldData);
+
+        console.log("response.data.data.results", response.data.data.results);
       } catch (error) {
         console.error("Error fetching fields:", error);
       }

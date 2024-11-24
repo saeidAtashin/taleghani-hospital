@@ -25,6 +25,12 @@ const TabsComponents = ({
   const [selectedType, setSelectedType] = useState("");
   const [orderingtitle, setOrderingtitle] = useState(0);
 
+
+
+  console.log("test",items?.[activeIndex]?.uid )
+
+
+
   return (
     <div className="w-100 shadow-lg">
       <Tabs>
@@ -286,7 +292,7 @@ const TabsComponents = ({
         </TabPanel>
         <TabPanel>
           <div className="panel-content">
-            <TestOptionForm />
+            <TestOptionForm selectedCategory={items?.[activeIndex]?.uid}/>
           </div>
         </TabPanel>
       </Tabs>
