@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Tab, Nav } from "react-bootstrap";
 import apiRequest from "../api/apiService";
 
-const PillsTabs = ({ tabs }) => {
+const PillsTabs = () => {
   const [tabsNew, settabsNew] = useState();
   const [apiResponse, setApiResponse] = useState([]);
 
@@ -138,13 +138,13 @@ const PillsTabs = ({ tabs }) => {
           <p>No inputs available for this tab.</p>
         )}
       </div>
-      <Tab.Content className="mt-3">
+      {/* <Tab.Content className="mt-3">
         {tabs.map((tab, index) => (
           <Tab.Pane eventKey={tab?.uid ?? ""} key={index}>
             {tab?.content ?? "No Content Available"}
           </Tab.Pane>
         ))}
-      </Tab.Content>
+      </Tab.Content> */}
     </Tab.Container>
   );
 };
