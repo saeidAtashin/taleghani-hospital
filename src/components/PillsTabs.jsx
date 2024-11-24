@@ -138,17 +138,8 @@ const PillsTabs = () => {
           <p>در حال دریافت اطلاعات...</p>
         )}
       </div>
-      {/* <Tab.Content className="mt-3">
-        {tabs.map((tab, index) => (
-          <Tab.Pane eventKey={tab?.uid ?? ""} key={index}>
-            {tab?.content ?? "No Content Available"}
-          </Tab.Pane>
-        ))}
-      </Tab.Content> */}
     </Tab.Container>
   );
 };
 
 export default PillsTabs;
-
-// in input naem, I want that for example for name: "ejbar", show parent label, in this response ejbar should have sub_category in input name also, base on ordering, arrange inputs in row, for example all ordering 0 showed in first row, and ordering 1 show all in next row
