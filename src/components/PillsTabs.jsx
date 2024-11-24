@@ -122,8 +122,8 @@ const PillsTabs = () => {
                 <div key={fieldIndex} className="m-2">
                   <label>
                     {field?.subCategoryName
-                      ? `${field?.subCategoryName} - ${field?.name}`
-                      : `${field?.categoryName} - ${field?.name}`}
+                      ? `subCategoryName ${field?.subCategoryName} - field ${field?.name} ?.name`
+                      : `categoryName ${field?.categoryName} - field ${field?.name} ?.name`}
                   </label>
                   <input
                     type={field?.type === "CHAR" ? "text" : "number"}
@@ -135,7 +135,7 @@ const PillsTabs = () => {
             </div>
           ))
         ) : (
-          <p>No inputs available for this tab.</p>
+          <p>در حال دریافت اطلاعات...</p>
         )}
       </div>
       {/* <Tab.Content className="mt-3">
