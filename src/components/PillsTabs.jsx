@@ -72,7 +72,7 @@ const PillsTabs = ({ tabs }) => {
           "response?.data?.data tttttttttttttttttttttttttttttttttttttttttttt",
           response?.data?.data?.results
         );
-        console.log("Fetched Data:", list);
+
         settabsNew(list); // Tabs for navigation
         setApiResponse(transformResponse(list)); // Transformed data
       } catch (error) {
