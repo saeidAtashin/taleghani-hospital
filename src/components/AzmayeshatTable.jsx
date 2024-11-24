@@ -5,7 +5,7 @@ import { Button } from "primereact/button";
 import moment from "jalali-moment";
 import PillsTabs from "./PillsTabs";
 import { tabsInnerImage } from "../pages/PatientsDetails";
-import BadgeIcon from "./BadgeIcon";
+// import BadgeIcon from "./BadgeIcon";
 import SelectableIconItem from "./BadgeIcon";
 
 export default function AzmayeshatTable() {
