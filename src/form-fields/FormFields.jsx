@@ -11,7 +11,7 @@ export const generateReusableSchema = (formFields) =>
           break;
 
         case "select":
-          schema[field.name] = field.required
+          schema[field.nameplus] = field.required
             ? z.string().min(1, `${field.label} را انتخاب کنید`)
             : z
                 .string()
@@ -114,7 +114,7 @@ export const formFielsIdentity = [
     type: "select",
     label: "جنسیت",
     name: "gender",
-
+    nameplus: "gender",
     placeholder: "جنسیت را انتخاب نمایید",
     defaultValue: undefined,
     required: false,
@@ -123,6 +123,7 @@ export const formFielsIdentity = [
     type: "select",
     label: "وضعیت تاهل",
     name: "marital-status",
+    nameplus: "marital-status",
     name_to_send_api: "marital_status",
 
     placeholder: "وضعیت تاهل را انتخاب نمایید",
@@ -143,6 +144,7 @@ export const formFielsIdentity = [
     type: "select",
     label: "شهر محل تولد",
     name: "city",
+    nameplus: "birth_city",
     name_to_send_api: "birth_city",
     placeholder: "شهر را انتخاب نمایید",
     defaultValue: "",
@@ -162,6 +164,7 @@ export const formFielsIdentity = [
     label: "شهر محل زندگی",
     name: "city",
     name_to_send_api: "residential_city",
+    nameplus: "residential_city",
 
     placeholder: "شهر را انتخاب نمایید",
     defaultValue: "",
@@ -187,6 +190,7 @@ export const formFielsIdentity = [
     type: "select",
     label: "سطح تحصیلات",
     name: "education",
+    nameplus: "education",
 
     placeholder: "سطح تحصیلات را انتخاب نمایید",
     defaultValue: "",
@@ -197,6 +201,7 @@ export const formFielsIdentity = [
     label: "رشته تحصیلی",
     name: "major-field",
     name_to_send_api: "major_field",
+    nameplus: "major_field",
 
     placeholder: "رشته تحصیلی را انتخاب نمایید",
     defaultValue: "",
@@ -206,6 +211,7 @@ export const formFielsIdentity = [
     type: "select",
     label: "شغل",
     name: "job",
+    nameplus: "job",
 
     placeholder: "شغل بیمار را انتخاب نمایید",
     defaultValue: "",
@@ -217,6 +223,7 @@ export const formFielsIdentity = [
     name: "num-of-children",
     name_to_send_api: "num_children",
 
+    nameplus: "num_children",
     placeholder: "تعداد فرزندان را انتخاب نمایید ",
     defaultValue: "",
     required: false,
@@ -368,6 +375,8 @@ export const formPatientsInformationFields = [
       { value: "Solid", label: "Solid" },
       { value: "non Solid", label: "non Solid" },
     ],
+    nameplus: "badkhimi",
+
     placeholder: "نوع سرطان بیمار را انتخاب نمایید",
     defaultValue: "",
     required: false,
@@ -493,3 +502,5 @@ export const nonSolidFields = [
   },
   { type: "text", label: "stage", name: "stage", required: false },
 ];
+
+// maybe need numplus

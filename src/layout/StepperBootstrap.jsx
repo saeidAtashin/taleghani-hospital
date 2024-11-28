@@ -19,20 +19,21 @@ const StepperBootstrap = () => {
 
   const patient_uid_info = localStorage.getItem("patient_uid_info");
 
-  const transformDataForApi = (data, fields) => {
-    let transformedData = {};
-    fields.forEach((field) => {
-      const { name, name_to_send_api, dontSendApi } = field;
-      if (!dontSendApi) {
-        if (name_to_send_api) {
-          transformedData[name_to_send_api] = data[name];
-        } else {
-          transformedData[name] = data[name];
-        }
-      }
-    });
-    return transformedData;
-  };
+  // const transformDataForApi = (data, fields) => {
+  //   let transformedData = {};
+  //   fields.forEach((field) => {
+  //     const { name, name_to_send_api, dontSendApi } = field;
+  //     if (!dontSendApi) {
+  //       if (name_to_send_api) {
+  //         transformedData[name_to_send_api] = data[name];
+  //       } else {
+  //         transformedData[name] = data[name];
+  //       }
+  //     }
+  //   });
+  //   console.log("object", transformedData);
+  //   return transformedData;
+  // };
 
   const makeApiRequest = async (
     url,
@@ -58,6 +59,7 @@ const StepperBootstrap = () => {
     }
   };
 
+  console.log("activeIndex", activeIndex);
   const handleFormSubmit = async (data) => {
     const currentFields =
       activeIndex === 0 ? formFielsIdentity : formPatientsFields;
@@ -67,7 +69,7 @@ const StepperBootstrap = () => {
       schema.parse(data);
 
       if (activeIndex === 0) {
-        const transformedData = transformDataForApi(data, currentFields);
+        const transformedData = data;
         const url = "https://cancerreg.ir/api/v1" + PATIENT_INFO;
 
         makeApiRequest(
@@ -82,11 +84,12 @@ const StepperBootstrap = () => {
       }
 
       if (activeIndex === 1) {
-        const transformedData = transformDataForApi(data, currentFields);
+        const transformedData = data;
         const formattedData = {
           ...transformedData,
           patient_uid: patient_uid_info,
         };
+        console.log("data", data);
 
         setIsLoading(true);
         try {
@@ -146,6 +149,20 @@ const StepperBootstrap = () => {
             diagnosis_uid={null} // Replace null with actual diagnosis_uid if applicable
             onNext={() => setActiveIndex(activeIndex + 1)}
           />
+        ) : activeIndex === 3 ? (
+          <div>
+            <div className="card text-center">
+              <div className="card-body ">
+                <h5 className="card-title text-success mb-4">ثبت نام بیمار با موفقیت انجام شد</h5>
+                <p className="card-text mb-4">
+                  برای تکمیل اطلاعات بر روی دکمه زیر کلیک نمایید{" "}
+                </p>
+                <a href="#" className="btn btn-primary">
+                  تکمیل اطلاعات
+                </a>
+              </div>
+            </div>
+          </div>
         ) : (
           <ReusableForm
             isLoading={isLoading}

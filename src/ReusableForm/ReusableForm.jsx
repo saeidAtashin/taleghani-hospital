@@ -72,8 +72,6 @@ const ReusableForm = ({
 
   const rows = getFieldsInRows(fields, inputsPerRow);
 
-  console.log("rows", rows);
-
   const fetchOptions = async (fieldName) => {
     try {
       let url = `https://cancerreg.ir/api/v1/common/${fieldName.name}/`;
@@ -182,11 +180,11 @@ const ReusableForm = ({
                 {/* Select Dropdown */}
                 {field.type === "select" && (
                   <>
-                    <label className="label" htmlFor={field.name}>
+                    <label className="label" htmlFor={field.nameplus}>
                       {field.label}
                     </label>
                     <Controller
-                      name={field.name}
+                      name={field.nameplus}
                       control={control}
                       defaultValue={field.defaultValue || undefined}
                       render={({ field: controllerField }) => {
@@ -195,9 +193,9 @@ const ReusableForm = ({
                             <select
                               {...controllerField}
                               className={`form-control form-select ${
-                                errors[field.name] ? "is-invalid" : ""
+                                errors[field.nameplus] ? "is-invalid" : ""
                               }`}
-                              id={field.name}
+                              id={field.nameplus}
                               disabled={!editable}
                               onChange={(e) => {
                                 controllerField.onChange(e);
@@ -206,8 +204,8 @@ const ReusableForm = ({
                               }}
                             >
                               <option value={undefined}>
-                                {defaultValuesFromBackend[field.name]
-                                  ? defaultValuesFromBackend[field.name]
+                                {defaultValuesFromBackend[field.nameplus]
+                                  ? defaultValuesFromBackend[field.nameplus]
                                   : field.placeholder || "Select an option"}
                               </option>
                               {field.options?.map((option, idx) => (
@@ -226,9 +224,9 @@ const ReusableForm = ({
                             <select
                               {...controllerField}
                               className={`form-control form-select ${
-                                errors[field.name] ? "is-invalid" : ""
+                                errors[field.nameplus] ? "is-invalid" : ""
                               }`}
-                              id={field.name}
+                              id={field.nameplus}
                               disabled={!editable}
                               onChange={(e) => {
                                 controllerField.onChange(e);
@@ -451,7 +449,7 @@ const ReusableForm = ({
                           onChange={(e) =>
                             field.onChange(e.value.toLocaleDateString("en-CA"))
                           }
-                          className="w-100"
+                          className="p-2"
                         />
                       )}
                     />
