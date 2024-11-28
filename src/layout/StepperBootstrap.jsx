@@ -86,7 +86,7 @@ const StepperBootstrap = () => {
       if (activeIndex === 1) {
         const transformedData = data;
         const formattedData = {
-          ...transformedData,
+          ...data,
           patient_uid: patient_uid_info,
         };
         console.log("data", data);
@@ -153,11 +153,19 @@ const StepperBootstrap = () => {
           <div>
             <div className="card text-center">
               <div className="card-body ">
-                <h5 className="card-title text-success mb-4">ثبت نام بیمار با موفقیت انجام شد</h5>
+                <h5 className="card-title text-success mb-4">
+                  ثبت نام بیمار با موفقیت انجام شد
+                </h5>
                 <p className="card-text mb-4">
                   برای تکمیل اطلاعات بر روی دکمه زیر کلیک نمایید{" "}
                 </p>
-                <a href="#" className="btn btn-primary">
+                <a
+                  href={`patients-lists/${patient_uid_info}`}
+                  className="btn btn-primary"
+                  onClick={() =>
+                    localStorage.setItem("defaultActiveKey", "تصویربرداری")
+                  }
+                >
                   تکمیل اطلاعات
                 </a>
               </div>

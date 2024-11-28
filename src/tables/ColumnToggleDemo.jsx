@@ -34,6 +34,7 @@ export default function ColumnToggleDemo() {
       }
     };
     fetchData();
+    localStorage.removeItem("defaultActiveKey");
   }, []);
 
   const [selectedProducts, setSelectedProducts] = useState(null);

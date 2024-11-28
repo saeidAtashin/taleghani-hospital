@@ -67,43 +67,63 @@ const Step3Form = ({ patient_uid, onNext }) => {
   };
 
   const handleSubmit = async () => {
+    const diseaseData =
+      formType === "NON_SOLID"
+        ? {
+            lymph_nodes: formData.lymph_nodes.filter(
+              (node) =>
+                node.site.trim() || node.size.trim() || node.description.trim()
+            ),
+            spleen: formData.spleen.trim() || undefined,
+            b_symptoms: formData.b_symptoms.trim() || undefined,
+            stage: formData.stage.trim() || undefined,
+          }
+        : {
+            primary_tumors:
+              formData.primary_tumors.length > 0
+                ? formData.primary_tumors.filter(
+                    (tumor) =>
+                      tumor.site.trim() ||
+                      tumor.size.trim() ||
+                      tumor.description.trim()
+                  )
+                : undefined,
+            nearby_lymphs:
+              formData?.nearby_lymphs?.length > 0
+                ? formData.nearby_lymphs.filter(
+                    (lymph) =>
+                      lymph.site.trim() ||
+                      lymph.size.trim() ||
+                      lymph.description.trim()
+                  )
+                : undefined,
+            metastasis:
+              formData.metastasis.length > 0
+                ? formData.metastasis.filter(
+                    (met) =>
+                      met.site.trim() ||
+                      met.size.trim() ||
+                      met.description.trim()
+                  )
+                : undefined,
+            stage: formData.stage.trim() || undefined,
+          };
+
+    // Remove empty arrays or undefined values from diseaseData
+    const cleanedDiseaseData = Object.keys(diseaseData).reduce((acc, key) => {
+      if (Array.isArray(diseaseData[key]) && diseaseData[key].length > 0) {
+        acc[key] = diseaseData[key];
+      } else if (diseaseData[key] !== undefined) {
+        acc[key] = diseaseData[key];
+      }
+      return acc;
+    }, {});
+
     const payload = {
       type: formType,
       diagnosis_uid: selectedDiagnosis,
       patient_uid,
-      disease_data: {
-        ...(formType === "NON_SOLID"
-          ? {
-              lymph_nodes: formData.lymph_nodes.filter(
-                (node) =>
-                  node.site.trim() ||
-                  node.size.trim() ||
-                  node.description.trim()
-              ),
-              spleen: formData.spleen.trim() || undefined,
-              b_symptoms: formData.b_symptoms.trim() || undefined,
-              stage: formData.stage.trim() || undefined,
-            }
-          : {
-              primary_tumors: formData.primary_tumors.filter(
-                (tumor) =>
-                  tumor.site.trim() ||
-                  tumor.size.trim() ||
-                  tumor.description.trim()
-              ),
-              nearby_lymphs: formData.nearby_lymphs.filter(
-                (lymph) =>
-                  lymph.site.trim() ||
-                  lymph.size.trim() ||
-                  lymph.description.trim()
-              ),
-              metastasis: formData.metastasis.filter(
-                (met) =>
-                  met.site.trim() || met.size.trim() || met.description.trim()
-              ),
-              stage: formData.stage.trim() || undefined,
-            }),
-      },
+      disease_data: cleanedDiseaseData,
     };
 
     try {

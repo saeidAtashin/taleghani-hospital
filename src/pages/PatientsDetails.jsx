@@ -90,7 +90,7 @@ export const tabsInnerImage = [
 
 const PatientsDetails = () => {
   const { uid } = useParams();
-
+  const defaultActiveKey = localStorage.getItem("defaultActiveKey");
   const columns = [
     { field: "uid", header: "کد ملی" },
     { field: "first_name", header: "نام" },
@@ -263,7 +263,10 @@ const PatientsDetails = () => {
         بیمار {userIdentityData?.first_name} / {userIdentityData?.last_name} /
         {userIdentityData?.phone_number}{" "}
       </h2>
-      <ReusableTabs tabs={tabs} defaultActiveKey="اطلاعات هویتی" />
+      <ReusableTabs
+        tabs={tabs}
+        defaultActiveKey={defaultActiveKey ? defaultActiveKey : "اطلاعات هویتی"}
+      />
     </div>
   );
 };
