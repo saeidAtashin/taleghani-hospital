@@ -32,7 +32,8 @@ const TestOptionForm = ({ selectedCategory }) => {
   }, [selectedCategory]);
 
   const handleSubmit = async () => {
-    if (!selectedField || !inputValue) {
+    console.log("selectedField.uid", selectedField);
+    if (!selectedField) {
       alert("Please select a field and enter a value.");
       return;
     }
