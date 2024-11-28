@@ -122,9 +122,7 @@ const PatientsDetails = () => {
 
   const dt = useRef(null);
 
-  const handleFormSubmit = (data) => {
-    console.log("Final form submission:", data);
-  };
+  const handleFormSubmit = (data) => {};
 
   useEffect(() => {
     const fetchData = async () => {

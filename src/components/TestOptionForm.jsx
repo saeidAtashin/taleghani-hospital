@@ -12,34 +12,24 @@ const TestOptionForm = ({ selectedCategory }) => {
   const [ordering, setOrdering] = useState(0);
   const [fieldType, setFieldType] = useState("");
 
-  // Fetch fields from API
   useEffect(() => {
     const fetchFields = async () => {
       try {
         const response = await axios.get(
-          "https://cancerreg.ir/api/v1/tests/category-details/"
+          `https://cancerreg.ir/api/v1/tests/fields-list/${selectedCategory}/`
         );
-        const fieldData = [];
-        response.data.data.results.forEach((category) => {
-          const fields = Array.isArray(category.field) ? category.field : []; // Ensure category.field is an array
-          fields.forEach((field) => {
-            fieldData.push({
-              uid: field.uid,
-              name: field.name,
-              type: field.type,
-            });
-          });
-        });
-        setFields(fieldData);
 
-        console.log("response.data.data.results", response.data.data.results);
+        const fieldsData = response?.data?.results;
+
+        setFields(fieldsData);
       } catch (error) {
         console.error("Error fetching fields:", error);
+        toast.error("Failed to load fields.");
       }
     };
 
     fetchFields();
-  }, []);
+  }, [selectedCategory]);
 
   const handleSubmit = async () => {
     if (!selectedField || !inputValue) {

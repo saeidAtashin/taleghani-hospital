@@ -99,7 +99,6 @@ export default function AzmayeshatTable() {
   }, []);
 
   const handlePrint = () => {
-    console.log("Printing:", selectedProducts);
     // Add your print logic here
   };
 
