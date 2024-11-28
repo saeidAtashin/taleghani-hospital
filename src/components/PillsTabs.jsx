@@ -3,6 +3,7 @@ import { Tab, Nav } from "react-bootstrap";
 import { SelectButton } from "primereact/selectbutton";
 import apiRequest from "../api/apiService";
 import { Calendar } from "primereact/calendar";
+import { Dropdown } from "primereact/dropdown";
 // import { Nullable } from "primereact/ts-helpers";
 
 const PillsTabs = () => {
@@ -115,20 +116,11 @@ const PillsTabs = () => {
       : filteredFields
   );
 
-  const groupedFields2 = filteredFields?.reduce((acc, field) => {
-    const ordering = field?.ordering || "default"; // Handle undefined ordering
-    if (!acc[ordering]) {
-      acc[ordering] = [];
-    }
-    acc[ordering].push(field);
-    return acc;
-  }, {});
   const ordering = filteredFields.map((field) => field.ordering);
 
   console.log("filteredFields", filteredFields);
   console.log("ordering", ordering);
   console.log("groupedFields", groupedFields);
-  console.log("2", groupedFields2);
 
   const grouped = arr.reduce((acc, val) => {
     if (!acc[val]) acc[val] = [];
@@ -182,15 +174,28 @@ const PillsTabs = () => {
                         className="col-12 col-sm-6 col-md-4 col-lg-3 my-2 mx-2"
                       >
                         <label>
-                          {field?.subCategoryName
+                          {/* {field?.subCategoryName
                             ? `subCategoryName ${field?.subCategoryName} - field ${field?.name}`
-                            : `categoryName ${field?.categoryName} - field ${field?.name}`}
+                            : `categoryName ${field?.categoryName} - field ${field?.name}`} */}
+                          {field?.name}
                         </label>
-                        <input
-                          type={field?.type === "CHAR" ? "text" : "number"}
-                          className="form-control"
-                          placeholder={field?.name}
-                        />
+                        {field?.options?.length > 0 ? (
+                          <Dropdown
+                            value={field?.value} // Set the current value (can be a state or field value)
+                            options={field?.options} // Array of options
+                            onChange={(e) => field?.onChange(e.value)} // Handle selection change
+                            optionLabel="name" // The property of each option to display in the dropdown
+                            optionValue="uid" // The property to use as the value (uid in your case)
+                            // placeholder={`${field?.name}`} // Placeholder text
+                            className="w-100" // Apply form control styling
+                          />
+                        ) : (
+                          <input
+                            type={field?.type === "CHAR" ? "text" : "number"}
+                            className="form-control"
+                            placeholder={field?.name}
+                          />
+                        )}
                       </div>
                     ))}
                 </div>

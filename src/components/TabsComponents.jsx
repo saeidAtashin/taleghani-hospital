@@ -26,7 +26,6 @@ const TabsComponents = ({
   const [selectedType, setSelectedType] = useState("");
   const [orderingtitle, setOrderingtitle] = useState(0);
 
-
   return (
     <div className="w-100 shadow-lg">
       <Tabs>
@@ -67,23 +66,24 @@ const TabsComponents = ({
                   onClick={() => setName("")}
                 />
               </div>
-              <div className="p-field d-flex flex-column mb-4 w-100">
+              <div className=" d-flex  align-items-center mb-4 w-100 gap-2">
                 <InputText
-                  className="rounded-2"
+                  className="rounded-2 w-50"
                   placeholder="زیرگروه"
                   autoComplete="false"
                   id="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 />
-              </div>
-              <div className="p-field d-flex flex-column mb-4 d-none">
-                <label htmlFor="ordering">ترتیب</label>
-                <InputText
-                  id="ordering"
-                  value={ordering}
-                  onChange={(e) => setOrdering(e.target.value)}
-                />
+                <div className="d-flex flex-column">
+                  {/* <label htmlFor="ordering">ترتیب</label> */}
+                  <InputText
+                    className="rounded-2 w-100"
+                    id="ordering"
+                    value={ordering}
+                    onChange={(e) => setOrdering(e.target.value)}
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -279,14 +279,16 @@ const TabsComponents = ({
                     })}
                   </select>
                 </div>
-              </div>
-              <div className="p-field d-flex flex-column mb-4 d-none">
-                <label htmlFor="orderingtitle">ترتیب</label>
-                <InputText
-                  id="orderingtitle"
-                  value={orderingtitle}
-                  onChange={(e) => setOrderingtitle(e.target.value)}
-                />
+                <div className="">
+                  {/* <label htmlFor="orderingtitle">ترتیب</label> */}
+                  <InputText
+                    id="orderingtitle"
+                    placeholder="ترتیب"
+                    className="rounded-2"
+                    // value={orderingtitle}
+                    onChange={(e) => setOrderingtitle(e.target.value)}
+                  />
+                </div>
               </div>
             </div>
           </div>
