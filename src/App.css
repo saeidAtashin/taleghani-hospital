@@ -309,4 +309,12 @@ a.sidebar-link:hover {
   .panel-content {
     text-align: center;
   }
+  input {
+    text-align: center;
+    width: 280px;
+    outline: 0;
+    border-radius: 8px;
+    height: 45px;
+    border: 1px solid #dedede;
+  }
   

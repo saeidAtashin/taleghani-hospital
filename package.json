@@ -35,6 +35,7 @@
     "react-toastify": "^10.0.5",
     "sass": "^1.79.4",
     "sweetalert2": "^11.14.4",
+    "zaman": "^2.1.1",
     "zod": "^3.23.8"
   },
   "devDependencies": {
