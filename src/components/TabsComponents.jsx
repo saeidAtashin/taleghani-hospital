@@ -97,8 +97,8 @@ const TabsComponents = ({
                   label="ذخیره تغییرات"
                   onClick={() => {
                     onSaveChangesSub(nameSub, orderingSub, selectedCategory);
-                    setNameSub("");
-                    setSelectedCategory(""); // Reset the selected category after submission
+                    // setNameSub("");
+                    // setSelectedCategory(""); // Reset the selected category after submission
                   }}
                 />
                 <Button

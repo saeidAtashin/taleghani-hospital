@@ -111,6 +111,7 @@ const PillsTabs = () => {
       : filteredFields
   );
 
+  console.log("filteredFields", filteredFields);
   return (
     <Tab.Container activeKey={activeTab} onSelect={handleSelect}>
       <Nav variant="pills" className="mb-3">

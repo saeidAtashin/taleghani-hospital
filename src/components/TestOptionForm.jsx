@@ -20,6 +20,7 @@ const TestOptionForm = ({ selectedCategory }) => {
         );
 
         const fieldsData = response?.data?.results;
+        console.log("fields", response?.data?.results);
 
         setFields(fieldsData);
       } catch (error) {

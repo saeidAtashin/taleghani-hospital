@@ -185,7 +185,9 @@ export default function TabComponent() {
       const response = await axios.post(
         `https://cancerreg.ir/api/v1/tests/mng-title/`,
         {
-          category_uid: items[activeIndex]?.uid
+          category_uid: selectedCategory
+            ? undefined
+            : items[activeIndex]?.uid
             ? items[activeIndex]?.uid
             : undefined,
           sub_category_uid: selectedCategory ? selectedCategory : undefined,
