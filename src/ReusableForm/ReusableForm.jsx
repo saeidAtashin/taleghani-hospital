@@ -72,6 +72,8 @@ const ReusableForm = ({
 
   const rows = getFieldsInRows(fields, inputsPerRow);
 
+  console.log("rows", rows);
+
   const fetchOptions = async (fieldName) => {
     try {
       let url = `https://cancerreg.ir/api/v1/common/${fieldName.name}/`;
@@ -150,7 +152,7 @@ const ReusableForm = ({
                       render={({ field: controllerField }) => (
                         <div
                           className={`input-group custom-input-group ${
-                            field?.defaultValue
+                            field?.value
                           } ${field.append ? "mb-3" : ""}`}
                         >
                           <input
@@ -161,7 +163,7 @@ const ReusableForm = ({
                             }`}
                             id={field.name}
                             placeholder={field.placeholder || ""}
-                            disabled={!editable}
+                            disabled={!editable || field?.readOnly}
                           />
                           {field.append && (
                             <span className="input-group-text">

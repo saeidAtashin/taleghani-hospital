@@ -275,6 +275,7 @@ export const formPatientsFields = [
     defaultValue: "",
     required: false,
     dontSendApi: true,
+    readOnly: true,
   },
   {
     type: "text",
@@ -284,6 +285,7 @@ export const formPatientsFields = [
     defaultValue: "",
     required: false,
     dontSendApi: true,
+    readOnly: true,
   },
   {
     type: "multi-select",
