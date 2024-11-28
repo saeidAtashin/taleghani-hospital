@@ -2,12 +2,16 @@ import React, { useEffect, useState } from "react";
 import { Tab, Nav } from "react-bootstrap";
 import { SelectButton } from "primereact/selectbutton";
 import apiRequest from "../api/apiService";
+import { Calendar } from "primereact/calendar";
+// import { Nullable } from "primereact/ts-helpers";
 
 const PillsTabs = () => {
   const [tabsNew, settabsNew] = useState();
   const [apiResponse, setApiResponse] = useState([]);
   const [activeTab, setActiveTab] = useState("");
   const [selectedSubCategory, setSelectedSubCategory] = useState(null);
+  const [date, setDate] = useState(null);
+  const arr = [0, 0, 0, 0, 1, 1, 1, 2, 2];
 
   const transformResponse = (response) => {
     const transformed = [];
@@ -111,7 +115,27 @@ const PillsTabs = () => {
       : filteredFields
   );
 
+  const groupedFields2 = filteredFields?.reduce((acc, field) => {
+    const ordering = field?.ordering || "default"; // Handle undefined ordering
+    if (!acc[ordering]) {
+      acc[ordering] = [];
+    }
+    acc[ordering].push(field);
+    return acc;
+  }, {});
+  const ordering = filteredFields.map((field) => field.ordering);
+
   console.log("filteredFields", filteredFields);
+  console.log("ordering", ordering);
+  console.log("groupedFields", groupedFields);
+  console.log("2", groupedFields2);
+
+  const grouped = arr.reduce((acc, val) => {
+    if (!acc[val]) acc[val] = [];
+    acc[val].push(val);
+    return acc;
+  }, {});
+
   return (
     <Tab.Container activeKey={activeTab} onSelect={handleSelect}>
       <Nav variant="pills" className="mb-3">
@@ -139,24 +163,39 @@ const PillsTabs = () => {
       <div className="p-4">
         <h1>Dynamic Form</h1>
         {Object.keys(groupedFields).length > 0 ? (
-          Object.entries(groupedFields).map(([order, fields], rowIndex) => (
-            <div key={rowIndex} className="d-flex flex-wrap mb-3">
-              {fields.map((field, fieldIndex) => (
-                <div key={fieldIndex} className="m-2">
-                  <label>
-                    {field?.subCategoryName
-                      ? `subCategoryName ${field?.subCategoryName} - field ${field?.name}`
-                      : `categoryName ${field?.categoryName} - field ${field?.name}`}
-                  </label>
-                  <input
-                    type={field?.type === "CHAR" ? "text" : "number"}
-                    className="form-control"
-                    placeholder={field?.name}
-                  />
+          // Sort the groupedFields entries based on the ordering value
+          Object.entries(groupedFields)
+            .sort(([orderA], [orderB]) => orderA - orderB) // Sort by the order key (which is the ordering value)
+            .map(([order, fields], rowIndex) => (
+              <div key={rowIndex} className="d-flex flex-column flex-wrap mb-3">
+                <div className="d-flex flex-column w-25">
+                  <label>تاریخ</label>
+                  <Calendar value={date} onChange={(e) => setDate(e.value)} />
                 </div>
-              ))}
-            </div>
-          ))
+                <div className="d-flex flex-row flex-wrap mt-4">
+                  {fields
+                    // Sort fields by their ordering value within each group
+                    .sort((a, b) => a.ordering - b.ordering)
+                    .map((field, fieldIndex) => (
+                      <div
+                        key={fieldIndex}
+                        className="col-12 col-sm-6 col-md-4 col-lg-3 my-2 mx-2"
+                      >
+                        <label>
+                          {field?.subCategoryName
+                            ? `subCategoryName ${field?.subCategoryName} - field ${field?.name}`
+                            : `categoryName ${field?.categoryName} - field ${field?.name}`}
+                        </label>
+                        <input
+                          type={field?.type === "CHAR" ? "text" : "number"}
+                          className="form-control"
+                          placeholder={field?.name}
+                        />
+                      </div>
+                    ))}
+                </div>
+              </div>
+            ))
         ) : (
           <p>در حال دریافت اطلاعات...</p>
         )}
