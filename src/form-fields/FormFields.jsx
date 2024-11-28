@@ -31,9 +31,10 @@ export const generateReusableSchema = (formFields) =>
           schema[field.name] = field.required
             ? z
                 .string()
-                .refine(
-                  (val) => !isNaN(Date.parse(val)),
-                  `${field.label} تاریخ معتبری نیست`
+                .nonempty("Date is required")
+                .regex(
+                  /^\d{4}-\d{2}-\d{2}$/,
+                  "Invalid date format (YYYY-MM-DD)"
                 )
             : z.string().optional();
           break;
@@ -101,12 +102,12 @@ export const formFielsIdentity = [
     required: false,
   },
   {
-    type: "text",
+    type: "date",
     label: "تاریخ تولد",
     name: "birth_date",
     name_to_send_api: "birth_date",
     placeholder: "تاریخ تولد را انتحاب نمایید",
-    defaultValue: "1990-02-05",
+    defaultValue: "",
     required: false,
   },
   {
@@ -221,12 +222,12 @@ export const formFielsIdentity = [
     required: false,
   },
   {
-    type: "text",
+    type: "date",
     label: "تاریخ فوت",
     name: "death_date",
 
     placeholder: "تاریخ فوت را انتخاب نمایید",
-    defaultValue: "1990-02-05",
+    defaultValue: "",
     required: false,
   },
   {

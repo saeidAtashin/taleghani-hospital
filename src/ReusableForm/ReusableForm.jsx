@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import { MultiSelect } from "primereact/multiselect";
+import { DatePicker } from "zaman";
 import { toast } from "react-toastify";
 
 const ReusableForm = ({
@@ -149,8 +150,8 @@ const ReusableForm = ({
                       render={({ field: controllerField }) => (
                         <div
                           className={`input-group custom-input-group ${
-                            field.append ? "mb-3" : ""
-                          }`}
+                            field?.defaultValue
+                          } ${field.append ? "mb-3" : ""}`}
                         >
                           <input
                             {...controllerField}
@@ -430,6 +431,36 @@ const ReusableForm = ({
                       </div>
                     )}
                   </>
+                )}
+                {field.type === "date" && (
+                  <div className="d-flex flex-column">
+                    <label className="label" htmlFor={field.name}>
+                      {field.label}
+                    </label>
+                    <Controller
+                      name={field.name}
+                      control={control}
+                      render={({ field }) => (
+                        <DatePicker
+                          defaultValue={field.defaultValue || undefined}
+                          {...field}
+                          round="x4"
+                          position="center"
+                          onChange={(e) =>
+                            field.onChange(e.value.toLocaleDateString("en-CA"))
+                          }
+                          className="w-100"
+                        />
+                      )}
+                    />
+                    {/*       {errors.date && <p>{errors.date.message}</p>}
+                     */}
+                    {errors[field.name] && (
+                      <div className="invalid-feedback">
+                        {errors[field.name].message}
+                      </div>
+                    )}
+                  </div>
                 )}
               </div>
             ))}

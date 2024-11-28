@@ -14,14 +14,14 @@ const DashboardPage = () => {
         />
         <Lottie className="" loop play animationData={animationData} />
 
-        <div className="libWrapper">
+        {/* <div className="libWrapper"> */}
           <DatePicker
             round="x4"
             position="center"
             onChange={(e) => console.log(e.value.toLocaleDateString("en-CA"))}
             className="oops"
           />
-        </div>
+        {/* </div> */}
       </div>
     </div>
   );
