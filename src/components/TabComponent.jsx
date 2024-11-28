@@ -43,7 +43,6 @@ export default function TabComponent() {
 
         const fetchedItems = response?.data?.data?.results.map((item) => ({
           label: item.name,
-          // icon: "pi pi-cog",
           uid: item.uid,
           template: (
             <div>
@@ -70,6 +69,8 @@ export default function TabComponent() {
           },
           ...fetchedItems,
         ]);
+
+        
       } catch (err) {
         console.error(err.message);
       } finally {
