@@ -69,12 +69,21 @@ const StepperBootstrap = () => {
       schema.parse(data);
 
       if (activeIndex === 0) {
-        const transformedData = data;
+        const { ...restOfData } = data; // Destructure to remove both `surgery` and `underlying-disease`
+
+        const formattedData = {
+          ...restOfData,
+          patient_uid: patient_uid_info,
+          marital_status: data?.["marital-status"]
+            ? data?.["marital-status"]
+            : undefined, // Only include the `surgeries` field
+        };
+
         const url = "https://cancerreg.ir/api/v1" + PATIENT_INFO;
 
         makeApiRequest(
           url,
-          transformedData,
+          formattedData,
           (response) => {
             localStorage.setItem("patient_uid_info", response?.data?.data?.uid);
             setActiveIndex(activeIndex + 1);
@@ -84,10 +93,26 @@ const StepperBootstrap = () => {
       }
 
       if (activeIndex === 1) {
-        const transformedData = data;
+        // const transformedData = data;
+        const {
+          surgery,
+          "underlying-disease": underlyingDisease,
+          "family-history": familyhistory,
+          "habit-disease": habitdisease,
+          drugs,
+          ...restOfData
+        } = data; // Destructure to remove both `surgery` and `underlying-disease`
+
         const formattedData = {
-          ...data,
+          ...restOfData,
           patient_uid: patient_uid_info,
+          surgeries: data?.surgery ? data.surgery : undefined, // Only include the `surgeries` field
+          underlying_diseases: underlyingDisease
+            ? underlyingDisease
+            : undefined, // Set `underlying_diseases` from `underlying-disease`
+          habits: habitdisease ? habitdisease : undefined, // Set `underlying_diseases` from `underlying-disease`
+          family_history: familyhistory ? familyhistory : undefined,
+          drugs_records: data?.drugs ? data?.drugs : undefined,
         };
         console.log("data", data);
 

@@ -74,6 +74,7 @@ const ReusableForm = ({
   const rows = getFieldsInRows(fields, inputsPerRow);
 
   const fetchOptions = async (fieldName) => {
+    console.log("fieldName", fieldName);
     try {
       let url = `https://cancerreg.ir/api/v1/common/${fieldName.name}/`;
 
@@ -83,7 +84,6 @@ const ReusableForm = ({
         label: item.name,
       }));
 
-      console.log("fetchedOptions", fetchedOptions);
       setOptions((prevOptions) => ({
         ...prevOptions,
         [fieldName.name]: fetchedOptions,
@@ -103,7 +103,6 @@ const ReusableForm = ({
   };
 
   useEffect(() => {
-    console.log("activeIndex", activeIndex);
     reset();
   }, [activeIndex, reset]);
 
@@ -114,7 +113,6 @@ const ReusableForm = ({
   }, [defaultValuesFromBackend, reset]);
 
   useEffect(() => {
-    console.log("defaultValuesFromBackend:", defaultValuesFromBackend);
     reset(defaultValuesFromBackend || {});
   }, [defaultValuesFromBackend, reset]);
 
@@ -391,15 +389,15 @@ const ReusableForm = ({
                       defaultValue={[]}
                       render={({ field: controllerField }) => {
                         useEffect(() => {
-                          fetchOptions(field.name);
-                        }, [field.name]);
+                          fetchOptions(field);
+                        }, [field]);
 
                         return (
                           <MultiSelect
                             value={controllerField.value}
                             onChange={(e) => {
                               controllerField.onChange(e.value);
-                              setSelectedCities(e.value);
+                              // setSelectedCities(e.value);
                             }}
                             options={options[field.name] || []}
                             optionLabel="label"
