@@ -12,7 +12,7 @@ const GraphicRecord = () => {
       try {
         const response = await apiRequest(
           "GET",
-          `/records/batch-graphic-records/${uid}`
+          `/records/batch-graphic-records/${uid}/`
         );
         const patients = response.data.data.results;
         setProducts(patients);

@@ -5,13 +5,14 @@ const apiRequest = async (
   method,
   endpoint,
   data = null,
+  params = null, // Add params as a separate argument
   baseURL = "https://cancerreg.ir/api/v1"
 ) => {
   try {
     const response = await axios({
       method,
       // url: `https://cancerreg.ir/api/v1/common/${endpoint}/`,
-      url: `${baseURL}${endpoint}/`,
+      url: `${baseURL}${endpoint}`,
       data,
     });
     return response;

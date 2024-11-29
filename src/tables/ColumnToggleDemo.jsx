@@ -19,23 +19,28 @@ export default function ColumnToggleDemo() {
   const [products, setProducts] = useState([]);
   const [visibleColumns, setVisibleColumns] = useState(columns);
   const [loading, setLoading] = useState(columns);
+  const [page, setPage] = useState(1); // current page
+
+  const fetchData = async () => {
+    setLoading(true); // Start loading state
+    try {
+      const response = await apiRequest(
+        "GET",
+        `/patient/patient-info/?page=${page}&page_size=20`
+      );
+      const patients = response.data.data.results;
+      setProducts(patients);
+      setLoading(false); // End loading state
+    } catch (error) {
+      setLoading(false);
+      console.error("Error fetching patient data:", error);
+    }
+  };
 
   useEffect(() => {
-    setLoading(true);
-    const fetchData = async () => {
-      try {
-        const response = await apiRequest("GET", "/patient/patient-info");
-        const patients = response.data.data.results;
-        setProducts(patients);
-        setLoading(false);
-      } catch (error) {
-        setLoading(false);
-        console.error("Error fetching patient data:", error);
-      }
-    };
     fetchData();
     localStorage.removeItem("defaultActiveKey");
-  }, []);
+  }, [page]); // Trigger when page  changes
 
   const [selectedProducts, setSelectedProducts] = useState(null);
   const [globalFilter, setGlobalFilter] = useState(null);
@@ -105,9 +110,8 @@ export default function ColumnToggleDemo() {
           dataKey="uid"
           paginator
           rows={10}
-          rowsPerPageOptions={[5, 10, 25]}
-          paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-          currentPageReportTemplate="نمایش {first} تا {last} از {totalRecords} اطلاعات"
+          paginatorTemplate=""
+          currentPageReportTemplate=""
           globalFilter={globalFilter}
           header={headerNew}
         >

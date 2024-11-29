@@ -109,7 +109,7 @@ const PatientsDetails = () => {
       try {
         const response = await apiRequest(
           "GET",
-          `/records/batch-records/${uid}`
+          `/records/batch-records/${uid}/`
         );
         const patients = response?.data?.data?.results;
         setProducts(patients);
@@ -129,7 +129,7 @@ const PatientsDetails = () => {
       try {
         const response = await apiRequest(
           "GET",
-          `/patient/patient-info/${uid}`
+          `/patient/patient-info/${uid}/`
         );
         const identityData = response.data.data;
         setUserIdentityData(identityData);
@@ -145,7 +145,7 @@ const PatientsDetails = () => {
       try {
         const response = await apiRequest(
           "GET",
-          `/patient/patient-records/${uid}`
+          `/patient/patient-records/${uid}/`
         );
         const recordsData = response.data.data;
         setuserRecords(recordsData);
@@ -161,7 +161,7 @@ const PatientsDetails = () => {
       try {
         const response = await apiRequest(
           "GET",
-          `/patient/patient-info/${uid}`
+          `/patient/patient-info/${uid}/`
         );
         const solidData = response.data.data;
         setsolidIdentityData(solidData);

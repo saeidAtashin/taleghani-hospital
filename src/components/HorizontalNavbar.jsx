@@ -13,19 +13,19 @@ const HorizontalNavbar = () => {
   const [loading, setLoading] = useState(false);
 
   const items = [
-    { name: "جنسیت", endpoint: "/common/gender" },
-    { name: "وضعیت تاهل", endpoint: "/common/marital-status" },
-    { name: "شغل", endpoint: "/common/job" },
-    { name: "استان", endpoint: "/common/province" },
-    { name: "شهر", endpoint: "/common/city" },
-    { name: "سطح تحصیلات", endpoint: "/common/education" },
-    { name: "رشته تحصیلی", endpoint: "/common/major-field" },
-    { name: "تعداد فرزندان", endpoint: "/common/num-of-children" },
-    { name: "بیماری‌های زمینه‌ای", endpoint: "/common/underlying-disease" },
-    { name: "عادات", endpoint: "/common/habit-disease" },
-    { name: "سابقه خانوادگی", endpoint: "/common/family-history" },
-    { name: "جراحی‌ها", endpoint: "/common/surgery" },
-    { name: "تشخیص", endpoint: "/common/diagnosis" },
+    { name: "جنسیت", endpoint: "/common/gender/" },
+    { name: "وضعیت تاهل", endpoint: "/common/marital-status/" },
+    { name: "شغل", endpoint: "/common/job/" },
+    { name: "استان", endpoint: "/common/province/" },
+    { name: "شهر", endpoint: "/common/city/" },
+    { name: "سطح تحصیلات", endpoint: "/common/education/" },
+    { name: "رشته تحصیلی", endpoint: "/common/major-field/" },
+    { name: "تعداد فرزندان", endpoint: "/common/num-of-children/" },
+    { name: "بیماری‌های زمینه‌ای", endpoint: "/common/underlying-disease/" },
+    { name: "عادات", endpoint: "/common/habit-disease/" },
+    { name: "سابقه خانوادگی", endpoint: "/common/family-history/" },
+    { name: "جراحی‌ها", endpoint: "/common/surgery/" },
+    { name: "تشخیص", endpoint: "/common/diagnosis/" },
   ];
 
   const handleClick = async (item) => {

@@ -69,7 +69,7 @@ const PillsTabs = () => {
   useEffect(() => {
     const fetchDataCategory = async () => {
       try {
-        const response = await apiRequest("GET", `/tests/category-details`);
+        const response = await apiRequest("GET", `/tests/category-details/`);
         const list = response?.data?.data?.results ?? [];
         settabsNew(list);
         setApiResponse(transformResponse(list));
