@@ -70,7 +70,7 @@ const PillsTabs = () => {
     const fetchDataCategory = async () => {
       try {
         const response = await apiRequest("GET", `/tests/category-details/`);
-        const list = response?.data?.data?.results ?? [];
+        const list = response?.data?.data?.result ?? [];
         settabsNew(list);
         setApiResponse(transformResponse(list));
       } catch (error) {

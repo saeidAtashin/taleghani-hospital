@@ -34,6 +34,9 @@ export default function TabComponent() {
   const [filteredTitles, setFilteredTitles] = useState([]);
   const [fields, setFields] = useState({});
 
+
+
+  console.log("categoriescategories items",items)
   useEffect(() => {
     const fetchCategoryList = async () => {
       try {
@@ -41,9 +44,12 @@ export default function TabComponent() {
           "https://cancerreg.ir/api/v1/tests/category/"
         );
 
-        const fetchedItems = response?.data?.data?.results.map((item) => ({
-          label: item.name,
-          uid: item.uid,
+
+        // console.log("response?.data?.data?.results",response?.data?.data?.results)
+
+        const fetchedItems = response?.data?.data?.result?.map((item) => ({
+          label: item?.name,
+          uid: item?.uid,
           template: (
             <div>
               {item.name}{" "}
@@ -69,8 +75,6 @@ export default function TabComponent() {
           },
           ...fetchedItems,
         ]);
-
-        
       } catch (err) {
         console.error(err.message);
       } finally {
@@ -207,14 +211,14 @@ export default function TabComponent() {
           "https://cancerreg.ir/api/v1/tests/mng-sub-category/"
         );
 
-        const results = response.data.data.results;
+        const results = response.data.data.result;
 
         // Group by category_uid
-        const grouped = results.reduce((acc, item) => {
+        const grouped = results?.reduce((acc, item) => {
           const categoryUid = item?.category?.uid;
           if (!acc[categoryUid]) {
             acc[categoryUid] = {
-              categoryName: item.category.name,
+              categoryName: item?.category?.name,
               items: [],
             };
           }
@@ -248,10 +252,10 @@ export default function TabComponent() {
         const response = await axios.get(
           "https://cancerreg.ir/api/v1/tests/mng-field/"
         );
-        const results = response.data.data.results;
-
+        const results = response?.data?.data?.result;
+//   "multipule_value": false, this added to api send
         // Group by category_uid
-        const grouped = results.reduce((acc, item) => {
+        const grouped = results?.reduce((acc, item) => {
           const categoryUid = item?.title?.sub_category?.category?.uid;
           if (!acc[categoryUid]) {
             acc[categoryUid] = {
@@ -276,9 +280,10 @@ export default function TabComponent() {
     const fetchTitles = async () => {
       try {
         const response = await axios.get(
-          "https://cancerreg.ir/api/v1/tests/mng-title/"
+          "https://cancerreg.ir/api/v1/tests/mng-title/?page=1&page_size=50"
         );
-        const results = response.data.data.results;
+        const results = response.data.data.result;
+        // console.log("response.data.data.results", response.data.data.results);
 
         setTitles(results);
       } catch (error) {
@@ -290,23 +295,27 @@ export default function TabComponent() {
   }, [refreshTitle]);
 
   useEffect(() => {
-    if (titles.length > 0 && activeIndex) {
+    if (titles?.length > 0 && activeIndex) {
       const activeUid = items[activeIndex]?.uid;
+
+      console.log("titles", titles);
       const filtered = titles.filter(
-        (title) => title.sub_category?.category?.uid === activeUid
+        (title) => title?.sub_category?.category?.uid === activeUid
       );
       setFilteredTitles(filtered);
+      console.log("filtered", filtered);
     }
   }, [titles, activeIndex, items]);
 
   const convertFilteredTitlesToCategories = (filteredTitles) => {
-    return filteredTitles.reduce((acc, title) => {
-      const categoryUid = title.sub_category.category.uid;
+    console.log("filteredTitles", filteredTitles);
+    return filteredTitles?.reduce((acc, title) => {
+      const categoryUid = title?.sub_category?.category?.uid;
 
       // If the category UID doesn't exist, initialize it
       if (!acc[categoryUid]) {
         acc[categoryUid] = {
-          categoryName: title.sub_category.category.name,
+          categoryName: title?.sub_category?.category?.name,
           items: [],
         };
       }
@@ -372,8 +381,8 @@ export default function TabComponent() {
       <div className="my-5" />
       <TabMenu
         scrollable
-        model={items.map((item) => ({
-          label: item.template || item.label,
+        model={items?.map((item) => ({
+          label: item?.template || item?.label,
           // icon: item.icon,
           command: item.command,
         }))}

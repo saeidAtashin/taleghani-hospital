@@ -15,6 +15,7 @@ const TabsComponents = ({
   onSaveChangestitle,
   titles,
 }) => {
+  console.log("categories", categories);
   const [name, setName] = useState("");
   const [nameSub, setNameSub] = useState("");
   const [ordering, setOrdering] = useState(0);
@@ -137,24 +138,26 @@ const TabsComponents = ({
                     >
                       <option value="">زیرگروه مربوطه</option>
 
-                      {Object.entries(categories).map(([uid, category]) => {
-                        if (uid === items[activeIndex]?.uid) {
-                          return (
-                            <React.Fragment key={uid}>
-                              {category?.items?.map((item, index) => (
-                                <option
-                                  key={item?.uid || index} // Use a unique identifier for items
-                                  value={item?.uid} // Assuming item.uid uniquely identifies the item
-                                >
-                                  {item?.name}
-                                  {/* (Subcategory) */}
-                                </option>
-                              ))}
-                            </React.Fragment>
-                          );
-                        }
-                        return null; // Don't render categories that don't match the active index
-                      })}
+                      {Object &&
+                        Object?.entries(categories) &&
+                        Object?.entries(categories)?.map(([uid, category]) => {
+                          if (uid === items[activeIndex]?.uid) {
+                            return (
+                              <React.Fragment key={uid}>
+                                {category?.items?.map((item, index) => (
+                                  <option
+                                    key={item?.uid || index} // Use a unique identifier for items
+                                    value={item?.uid} // Assuming item.uid uniquely identifies the item
+                                  >
+                                    {item?.name}
+                                    {/* (Subcategory) */}
+                                  </option>
+                                ))}
+                              </React.Fragment>
+                            );
+                          }
+                          return null; // Don't render categories that don't match the active index
+                        })}
                     </select>
                   </div>
                 </div>
@@ -234,7 +237,7 @@ const TabsComponents = ({
                     <option value="">عنوان مربوطه</option>
 
                     {titles
-                      .filter(
+                      ?.filter(
                         (title) =>
                           title?.sub_category?.category?.uid ===
                           items[activeIndex]?.uid

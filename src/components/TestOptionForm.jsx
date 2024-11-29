@@ -12,6 +12,7 @@ const TestOptionForm = ({ selectedCategory }) => {
   const [ordering, setOrdering] = useState(0);
   const [fieldType, setFieldType] = useState("");
 
+  console.log("fields", fields);
   useEffect(() => {
     const fetchFields = async () => {
       try {
@@ -19,7 +20,9 @@ const TestOptionForm = ({ selectedCategory }) => {
           `https://cancerreg.ir/api/v1/tests/fields-list/${selectedCategory}/`
         );
 
-        const fieldsData = response?.data?.results;
+        const fieldsData = response?.data?.data;
+
+        console.log("res", response?.data);
 
         setFields(fieldsData);
       } catch (error) {
