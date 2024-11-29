@@ -31,7 +31,6 @@ const StepperBootstrap = () => {
   //       }
   //     }
   //   });
-  //   console.log("object", transformedData);
   //   return transformedData;
   // };
 
@@ -59,7 +58,6 @@ const StepperBootstrap = () => {
     }
   };
 
-  console.log("activeIndex", activeIndex);
   const handleFormSubmit = async (data) => {
     const currentFields =
       activeIndex === 0 ? formFielsIdentity : formPatientsFields;
@@ -114,7 +112,6 @@ const StepperBootstrap = () => {
           family_history: familyhistory ? familyhistory : undefined,
           drugs_records: data?.drugs ? data?.drugs : undefined,
         };
-        console.log("data", data);
 
         setIsLoading(true);
         try {

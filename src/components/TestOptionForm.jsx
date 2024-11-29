@@ -20,7 +20,6 @@ const TestOptionForm = ({ selectedCategory }) => {
         );
 
         const fieldsData = response?.data?.results;
-        console.log("fields", response?.data?.results);
 
         setFields(fieldsData);
       } catch (error) {
@@ -33,7 +32,6 @@ const TestOptionForm = ({ selectedCategory }) => {
   }, [selectedCategory]);
 
   const handleSubmit = async () => {
-    console.log("selectedField.uid", selectedField);
     if (!selectedField) {
       alert("Please select a field and enter a value.");
       return;

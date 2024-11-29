@@ -10,7 +10,6 @@ const BasicPatientDefinitions = () => {
   ];
 
   const handleLinkClick = (path) => {
-    console.log(`Navigated to ${path}`);
     // handle any additional navigation logic if needed
   };
 

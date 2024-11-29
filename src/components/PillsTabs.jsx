@@ -118,10 +118,6 @@ const PillsTabs = () => {
 
   const ordering = filteredFields.map((field) => field.ordering);
 
-  console.log("filteredFields", filteredFields);
-  console.log("ordering", ordering);
-  console.log("groupedFields", groupedFields);
-
   const grouped = arr.reduce((acc, val) => {
     if (!acc[val]) acc[val] = [];
     acc[val].push(val);

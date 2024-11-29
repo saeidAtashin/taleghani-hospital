@@ -126,7 +126,6 @@ export default function TasvirBardari() {
     setSelectedOptions(selected);
   };
 
-  console.log("selectedOptions", selectedOptions);
   const [description, setDescreption] = useState("");
 
   const options = [
@@ -153,7 +152,6 @@ export default function TasvirBardari() {
     axios
       .post(`https://cancerreg.ir/api/v1/records/records-order/`, payload)
       .then((response) => {
-        console.log("Data submitted successfully:", response.data);
         setShowAzmayeshPAge("home");
         handleRefresh();
       })

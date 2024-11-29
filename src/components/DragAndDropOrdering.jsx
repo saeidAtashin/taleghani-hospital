@@ -13,8 +13,6 @@ const DragAndDropOrdering = ({
   url,
   titles,
 }) => {
-  console.log("categories in draaag", categories);
-  console.log("sub in draaag", sub);
   const handleDelete = async (uid) => {
     Swal.fire({
       title: "آیا از حذف این مورد مطمئن هستید؟",
@@ -210,13 +208,9 @@ export default DragAndDropOrdering;
 
 //     // Log rows for debugging
 //     Object.entries(updatedRows).forEach(([rowId, items]) => {
-//       console.log(
-//         `Row: ${rowId}, Items: ${items.map((item) => item.uid).join(", ")}`
-//       );
-//     });
+//
 //   };
 
-//   console.log("rows", rows?.row1);
 //   return (
 //     <DragDropContext onDragEnd={handleRowDragEnd}>
 //       <div

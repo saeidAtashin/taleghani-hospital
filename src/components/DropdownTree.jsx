@@ -78,10 +78,7 @@ const DropdownTree = () => {
     fetchData();
   }, []);
 
-  const handleChange = (currentNode, selectedNodes) => {
-    console.log("Current Node:", currentNode);
-    console.log("Selected Nodes:", selectedNodes);
-  };
+  const handleChange = (currentNode, selectedNodes) => {};
 
   return (
     <div>

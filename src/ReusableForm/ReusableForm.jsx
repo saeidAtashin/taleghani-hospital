@@ -74,7 +74,6 @@ const ReusableForm = ({
   const rows = getFieldsInRows(fields, inputsPerRow);
 
   const fetchOptions = async (fieldName) => {
-    console.log("fieldName", fieldName);
     try {
       let url = `https://cancerreg.ir/api/v1/common/${fieldName.name}/`;
 

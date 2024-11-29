@@ -38,7 +38,6 @@ const LoginPage = () => {
           password,
         }
       );
-      console.log("Response:", response.data);
       navigate("/dashboard");
     } catch (error) {
       toast.warn(error?.response?.data?.errors[0]?.message);
