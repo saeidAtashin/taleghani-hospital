@@ -171,19 +171,27 @@ const StepperBootstrap = () => {
               </div>
             </div>
           </div>
-        ) : (
+        ) : activeIndex === 0 ? (
           <ReusableForm
+            activeIndex={activeIndex}
             isLoading={isLoading}
             onlyPost={true}
             isEditable={false}
-            fields={activeIndex === 0 ? formFielsIdentity : formPatientsFields}
-            formSchema={generateReusableSchema(
-              activeIndex === 0 ? formFielsIdentity : formPatientsFields
-            )}
+            fields={formFielsIdentity}
+            formSchema={generateReusableSchema(formFielsIdentity)}
             onSubmit={handleFormSubmit}
-            inputsPerRow={
-              activeIndex === 0 ? [2, 3, 2, 2, 2, 2, 3, 2, 1] : [1, 2, 2, 3, 1]
-            }
+            inputsPerRow={[2, 3, 2, 2, 2, 2, 3, 2, 1]}
+          />
+        ) : (
+          <ReusableForm
+            activeIndex={activeIndex}
+            isLoading={isLoading}
+            onlyPost={true}
+            isEditable={false}
+            fields={formPatientsFields}
+            formSchema={generateReusableSchema(formPatientsFields)}
+            onSubmit={handleFormSubmit}
+            inputsPerRow={[1, 2, 2, 3, 1]}
           />
         )}
       </div>

@@ -17,6 +17,7 @@ const ReusableForm = ({
   onSelectChange,
   isLoading = false,
   defaultValuesFromBackend,
+  activeIndex,
 }) => {
   const {
     control,
@@ -43,15 +44,15 @@ const ReusableForm = ({
 
   const toggleEditable = () => setEditable((prev) => !prev);
 
-  useEffect(() => {
-    // Set default values from backend when they are available
-    if (
-      defaultValuesFromBackend &&
-      Object.keys(defaultValuesFromBackend).length > 0
-    ) {
-      reset(defaultValuesFromBackend); // Reset form with backend values
-    }
-  }, [defaultValuesFromBackend, reset]);
+  // useEffect(() => {
+  //   // Set default values from backend when they are available
+  //   if (
+  //     defaultValuesFromBackend &&
+  //     Object.keys(defaultValuesFromBackend).length > 0
+  //   ) {
+  //     reset(defaultValuesFromBackend); // Reset form with backend values
+  //   }
+  // }, [defaultValuesFromBackend, reset]);
 
   const getFieldsInRows = (fields, inputsPerRow) => {
     let rows = [];
@@ -101,6 +102,22 @@ const ReusableForm = ({
     }
   };
 
+  useEffect(() => {
+    console.log("activeIndex", activeIndex);
+    reset();
+  }, [activeIndex, reset]);
+
+  useEffect(() => {
+    if (defaultValuesFromBackend) {
+      reset(defaultValuesFromBackend); // Reset form with backend data
+    }
+  }, [defaultValuesFromBackend, reset]);
+
+  useEffect(() => {
+    console.log("defaultValuesFromBackend:", defaultValuesFromBackend);
+    reset(defaultValuesFromBackend || {});
+  }, [defaultValuesFromBackend, reset]);
+
   return (
     <div className="container mt-5">
       {!onlyPost && !editable ? (
@@ -127,7 +144,7 @@ const ReusableForm = ({
           </div>
         )
       )}
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form key={activeIndex} onSubmit={handleSubmit(onSubmit)}>
         {rows.map((rowFields, rowIndex) => (
           <div className="row" key={rowIndex}>
             {rowFields.map((field, index) => (
