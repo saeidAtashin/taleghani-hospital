@@ -5,7 +5,6 @@ import apiRequest from "../api/apiService";
 import { Calendar } from "primereact/calendar";
 import { Dropdown } from "primereact/dropdown";
 import axios from "axios";
-// import { Nullable } from "primereact/ts-helpers";
 
 const PillsTabs = () => {
   const [tabsNew, settabsNew] = useState();
@@ -89,20 +88,9 @@ const PillsTabs = () => {
         const response = await axios.get(
           `https://cancerreg.ir/api/v1/tests/category-details/${activeTab}`
         );
-        // const list = response?.data?.data?.result ?? [];
 
         console.log("title direct to category", response?.data?.data?.title);
         settitleDirectToCateg(response?.data?.data?.title);
-        // console.log(
-        //   "inakaaaaa?",
-        //   response?.data?.data?.result.filter(
-        //     (item) => item.uid === activeTab
-        //   )
-        // );
-        // console.log("activeTab", activeTab);
-        // settabsSecond(list);
-
-        // setApiResponse(transformResponse(list));
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -116,7 +104,7 @@ const PillsTabs = () => {
 
   const handleSelect = (eventKey) => {
     setActiveTab(eventKey);
-    setSelectedSubCategory(null); // Reset sub-category selection on tab change
+    setSelectedSubCategory(null);
   };
 
   const filteredFields = apiResponse.filter(
@@ -127,12 +115,11 @@ const PillsTabs = () => {
     ...new Set(
       filteredFields
         .map((field) => field?.subCategoryName)
-        .filter((name) => name) // Remove undefined values
+        .filter((name) => name)
     ),
   ];
 
   useEffect(() => {
-    // Set the default subcategory only if none is selected
     if (!selectedSubCategory && subCategoryOptions.length > 0) {
       setSelectedSubCategory(subCategoryOptions[0]);
     }
@@ -189,9 +176,8 @@ const PillsTabs = () => {
       <div className="p-4">
         <h1>Dynamic Form</h1>
         {Object.keys(groupedFields).length > 0 ? (
-          // Sort the groupedFields entries based on the ordering value
           Object.entries(groupedFields)
-            .sort(([orderA], [orderB]) => orderA - orderB) // Sort by the order key (which is the ordering value)
+            .sort(([orderA], [orderB]) => orderA - orderB)
             .map(([order, fields], rowIndex) => (
               <div key={rowIndex} className="d-flex flex-column flex-wrap mb-3">
                 <div className="d-flex flex-column w-25">
@@ -200,28 +186,22 @@ const PillsTabs = () => {
                 </div>
                 <div className="d-flex flex-row flex-wrap mt-4">
                   {fields
-                    // Sort fields by their ordering value within each group
                     .sort((a, b) => a.ordering - b.ordering)
                     .map((field, fieldIndex) => (
                       <div
                         key={fieldIndex}
                         className="col-12 col-sm-6 col-md-4 col-lg-3 my-2 mx-2"
                       >
-                        <label>
-                          {/* {field?.subCategoryName
-                            ? `subCategoryName ${field?.subCategoryName} - field ${field?.name}`
-                            : `categoryName ${field?.categoryName} - field ${field?.name}`} */}
-                          {field?.name}
-                        </label>
+                        <label>{field?.name}</label>
                         {field?.options?.length > 0 ? (
                           <Dropdown
-                            value={field?.value} // Set the current value (can be a state or field value)
-                            options={field?.options} // Array of options
-                            onChange={(e) => field?.onChange(e.value)} // Handle selection change
-                            optionLabel="name" // The property of each option to display in the dropdown
-                            optionValue="uid" // The property to use as the value (uid in your case)
-                            // placeholder={`${field?.name}`} // Placeholder text
-                            className="w-100" // Apply form control styling
+                            value={field?.value}
+                            options={field?.options}
+                            onChange={(e) => field?.onChange(e.value)}
+                            optionLabel="name"
+                            optionValue="uid"
+                            placeholder={`${field?.name}`}
+                            className="w-100"
                           />
                         ) : (
                           <input
