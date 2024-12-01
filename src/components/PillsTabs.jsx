@@ -4,10 +4,12 @@ import { SelectButton } from "primereact/selectbutton";
 import apiRequest from "../api/apiService";
 import { Calendar } from "primereact/calendar";
 import { Dropdown } from "primereact/dropdown";
+import axios from "axios";
 // import { Nullable } from "primereact/ts-helpers";
 
 const PillsTabs = () => {
   const [tabsNew, settabsNew] = useState();
+  const [titleDirectToCateg, settitleDirectToCateg] = useState();
   const [apiResponse, setApiResponse] = useState([]);
   const [activeTab, setActiveTab] = useState("");
   const [selectedSubCategory, setSelectedSubCategory] = useState(null);
@@ -81,6 +83,34 @@ const PillsTabs = () => {
   }, []);
 
   useEffect(() => {
+    console.log("testttttt");
+    const fetchDataCategoryUId = async () => {
+      try {
+        const response = await axios.get(
+          `https://cancerreg.ir/api/v1/tests/category-details/${activeTab}`
+        );
+        // const list = response?.data?.data?.result ?? [];
+
+        console.log("title direct to category", response?.data?.data?.title);
+        settitleDirectToCateg(response?.data?.data?.title);
+        // console.log(
+        //   "inakaaaaa?",
+        //   response?.data?.data?.result.filter(
+        //     (item) => item.uid === activeTab
+        //   )
+        // );
+        // console.log("activeTab", activeTab);
+        // settabsSecond(list);
+
+        // setApiResponse(transformResponse(list));
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchDataCategoryUId();
+  }, [activeTab]);
+
+  useEffect(() => {
     setActiveTab(tabsNew?.[0]?.uid ?? "");
   }, [tabsNew]);
 
@@ -109,6 +139,14 @@ const PillsTabs = () => {
   }, [subCategoryOptions, selectedSubCategory]);
 
   const groupedFields = groupByOrdering(
+    selectedSubCategory
+      ? filteredFields.filter(
+          (field) => field?.subCategoryName === selectedSubCategory
+        )
+      : filteredFields
+  );
+
+  const groupedFieldsDirectCategory = groupByOrdering(
     selectedSubCategory
       ? filteredFields.filter(
           (field) => field?.subCategoryName === selectedSubCategory
