@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import axios from "axios";
 import Swal from "sweetalert2";
@@ -41,7 +41,7 @@ const DragAndDropOrdering = ({
     <DragDropContext onDragEnd={handleDragEnd}>
       {categories &&
         Object.entries(categories).map(([categoryUid, categoryData]) => (
-          <>
+          <Fragment key={categoryData}>
             {categoryUid === sub && (
               <div
                 key={categoryUid}
@@ -101,7 +101,7 @@ const DragAndDropOrdering = ({
                 </Droppable>
               </div>
             )}
-          </>
+          </Fragment>
         ))}
     </DragDropContext>
   );

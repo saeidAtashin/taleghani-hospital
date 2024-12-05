@@ -34,18 +34,12 @@ export default function TabComponent() {
   const [filteredTitles, setFilteredTitles] = useState([]);
   const [fields, setFields] = useState({});
 
-
-
-  console.log("categoriescategories items",items)
   useEffect(() => {
     const fetchCategoryList = async () => {
       try {
         const response = await axios.get(
           "https://cancerreg.ir/api/v1/tests/category/"
         );
-
-
-        // console.log("response?.data?.data?.results",response?.data?.data?.results)
 
         const fetchedItems = response?.data?.data?.result?.map((item) => ({
           label: item?.name,
@@ -253,7 +247,7 @@ export default function TabComponent() {
           "https://cancerreg.ir/api/v1/tests/mng-field/"
         );
         const results = response?.data?.data?.result;
-//   "multipule_value": false, this added to api send
+        //   "multipule_value": false, this added to api send
         // Group by category_uid
         const grouped = results?.reduce((acc, item) => {
           const categoryUid = item?.title?.sub_category?.category?.uid;
@@ -283,7 +277,6 @@ export default function TabComponent() {
           "https://cancerreg.ir/api/v1/tests/mng-title/?page=1&page_size=50"
         );
         const results = response.data.data.result;
-        // console.log("response.data.data.results", response.data.data.results);
 
         setTitles(results);
       } catch (error) {
@@ -298,17 +291,14 @@ export default function TabComponent() {
     if (titles?.length > 0 && activeIndex) {
       const activeUid = items[activeIndex]?.uid;
 
-      console.log("titles", titles);
       const filtered = titles.filter(
         (title) => title?.sub_category?.category?.uid === activeUid
       );
       setFilteredTitles(filtered);
-      console.log("filtered", filtered);
     }
   }, [titles, activeIndex, items]);
 
   const convertFilteredTitlesToCategories = (filteredTitles) => {
-    console.log("filteredTitles", filteredTitles);
     return filteredTitles?.reduce((acc, title) => {
       const categoryUid = title?.sub_category?.category?.uid;
 

@@ -15,7 +15,6 @@ const TabsComponents = ({
   onSaveChangestitle,
   titles,
 }) => {
-  console.log("categories", categories);
   const [name, setName] = useState("");
   const [nameSub, setNameSub] = useState("");
   const [ordering, setOrdering] = useState(0);
