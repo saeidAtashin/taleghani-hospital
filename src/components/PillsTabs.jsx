@@ -5,18 +5,21 @@ import apiRequest from "../api/apiService";
 import { Calendar } from "primereact/calendar";
 import { Dropdown } from "primereact/dropdown";
 import axios from "axios";
+import { InputText } from "primereact/inputtext";
+import DropD from "./DropD";
 
 const PillsTabs = () => {
   const [tabsNew, settabsNew] = useState();
   const [tabsNewTitle, settabsNewTitle] = useState();
-  const [titleDirectToCateg, settitleDirectToCateg] = useState();
+  const [titleDirectToCategList, settitleDirectToCategList] = useState();
+  const [selectedCity, setSelectedCity] = useState(null);
+  const [selectedValues, setSelectedValues] = useState({});
+
   const [apiResponse, setApiResponse] = useState([]);
   const [activeTab, setActiveTab] = useState("");
   const [selectedSubCategory, setSelectedSubCategory] = useState(null);
   const [date, setDate] = useState(null);
   const arr = [0, 0, 0, 0, 1, 1, 1, 2, 2];
-
-  console.log("activeTab", activeTab);
 
   useEffect(() => {
     const fetchDataCategory = async () => {
@@ -39,8 +42,9 @@ const PillsTabs = () => {
           `https://cancerreg.ir/api/v1/tests/category-details/${activeTab}`
         );
 
-        console.log("category-details/activeTab", response?.data?.data);
-        // settitleDirectToCateg(transformResponse(response?.data?.data?.title));
+        console.log("category-details", response?.data?.data);
+        console.log("titleDirectToCategList", response?.data?.data?.field);
+        settitleDirectToCategList(response?.data?.data?.field);
         settabsNewTitle(response?.data?.data?.title);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -75,6 +79,13 @@ const PillsTabs = () => {
     setActiveTab(eventKey);
   };
 
+  const handleSelectValue = (id, value) => {
+    setSelectedValues((prev) => ({
+      ...prev,
+      [id]: value, // Dynamically update the selected value for the specific dropdown
+    }));
+  };
+
   return (
     <Tab.Container activeKey={activeTab} onSelect={handleSelect}>
       <Nav variant="pills" className="mb-3">
@@ -88,8 +99,41 @@ const PillsTabs = () => {
       </Nav>
       <h4 className="my-4 mx-2">ثبت {activeTab} جدید</h4>
 
-      <div className="p-4">
+      <div className="p-4 mb-5">
         <h1>Dynamic Form</h1>
+        <div>
+          {titleDirectToCategList?.map((titleDirectToCat, index) => (
+            <>
+              <div className="flex flex-column gap-2 mt-4">
+                <label htmlFor="username">{titleDirectToCat?.name}</label>
+                <div className="mt-2">
+                  {titleDirectToCat?.options?.length > 0 ? (
+                    <DropD
+                      titleDirectToCat={titleDirectToCat}
+                      selectedValue={selectedValues[titleDirectToCat?.uid]} // Use titleDirectToCat?.id as the key for the selected value
+                      setSelectedValue={(value) =>
+                        handleSelectValue(titleDirectToCat?.uid, value)
+                      } // Pass the setter function
+                      key={titleDirectToCat?.uid}
+                    />
+                  ) : (
+                    <InputText
+                      id="username"
+                      keyfilter={
+                        titleDirectToCat?.type === "CHAR"
+                          ? ""
+                          : titleDirectToCat?.type === "FLOAT" ||
+                            titleDirectToCat?.type === "PERCENTAGE"
+                          ? "int"
+                          : ""
+                      }
+                    />
+                  )}
+                </div>
+              </div>
+            </>
+          ))}
+        </div>
       </div>
     </Tab.Container>
   );
