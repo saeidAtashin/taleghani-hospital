@@ -66,9 +66,10 @@ const PillsTabs = () => {
     setActiveTab(eventKey);
   };
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     console.log("Form Data:", data);
 
+    //
     const additionalData = {
       // batch_uid
       category_uid: activeTab,
@@ -97,6 +98,17 @@ const PillsTabs = () => {
 
     // Submit or log the data
     console.log("Form Data with Fields and Extra Info:", formDataWithExtraData);
+
+    try {
+      const response = await axios.post(
+        "https://cancerreg.ir/api/v1/tests/test/",
+        formDataWithExtraData
+      );
+      alert("Data submitted successfully");
+    } catch (error) {
+      alert("Error submitting data");
+      console.error(error);
+    }
   };
 
   return (
