@@ -1,25 +1,32 @@
 import React, { useEffect, useState } from "react";
 import { Tab, Nav } from "react-bootstrap";
-import { SelectButton } from "primereact/selectbutton";
 import apiRequest from "../api/apiService";
-import { Calendar } from "primereact/calendar";
-import { Dropdown } from "primereact/dropdown";
 import axios from "axios";
 import { InputText } from "primereact/inputtext";
 import DropD from "./DropD";
+import { Controller, useForm } from "react-hook-form";
+import { DatePicker } from "zaman";
 
 const PillsTabs = () => {
   const [tabsNew, settabsNew] = useState();
   const [tabsNewTitle, settabsNewTitle] = useState();
   const [titleDirectToCategList, settitleDirectToCategList] = useState();
-  const [selectedCity, setSelectedCity] = useState(null);
-  const [selectedValues, setSelectedValues] = useState({});
-
   const [apiResponse, setApiResponse] = useState([]);
   const [activeTab, setActiveTab] = useState("");
-  const [selectedSubCategory, setSelectedSubCategory] = useState(null);
   const [date, setDate] = useState(null);
-  const arr = [0, 0, 0, 0, 1, 1, 1, 2, 2];
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    setValue,
+    getValues,
+  } = useForm({
+    defaultValues: {
+      date: date, // Set the default value for date
+    },
+  });
 
   useEffect(() => {
     const fetchDataCategory = async () => {
@@ -42,8 +49,6 @@ const PillsTabs = () => {
           `https://cancerreg.ir/api/v1/tests/category-details/${activeTab}`
         );
 
-        console.log("category-details", response?.data?.data);
-        console.log("titleDirectToCategList", response?.data?.data?.field);
         settitleDirectToCategList(response?.data?.data?.field);
         settabsNewTitle(response?.data?.data?.title);
       } catch (error) {
@@ -57,33 +62,41 @@ const PillsTabs = () => {
     setActiveTab(tabsNew?.[0]?.uid ?? "");
   }, [tabsNew]);
 
-  const filteredFields = apiResponse.filter(
-    (field) => field?.categoryUid === activeTab
-  );
-
-  const subCategoryOptions = [
-    ...new Set(
-      filteredFields
-        .map((field) => field?.subCategoryName)
-        .filter((name) => name)
-    ),
-  ];
-
-  useEffect(() => {
-    if (!selectedSubCategory && subCategoryOptions.length > 0) {
-      setSelectedSubCategory(subCategoryOptions[0]);
-    }
-  }, [subCategoryOptions, selectedSubCategory]);
-
   const handleSelect = (eventKey) => {
     setActiveTab(eventKey);
   };
 
-  const handleSelectValue = (id, value) => {
-    setSelectedValues((prev) => ({
-      ...prev,
-      [id]: value, // Dynamically update the selected value for the specific dropdown
-    }));
+  const onSubmit = (data) => {
+    console.log("Form Data:", data);
+
+    const additionalData = {
+      // batch_uid
+      category_uid: activeTab,
+      patient_uid: "Some additional info",
+    };
+
+    const fields = titleDirectToCategList?.map((titleDirectToCat) => {
+      const fieldValue = data[titleDirectToCat?.uid]; // Get the value from react-hook-form by the field uid
+      const fieldNameUid = titleDirectToCat?.uid; // Field UID
+
+      return {
+        uid: fieldNameUid, // The field UID
+        value: fieldValue
+          ? Array.isArray(fieldValue)
+            ? fieldValue
+            : [fieldValue]
+          : [], // Ensure value is an array
+      };
+    });
+
+    // Create the final data object with 'fields' array
+    const formDataWithExtraData = {
+      fields: fields,
+      ...additionalData, // Merge additional data
+    };
+
+    // Submit or log the data
+    console.log("Form Data with Fields and Extra Info:", formDataWithExtraData);
   };
 
   return (
@@ -99,42 +112,88 @@ const PillsTabs = () => {
       </Nav>
       <h4 className="my-4 mx-2">ثبت {activeTab} جدید</h4>
 
-      <div className="p-4 mb-5">
-        <h1>Dynamic Form</h1>
-        <div>
-          {titleDirectToCategList?.map((titleDirectToCat, index) => (
-            <>
-              <div className="flex flex-column gap-2 mt-4">
-                <label htmlFor="username">{titleDirectToCat?.name}</label>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="p-4 mb-5">
+          <h1>Dynamic Form</h1>
+
+          {/* Date Field */}
+          <div className="d-flex flex-column">
+            <label className="label" htmlFor="date">
+              تاریخ
+            </label>
+            <Controller
+              name="date"
+              control={control}
+              render={({ field }) => (
+                <DatePicker
+                  value={field.value || date}
+                  onChange={(e) => {
+                    field.onChange(e.value.toLocaleDateString("en-CA"));
+                  }}
+                  round="x4"
+                  position="center"
+                  className="p-2"
+                />
+              )}
+            />
+            {errors.date && (
+              <div className="invalid-feedback">{errors.date.message}</div>
+            )}
+          </div>
+
+          {/* Dynamic Dropdowns or Inputs */}
+          <div>
+            {titleDirectToCategList?.map((titleDirectToCat) => (
+              <div
+                className="flex flex-column gap-2 mt-4"
+                key={titleDirectToCat?.uid}
+              >
+                <label htmlFor={titleDirectToCat?.uid}>
+                  {titleDirectToCat?.name}
+                </label>
                 <div className="mt-2">
                   {titleDirectToCat?.options?.length > 0 ? (
-                    <DropD
-                      titleDirectToCat={titleDirectToCat}
-                      selectedValue={selectedValues[titleDirectToCat?.uid]} // Use titleDirectToCat?.id as the key for the selected value
-                      setSelectedValue={(value) =>
-                        handleSelectValue(titleDirectToCat?.uid, value)
-                      } // Pass the setter function
-                      key={titleDirectToCat?.uid}
+                    <Controller
+                      name={titleDirectToCat?.uid}
+                      control={control}
+                      render={({ field }) => (
+                        <DropD
+                          titleDirectToCat={titleDirectToCat}
+                          selectedValue={field.value} // Pass field value
+                          setSelectedValue={(value) => field.onChange(value)} // Use react-hook-form's setter
+                        />
+                      )}
                     />
                   ) : (
-                    <InputText
-                      id="username"
-                      keyfilter={
-                        titleDirectToCat?.type === "CHAR"
-                          ? ""
-                          : titleDirectToCat?.type === "FLOAT" ||
-                            titleDirectToCat?.type === "PERCENTAGE"
-                          ? "int"
-                          : ""
-                      }
+                    <Controller
+                      name={titleDirectToCat?.uid}
+                      control={control}
+                      render={({ field }) => (
+                        <InputText
+                          {...field} // Spread react-hook-form's field props
+                          keyfilter={
+                            titleDirectToCat?.type === "CHAR"
+                              ? ""
+                              : titleDirectToCat?.type === "FLOAT" ||
+                                titleDirectToCat?.type === "PERCENTAGE"
+                              ? "int"
+                              : ""
+                          }
+                        />
+                      )}
                     />
                   )}
                 </div>
               </div>
-            </>
-          ))}
+            ))}
+          </div>
+
+          {/* Submit Button */}
+          <button type="submit" className="p-button p-component">
+            Submit
+          </button>
         </div>
-      </div>
+      </form>
     </Tab.Container>
   );
 };

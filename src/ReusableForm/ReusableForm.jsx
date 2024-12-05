@@ -151,7 +151,7 @@ const ReusableForm = ({
                   12 / rowFields.length
                 )} mb-3`}
               >
-                {/* Text Input */}
+                {/* Text Input */}w
                 {field.type === "text" && (
                   <>
                     <label htmlFor={field.name} className="label">
