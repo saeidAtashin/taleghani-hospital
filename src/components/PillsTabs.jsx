@@ -20,6 +20,10 @@ const PillsTabs = () => {
   const [selectedOrdering, setSelectedOrdering] = useState([]); // Store the 'ordering' of selected options
   const [value, setValue] = useState([]); // Store selected values (multiple)
   const [activeSubCategory, setActiveSubCategory] = useState(null); // Track the selected sub-category
+  const [orderstyletitle, setorderstyletitle] = useState([]); // Track the selected sub-category
+  const [countOccurrences, setcountOccurrences] = useState([]); // Track the selected sub-category
+  const [countOccurrencesDirectTitle, setcountOccurrencesDirectTitle] =
+    useState([]); // Track the selected sub-category
 
   const {
     control,
@@ -61,6 +65,45 @@ const PillsTabs = () => {
           settitleDirectToCategList(response?.data?.data?.field);
           setsubCategory(response?.data?.data?.sub_category);
           settitleOfAll(response?.data?.data?.title);
+          const orderings = response?.data?.data?.title?.flatMap((title) =>
+            title?.field?.map((field) => field?.ordering)
+          );
+
+          console.log("orderings ", orderings);
+
+          const countOccurrencesss = orderings?.reduce((acc, num) => {
+            console.log("num num ", num);
+            acc[num] = (acc[num] || 0) + 1;
+            return acc;
+          }, {});
+
+          setcountOccurrences(countOccurrencesss);
+
+          console.log(
+            "reeeeeeeeeeeeesssspooooooonse",
+            response?.data?.data?.field
+          );
+
+          const orderingssec = response?.data?.data?.field?.map(
+            (item) => item?.ordering
+          );
+
+          // Count the occurrences of each 'ordering' value
+          const countOccurrences = orderingssec?.reduce((acc, ordering) => {
+            acc[ordering] = (acc[ordering] || 0) + 1;
+            return acc;
+          }, {});
+
+          console.log("countOccurrences", countOccurrences); // This will log the occurrences in the form: {0: 4, 1: 4, 2: 3, 10: 3, 11: 2}
+          // const countOccurrencessssec = orderingssec?.reduce((acc, num) => {
+          //   console.log("num", num);
+          //   console.log("acc", acc);
+          //   acc[num] = (acc[num] || 0) + 1;
+          //   console.log("acc acc", acc);
+          //   return acc;
+          // }, {});
+
+          setcountOccurrencesDirectTitle(countOccurrences);
 
           console.log("original title", response?.data?.data?.title);
         }
@@ -143,9 +186,14 @@ const PillsTabs = () => {
     // Also, set the fields and title for this sub-category
     settitleDirectToCategList(sub?.field ?? []);
     settitleOfAll(sub?.title);
+    const orderings = sub?.title?.[0]?.field?.map((field) => field?.ordering);
+    setorderstyletitle(orderings); // This will log an array of 'ordering' values
   };
 
-  console.log("activeSubCategory", activeSubCategory);
+  console.log("titleOfAll", titleOfAll?.[0]?.field);
+  console.log("countOccurrences", countOccurrences);
+  console.log("orderstyletitle", orderstyletitle);
+  console.log("countOccurrencesDirectTitle", countOccurrencesDirectTitle);
 
   // console.log("titleDirectToCategList", titleDirectToCategList);
   return (
@@ -212,14 +260,28 @@ const PillsTabs = () => {
                 {titleDirectToCategList
                   ?.sort((a, b) => (a?.ordering || 0) - (b?.ordering || 0))
                   ?.map((titleDirectToCat) => (
+                    // col
                     <div
-                      className={` ${titleDirectToCat?.titled ? "" : "col"}`}
+                      className={` ${
+                        titleDirectToCat?.titled
+                          ? ""
+                          : `col-md-${
+                              countOccurrencesDirectTitle[
+                                titleDirectToCat?.ordering
+                              ]
+                                ? 12 /
+                                  countOccurrencesDirectTitle[
+                                    titleDirectToCat?.ordering
+                                  ]
+                                : titleDirectToCat?.ordering
+                            }`
+                      }`}
                     >
                       <div
                         className={` py-2 my-4 ${
                           titleDirectToCat?.titled
                             ? "fs-4 fw-bold d-flex align-items-start justify-content-start"
-                            : ""
+                            : ``
                         }`}
                         key={titleDirectToCat?.uid}
                       >
@@ -321,85 +383,121 @@ const PillsTabs = () => {
             {titleOfAll?.length > 0 &&
               titleOfAll.map((title, idx) => (
                 <div key={idx} className="">
-                  <h3 className="my-4">{title?.name} </h3>
-                  {/* create here a form that map on title.field and if type is   */}
-                  <div className="d-flex flex-wrap bg-danger">
+                  <h3 className="my-4">{title?.name}</h3>
+
+                  {/* Group by 'ordering' */}
+                  <div className="">
+                    {/* Group fields by their ordering */}
                     {title?.field
-                      ?.sort((a, b) => (a?.ordering || 0) - (b?.ordering || 0))
-                      ?.map((titleData) => (
-                        <div
-                          className="d-flex flex-wrap mb-4 ms-4 flex-column"
-                          key={titleData?.uid}
-                        >
-                          <label htmlFor={titleData?.uid}>
-                            {titleData?.name}
-                          </label>
-                          <div>{titleData?.ordering}</div>
-                          {titleData?.options?.length > 0 ? (
-                            <Controller
-                              name={titleData?.uid}
-                              control={control}
-                              render={({ field }) => (
-                                <DropD
-                                  titleData={titleData}
-                                  selectedValue={field.value} // Pass field value
-                                  setSelectedValue={(value) =>
-                                    field.onChange(value)
-                                  } // Use react-hook-form's setter
-                                />
-                              )}
-                            />
-                          ) : (
-                            <Controller
-                              name={titleData?.uid}
-                              control={control}
-                              render={({ field }) => {
-                                // Handle the formatting before the value is passed to react-hook-form
-                                const handleValueChange = (e) => {
-                                  let value = e.target.value;
+                      ?.sort((a, b) => (a?.ordering || 0) - (b?.ordering || 0)) // Sort by ordering
+                      ?.reduce((acc, titleData) => {
+                        const { ordering } = titleData;
+                        if (!acc[ordering]) {
+                          acc[ordering] = [];
+                        }
+                        acc[ordering].push(titleData);
+                        return acc;
+                      }, {}) // Now we have a grouped object
+                      ? Object.keys(
+                          title?.field?.reduce((acc, titleData) => {
+                            const { ordering } = titleData;
+                            if (!acc[ordering]) {
+                              acc[ordering] = [];
+                            }
+                            acc[ordering].push(titleData);
+                            return acc;
+                          }, {})
+                        ).map((groupKey, idx) => (
+                          <div className="row" key={idx}>
+                            {title?.field
+                              ?.filter(
+                                (field) =>
+                                  field?.ordering.toString() === groupKey
+                              )
+                              .map((titleData) => (
+                                <div
+                                  // className={`col-md-3 mb-4`}
+                                  key={titleData?.uid}
+                                  className={` col-md-${
+                                    countOccurrences[titleData?.ordering]
+                                      ? 12 /
+                                        countOccurrences[titleData?.ordering]
+                                      : countOccurrences[titleData?.ordering]
+                                  } mb-4`}
+                                >
+                                  <label htmlFor={titleData?.uid}>
+                                    {titleData?.name}
+                                  </label>
+                                  {/* <div>{titleData?.ordering}</div> */}
+                                  {titleData?.options?.length > 0 ? (
+                                    <Controller
+                                      name={titleData?.uid}
+                                      control={control}
+                                      render={({ field }) => (
+                                        <DropD
+                                          titleData={titleData}
+                                          selectedValue={field.value} // Pass field value
+                                          setSelectedValue={(value) =>
+                                            field.onChange(value)
+                                          } // Use react-hook-form's setter
+                                        />
+                                      )}
+                                    />
+                                  ) : (
+                                    <Controller
+                                      name={titleData?.uid}
+                                      control={control}
+                                      render={({ field }) => {
+                                        // Handle the formatting before the value is passed to react-hook-form
+                                        const handleValueChange = (e) => {
+                                          let value = e.target.value;
 
-                                  if (titleData?.type === "FLOAT") {
-                                    // Convert to a float with one decimal place
-                                    // value = parseFloat(value).toFixed(1);
-                                    // Ensure that if it's an integer, it becomes a float (e.g., 10 -> 10.0)
-                                    value = parseFloat(value);
-                                  } else if (titleData?.type === "PERCENTAGE") {
-                                    // Ensure that the value is treated as a number (remove the percentage sign)
-                                    value = parseFloat(value);
-                                  } else if (titleData?.type === "CHAR") {
-                                    // Ensure it's treated as a string
-                                    value = value.toString();
-                                  }
+                                          if (titleData?.type === "FLOAT") {
+                                            value = parseFloat(value);
+                                          } else if (
+                                            titleData?.type === "PERCENTAGE"
+                                          ) {
+                                            value = parseFloat(value);
+                                          } else if (
+                                            titleData?.type === "CHAR"
+                                          ) {
+                                            value = value.toString();
+                                          }
 
-                                  // Update the field value using react-hook-form's `onChange` handler
-                                  field.onChange(value);
-                                };
+                                          // Update the field value using react-hook-form's onChange handler
+                                          field.onChange(value);
+                                        };
 
-                                return (
-                                  <InputText
-                                    {...field} // Spread react-hook-form's field props
-                                    onChange={handleValueChange} // Custom change handler
-                                    keyfilter={
-                                      titleData?.type === "CHAR"
-                                        ? ""
-                                        : titleData?.type === "FLOAT" ||
-                                          titleData?.type === "PERCENTAGE"
-                                        ? "decimal" // Allow only numbers for FLOAT and PERCENTAGE
-                                        : ""
-                                    }
-                                    placeholder={`${titleData?.name} را وارد نمایید`}
-                                  />
-                                );
-                              }}
-                            />
-                          )}
-                        </div>
-                      ))}
+                                        return (
+                                          <InputText
+                                            {...field} // Spread react-hook-form's field props
+                                            onChange={handleValueChange} // Custom change handler
+                                            className="w-100"
+                                            keyfilter={
+                                              titleData?.type === "CHAR"
+                                                ? ""
+                                                : titleData?.type === "FLOAT" ||
+                                                  titleData?.type ===
+                                                    "PERCENTAGE"
+                                                ? "decimal" // Allow only numbers for FLOAT and PERCENTAGE
+                                                : ""
+                                            }
+                                            placeholder={`${titleData?.name} را وارد نمایید`}
+                                          />
+                                        );
+                                      }}
+                                    />
+                                  )}
+                                </div>
+                              ))}
+                          </div>
+                        ))
+                      : null}
                   </div>
                 </div>
               ))}
           </div>
-          {/* Submit Button */}
+
           <button
             type="submit"
             className="btn btn-primary mt-5 w-100 text-center"
