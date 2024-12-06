@@ -67,48 +67,49 @@ const PillsTabs = () => {
   const onSubmit = async (data) => {
     console.log("Form Data:", data);
 
-    //
     const additionalData = {
       // batch_uid
+      date: data?.date,
       category_uid: activeTab,
-      patient_uid: "Some additional info",
+      patient_uid: "a39573c2-a8b1-4b18-bbb5-3fd44614a761",
     };
 
-    const fields = titleDirectToCategList
-      ?.sort((a, b) => (a?.ordering || 0) - (b?.ordering || 0))
-      ?.map((titleDirectToCat) => {
-        const fieldValue = data[titleDirectToCat?.uid]; // Get the value from react-hook-form by the field uid
-        const fieldNameUid = titleDirectToCat?.uid; // Field UID
+    delete data.date;
 
+    const fields = Object.keys(data)
+      .filter((key) => {
+        const value = data[key];
+        // Only include fields where the value is not null, undefined, or other falsy values
+        return value !== null && value !== undefined && value !== "";
+      })
+      .map((key) => {
+        const value = data[key];
         return {
-          uid: fieldNameUid, // The field UID
-          value: fieldValue
-            ? Array.isArray(fieldValue)
-              ? fieldValue
-              : [fieldValue]
-            : [], // Ensure value is an array
+          uid: key, // Only include fields with a valid value
+          value: Array.isArray(value) ? [value] : value, // Ensure value is always an array
         };
       });
 
-    // Create the final data object with 'fields' array
     const formDataWithExtraData = {
       fields: fields,
-      ...additionalData, // Merge additional data
+      ...additionalData,
     };
+
+    console.log("Final Form Data:", formDataWithExtraData);
 
     try {
       const response = await axios.post(
         "https://cancerreg.ir/api/v1/tests/test/",
         formDataWithExtraData
       );
-      alert("Data submitted successfully");
+      // alert("Data submitted successfully");
     } catch (error) {
-      alert("Error submitting data");
+      // alert("Error submitting data");
       console.error(error);
     }
   };
 
-  console.log("titleDirectToCategList", titleDirectToCategList);
+  // console.log("titleDirectToCategList", titleDirectToCategList);
   return (
     <Tab.Container activeKey={activeTab} onSelect={handleSelect}>
       <Nav variant="pills" className="mb-3">
@@ -190,20 +191,30 @@ const PillsTabs = () => {
                         <Controller
                           name={titleDirectToCat?.uid}
                           control={control}
-                          render={({ field }) =>
-                            titleDirectToCat?.type === "PERCENTAGE" ? (
-                              //   <InputText
-                              //   {...field} // Spread react-hook-form's field props
-                              //   keyfilter={
-                              //     titleDirectToCat?.type === "CHAR"
-                              //       ? ""
-                              //       : titleDirectToCat?.type === "FLOAT" ||
-                              //         titleDirectToCat?.type === "PERCENTAGE"
-                              //       ? "int"
-                              //       : ""
-                              //   }
-                              // />
+                          render={({ field }) => {
+                            const handleValueChange = (e) => {
+                              let value = e.target.value;
 
+                              if (titleDirectToCat?.type === "PERCENTAGE") {
+                                // Treat PERCENTAGE as a number
+                                value = parseFloat(value);
+                                if (isNaN(value)) value = ""; // If the value isn't a number, reset to empty
+                              } else if (titleDirectToCat?.type === "FLOAT") {
+                                // Treat FLOAT as a float with one decimal place
+                                // value = parseFloat(value).toFixed(1);
+                                value = parseFloat(value.toFixed(1));
+
+                                if (isNaN(value)) value = ""; // If the value isn't a number, reset to empty
+                              } else if (titleDirectToCat?.type === "CHAR") {
+                                // Treat CHAR as a string
+                                value = value.toString();
+                              }
+
+                              // Update the field value using react-hook-form's `onChange` handler
+                              field.onChange(value);
+                            };
+
+                            return titleDirectToCat?.type === "PERCENTAGE" ? (
                               <IconField iconPosition="left">
                                 <InputIcon className="pi pi-percentage">
                                   {" "}
@@ -211,12 +222,13 @@ const PillsTabs = () => {
                                 <InputText
                                   placeholder="درصد"
                                   {...field}
-                                  keyfilter={"int"}
+                                  keyfilter="decimal"
+                                  onChange={handleValueChange} // Custom value handling for PERCENTAGE
                                 />
                               </IconField>
                             ) : (
                               <InputText
-                                {...field} // Spread react-hook-form's field props
+                                {...field}
                                 placeholder={`${
                                   titleDirectToCat?.type === "CHAR"
                                     ? "متن"
@@ -225,14 +237,12 @@ const PillsTabs = () => {
                                 keyfilter={
                                   titleDirectToCat?.type === "CHAR"
                                     ? ""
-                                    : titleDirectToCat?.type === "FLOAT" ||
-                                      titleDirectToCat?.type === "PERCENTAGE"
-                                    ? "int"
-                                    : ""
+                                    : "decimal" // Allow only numeric values for FLOAT and PERCENTAGE
                                 }
+                                onChange={handleValueChange} // Custom value handling for FLOAT and CHAR
                               />
-                            )
-                          }
+                            );
+                          }}
                         />
                       )}
                     </div>
@@ -277,20 +287,44 @@ const PillsTabs = () => {
                             <Controller
                               name={titleData?.uid}
                               control={control}
-                              render={({ field }) => (
-                                <InputText
-                                  {...field} // Spread react-hook-form's field props
-                                  keyfilter={
-                                    titleData?.type === "CHAR"
-                                      ? ""
-                                      : titleData?.type === "FLOAT" ||
-                                        titleData?.type === "PERCENTAGE"
-                                      ? "int"
-                                      : ""
+                              render={({ field }) => {
+                                // Handle the formatting before the value is passed to react-hook-form
+                                const handleValueChange = (e) => {
+                                  let value = e.target.value;
+
+                                  if (titleData?.type === "FLOAT") {
+                                    // Convert to a float with one decimal place
+                                    // value = parseFloat(value).toFixed(1);
+                                    // Ensure that if it's an integer, it becomes a float (e.g., 10 -> 10.0)
+                                    value = parseFloat(value);
+                                  } else if (titleData?.type === "PERCENTAGE") {
+                                    // Ensure that the value is treated as a number (remove the percentage sign)
+                                    value = parseFloat(value);
+                                  } else if (titleData?.type === "CHAR") {
+                                    // Ensure it's treated as a string
+                                    value = value.toString();
                                   }
-                                  placeholder={`${titleData?.name} را وارد نمایید`}
-                                />
-                              )}
+
+                                  // Update the field value using react-hook-form's `onChange` handler
+                                  field.onChange(value);
+                                };
+
+                                return (
+                                  <InputText
+                                    {...field} // Spread react-hook-form's field props
+                                    onChange={handleValueChange} // Custom change handler
+                                    keyfilter={
+                                      titleData?.type === "CHAR"
+                                        ? ""
+                                        : titleData?.type === "FLOAT" ||
+                                          titleData?.type === "PERCENTAGE"
+                                        ? "decimal" // Allow only numbers for FLOAT and PERCENTAGE
+                                        : ""
+                                    }
+                                    placeholder={`${titleData?.name} را وارد نمایید`}
+                                  />
+                                );
+                              }}
                             />
                           )}
                           {/* </div> */}
