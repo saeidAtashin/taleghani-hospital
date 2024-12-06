@@ -195,6 +195,7 @@ export default function TabComponent() {
         }
       );
       setRefreshTitle(!refreshTitle);
+      toast.success("تغییرات با موفقیت ذخیره شد.");
     } catch (error) {}
   };
 

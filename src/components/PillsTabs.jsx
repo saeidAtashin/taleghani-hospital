@@ -202,7 +202,7 @@ const PillsTabs = () => {
                               } else if (titleDirectToCat?.type === "FLOAT") {
                                 // Treat FLOAT as a float with one decimal place
                                 // value = parseFloat(value).toFixed(1);
-                                value = parseFloat(value.toFixed(1));
+                                value = parseFloat(value);
 
                                 if (isNaN(value)) value = ""; // If the value isn't a number, reset to empty
                               } else if (titleDirectToCat?.type === "CHAR") {
@@ -222,7 +222,7 @@ const PillsTabs = () => {
                                 <InputText
                                   placeholder="درصد"
                                   {...field}
-                                  keyfilter="decimal"
+                                  keyfilter="num"
                                   onChange={handleValueChange} // Custom value handling for PERCENTAGE
                                 />
                               </IconField>
