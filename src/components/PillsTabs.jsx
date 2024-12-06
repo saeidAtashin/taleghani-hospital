@@ -8,7 +8,6 @@ import { Controller, useForm } from "react-hook-form";
 import { DatePicker } from "zaman";
 import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
-import { SelectButton } from "primereact/selectbutton";
 
 const PillsTabs = () => {
   const [tabsNew, settabsNew] = useState();
@@ -17,13 +16,11 @@ const PillsTabs = () => {
   const [subCategory, setsubCategory] = useState();
   const [activeTab, setActiveTab] = useState("");
   const [date, setDate] = useState(null);
-  const [selectedOrdering, setSelectedOrdering] = useState([]); // Store the 'ordering' of selected options
-  const [value, setValue] = useState([]); // Store selected values (multiple)
   const [activeSubCategory, setActiveSubCategory] = useState(null); // Track the selected sub-category
   const [orderstyletitle, setorderstyletitle] = useState([]); // Track the selected sub-category
   const [countOccurrences, setcountOccurrences] = useState([]); // Track the selected sub-category
   const [countOccurrencesDirectTitle, setcountOccurrencesDirectTitle] =
-    useState([]); // Track the selected sub-category
+    useState([]);
 
   const {
     control,
@@ -79,7 +76,6 @@ const PillsTabs = () => {
             (item) => item?.ordering
           );
 
-          // Count the occurrences of each 'ordering' value
           const countOccurrences = orderingssec?.reduce((acc, ordering) => {
             acc[ordering] = (acc[ordering] || 0) + 1;
             return acc;
@@ -104,7 +100,6 @@ const PillsTabs = () => {
 
   const onSubmit = async (data) => {
     const additionalData = {
-      // batch_uid
       date: data?.date,
       category_uid: activeTab,
       patient_uid: "a39573c2-a8b1-4b18-bbb5-3fd44614a761",
@@ -115,14 +110,13 @@ const PillsTabs = () => {
     const fields = Object.keys(data)
       .filter((key) => {
         const value = data[key];
-        // Only include fields where the value is not null, undefined, or other falsy values
         return value !== null && value !== undefined && value !== "";
       })
       .map((key) => {
         const value = data[key];
         return {
-          uid: key, // Only include fields with a valid value
-          value: Array.isArray(value) ? [value] : value, // Ensure value is always an array
+          uid: key,
+          value: Array.isArray(value) ? [value] : value,
         };
       });
 
@@ -136,9 +130,7 @@ const PillsTabs = () => {
         "https://cancerreg.ir/api/v1/tests/test/",
         formDataWithExtraData
       );
-      // alert("Data submitted successfully");
     } catch (error) {
-      // alert("Error submitting data");
       console.error(error);
     }
   };
@@ -147,15 +139,8 @@ const PillsTabs = () => {
     setActiveSubCategory(sub);
     settitleDirectToCategList(sub?.field ?? []);
 
-    console.log("sub?.field", sub?.field);
-    // const countOccurrences = sub?.field?.reduce((acc, ordering) => {
-    //   acc[ordering] = (acc[ordering] || 0) + 1;
-    //   return acc;
-    // }, {});
-
     const orderingssec = sub?.field?.map((item) => item?.ordering);
 
-    // Count the occurrences of each 'ordering' value
     const countOccurrences = orderingssec?.reduce((acc, ordering) => {
       acc[ordering] = (acc[ordering] || 0) + 1;
       return acc;
@@ -172,19 +157,16 @@ const PillsTabs = () => {
       return acc;
     }, {});
 
-    setcountOccurrences(countOccurrencesss)
+    setcountOccurrences(countOccurrencesss);
     settitleOfAll(sub?.title);
-    // const orderings = sub?.title?.[0]?.field?.map((field) => field?.ordering);
-    setorderstyletitle(countOccurrencesss); // This will log an array of 'ordering' values
+    setorderstyletitle(countOccurrencesss);
   };
 
   useEffect(() => {
     if (activeTab && tabsNew) {
-      // Find the subcategory associated with the activeTab
       const currentTab = tabsNew.find((tab) => tab.uid === activeTab);
 
       if (currentTab && currentTab.sub_category?.length > 0) {
-        // Run handleSubCategoryClick for the first subcategory in the active tab
         handleSubCategoryClick(currentTab.sub_category[0]);
       }
     }
@@ -307,10 +289,10 @@ const PillsTabs = () => {
                               render={({ field }) => (
                                 <DropD
                                   titleDirectToCat={titleDirectToCat}
-                                  selectedValue={field.value} // Pass field value
+                                  selectedValue={field.value}
                                   setSelectedValue={(value) =>
                                     field.onChange(value)
-                                  } // Use react-hook-form's setter
+                                  }
                                 />
                               )}
                             />
@@ -323,25 +305,20 @@ const PillsTabs = () => {
                                   let value = e.target.value;
 
                                   if (titleDirectToCat?.type === "PERCENTAGE") {
-                                    // Treat PERCENTAGE as a number
                                     value = parseFloat(value);
                                     if (isNaN(value)) value = ""; // If the value isn't a number, reset to empty
                                   } else if (
                                     titleDirectToCat?.type === "FLOAT"
                                   ) {
-                                    // Treat FLOAT as a float with one decimal place
-                                    // value = parseFloat(value).toFixed(1);
                                     value = parseFloat(value);
 
                                     if (isNaN(value)) value = ""; // If the value isn't a number, reset to empty
                                   } else if (
                                     titleDirectToCat?.type === "CHAR"
                                   ) {
-                                    // Treat CHAR as a string
                                     value = value.toString();
                                   }
 
-                                  // Update the field value using react-hook-form's `onChange` handler
                                   field.onChange(value);
                                 };
 
