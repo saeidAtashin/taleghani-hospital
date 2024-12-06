@@ -156,15 +156,17 @@ const PillsTabs = () => {
           </div>
           {/* Dynamic Dropdowns or Inputs */}
           {titleDirectToCategList?.length > 0 && (
-            <div className="d-flex gap-4">
+            <div className={`d-flex gap-4 flex-wrap `}>
               {titleDirectToCategList?.map((titleDirectToCat) => (
                 <div
-                  className={`flex flex-column gap-2 mt-4 ${
-                    titleDirectToCat?.titled ? "" : ""
+                  className={`d-flex gap-2 mt-4 ${
+                    titleDirectToCat?.titled
+                      ? "fs-4 fw-bold flex-row w-100 align-items-start justify-content-start"
+                      : "flex-column"
                   }`}
                   key={titleDirectToCat?.uid}
                 >
-                  <label htmlFor={titleDirectToCat?.uid}>
+                  <label htmlFor={titleDirectToCat?.uid} className="my-auto w-25">
                     {titleDirectToCat?.name}
                   </label>
                   <div className="mt-2">
