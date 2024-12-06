@@ -60,7 +60,6 @@ const PillsTabs = () => {
           settitleDirectToCategList(
             response?.data?.data?.sub_category?.[0]?.field ?? []
           );
-          // settitleOfAll([response?.data?.data?.sub_category?.[0]?.title ?? ""]);
         } else {
           settitleDirectToCategList(response?.data?.data?.field);
           setsubCategory(response?.data?.data?.sub_category);
@@ -69,20 +68,12 @@ const PillsTabs = () => {
             title?.field?.map((field) => field?.ordering)
           );
 
-          console.log("orderings ", orderings);
-
           const countOccurrencesss = orderings?.reduce((acc, num) => {
-            console.log("num num ", num);
             acc[num] = (acc[num] || 0) + 1;
             return acc;
           }, {});
 
           setcountOccurrences(countOccurrencesss);
-
-          console.log(
-            "reeeeeeeeeeeeesssspooooooonse",
-            response?.data?.data?.field
-          );
 
           const orderingssec = response?.data?.data?.field?.map(
             (item) => item?.ordering
@@ -94,25 +85,14 @@ const PillsTabs = () => {
             return acc;
           }, {});
 
-          console.log("countOccurrences", countOccurrences); // This will log the occurrences in the form: {0: 4, 1: 4, 2: 3, 10: 3, 11: 2}
-          // const countOccurrencessssec = orderingssec?.reduce((acc, num) => {
-          //   console.log("num", num);
-          //   console.log("acc", acc);
-          //   acc[num] = (acc[num] || 0) + 1;
-          //   console.log("acc acc", acc);
-          //   return acc;
-          // }, {});
-
           setcountOccurrencesDirectTitle(countOccurrences);
-
-          console.log("original title", response?.data?.data?.title);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
     fetchDataCategoryUId();
-  }, [activeTab]);
+  }, [activeTab, tabsNew]);
 
   useEffect(() => {
     setActiveTab(tabsNew?.[0]?.uid ?? "");
@@ -123,8 +103,6 @@ const PillsTabs = () => {
   };
 
   const onSubmit = async (data) => {
-    console.log("Form Data:", data);
-
     const additionalData = {
       // batch_uid
       date: data?.date,
@@ -153,8 +131,6 @@ const PillsTabs = () => {
       ...additionalData,
     };
 
-    console.log("Final Form Data:", formDataWithExtraData);
-
     try {
       const response = await axios.post(
         "https://cancerreg.ir/api/v1/tests/test/",
@@ -167,35 +143,48 @@ const PillsTabs = () => {
     }
   };
 
-  const handleSelectSub = (e, options) => {
-    setValue(e.value); // Update selected values
-
-    // Update the ordering based on selected values
-    const orderings = e.value.map((val) => {
-      const selectedOption = options.find((option) => option.uid === val);
-      return selectedOption ? selectedOption.ordering : null;
-    });
-
-    setSelectedOrdering(orderings); // Update ordering based on selected values
-  };
-
   const handleSubCategoryClick = (sub) => {
-    // Set the clicked sub-category as the active one
     setActiveSubCategory(sub);
-    // titleOfAll
-    // Also, set the fields and title for this sub-category
     settitleDirectToCategList(sub?.field ?? []);
+
+    console.log("sub?.field", sub?.field);
+    // const countOccurrences = sub?.field?.reduce((acc, ordering) => {
+    //   acc[ordering] = (acc[ordering] || 0) + 1;
+    //   return acc;
+    // }, {});
+
+    const orderingssec = sub?.field?.map((item) => item?.ordering);
+
+    // Count the occurrences of each 'ordering' value
+    const countOccurrences = orderingssec?.reduce((acc, ordering) => {
+      acc[ordering] = (acc[ordering] || 0) + 1;
+      return acc;
+    }, {});
+
+    setcountOccurrencesDirectTitle(countOccurrences);
+
     settitleOfAll(sub?.title);
     const orderings = sub?.title?.[0]?.field?.map((field) => field?.ordering);
     setorderstyletitle(orderings); // This will log an array of 'ordering' values
   };
+
+  useEffect(() => {
+    if (activeTab && tabsNew) {
+      // Find the subcategory associated with the activeTab
+      const currentTab = tabsNew.find((tab) => tab.uid === activeTab);
+
+      if (currentTab && currentTab.sub_category?.length > 0) {
+        // Run handleSubCategoryClick for the first subcategory in the active tab
+        handleSubCategoryClick(currentTab.sub_category[0]);
+      }
+    }
+  }, [activeTab, tabsNew]);
 
   console.log("titleOfAll", titleOfAll?.[0]?.field);
   console.log("countOccurrences", countOccurrences);
   console.log("orderstyletitle", orderstyletitle);
   console.log("countOccurrencesDirectTitle", countOccurrencesDirectTitle);
 
-  // console.log("titleDirectToCategList", titleDirectToCategList);
   return (
     <Tab.Container activeKey={activeTab} onSelect={handleSelect}>
       <Nav variant="pills" className="mb-3">
@@ -203,7 +192,15 @@ const PillsTabs = () => {
           ?.sort((a, b) => (a?.ordering || 0) - (b?.ordering || 0))
           ?.map((tab, index) => (
             <Nav.Item key={index} className="m-2">
-              <Nav.Link className="border" eventKey={tab?.uid ?? ""}>
+              <Nav.Link
+                className="border"
+                eventKey={tab?.uid ?? ""}
+                onClick={() => {
+                  settitleOfAll(undefined);
+                  setActiveSubCategory(undefined);
+                  settitleDirectToCategList(undefined);
+                }}
+              >
                 {tab?.name ?? "Unknown Tab"}
               </Nav.Link>
             </Nav.Item>
