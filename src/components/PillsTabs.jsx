@@ -164,7 +164,7 @@ const PillsTabs = () => {
       <h4 className="my-4 mx-2">ثبت {activeTab} جدید</h4>
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="p-4 mb-5">
+        <div className="p-4 mb-5 container shadow-lg">
           <h1>Dynamic Form</h1>
           <div className="my-3 d-flex gap-2 ">
             {subCategory?.length > 0 &&
@@ -206,110 +206,124 @@ const PillsTabs = () => {
           </div>
 
           {/* Dynamic Dropdowns or Inputs */}
-          {titleDirectToCategList?.length > 0 && (
-            <div className={`d-flex gap-4 flex-wrap `}>
-              {titleDirectToCategList
-                ?.sort((a, b) => (a?.ordering || 0) - (b?.ordering || 0))
-                ?.map((titleDirectToCat) => (
-                  <div
-                    className={`d-flex gap-2 mt-4 ${
-                      titleDirectToCat?.titled
-                        ? "fs-4 fw-bold flex-row w-100 align-items-start justify-content-start"
-                        : "flex-column"
-                    }`}
-                    key={titleDirectToCat?.uid}
-                  >
-                    <label
-                      htmlFor={titleDirectToCat?.uid}
-                      className="my-auto w-25 text-nowrap"
+          <div className="">
+            {titleDirectToCategList?.length > 0 && (
+              <div className="row">
+                {titleDirectToCategList
+                  ?.sort((a, b) => (a?.ordering || 0) - (b?.ordering || 0))
+                  ?.map((titleDirectToCat) => (
+                    <div
+                      className={` ${titleDirectToCat?.titled ? "" : "col"}`}
                     >
-                      {titleDirectToCat?.name}
-                    </label>
-                    <div className="mt-2">
-                      {titleDirectToCat?.options?.length > 0 ? (
-                        <Controller
-                          name={titleDirectToCat?.uid}
-                          control={control}
-                          render={({ field }) => (
-                            <DropD
-                              titleDirectToCat={titleDirectToCat}
-                              selectedValue={field.value} // Pass field value
-                              setSelectedValue={(value) =>
-                                field.onChange(value)
-                              } // Use react-hook-form's setter
+                      <div
+                        className={` py-2 my-4 ${
+                          titleDirectToCat?.titled
+                            ? "fs-4 fw-bold d-flex align-items-start justify-content-start"
+                            : ""
+                        }`}
+                        key={titleDirectToCat?.uid}
+                      >
+                        <label
+                          htmlFor={titleDirectToCat?.uid}
+                          className="my-auto w-25 text-nowrap"
+                        >
+                          {titleDirectToCat?.name} /{" "}
+                          {titleDirectToCat?.ordering}
+                        </label>
+                        <div className="">
+                          {titleDirectToCat?.options?.length > 0 ? (
+                            <Controller
+                              name={titleDirectToCat?.uid}
+                              control={control}
+                              render={({ field }) => (
+                                <DropD
+                                  titleDirectToCat={titleDirectToCat}
+                                  selectedValue={field.value} // Pass field value
+                                  setSelectedValue={(value) =>
+                                    field.onChange(value)
+                                  } // Use react-hook-form's setter
+                                />
+                              )}
+                            />
+                          ) : (
+                            <Controller
+                              name={titleDirectToCat?.uid}
+                              control={control}
+                              render={({ field }) => {
+                                const handleValueChange = (e) => {
+                                  let value = e.target.value;
+
+                                  if (titleDirectToCat?.type === "PERCENTAGE") {
+                                    // Treat PERCENTAGE as a number
+                                    value = parseFloat(value);
+                                    if (isNaN(value)) value = ""; // If the value isn't a number, reset to empty
+                                  } else if (
+                                    titleDirectToCat?.type === "FLOAT"
+                                  ) {
+                                    // Treat FLOAT as a float with one decimal place
+                                    // value = parseFloat(value).toFixed(1);
+                                    value = parseFloat(value);
+
+                                    if (isNaN(value)) value = ""; // If the value isn't a number, reset to empty
+                                  } else if (
+                                    titleDirectToCat?.type === "CHAR"
+                                  ) {
+                                    // Treat CHAR as a string
+                                    value = value.toString();
+                                  }
+
+                                  // Update the field value using react-hook-form's `onChange` handler
+                                  field.onChange(value);
+                                };
+
+                                return titleDirectToCat?.type ===
+                                  "PERCENTAGE" ? (
+                                  <IconField iconPosition="left">
+                                    <InputIcon className="pi pi-percentage">
+                                      {" "}
+                                    </InputIcon>
+                                    <InputText
+                                      placeholder="درصد"
+                                      className="w-100"
+                                      {...field}
+                                      keyfilter="num"
+                                      onChange={handleValueChange} // Custom value handling for PERCENTAGE
+                                    />
+                                  </IconField>
+                                ) : (
+                                  <InputText
+                                    {...field}
+                                    placeholder={`${
+                                      titleDirectToCat?.type === "CHAR"
+                                        ? "متن"
+                                        : "عددی"
+                                    }`}
+                                    className="w-100"
+                                    keyfilter={
+                                      titleDirectToCat?.type === "CHAR"
+                                        ? ""
+                                        : "decimal" // Allow only numeric values for FLOAT and PERCENTAGE
+                                    }
+                                    onChange={handleValueChange} // Custom value handling for FLOAT and CHAR
+                                  />
+                                );
+                              }}
                             />
                           )}
-                        />
-                      ) : (
-                        <Controller
-                          name={titleDirectToCat?.uid}
-                          control={control}
-                          render={({ field }) => {
-                            const handleValueChange = (e) => {
-                              let value = e.target.value;
-
-                              if (titleDirectToCat?.type === "PERCENTAGE") {
-                                // Treat PERCENTAGE as a number
-                                value = parseFloat(value);
-                                if (isNaN(value)) value = ""; // If the value isn't a number, reset to empty
-                              } else if (titleDirectToCat?.type === "FLOAT") {
-                                // Treat FLOAT as a float with one decimal place
-                                // value = parseFloat(value).toFixed(1);
-                                value = parseFloat(value);
-
-                                if (isNaN(value)) value = ""; // If the value isn't a number, reset to empty
-                              } else if (titleDirectToCat?.type === "CHAR") {
-                                // Treat CHAR as a string
-                                value = value.toString();
-                              }
-
-                              // Update the field value using react-hook-form's `onChange` handler
-                              field.onChange(value);
-                            };
-
-                            return titleDirectToCat?.type === "PERCENTAGE" ? (
-                              <IconField iconPosition="left">
-                                <InputIcon className="pi pi-percentage">
-                                  {" "}
-                                </InputIcon>
-                                <InputText
-                                  placeholder="درصد"
-                                  {...field}
-                                  keyfilter="num"
-                                  onChange={handleValueChange} // Custom value handling for PERCENTAGE
-                                />
-                              </IconField>
-                            ) : (
-                              <InputText
-                                {...field}
-                                placeholder={`${
-                                  titleDirectToCat?.type === "CHAR"
-                                    ? "متن"
-                                    : "عددی"
-                                }`}
-                                keyfilter={
-                                  titleDirectToCat?.type === "CHAR"
-                                    ? ""
-                                    : "decimal" // Allow only numeric values for FLOAT and PERCENTAGE
-                                }
-                                onChange={handleValueChange} // Custom value handling for FLOAT and CHAR
-                              />
-                            );
-                          }}
-                        />
-                      )}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                ))}
-            </div>
-          )}
+                  ))}
+              </div>
+            )}
+          </div>
           <div className="">
             {titleOfAll?.length > 0 &&
               titleOfAll.map((title, idx) => (
                 <div key={idx} className="">
                   <h3 className="my-4">{title?.name} </h3>
                   {/* create here a form that map on title.field and if type is   */}
-                  <div className="d-flex flex-wrap">
+                  <div className="d-flex flex-wrap bg-danger">
                     {title?.field
                       ?.sort((a, b) => (a?.ordering || 0) - (b?.ordering || 0))
                       ?.map((titleData) => (
