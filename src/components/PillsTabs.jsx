@@ -48,7 +48,7 @@ const PillsTabs = () => {
 
         settitleDirectToCategList(response?.data?.data?.field);
         console.log("titleOfAll", response?.data?.data?.title);
-        settitleOfAll(response?.data?.data?.title?.[0]);
+        settitleOfAll(response?.data?.data?.title);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -74,19 +74,21 @@ const PillsTabs = () => {
       patient_uid: "Some additional info",
     };
 
-    const fields = titleDirectToCategList?.map((titleDirectToCat) => {
-      const fieldValue = data[titleDirectToCat?.uid]; // Get the value from react-hook-form by the field uid
-      const fieldNameUid = titleDirectToCat?.uid; // Field UID
+    const fields = titleDirectToCategList
+      ?.sort((a, b) => (a?.ordering || 0) - (b?.ordering || 0))
+      ?.map((titleDirectToCat) => {
+        const fieldValue = data[titleDirectToCat?.uid]; // Get the value from react-hook-form by the field uid
+        const fieldNameUid = titleDirectToCat?.uid; // Field UID
 
-      return {
-        uid: fieldNameUid, // The field UID
-        value: fieldValue
-          ? Array.isArray(fieldValue)
-            ? fieldValue
-            : [fieldValue]
-          : [], // Ensure value is an array
-      };
-    });
+        return {
+          uid: fieldNameUid, // The field UID
+          value: fieldValue
+            ? Array.isArray(fieldValue)
+              ? fieldValue
+              : [fieldValue]
+            : [], // Ensure value is an array
+        };
+      });
 
     // Create the final data object with 'fields' array
     const formDataWithExtraData = {
@@ -110,13 +112,15 @@ const PillsTabs = () => {
   return (
     <Tab.Container activeKey={activeTab} onSelect={handleSelect}>
       <Nav variant="pills" className="mb-3">
-        {tabsNew?.map((tab, index) => (
-          <Nav.Item key={index} className="m-2">
-            <Nav.Link className="border" eventKey={tab?.uid ?? ""}>
-              {tab?.name ?? "Unknown Tab"}
-            </Nav.Link>
-          </Nav.Item>
-        ))}
+        {tabsNew
+          ?.sort((a, b) => (a?.ordering || 0) - (b?.ordering || 0))
+          ?.map((tab, index) => (
+            <Nav.Item key={index} className="m-2">
+              <Nav.Link className="border" eventKey={tab?.uid ?? ""}>
+                {tab?.name ?? "Unknown Tab"}
+              </Nav.Link>
+            </Nav.Item>
+          ))}
       </Nav>
       <h4 className="my-4 mx-2">ثبت {activeTab} جدید</h4>
 
@@ -150,99 +154,31 @@ const PillsTabs = () => {
           {/* Dynamic Dropdowns or Inputs */}
           {titleDirectToCategList?.length > 0 && (
             <div className={`d-flex gap-4 flex-wrap `}>
-              {titleDirectToCategList?.map((titleDirectToCat) => (
-                <div
-                  className={`d-flex gap-2 mt-4 ${
-                    titleDirectToCat?.titled
-                      ? "fs-4 fw-bold flex-row w-100 align-items-start justify-content-start"
-                      : "flex-column"
-                  }`}
-                  key={titleDirectToCat?.uid}
-                >
-                  <label
-                    htmlFor={titleDirectToCat?.uid}
-                    className="my-auto w-25"
+              {titleDirectToCategList
+                ?.sort((a, b) => (a?.ordering || 0) - (b?.ordering || 0))
+                ?.map((titleDirectToCat) => (
+                  <div
+                    className={`d-flex gap-2 mt-4 ${
+                      titleDirectToCat?.titled
+                        ? "fs-4 fw-bold flex-row w-100 align-items-start justify-content-start"
+                        : "flex-column"
+                    }`}
+                    key={titleDirectToCat?.uid}
                   >
-                    {titleDirectToCat?.name}
-                  </label>
-                  <div className="mt-2">
-                    {titleDirectToCat?.options?.length > 0 ? (
-                      <Controller
-                        name={titleDirectToCat?.uid}
-                        control={control}
-                        render={({ field }) => (
-                          <DropD
-                            titleDirectToCat={titleDirectToCat}
-                            selectedValue={field.value} // Pass field value
-                            setSelectedValue={(value) => field.onChange(value)} // Use react-hook-form's setter
-                          />
-                        )}
-                      />
-                    ) : (
-                      <Controller
-                        name={titleDirectToCat?.uid}
-                        control={control}
-                        render={({ field }) =>
-                          titleDirectToCat?.type === "PERCENTAGE" ? (
-                            <IconField iconPosition="left">
-                              <InputIcon className="pi pi-percentage">
-                                {" "}
-                              </InputIcon>
-                              <InputText
-                                {...field} // Spread react-hook-form's field props
-                                keyfilter={
-                                  titleDirectToCat?.type === "CHAR"
-                                    ? ""
-                                    : titleDirectToCat?.type === "FLOAT" ||
-                                      titleDirectToCat?.type === "PERCENTAGE"
-                                    ? "int"
-                                    : ""
-                                }
-                              />{" "}
-                            </IconField>
-                          ) : (
-                            <InputText
-                              {...field} // Spread react-hook-form's field props
-                              keyfilter={
-                                titleDirectToCat?.type === "CHAR"
-                                  ? ""
-                                  : titleDirectToCat?.type === "FLOAT" ||
-                                    titleDirectToCat?.type === "PERCENTAGE"
-                                  ? "int"
-                                  : ""
-                              }
-                            />
-                          )
-                        }
-                      />
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-          <div className="">
-            {titleOfAll && (
-              <div className="">
-                <h3 className="my-4">{titleOfAll?.name} </h3>
-                {/* create here a form that map on titleOfAll.field and if type is   */}
-                <div className="d-flex flex-wrap">
-                  {/* titled */}
-                  {titleOfAll?.field?.map((titleData) => (
-                    <div
-                      className="d-flex flex-wrap mb-4 ms-4 flex-column"
-                      key={titleData?.uid}
+                    <label
+                      htmlFor={titleDirectToCat?.uid}
+                      className="my-auto w-25 text-nowrap"
                     >
-                      <label htmlFor={titleData?.uid}>{titleData?.name}</label>
-                      <div>{titleData?.ordering}</div>
-                      {/* <div className="mt-2 my-4 d-flex bg-dark"> */}
-                      {titleData?.options?.length > 0 ? (
+                      {titleDirectToCat?.name}
+                    </label>
+                    <div className="mt-2">
+                      {titleDirectToCat?.options?.length > 0 ? (
                         <Controller
-                          name={titleData?.uid}
+                          name={titleDirectToCat?.uid}
                           control={control}
                           render={({ field }) => (
                             <DropD
-                              titleData={titleData}
+                              titleDirectToCat={titleDirectToCat}
                               selectedValue={field.value} // Pass field value
                               setSelectedValue={(value) =>
                                 field.onChange(value)
@@ -252,34 +188,124 @@ const PillsTabs = () => {
                         />
                       ) : (
                         <Controller
-                          name={titleData?.uid}
+                          name={titleDirectToCat?.uid}
                           control={control}
-                          render={({ field }) => (
-                            <InputText
-                              {...field} // Spread react-hook-form's field props
-                              keyfilter={
-                                titleData?.type === "CHAR"
-                                  ? ""
-                                  : titleData?.type === "FLOAT" ||
-                                    titleData?.type === "PERCENTAGE"
-                                  ? "int"
-                                  : ""
-                              }
-                              placeholder={`${titleData?.name} را وارد نمایید`}
-                            />
-                          )}
+                          render={({ field }) =>
+                            titleDirectToCat?.type === "PERCENTAGE" ? (
+                              //   <InputText
+                              //   {...field} // Spread react-hook-form's field props
+                              //   keyfilter={
+                              //     titleDirectToCat?.type === "CHAR"
+                              //       ? ""
+                              //       : titleDirectToCat?.type === "FLOAT" ||
+                              //         titleDirectToCat?.type === "PERCENTAGE"
+                              //       ? "int"
+                              //       : ""
+                              //   }
+                              // />
+
+                              <IconField iconPosition="left">
+                                <InputIcon className="pi pi-percentage">
+                                  {" "}
+                                </InputIcon>
+                                <InputText
+                                  placeholder="درصد"
+                                  {...field}
+                                  keyfilter={"int"}
+                                />
+                              </IconField>
+                            ) : (
+                              <InputText
+                                {...field} // Spread react-hook-form's field props
+                                placeholder={`${
+                                  titleDirectToCat?.type === "CHAR"
+                                    ? "متن"
+                                    : "عددی"
+                                }`}
+                                keyfilter={
+                                  titleDirectToCat?.type === "CHAR"
+                                    ? ""
+                                    : titleDirectToCat?.type === "FLOAT" ||
+                                      titleDirectToCat?.type === "PERCENTAGE"
+                                    ? "int"
+                                    : ""
+                                }
+                              />
+                            )
+                          }
                         />
                       )}
-                      {/* </div> */}
                     </div>
-                  ))}
+                  </div>
+                ))}
+            </div>
+          )}
+          <div className="">
+            {titleOfAll?.length > 0 &&
+              titleOfAll.map((title) => (
+                <div className="">
+                  <h3 className="my-4">{title?.name} </h3>
+                  {/* create here a form that map on title.field and if type is   */}
+                  <div className="d-flex flex-wrap">
+                    {title?.field
+                      ?.sort((a, b) => (a?.ordering || 0) - (b?.ordering || 0))
+                      ?.map((titleData) => (
+                        <div
+                          className="d-flex flex-wrap mb-4 ms-4 flex-column"
+                          key={titleData?.uid}
+                        >
+                          <label htmlFor={titleData?.uid}>
+                            {titleData?.name}
+                          </label>
+                          <div>{titleData?.ordering}</div>
+                          {/* <div className="mt-2 my-4 d-flex bg-dark"> */}
+                          {titleData?.options?.length > 0 ? (
+                            <Controller
+                              name={titleData?.uid}
+                              control={control}
+                              render={({ field }) => (
+                                <DropD
+                                  titleData={titleData}
+                                  selectedValue={field.value} // Pass field value
+                                  setSelectedValue={(value) =>
+                                    field.onChange(value)
+                                  } // Use react-hook-form's setter
+                                />
+                              )}
+                            />
+                          ) : (
+                            <Controller
+                              name={titleData?.uid}
+                              control={control}
+                              render={({ field }) => (
+                                <InputText
+                                  {...field} // Spread react-hook-form's field props
+                                  keyfilter={
+                                    titleData?.type === "CHAR"
+                                      ? ""
+                                      : titleData?.type === "FLOAT" ||
+                                        titleData?.type === "PERCENTAGE"
+                                      ? "int"
+                                      : ""
+                                  }
+                                  placeholder={`${titleData?.name} را وارد نمایید`}
+                                />
+                              )}
+                            />
+                          )}
+                          {/* </div> */}
+                        </div>
+                      ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              ))}
           </div>
           {/* Submit Button */}
-          <button type="submit" className="p-button p-component mt-5">
-            Submit
+          <button
+            type="submit"
+            className="btn btn-primary mt-5 w-100 text-center"
+          >
+            تایید و ثبت نتایج
           </button>
         </div>
       </form>
