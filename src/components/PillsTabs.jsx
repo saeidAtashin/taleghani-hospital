@@ -194,7 +194,6 @@ const PillsTabs = () => {
                             {titleData?.name}
                           </label>
                           <div>{titleData?.ordering}</div>
-                          {/* <div className="mt-2 my-4 d-flex bg-dark"> */}
                           {titleData?.options?.length > 0 ? (
                             <Controller
                               name={titleData?.uid}
@@ -253,7 +252,6 @@ const PillsTabs = () => {
                               }}
                             />
                           )}
-                          {/* </div> */}
                         </div>
                       ))}
                   </div>
