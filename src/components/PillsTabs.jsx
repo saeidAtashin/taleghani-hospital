@@ -51,7 +51,7 @@ const PillsTabs = () => {
         );
 
         settitleDirectToCategList(response?.data?.data?.field);
-        console.log("titleOfAll", response?.data?.data?.title?.[0]);
+        console.log("titleOfAll", response?.data?.data?.title);
         settitleOfAll(response?.data?.data?.title?.[0]);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -159,7 +159,9 @@ const PillsTabs = () => {
             <div className="d-flex gap-4">
               {titleDirectToCategList?.map((titleDirectToCat) => (
                 <div
-                  className="flex flex-column gap-2 mt-4"
+                  className={`flex flex-column gap-2 mt-4 ${
+                    titleDirectToCat?.titled ? "" : ""
+                  }`}
                   key={titleDirectToCat?.uid}
                 >
                   <label htmlFor={titleDirectToCat?.uid}>
@@ -204,12 +206,16 @@ const PillsTabs = () => {
           )}
           <div className="">
             {titleOfAll && (
-              <div class="">
+              <div className="">
                 <h3 className="my-4">{titleOfAll?.name} </h3>
                 {/* create here a form that map on titleOfAll.field and if type is   */}
                 <div className="d-flex flex-wrap">
+                  {/* titled */}
                   {titleOfAll?.field?.map((titleData) => (
-                    <div class="d-flex flex-wrap mb-4 ms-4 flex-column">
+                    <div
+                      className="d-flex flex-wrap mb-4 ms-4 flex-column"
+                      key={titleData?.uid}
+                    >
                       <label htmlFor={titleData?.uid}>{titleData?.name}</label>
                       <div>{titleData?.ordering}</div>
                       {/* <div className="mt-2 my-4 d-flex bg-dark"> */}
