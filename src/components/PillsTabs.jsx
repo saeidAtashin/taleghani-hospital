@@ -11,10 +11,8 @@ import { InputIcon } from "primereact/inputicon";
 
 const PillsTabs = () => {
   const [tabsNew, settabsNew] = useState();
-  const [tabsNewTitle, settabsNewTitle] = useState();
   const [titleDirectToCategList, settitleDirectToCategList] = useState();
   const [titleOfAll, settitleOfAll] = useState();
-  const [apiResponse, setApiResponse] = useState([]);
   const [activeTab, setActiveTab] = useState("");
   const [date, setDate] = useState(null);
 
@@ -22,9 +20,6 @@ const PillsTabs = () => {
     control,
     handleSubmit,
     formState: { errors },
-    reset,
-    setValue,
-    getValues,
   } = useForm({
     defaultValues: {
       date: date, // Set the default value for date
@@ -36,7 +31,6 @@ const PillsTabs = () => {
       try {
         const response = await apiRequest("GET", `/tests/category-details/`);
         const list = response?.data?.data?.result ?? [];
-        setApiResponse(response?.data?.data?.result);
         settabsNew(list);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -99,9 +93,6 @@ const PillsTabs = () => {
       fields: fields,
       ...additionalData, // Merge additional data
     };
-
-    // Submit or log the data
-    // console.log("Form Data with Fields and Extra Info:", formDataWithExtraData);
 
     try {
       const response = await axios.post(
