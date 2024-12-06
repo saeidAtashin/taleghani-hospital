@@ -208,8 +208,6 @@ export default function TabComponent() {
 
         const results = response.data.data.result;
 
-        console.log("response.data.data.result", response.data.data.result);
-
         // Group by category_uid
         const grouped = results?.reduce((acc, item) => {
           const categoryUid = item?.category?.uid;
@@ -224,8 +222,6 @@ export default function TabComponent() {
         }, {});
 
         setCategories(grouped);
-
-        console.log("grouped", grouped);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -279,9 +275,10 @@ export default function TabComponent() {
     const fetchTitles = async () => {
       try {
         const response = await axios.get(
-          "https://cancerreg.ir/api/v1/tests/mng-title/?page=1&page_size=50"
+          "https://cancerreg.ir/api/v1/tests/mng-title/"
         );
         const results = response.data.data.result;
+        console.log("response.data.data.result", response.data.data.result);
 
         setTitles(results);
       } catch (error) {
@@ -290,7 +287,7 @@ export default function TabComponent() {
     };
 
     fetchTitles();
-  }, [refreshTitle]);
+  }, [refreshTitle, activeIndex]);
 
   useEffect(() => {
     if (titles?.length > 0 && activeIndex) {
@@ -339,7 +336,6 @@ export default function TabComponent() {
     selectedSubCategory,
     checked
   ) => {
-    console.log("checked", checked);
     try {
       let payload = {
         name,
