@@ -21,10 +21,15 @@ const PillsTabs = () => {
   const [countOccurrences, setcountOccurrences] = useState([]); // Track the selected sub-category
   const [countOccurrencesDirectTitle, setcountOccurrencesDirectTitle] =
     useState([]);
+  const [activeSubCategoryIndex, setActiveSubCategoryIndex] = useState(null);
+  const [showAdditionalInput, setShowAdditionalInput] = useState(false);
+  const [additionalInputValue, setAdditionalInputValue] = useState("");
+  const [selectedName, setSelectedName] = useState(""); // Track the name of selected dropdown item
 
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -99,6 +104,7 @@ const PillsTabs = () => {
   };
 
   const onSubmit = async (data) => {
+    console.log("data", data);
     const additionalData = {
       date: data?.date,
       category_uid: activeTab,
@@ -130,13 +136,16 @@ const PillsTabs = () => {
         "https://cancerreg.ir/api/v1/tests/test/",
         formDataWithExtraData
       );
+      reset();
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handleSubCategoryClick = (sub) => {
+  const handleSubCategoryClick = (sub, index) => {
     setActiveSubCategory(sub);
+    setActiveSubCategoryIndex(index);
+
     settitleDirectToCategList(sub?.field ?? []);
 
     const orderingssec = sub?.field?.map((item) => item?.ordering);
@@ -167,7 +176,7 @@ const PillsTabs = () => {
       const currentTab = tabsNew.find((tab) => tab.uid === activeTab);
 
       if (currentTab && currentTab.sub_category?.length > 0) {
-        handleSubCategoryClick(currentTab.sub_category[0]);
+        handleSubCategoryClick(currentTab.sub_category[0], 0); // Pass the subcategory and its index (0 in this case)
       }
     }
   }, [activeTab, tabsNew]);
@@ -208,8 +217,12 @@ const PillsTabs = () => {
               subCategory.map((subs, index) => (
                 <div key={index} className="my-3 ">
                   <span
-                    className={`px-3 py-2 rounded-3 cursor-pointer bg-warning`}
-                    onClick={() => handleSubCategoryClick(subs)} // When clicked, set this sub as active
+                    className={`px-3 py-2 rounded-3 cursor-pointer ${
+                      activeSubCategoryIndex === index
+                        ? "bg-warning"
+                        : " border"
+                    }`}
+                    onClick={() => handleSubCategoryClick(subs, index)}
                   >
                     {subs.name}
                   </span>{" "}
@@ -278,23 +291,68 @@ const PillsTabs = () => {
                           htmlFor={titleDirectToCat?.uid}
                           className="my-auto w-25 text-nowrap"
                         >
-                          {titleDirectToCat?.name} /{" "}
-                          {titleDirectToCat?.ordering}
+                          {titleDirectToCat?.name === "Immunofixation"
+                            ? titleDirectToCat?.name
+                            : titleDirectToCat?.name}{" "}
+                          / {titleDirectToCat?.ordering}
                         </label>
                         <div className="">
                           {titleDirectToCat?.options?.length > 0 ? (
                             <Controller
                               name={titleDirectToCat?.uid}
                               control={control}
-                              render={({ field }) => (
-                                <DropD
-                                  titleDirectToCat={titleDirectToCat}
-                                  selectedValue={field.value}
-                                  setSelectedValue={(value) =>
-                                    field.onChange(value)
-                                  }
-                                />
-                              )}
+                              render={({ field }) =>
+                                titleDirectToCat?.name === "Immunofixation" ? (
+                                  <>
+                                    {/* Conditionally show DropD component */}
+                                    <DropD
+                                      titleDirectToCat={titleDirectToCat}
+                                      selectedValue={field.value}
+                                      setSelectedValue={(value, name) => {
+                                        field.onChange(value); // Store uid in the form state
+                                        setSelectedName(name); // Set name for display purposes
+                                        setShowAdditionalInput(true); // Show additional input when a value is selected
+                                        setAdditionalInputValue(name); // Set the initial value of additional input to the name
+                                      }}
+                                    />
+
+                                    {/* Additional input shown only if a dropdown value has been selected */}
+                                    {showAdditionalInput && (
+                                      <div className="mt-3">
+                                        <label
+                                          htmlFor={`additional-input-${titleDirectToCat?.uid}`}
+                                        >
+                                          {additionalInputValue}
+                                        </label>
+                                        <input
+                                          type="text"
+                                          id={`additional-input-${titleDirectToCat?.uid}`}
+                                          className="form-control mt-2"
+                                          value={additionalInputValue}
+                                          onChange={(e) =>
+                                            setAdditionalInputValue(
+                                              e.target.value
+                                            )
+                                          }
+                                          placeholder={
+                                            selectedName ||
+                                            "Enter additional information"
+                                          }
+                                        />
+                                      </div>
+                                    )}
+                                  </>
+                                ) : (
+                                  <DropD
+                                    titleDirectToCat={titleDirectToCat}
+                                    selectedValue={field.value}
+                                    setSelectedValue={(value) => {
+                                      field.onChange(value);
+                                      setShowAdditionalInput(true);
+                                    }}
+                                  />
+                                )
+                              }
                             />
                           ) : (
                             <Controller
