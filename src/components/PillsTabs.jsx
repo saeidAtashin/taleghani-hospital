@@ -19,6 +19,7 @@ const PillsTabs = () => {
   const [date, setDate] = useState(null);
   const [selectedOrdering, setSelectedOrdering] = useState([]); // Store the 'ordering' of selected options
   const [value, setValue] = useState([]); // Store selected values (multiple)
+  const [activeSubCategory, setActiveSubCategory] = useState(null); // Track the selected sub-category
 
   const {
     control,
@@ -55,11 +56,13 @@ const PillsTabs = () => {
           settitleDirectToCategList(
             response?.data?.data?.sub_category?.[0]?.field ?? []
           );
-          settitleOfAll([response?.data?.data?.sub_category?.[0]?.title ?? ""]);
+          // settitleOfAll([response?.data?.data?.sub_category?.[0]?.title ?? ""]);
         } else {
           settitleDirectToCategList(response?.data?.data?.field);
           setsubCategory(response?.data?.data?.sub_category);
           settitleOfAll(response?.data?.data?.title);
+
+          console.log("original title", response?.data?.data?.title);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -133,6 +136,17 @@ const PillsTabs = () => {
     setSelectedOrdering(orderings); // Update ordering based on selected values
   };
 
+  const handleSubCategoryClick = (sub) => {
+    // Set the clicked sub-category as the active one
+    setActiveSubCategory(sub);
+    // titleOfAll
+    // Also, set the fields and title for this sub-category
+    settitleDirectToCategList(sub?.field ?? []);
+    settitleOfAll(sub?.title);
+  };
+
+  console.log("activeSubCategory", activeSubCategory);
+
   // console.log("titleDirectToCategList", titleDirectToCategList);
   return (
     <Tab.Container activeKey={activeTab} onSelect={handleSelect}>
@@ -152,6 +166,20 @@ const PillsTabs = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="p-4 mb-5">
           <h1>Dynamic Form</h1>
+          <div className="my-3 d-flex gap-2 ">
+            {subCategory?.length > 0 &&
+              subCategory.map((subs, index) => (
+                <div key={index} className="my-3 ">
+                  <span
+                    className={`px-3 py-2 rounded-3 cursor-pointer bg-warning`}
+                    onClick={() => handleSubCategoryClick(subs)} // When clicked, set this sub as active
+                  >
+                    {subs.name}
+                  </span>{" "}
+                  <div className=""></div>
+                </div>
+              ))}
+          </div>
           {/* Date Field */}
           <div className="d-flex flex-column">
             <label className="label" htmlFor="date">
@@ -176,88 +204,7 @@ const PillsTabs = () => {
               <div className="invalid-feedback">{errors.date.message}</div>
             )}
           </div>
-          <div className="">
-            {titleOfAll?.length > 0 &&
-              titleOfAll.map((title, idx) => (
-                <div key={idx} className="">
-                  <h3 className="my-4">{title?.name} </h3>
-                  {/* create here a form that map on title.field and if type is   */}
-                  <div className="d-flex flex-wrap">
-                    {title?.field
-                      ?.sort((a, b) => (a?.ordering || 0) - (b?.ordering || 0))
-                      ?.map((titleData) => (
-                        <div
-                          className="d-flex flex-wrap mb-4 ms-4 flex-column"
-                          key={titleData?.uid}
-                        >
-                          <label htmlFor={titleData?.uid}>
-                            {titleData?.name}
-                          </label>
-                          <div>{titleData?.ordering}</div>
-                          {titleData?.options?.length > 0 ? (
-                            <Controller
-                              name={titleData?.uid}
-                              control={control}
-                              render={({ field }) => (
-                                <DropD
-                                  titleData={titleData}
-                                  selectedValue={field.value} // Pass field value
-                                  setSelectedValue={(value) =>
-                                    field.onChange(value)
-                                  } // Use react-hook-form's setter
-                                />
-                              )}
-                            />
-                          ) : (
-                            <Controller
-                              name={titleData?.uid}
-                              control={control}
-                              render={({ field }) => {
-                                // Handle the formatting before the value is passed to react-hook-form
-                                const handleValueChange = (e) => {
-                                  let value = e.target.value;
 
-                                  if (titleData?.type === "FLOAT") {
-                                    // Convert to a float with one decimal place
-                                    // value = parseFloat(value).toFixed(1);
-                                    // Ensure that if it's an integer, it becomes a float (e.g., 10 -> 10.0)
-                                    value = parseFloat(value);
-                                  } else if (titleData?.type === "PERCENTAGE") {
-                                    // Ensure that the value is treated as a number (remove the percentage sign)
-                                    value = parseFloat(value);
-                                  } else if (titleData?.type === "CHAR") {
-                                    // Ensure it's treated as a string
-                                    value = value.toString();
-                                  }
-
-                                  // Update the field value using react-hook-form's `onChange` handler
-                                  field.onChange(value);
-                                };
-
-                                return (
-                                  <InputText
-                                    {...field} // Spread react-hook-form's field props
-                                    onChange={handleValueChange} // Custom change handler
-                                    keyfilter={
-                                      titleData?.type === "CHAR"
-                                        ? ""
-                                        : titleData?.type === "FLOAT" ||
-                                          titleData?.type === "PERCENTAGE"
-                                        ? "decimal" // Allow only numbers for FLOAT and PERCENTAGE
-                                        : ""
-                                    }
-                                    placeholder={`${titleData?.name} را وارد نمایید`}
-                                  />
-                                );
-                              }}
-                            />
-                          )}
-                        </div>
-                      ))}
-                  </div>
-                </div>
-              ))}
-          </div>
           {/* Dynamic Dropdowns or Inputs */}
           {titleDirectToCategList?.length > 0 && (
             <div className={`d-flex gap-4 flex-wrap `}>
@@ -356,29 +303,88 @@ const PillsTabs = () => {
                 ))}
             </div>
           )}
+          <div className="">
+            {titleOfAll?.length > 0 &&
+              titleOfAll.map((title, idx) => (
+                <div key={idx} className="">
+                  <h3 className="my-4">{title?.name} </h3>
+                  {/* create here a form that map on title.field and if type is   */}
+                  <div className="d-flex flex-wrap">
+                    {title?.field
+                      ?.sort((a, b) => (a?.ordering || 0) - (b?.ordering || 0))
+                      ?.map((titleData) => (
+                        <div
+                          className="d-flex flex-wrap mb-4 ms-4 flex-column"
+                          key={titleData?.uid}
+                        >
+                          <label htmlFor={titleData?.uid}>
+                            {titleData?.name}
+                          </label>
+                          <div>{titleData?.ordering}</div>
+                          {titleData?.options?.length > 0 ? (
+                            <Controller
+                              name={titleData?.uid}
+                              control={control}
+                              render={({ field }) => (
+                                <DropD
+                                  titleData={titleData}
+                                  selectedValue={field.value} // Pass field value
+                                  setSelectedValue={(value) =>
+                                    field.onChange(value)
+                                  } // Use react-hook-form's setter
+                                />
+                              )}
+                            />
+                          ) : (
+                            <Controller
+                              name={titleData?.uid}
+                              control={control}
+                              render={({ field }) => {
+                                // Handle the formatting before the value is passed to react-hook-form
+                                const handleValueChange = (e) => {
+                                  let value = e.target.value;
 
-          <div className="my-3 d-flex gap-2 ">
-            {subCategory?.length > 0 &&
-              subCategory.map((subs, index) => (
-                <div key={index} className="my-3 ">
-                  <span
-                    className={`px-3 py-2 rounded-3 cursor-pointer bg-warning`}
-                  >
-                    {subs.name}
-                  </span>{" "}
-                  <div className=""></div>
-                  <div className="selected-ordering">
-                    {selectedOrdering?.length > 0 &&
-                      selectedOrdering.map((ordering, index) => (
-                        <div key={index}>
-                          Selected Option: {value[index]} - Ordering: {ordering}
+                                  if (titleData?.type === "FLOAT") {
+                                    // Convert to a float with one decimal place
+                                    // value = parseFloat(value).toFixed(1);
+                                    // Ensure that if it's an integer, it becomes a float (e.g., 10 -> 10.0)
+                                    value = parseFloat(value);
+                                  } else if (titleData?.type === "PERCENTAGE") {
+                                    // Ensure that the value is treated as a number (remove the percentage sign)
+                                    value = parseFloat(value);
+                                  } else if (titleData?.type === "CHAR") {
+                                    // Ensure it's treated as a string
+                                    value = value.toString();
+                                  }
+
+                                  // Update the field value using react-hook-form's `onChange` handler
+                                  field.onChange(value);
+                                };
+
+                                return (
+                                  <InputText
+                                    {...field} // Spread react-hook-form's field props
+                                    onChange={handleValueChange} // Custom change handler
+                                    keyfilter={
+                                      titleData?.type === "CHAR"
+                                        ? ""
+                                        : titleData?.type === "FLOAT" ||
+                                          titleData?.type === "PERCENTAGE"
+                                        ? "decimal" // Allow only numbers for FLOAT and PERCENTAGE
+                                        : ""
+                                    }
+                                    placeholder={`${titleData?.name} را وارد نمایید`}
+                                  />
+                                );
+                              }}
+                            />
+                          )}
                         </div>
                       ))}
                   </div>
                 </div>
               ))}
           </div>
-
           {/* Submit Button */}
           <button
             type="submit"
