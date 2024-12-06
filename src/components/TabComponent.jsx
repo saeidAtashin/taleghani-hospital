@@ -45,7 +45,7 @@ export default function TabComponent() {
           label: item?.name,
           uid: item?.uid,
           template: (
-            <div>
+            <div key={item?.uid}>
               {item.name}{" "}
               <i
                 className="pi pi-pencil"
@@ -208,6 +208,8 @@ export default function TabComponent() {
 
         const results = response.data.data.result;
 
+        console.log("response.data.data.result", response.data.data.result);
+
         // Group by category_uid
         const grouped = results?.reduce((acc, item) => {
           const categoryUid = item?.category?.uid;
@@ -222,6 +224,8 @@ export default function TabComponent() {
         }, {});
 
         setCategories(grouped);
+
+        console.log("grouped", grouped);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -230,16 +234,16 @@ export default function TabComponent() {
     fetchData();
   }, [refreshSub]);
 
-  const handleDragEnd = (result) => {
-    if (!result.destination) return;
-    const { source, destination } = result;
-    const updatedCategories = { ...categories };
-    const sourceCategory = updatedCategories[source.droppableId];
-    const destinationCategory = updatedCategories[destination.droppableId];
-    const [movedItem] = sourceCategory.items.splice(source.index, 1);
-    destinationCategory.items.splice(destination.index, 0, movedItem);
-    setCategories(updatedCategories);
-  };
+  // const handleDragEnd = (result) => {
+  //   if (!result.destination) return;
+  //   const { source, destination } = result;
+  //   const updatedCategories = { ...categories };
+  //   const sourceCategory = updatedCategories[source.droppableId];
+  //   const destinationCategory = updatedCategories[destination.droppableId];
+  //   const [movedItem] = sourceCategory.items.splice(source.index, 1);
+  //   destinationCategory.items.splice(destination.index, 0, movedItem);
+  //   setCategories(updatedCategories);
+  // };
 
   useEffect(() => {
     const fetchFields = async () => {
@@ -398,7 +402,7 @@ export default function TabComponent() {
         <DragAndDropOrdering
           sub={items[activeIndex]?.uid}
           categories={convertFilteredTitlesToCategories(filteredTitles)} // Pass the filteredTitles
-          handleDragEnd={handleDragEnd}
+          // handleDragEnd={handleDragEnd}
           refreshSub={refreshTitle}
           setRefreshSub={setRefreshTitle}
           url="tests/mng-title"
@@ -408,7 +412,7 @@ export default function TabComponent() {
           url="tests/mng-field"
           sub={items[activeIndex]?.uid}
           categories={fields}
-          handleDragEnd={handleDragEnd}
+          // handleDragEnd={handleDragEnd}
           refreshSub={refreshSub}
           setRefreshSub={setRefreshSub}
         />
@@ -421,7 +425,7 @@ export default function TabComponent() {
           url="tests/mng-sub-category"
           sub={items[activeIndex]?.uid}
           categories={categories}
-          handleDragEnd={handleDragEnd}
+          // handleDragEnd={handleDragEnd}
           refreshSub={refreshSub}
           setRefreshSub={setRefreshSub}
         />

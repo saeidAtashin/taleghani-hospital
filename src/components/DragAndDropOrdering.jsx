@@ -40,8 +40,8 @@ const DragAndDropOrdering = ({
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
       {categories &&
-        Object.entries(categories).map(([categoryUid, categoryData]) => (
-          <Fragment key={categoryData}>
+        Object.entries(categories).map(([categoryUid, categoryData], idx) => (
+          <Fragment key={idx}>
             {categoryUid === sub && (
               <div
                 key={categoryUid}
