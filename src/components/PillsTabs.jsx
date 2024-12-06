@@ -163,9 +163,19 @@ const PillsTabs = () => {
 
     setcountOccurrencesDirectTitle(countOccurrences);
 
+    const orderings = sub?.title?.flatMap((title) =>
+      title?.field?.map((field) => field?.ordering)
+    );
+
+    const countOccurrencesss = orderings?.reduce((acc, num) => {
+      acc[num] = (acc[num] || 0) + 1;
+      return acc;
+    }, {});
+
+    setcountOccurrences(countOccurrencesss)
     settitleOfAll(sub?.title);
-    const orderings = sub?.title?.[0]?.field?.map((field) => field?.ordering);
-    setorderstyletitle(orderings); // This will log an array of 'ordering' values
+    // const orderings = sub?.title?.[0]?.field?.map((field) => field?.ordering);
+    setorderstyletitle(countOccurrencesss); // This will log an array of 'ordering' values
   };
 
   useEffect(() => {
@@ -419,7 +429,7 @@ const PillsTabs = () => {
                                     countOccurrences[titleData?.ordering]
                                       ? 12 /
                                         countOccurrences[titleData?.ordering]
-                                      : countOccurrences[titleData?.ordering]
+                                      : titleData?.ordering
                                   } mb-4`}
                                 >
                                   <label htmlFor={titleData?.uid}>
