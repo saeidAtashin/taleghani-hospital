@@ -50,7 +50,7 @@ const PillsTabs = () => {
           `https://cancerreg.ir/api/v1/tests/category-details/${activeTab}`
         );
 
-        settitleDirectToCategList(response?.data?.data?.field?.[0]);
+        settitleDirectToCategList(response?.data?.data?.field);
         console.log("titleOfAll", response?.data?.data?.title?.[0]);
         settitleOfAll(response?.data?.data?.title?.[0]);
       } catch (error) {
@@ -113,6 +113,7 @@ const PillsTabs = () => {
     }
   };
 
+  console.log("titleDirectToCategList", titleDirectToCategList);
   return (
     <Tab.Container activeKey={activeTab} onSelect={handleSelect}>
       <Nav variant="pills" className="mb-3">
@@ -129,7 +130,6 @@ const PillsTabs = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="p-4 mb-5">
           <h1>Dynamic Form</h1>
-
           {/* Date Field */}
           <div className="d-flex flex-column">
             <label className="label" htmlFor="date">
@@ -154,10 +154,9 @@ const PillsTabs = () => {
               <div className="invalid-feedback">{errors.date.message}</div>
             )}
           </div>
-
           {/* Dynamic Dropdowns or Inputs */}
           {titleDirectToCategList?.length > 0 && (
-            <div>
+            <div className="d-flex gap-4">
               {titleDirectToCategList?.map((titleDirectToCat) => (
                 <div
                   className="flex flex-column gap-2 mt-4"
@@ -203,7 +202,6 @@ const PillsTabs = () => {
               ))}
             </div>
           )}
-
           <div className="">
             {titleOfAll && (
               <div class="">
