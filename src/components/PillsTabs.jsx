@@ -50,13 +50,17 @@ const PillsTabs = () => {
           `https://cancerreg.ir/api/v1/tests/category-details/${activeTab}`
         );
 
-        settitleDirectToCategList(response?.data?.data?.field);
-        console.log(
-          "subCategory subCategory",
-          response?.data?.data?.sub_category
-        );
-        setsubCategory(response?.data?.data?.sub_category);
-        settitleOfAll(response?.data?.data?.title);
+        if (response?.data?.data?.sub_category?.length > 0) {
+          setsubCategory(response?.data?.data?.sub_category ?? []);
+          settitleDirectToCategList(
+            response?.data?.data?.sub_category?.[0]?.field ?? []
+          );
+          settitleOfAll([response?.data?.data?.sub_category?.[0]?.title ?? ""]);
+        } else {
+          settitleDirectToCategList(response?.data?.data?.field);
+          setsubCategory(response?.data?.data?.sub_category);
+          settitleOfAll(response?.data?.data?.title);
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -355,22 +359,16 @@ const PillsTabs = () => {
             </div>
           )}
 
-          <div>
+          <div className="my-3 d-flex gap-2 ">
             {subCategory?.length > 0 &&
               subCategory.map((subs, index) => (
-                <div key={index}>
-                  <h5>{subs.name}</h5>{" "}
-                  {/* Display the name of the sub-category */}
-                  <div className="card flex justify-content-center">
-                    <SelectButton
-                      value={value} // Selected value(s)
-                      onChange={(e) => handleSelectSub(e, subs.field)} // Handle value change
-                      optionLabel="name" // Display the field name as the option label
-                      options={subs.field} // Pass the field options for each sub-category
-                      multiple // Enable multiple selection
-                    />
-                  </div>
-                  {/* Display selected options and their orderings */}
+                <div key={index} className="my-3 ">
+                  <span
+                    className={`px-3 py-2 rounded-3 cursor-pointer bg-warning`}
+                  >
+                    {subs.name}
+                  </span>{" "}
+                  <div className=""></div>
                   <div className="selected-ordering">
                     {selectedOrdering?.length > 0 &&
                       selectedOrdering.map((ordering, index) => (
