@@ -331,13 +331,16 @@ export default function TabComponent() {
     type,
     ordering,
     selectedTitle,
-    selectedSubCategory
+    selectedSubCategory,
+    checked
   ) => {
+    console.log("checked", checked);
     try {
       let payload = {
         name,
         type,
         ordering,
+        checked,
       };
 
       const categoryUid = items[activeIndex]?.uid; // Adjust based on TabMenu index offset
@@ -347,6 +350,8 @@ export default function TabComponent() {
         payload.title_uid = selectedTitle;
       } else if (selectedSubCategory) {
         payload.sub_category_uid = selectedSubCategory;
+      } else if (checked) {
+        payload.titled = checked;
       } else if (categoryUid) {
         payload.category_uid = categoryUid;
       } else {

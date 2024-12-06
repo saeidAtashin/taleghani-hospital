@@ -11,6 +11,7 @@ const PillsTabs = () => {
   const [tabsNew, settabsNew] = useState();
   const [tabsNewTitle, settabsNewTitle] = useState();
   const [titleDirectToCategList, settitleDirectToCategList] = useState();
+  const [titleOfAll, settitleOfAll] = useState();
   const [apiResponse, setApiResponse] = useState([]);
   const [activeTab, setActiveTab] = useState("");
   const [date, setDate] = useState(null);
@@ -49,8 +50,9 @@ const PillsTabs = () => {
           `https://cancerreg.ir/api/v1/tests/category-details/${activeTab}`
         );
 
-        settitleDirectToCategList(response?.data?.data?.field);
-        settabsNewTitle(response?.data?.data?.title);
+        settitleDirectToCategList(response?.data?.data?.field?.[0]);
+        console.log("titleOfAll", response?.data?.data?.title?.[0]);
+        settitleOfAll(response?.data?.data?.title?.[0]);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -97,7 +99,7 @@ const PillsTabs = () => {
     };
 
     // Submit or log the data
-    console.log("Form Data with Fields and Extra Info:", formDataWithExtraData);
+    // console.log("Form Data with Fields and Extra Info:", formDataWithExtraData);
 
     try {
       const response = await axios.post(
@@ -154,54 +156,108 @@ const PillsTabs = () => {
           </div>
 
           {/* Dynamic Dropdowns or Inputs */}
-          <div>
-            {titleDirectToCategList?.map((titleDirectToCat) => (
-              <div
-                className="flex flex-column gap-2 mt-4"
-                key={titleDirectToCat?.uid}
-              >
-                <label htmlFor={titleDirectToCat?.uid}>
-                  {titleDirectToCat?.name}
-                </label>
-                <div className="mt-2">
-                  {titleDirectToCat?.options?.length > 0 ? (
-                    <Controller
-                      name={titleDirectToCat?.uid}
-                      control={control}
-                      render={({ field }) => (
-                        <DropD
-                          titleDirectToCat={titleDirectToCat}
-                          selectedValue={field.value} // Pass field value
-                          setSelectedValue={(value) => field.onChange(value)} // Use react-hook-form's setter
+          {titleDirectToCategList?.length > 0 && (
+            <div>
+              {titleDirectToCategList?.map((titleDirectToCat) => (
+                <div
+                  className="flex flex-column gap-2 mt-4"
+                  key={titleDirectToCat?.uid}
+                >
+                  <label htmlFor={titleDirectToCat?.uid}>
+                    {titleDirectToCat?.name}
+                  </label>
+                  <div className="mt-2">
+                    {titleDirectToCat?.options?.length > 0 ? (
+                      <Controller
+                        name={titleDirectToCat?.uid}
+                        control={control}
+                        render={({ field }) => (
+                          <DropD
+                            titleDirectToCat={titleDirectToCat}
+                            selectedValue={field.value} // Pass field value
+                            setSelectedValue={(value) => field.onChange(value)} // Use react-hook-form's setter
+                          />
+                        )}
+                      />
+                    ) : (
+                      <Controller
+                        name={titleDirectToCat?.uid}
+                        control={control}
+                        render={({ field }) => (
+                          <InputText
+                            {...field} // Spread react-hook-form's field props
+                            keyfilter={
+                              titleDirectToCat?.type === "CHAR"
+                                ? ""
+                                : titleDirectToCat?.type === "FLOAT" ||
+                                  titleDirectToCat?.type === "PERCENTAGE"
+                                ? "int"
+                                : ""
+                            }
+                          />
+                        )}
+                      />
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="">
+            {titleOfAll && (
+              <div class="">
+                <h3 className="my-4">{titleOfAll?.name} </h3>
+                {/* create here a form that map on titleOfAll.field and if type is   */}
+                <div className="d-flex flex-wrap">
+                  {titleOfAll?.field?.map((titleData) => (
+                    <div class="d-flex flex-wrap mb-4 ms-4 flex-column">
+                      <label htmlFor={titleData?.uid}>{titleData?.name}</label>
+                      <div>{titleData?.ordering}</div>
+                      {/* <div className="mt-2 my-4 d-flex bg-dark"> */}
+                      {titleData?.options?.length > 0 ? (
+                        <Controller
+                          name={titleData?.uid}
+                          control={control}
+                          render={({ field }) => (
+                            <DropD
+                              titleData={titleData}
+                              selectedValue={field.value} // Pass field value
+                              setSelectedValue={(value) =>
+                                field.onChange(value)
+                              } // Use react-hook-form's setter
+                            />
+                          )}
+                        />
+                      ) : (
+                        <Controller
+                          name={titleData?.uid}
+                          control={control}
+                          render={({ field }) => (
+                            <InputText
+                              {...field} // Spread react-hook-form's field props
+                              keyfilter={
+                                titleData?.type === "CHAR"
+                                  ? ""
+                                  : titleData?.type === "FLOAT" ||
+                                    titleData?.type === "PERCENTAGE"
+                                  ? "int"
+                                  : ""
+                              }
+                              placeholder={`${titleData?.name} را وارد نمایید`}
+                            />
+                          )}
                         />
                       )}
-                    />
-                  ) : (
-                    <Controller
-                      name={titleDirectToCat?.uid}
-                      control={control}
-                      render={({ field }) => (
-                        <InputText
-                          {...field} // Spread react-hook-form's field props
-                          keyfilter={
-                            titleDirectToCat?.type === "CHAR"
-                              ? ""
-                              : titleDirectToCat?.type === "FLOAT" ||
-                                titleDirectToCat?.type === "PERCENTAGE"
-                              ? "int"
-                              : ""
-                          }
-                        />
-                      )}
-                    />
-                  )}
+                      {/* </div> */}
+                    </div>
+                  ))}
                 </div>
               </div>
-            ))}
+            )}
           </div>
-
           {/* Submit Button */}
-          <button type="submit" className="p-button p-component">
+          <button type="submit" className="p-button p-component mt-5">
             Submit
           </button>
         </div>

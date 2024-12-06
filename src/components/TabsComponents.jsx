@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import TestOptionForm from "./TestOptionForm";
 import { toast } from "react-toastify";
+import { InputSwitch } from "primereact/inputswitch";
 
 const TabsComponents = ({
   onSaveChanges,
@@ -25,6 +26,7 @@ const TabsComponents = ({
   const [nametitle, setNametitle] = useState("");
   const [selectedType, setSelectedType] = useState("");
   const [orderingtitle, setOrderingtitle] = useState(0);
+  const [checked, setChecked] = useState(false);
 
   return (
     <div className="w-100 shadow-lg">
@@ -190,7 +192,8 @@ const TabsComponents = ({
                       selectedType,
                       orderingtitle,
                       selectedtitle,
-                      selectedCategory2
+                      selectedCategory2,
+                      checked
                     );
                     setNametitle("");
                     // setSelectedtitle(""); // Reset the selected category after titlemission
@@ -289,6 +292,16 @@ const TabsComponents = ({
                     className="rounded-2"
                     // value={orderingtitle}
                     onChange={(e) => setOrderingtitle(e.target.value)}
+                  />
+                </div>
+                <div className="">
+                  {/* <label htmlFor="orderingtitle">ترتیب</label> */}
+                  <InputSwitch
+                    checked={checked}
+                    onChange={(e) => {
+                      console.log("checked", checked);
+                      setChecked(e.value);
+                    }}
                   />
                 </div>
               </div>
