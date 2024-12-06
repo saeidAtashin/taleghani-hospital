@@ -6,6 +6,8 @@ import { InputText } from "primereact/inputtext";
 import DropD from "./DropD";
 import { Controller, useForm } from "react-hook-form";
 import { DatePicker } from "zaman";
+import { IconField } from "primereact/iconfield";
+import { InputIcon } from "primereact/inputicon";
 
 const PillsTabs = () => {
   const [tabsNew, settabsNew] = useState();
@@ -166,7 +168,10 @@ const PillsTabs = () => {
                   }`}
                   key={titleDirectToCat?.uid}
                 >
-                  <label htmlFor={titleDirectToCat?.uid} className="my-auto w-25">
+                  <label
+                    htmlFor={titleDirectToCat?.uid}
+                    className="my-auto w-25"
+                  >
                     {titleDirectToCat?.name}
                   </label>
                   <div className="mt-2">
@@ -186,19 +191,38 @@ const PillsTabs = () => {
                       <Controller
                         name={titleDirectToCat?.uid}
                         control={control}
-                        render={({ field }) => (
-                          <InputText
-                            {...field} // Spread react-hook-form's field props
-                            keyfilter={
-                              titleDirectToCat?.type === "CHAR"
-                                ? ""
-                                : titleDirectToCat?.type === "FLOAT" ||
-                                  titleDirectToCat?.type === "PERCENTAGE"
-                                ? "int"
-                                : ""
-                            }
-                          />
-                        )}
+                        render={({ field }) =>
+                          titleDirectToCat?.type === "PERCENTAGE" ? (
+                            <IconField iconPosition="left">
+                              <InputIcon className="pi pi-percentage">
+                                {" "}
+                              </InputIcon>
+                              <InputText
+                                {...field} // Spread react-hook-form's field props
+                                keyfilter={
+                                  titleDirectToCat?.type === "CHAR"
+                                    ? ""
+                                    : titleDirectToCat?.type === "FLOAT" ||
+                                      titleDirectToCat?.type === "PERCENTAGE"
+                                    ? "int"
+                                    : ""
+                                }
+                              />{" "}
+                            </IconField>
+                          ) : (
+                            <InputText
+                              {...field} // Spread react-hook-form's field props
+                              keyfilter={
+                                titleDirectToCat?.type === "CHAR"
+                                  ? ""
+                                  : titleDirectToCat?.type === "FLOAT" ||
+                                    titleDirectToCat?.type === "PERCENTAGE"
+                                  ? "int"
+                                  : ""
+                              }
+                            />
+                          )
+                        }
                       />
                     )}
                   </div>
