@@ -25,6 +25,8 @@ const PillsTabs = () => {
   const [showAdditionalInput, setShowAdditionalInput] = useState(false);
   const [additionalInputValue, setAdditionalInputValue] = useState("");
   const [selectedName, setSelectedName] = useState(""); // Track the name of selected dropdown item
+  const [immunofixationUid, setimmunofixationUid] = useState(""); // Track the name of selected dropdown item
+  const [parentArray, setParentArray] = useState([]); // Track array of key-value pairs
 
   const {
     control,
@@ -104,7 +106,6 @@ const PillsTabs = () => {
   };
 
   const onSubmit = async (data) => {
-    console.log("data", data);
     const additionalData = {
       date: data?.date,
       category_uid: activeTab,
@@ -120,14 +121,31 @@ const PillsTabs = () => {
       })
       .map((key) => {
         const value = data[key];
+        console.log("immunofixationUid", immunofixationUid);
+        console.log("value.selectedUid", value.selectedUid);
+        console.log("data[key]", data[key]);
+
+        if (key === immunofixationUid) {
+          return undefined;
+        }
+
         return {
           uid: key,
           value: Array.isArray(value) ? [value] : value,
         };
-      });
+      })
+      .filter((field) => field !== undefined); // Remove undefined values
+
+    const extendedFields = [
+      ...fields,
+      ...parentArray.map((item) => {
+        const [uid, value] = Object.entries(item)[0]; // Extract uid and value from each object in parentArray
+        return { uid, value };
+      }),
+    ];
 
     const formDataWithExtraData = {
-      fields: fields,
+      fields: extendedFields,
       ...additionalData,
     };
 
@@ -181,11 +199,11 @@ const PillsTabs = () => {
     }
   }, [activeTab, tabsNew]);
 
-  console.log("titleOfAll", titleOfAll?.[0]?.field);
-  console.log("countOccurrences", countOccurrences);
-  console.log("orderstyletitle", orderstyletitle);
-  console.log("countOccurrencesDirectTitle", countOccurrencesDirectTitle);
-
+  // console.log("titleOfAll", titleOfAll?.[0]?.field);
+  // console.log("countOccurrences", countOccurrences);
+  // console.log("orderstyletitle", orderstyletitle);
+  // console.log("countOccurrencesDirectTitle", countOccurrencesDirectTitle);
+  console.log("parentArray", parentArray);
   return (
     <Tab.Container activeKey={activeTab} onSelect={handleSelect}>
       <Nav variant="pills" className="mb-3">
@@ -312,7 +330,28 @@ const PillsTabs = () => {
                                         field.onChange(value); // Store uid in the form state
                                         setSelectedName(name); // Set name for display purposes
                                         setShowAdditionalInput(true); // Show additional input when a value is selected
-                                        setAdditionalInputValue(name); // Set the initial value of additional input to the name
+                                        setAdditionalInputValue(""); // Clear input initially
+                                        setimmunofixationUid(
+                                          titleDirectToCat?.uid
+                                        );
+                                        console.log(
+                                          "naaaaaaaaaaaaaa",
+                                          titleDirectToCat?.uid
+                                        );
+                                        // Add or update the entry in parentArray when a new dropdown item is selected
+                                        setParentArray((prevArray) => {
+                                          // Remove existing entry with the same uid if present
+                                          const updatedArray = prevArray.filter(
+                                            (item) =>
+                                              !item.hasOwnProperty(value)
+                                          );
+
+                                          // Add the new entry
+                                          return [
+                                            ...updatedArray,
+                                            { [value]: "" },
+                                          ];
+                                        });
                                       }}
                                     />
 
@@ -322,18 +361,26 @@ const PillsTabs = () => {
                                         <label
                                           htmlFor={`additional-input-${titleDirectToCat?.uid}`}
                                         >
-                                          {additionalInputValue}
+                                          {selectedName}
                                         </label>
                                         <input
                                           type="text"
                                           id={`additional-input-${titleDirectToCat?.uid}`}
                                           className="form-control mt-2"
                                           value={additionalInputValue}
-                                          onChange={(e) =>
-                                            setAdditionalInputValue(
-                                              e.target.value
-                                            )
-                                          }
+                                          onChange={(e) => {
+                                            const newValue = e.target.value;
+                                            setAdditionalInputValue(newValue);
+
+                                            // Update the corresponding entry in parentArray with the new input value
+                                            setParentArray((prevArray) =>
+                                              prevArray.map((item) =>
+                                                item.hasOwnProperty(field.value)
+                                                  ? { [field.value]: newValue }
+                                                  : item
+                                              )
+                                            );
+                                          }}
                                           placeholder={
                                             selectedName ||
                                             "Enter additional information"
@@ -405,7 +452,7 @@ const PillsTabs = () => {
                                     className="w-100"
                                     keyfilter={
                                       titleDirectToCat?.type === "CHAR"
-                                        ? ""
+                                        ? "char"
                                         : "decimal" // Allow only numeric values for FLOAT and PERCENTAGE
                                     }
                                     onChange={handleValueChange} // Custom value handling for FLOAT and CHAR
@@ -517,7 +564,7 @@ const PillsTabs = () => {
                                             className="w-100"
                                             keyfilter={
                                               titleData?.type === "CHAR"
-                                                ? ""
+                                                ? "char"
                                                 : titleData?.type === "FLOAT" ||
                                                   titleData?.type ===
                                                     "PERCENTAGE"
