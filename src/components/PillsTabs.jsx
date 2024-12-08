@@ -16,17 +16,17 @@ const PillsTabs = () => {
   const [subCategory, setsubCategory] = useState();
   const [activeTab, setActiveTab] = useState("");
   const [date, setDate] = useState(null);
-  const [activeSubCategory, setActiveSubCategory] = useState(null); // Track the selected sub-category
-  const [orderstyletitle, setorderstyletitle] = useState([]); // Track the selected sub-category
-  const [countOccurrences, setcountOccurrences] = useState([]); // Track the selected sub-category
+  const [activeSubCategory, setActiveSubCategory] = useState(null);
+  const [orderstyletitle, setorderstyletitle] = useState([]);
+  const [countOccurrences, setcountOccurrences] = useState([]);
   const [countOccurrencesDirectTitle, setcountOccurrencesDirectTitle] =
     useState([]);
   const [activeSubCategoryIndex, setActiveSubCategoryIndex] = useState(null);
   const [showAdditionalInput, setShowAdditionalInput] = useState(false);
   const [additionalInputValue, setAdditionalInputValue] = useState("");
-  const [selectedName, setSelectedName] = useState(""); // Track the name of selected dropdown item
-  const [immunofixationUid, setimmunofixationUid] = useState(""); // Track the name of selected dropdown item
-  const [parentArray, setParentArray] = useState([]); // Track array of key-value pairs
+  const [selectedName, setSelectedName] = useState("");
+  const [immunofixationUid, setimmunofixationUid] = useState("");
+  const [parentArray, setParentArray] = useState([]);
 
   const Exexex = ["IgA", "IgM", "IgG", "IgD", "Other"];
 
@@ -37,7 +37,7 @@ const PillsTabs = () => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      date: date, // Set the default value for date
+      date: date,
     },
   });
 
@@ -136,12 +136,12 @@ const PillsTabs = () => {
           value: Array.isArray(value) ? [value] : value,
         };
       })
-      .filter((field) => field !== undefined); // Remove undefined values
+      .filter((field) => field !== undefined);
 
     const extendedFields = [
       ...fields,
       ...parentArray.map((item) => {
-        const [uid, value] = Object.entries(item)[0]; // Extract uid and value from each object in parentArray
+        const [uid, value] = Object.entries(item)[0];
         return { uid, value };
       }),
     ];
@@ -196,16 +196,11 @@ const PillsTabs = () => {
       const currentTab = tabsNew.find((tab) => tab.uid === activeTab);
 
       if (currentTab && currentTab.sub_category?.length > 0) {
-        handleSubCategoryClick(currentTab.sub_category[0], 0); // Pass the subcategory and its index (0 in this case)
+        handleSubCategoryClick(currentTab.sub_category[0], 0);
       }
     }
   }, [activeTab, tabsNew]);
 
-  // console.log("titleOfAll", titleOfAll?.[0]?.field);
-  // console.log("countOccurrences", countOccurrences);
-  // console.log("orderstyletitle", orderstyletitle);
-  // console.log("countOccurrencesDirectTitle", countOccurrencesDirectTitle);
-  // console.log("parentArray", parentArray);
   return (
     <Tab.Container activeKey={activeTab} onSelect={handleSelect}>
       <Nav variant="pills" className="mb-3">
@@ -275,14 +270,12 @@ const PillsTabs = () => {
             )}
           </div>
 
-          {/* Dynamic Dropdowns or Inputs */}
           <div className="">
             {titleDirectToCategList?.length > 0 && (
               <div className="row  d-flex">
                 {titleDirectToCategList
                   ?.sort((a, b) => (a?.ordering || 0) - (b?.ordering || 0))
                   ?.filter((titleDirectToCat) => {
-                    // Remove "test1", "test2", "test3" unless someVariable matches the name
                     const excludeNames = Exexex.filter(
                       (name) => name !== selectedName
                     );
@@ -351,22 +344,6 @@ const PillsTabs = () => {
                                           titleDirectToCat?.uid
                                         );
 
-                                        //   if (Exexex.includes(titleDirectToCat?.name) && Exexex.includes(selectedName)) {
-                                        //     // Remove the selectedName from the array
-                                        //     const index = Exexex.indexOf(selectedName);
-                                        //     if (index !== -1) {
-                                        //       Exexex.splice(index, 1);
-                                        //     }
-                                        // }
-                                        console.log(
-                                          "Exexex.includes",
-                                          Exexex.includes(selectedName)
-                                        );
-                                        console.log(
-                                          "titleDirectToCat?.name",
-                                          titleDirectToCat?.name
-                                        );
-
                                         setParentArray((prevArray) => {
                                           const updatedArray = prevArray.filter(
                                             (item) =>
@@ -406,13 +383,13 @@ const PillsTabs = () => {
                                       titleDirectToCat?.type === "PERCENTAGE"
                                     ) {
                                       value = parseFloat(value);
-                                      if (isNaN(value)) value = ""; // If the value isn't a number, reset to empty
+                                      if (isNaN(value)) value = "";
                                     } else if (
                                       titleDirectToCat?.type === "FLOAT"
                                     ) {
                                       value = parseFloat(value);
 
-                                      if (isNaN(value)) value = ""; // If the value isn't a number, reset to empty
+                                      if (isNaN(value)) value = "";
                                     } else if (
                                       titleDirectToCat?.type === "CHAR"
                                     ) {
@@ -433,7 +410,7 @@ const PillsTabs = () => {
                                         className="w-100"
                                         {...field}
                                         keyfilter="num"
-                                        onChange={handleValueChange} // Custom value handling for PERCENTAGE
+                                        onChange={handleValueChange}
                                       />
                                     </IconField>
                                   ) : (
@@ -448,9 +425,9 @@ const PillsTabs = () => {
                                       keyfilter={
                                         titleDirectToCat?.type === "CHAR"
                                           ? "char"
-                                          : "decimal" // Allow only numeric values for FLOAT and PERCENTAGE
+                                          : "decimal"
                                       }
-                                      onChange={handleValueChange} // Custom value handling for FLOAT and CHAR
+                                      onChange={handleValueChange}
                                     />
                                   );
                                 }}
@@ -470,11 +447,9 @@ const PillsTabs = () => {
                 <div key={idx} className="">
                   <h3 className="my-4">{title?.name}</h3>
 
-                  {/* Group by 'ordering' */}
                   <div className="">
-                    {/* Group fields by their ordering */}
                     {title?.field
-                      ?.sort((a, b) => (a?.ordering || 0) - (b?.ordering || 0)) // Sort by ordering
+                      ?.sort((a, b) => (a?.ordering || 0) - (b?.ordering || 0))
                       ?.reduce((acc, titleData) => {
                         const { ordering } = titleData;
                         if (!acc[ordering]) {
@@ -482,7 +457,7 @@ const PillsTabs = () => {
                         }
                         acc[ordering].push(titleData);
                         return acc;
-                      }, {}) // Now we have a grouped object
+                      }, {})
                       ? Object.keys(
                           title?.field?.reduce((acc, titleData) => {
                             const { ordering } = titleData;
@@ -501,7 +476,6 @@ const PillsTabs = () => {
                               )
                               .map((titleData) => (
                                 <div
-                                  // className={`col-md-3 mb-4`}
                                   key={titleData?.uid}
                                   className={` col-md-${
                                     countOccurrences[titleData?.ordering]
@@ -513,7 +487,6 @@ const PillsTabs = () => {
                                   <label htmlFor={titleData?.uid}>
                                     {titleData?.name}
                                   </label>
-                                  {/* <div>{titleData?.ordering}</div> */}
                                   {titleData?.options?.length > 0 ? (
                                     <Controller
                                       name={titleData?.uid}
@@ -521,10 +494,10 @@ const PillsTabs = () => {
                                       render={({ field }) => (
                                         <DropD
                                           titleData={titleData}
-                                          selectedValue={field.value} // Pass field value
+                                          selectedValue={field.value}
                                           setSelectedValue={(value) =>
                                             field.onChange(value)
-                                          } // Use react-hook-form's setter
+                                          }
                                         />
                                       )}
                                     />
@@ -533,7 +506,6 @@ const PillsTabs = () => {
                                       name={titleData?.uid}
                                       control={control}
                                       render={({ field }) => {
-                                        // Handle the formatting before the value is passed to react-hook-form
                                         const handleValueChange = (e) => {
                                           let value = e.target.value;
 
@@ -549,14 +521,13 @@ const PillsTabs = () => {
                                             value = value.toString();
                                           }
 
-                                          // Update the field value using react-hook-form's onChange handler
                                           field.onChange(value);
                                         };
 
                                         return (
                                           <InputText
-                                            {...field} // Spread react-hook-form's field props
-                                            onChange={handleValueChange} // Custom change handler
+                                            {...field}
+                                            onChange={handleValueChange}
                                             className="w-100"
                                             keyfilter={
                                               titleData?.type === "CHAR"
@@ -564,7 +535,7 @@ const PillsTabs = () => {
                                                 : titleData?.type === "FLOAT" ||
                                                   titleData?.type ===
                                                     "PERCENTAGE"
-                                                ? "decimal" // Allow only numbers for FLOAT and PERCENTAGE
+                                                ? "decimal"
                                                 : ""
                                             }
                                             placeholder={`${titleData?.name} را وارد نمایید`}
