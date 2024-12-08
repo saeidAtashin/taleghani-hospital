@@ -322,31 +322,24 @@ const PillsTabs = () => {
                               render={({ field }) =>
                                 titleDirectToCat?.name === "Immunofixation" ? (
                                   <>
-                                    {/* Conditionally show DropD component */}
                                     <DropD
                                       titleDirectToCat={titleDirectToCat}
                                       selectedValue={field.value}
                                       setSelectedValue={(value, name) => {
-                                        field.onChange(value); // Store uid in the form state
-                                        setSelectedName(name); // Set name for display purposes
-                                        setShowAdditionalInput(true); // Show additional input when a value is selected
-                                        setAdditionalInputValue(""); // Clear input initially
+                                        field.onChange(value);
+                                        setSelectedName(name);
+                                        setShowAdditionalInput(true);
+                                        setAdditionalInputValue("");
                                         setimmunofixationUid(
                                           titleDirectToCat?.uid
                                         );
-                                        console.log(
-                                          "naaaaaaaaaaaaaa",
-                                          titleDirectToCat?.uid
-                                        );
-                                        // Add or update the entry in parentArray when a new dropdown item is selected
+
                                         setParentArray((prevArray) => {
-                                          // Remove existing entry with the same uid if present
                                           const updatedArray = prevArray.filter(
                                             (item) =>
                                               !item.hasOwnProperty(value)
                                           );
 
-                                          // Add the new entry
                                           return [
                                             ...updatedArray,
                                             { [value]: "" },
@@ -354,40 +347,6 @@ const PillsTabs = () => {
                                         });
                                       }}
                                     />
-
-                                    {/* Additional input shown only if a dropdown value has been selected */}
-                                    {showAdditionalInput && (
-                                      <div className="mt-3">
-                                        <label
-                                          htmlFor={`additional-input-${titleDirectToCat?.uid}`}
-                                        >
-                                          {selectedName}
-                                        </label>
-                                        <input
-                                          type="text"
-                                          id={`additional-input-${titleDirectToCat?.uid}`}
-                                          className="form-control mt-2"
-                                          value={additionalInputValue}
-                                          onChange={(e) => {
-                                            const newValue = e.target.value;
-                                            setAdditionalInputValue(newValue);
-
-                                            // Update the corresponding entry in parentArray with the new input value
-                                            setParentArray((prevArray) =>
-                                              prevArray.map((item) =>
-                                                item.hasOwnProperty(field.value)
-                                                  ? { [field.value]: newValue }
-                                                  : item
-                                              )
-                                            );
-                                          }}
-                                          placeholder={
-                                            selectedName ||
-                                            "Enter additional information"
-                                          }
-                                        />
-                                      </div>
-                                    )}
                                   </>
                                 ) : (
                                   <DropD
