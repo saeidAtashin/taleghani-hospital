@@ -28,7 +28,7 @@ const PillsTabs = () => {
   const [immunofixationUid, setimmunofixationUid] = useState(""); // Track the name of selected dropdown item
   const [parentArray, setParentArray] = useState([]); // Track array of key-value pairs
 
-  const Exexex = ["IgA", "IgM"];
+  const Exexex = ["IgA", "IgM", "IgG", "IgD", "Other"];
 
   const {
     control,
@@ -278,12 +278,12 @@ const PillsTabs = () => {
           {/* Dynamic Dropdowns or Inputs */}
           <div className="">
             {titleDirectToCategList?.length > 0 && (
-              <div className="row">
+              <div className="row  d-flex">
                 {titleDirectToCategList
                   ?.sort((a, b) => (a?.ordering || 0) - (b?.ordering || 0))
                   ?.filter((titleDirectToCat) => {
                     // Remove "test1", "test2", "test3" unless someVariable matches the name
-                    const excludeNames = ["IgA", "IgM", "test3"].filter(
+                    const excludeNames = Exexex.filter(
                       (name) => name !== selectedName
                     );
                     return !excludeNames.includes(titleDirectToCat?.name);
@@ -292,18 +292,24 @@ const PillsTabs = () => {
                     // col
                     <div
                       className={` ${
+                        titleDirectToCat?.name === "Immunofixation"
+                          ? "flex-grow-1"
+                          : ""
+                      } ${
                         titleDirectToCat?.titled
                           ? ""
                           : `col-md-${
                               titleDirectToCat?.name === "Immunofixation"
-                                ? 6
+                                ? 2
                                 : countOccurrencesDirectTitle[
                                     titleDirectToCat?.ordering
                                   ]
-                                ? 12 /
-                                  countOccurrencesDirectTitle[
-                                    titleDirectToCat?.ordering
-                                  ]
+                                ? Math.ceil(
+                                    12 /
+                                      countOccurrencesDirectTitle[
+                                        titleDirectToCat?.ordering
+                                      ]
+                                  )
                                 : 12
                             }`
                       }`}
@@ -590,6 +596,3 @@ const PillsTabs = () => {
 };
 
 export default PillsTabs;
-
-// ( titleDirectToCat?.name === "IgA" && selectedName === "IgA")
-// in this code, I want that titleDirectToCat?.name === "IgA" check array of  "IgA" "IgB" and when selectedName is equal to any of array, remove it from array
