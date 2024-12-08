@@ -29,11 +29,11 @@ const PillsTabs = () => {
     useState([]);
   const [activeSubCategoryIndex, setActiveSubCategoryIndex] = useState(null);
   const [showAdditionalInput, setShowAdditionalInput] = useState(false);
+  const [isLoading, setisLoading] = useState(false);
   const [additionalInputValue, setAdditionalInputValue] = useState("");
   const [selectedName, setSelectedName] = useState("");
   const [immunofixationUid, setimmunofixationUid] = useState("");
   const [parentArray, setParentArray] = useState([]);
-
   const Exexex = ["IgA", "IgM", "IgG", "IgD", "Other"];
 
   const {
@@ -126,6 +126,7 @@ const PillsTabs = () => {
   };
 
   const onSubmit = async (data) => {
+    setisLoading(true);
     const additionalData = {
       date: data?.date,
       category_uid: activeTab,
@@ -166,15 +167,13 @@ const PillsTabs = () => {
       ...additionalData,
     };
 
-    console.log("getValues", getValues("date"));
-    console.log("date", date);
-
     try {
       const response = await axios.post(
         "https://cancerreg.ir/api/v1/tests/test/",
         formDataWithExtraData
       );
       if (response?.status >= 200 && response?.status < 400) {
+        setisLoading(false);
         toast.success("ثبت شد");
       }
       reset();
@@ -187,6 +186,8 @@ const PillsTabs = () => {
       setimmunofixationUid(undefined);
       setShowAdditionalInput(false);
     } catch (error) {
+      setisLoading(false);
+
       toast.warning(
         error?.response?.data?.errors?.[0]?.message
           ? error?.response?.data?.errors?.[0]?.message
@@ -225,18 +226,16 @@ const PillsTabs = () => {
     settitleOfAll(sub?.title);
     setorderstyletitle(countOccurrencesss);
 
+    // Resets only the date field
+    reset();
+    setParentArray([]);
+    setSelectedName(undefined);
+    setDate(undefined);
+    setValue("date", undefined); // Resets only the date field
 
-     // Resets only the date field
-     reset();
-     setParentArray([]);
-     setSelectedName(undefined);
-     setDate(undefined);
-     setValue("date", undefined); // Resets only the date field
-
-     setAdditionalInputValue(undefined);
-     setimmunofixationUid(undefined);
-     setShowAdditionalInput(false);
-
+    setAdditionalInputValue(undefined);
+    setimmunofixationUid(undefined);
+    setShowAdditionalInput(false);
   };
 
   useEffect(() => {
@@ -630,8 +629,20 @@ const PillsTabs = () => {
           <button
             type="submit"
             className="btn btn-primary mt-5 w-100 text-center"
+            disabled={isLoading} // Disable the button while loading
           >
-            تایید و ثبت نتایج
+            {isLoading ? (
+              <>
+                <span
+                  className="spinner-border spinner-border-sm me-2"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+                در حال بارگذاری...
+              </>
+            ) : (
+              "تایید و ثبت نتایج"
+            )}
           </button>
         </div>
       </form>
