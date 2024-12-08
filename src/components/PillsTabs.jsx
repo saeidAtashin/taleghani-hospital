@@ -5,9 +5,15 @@ import axios from "axios";
 import { InputText } from "primereact/inputtext";
 import DropD from "./DropD";
 import { Controller, useForm } from "react-hook-form";
-import { DatePicker } from "zaman";
+// import { DatePicker } from "zaman";
 import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
+import { toast } from "react-toastify";
+import "react-datepicker/dist/react-datepicker.css";
+// import DatePicker from "react-datepicker";
+import DatePicker, { DateObject } from "react-multi-date-picker";
+import persian from "react-date-object/calendars/persian";
+import persian_fa from "react-date-object/locales/persian_fa";
 
 const PillsTabs = () => {
   const [tabsNew, settabsNew] = useState();
@@ -34,10 +40,12 @@ const PillsTabs = () => {
     control,
     handleSubmit,
     reset,
+    getValues,
+    setValue,
     formState: { errors },
   } = useForm({
     defaultValues: {
-      date: date,
+      date: undefined,
     },
   });
 
@@ -105,6 +113,8 @@ const PillsTabs = () => {
 
   const handleSelect = (eventKey) => {
     setActiveTab(eventKey);
+    setDate(undefined); // Reset the date state when changing tabs
+    setValue("date", undefined); // Resets only the date field
   };
 
   const onSubmit = async (data) => {
@@ -123,9 +133,6 @@ const PillsTabs = () => {
       })
       .map((key) => {
         const value = data[key];
-        console.log("immunofixationUid", immunofixationUid);
-        console.log("value.selectedUid", value.selectedUid);
-        console.log("data[key]", data[key]);
 
         if (key === immunofixationUid) {
           return undefined;
@@ -151,14 +158,34 @@ const PillsTabs = () => {
       ...additionalData,
     };
 
+    console.log("getValues", getValues("date"));
+    console.log("date", date);
+
     try {
       const response = await axios.post(
         "https://cancerreg.ir/api/v1/tests/test/",
         formDataWithExtraData
       );
+      if (response?.status >= 200 && response?.status < 400) {
+        toast.success("ثبت شد");
+      }
       reset();
+      setParentArray([]);
+      setSelectedName(undefined);
+      setDate(undefined);
+      setValue("date", undefined); // Resets only the date field
+
+      setAdditionalInputValue(undefined);
+      setimmunofixationUid(undefined);
+      setShowAdditionalInput(false);
     } catch (error) {
-      console.error(error);
+      toast.warning(
+        error?.response?.data?.errors?.[0]?.message
+          ? error?.response?.data?.errors?.[0]?.message
+          : "نشد "
+      );
+
+      console.error(error?.response?.data?.errors?.[0]?.message);
     }
   };
 
@@ -253,18 +280,58 @@ const PillsTabs = () => {
             <Controller
               name="date"
               control={control}
-              render={({ field }) => (
-                <DatePicker
-                  value={field.value || date}
-                  onChange={(e) => {
-                    field.onChange(e.value.toLocaleDateString("en-CA"));
-                  }}
-                  round="x4"
-                  position="center"
-                  className="p-2"
-                />
-              )}
+              render={({ field }) => {
+                // Convert the stored Gregorian date to DateObject with Persian calendar for display
+                return (
+                  <Controller
+                    name="date"
+                    control={control}
+                    render={({ field }) => {
+                      // Convert stored Gregorian date to DateObject for Jalaali display
+                      const selectedDate = field.value
+                        ? new DateObject({
+                            date: new Date(field.value),
+                            calendar: persian,
+                          })
+                        : null;
+
+                      console.log("new Date(field.value)", selectedDate);
+
+                      return (
+                        <DatePicker
+                          {...field}
+                          value={selectedDate}
+                          onChange={(date) => {
+                            if (date) {
+                              // Convert Jalaali to Gregorian
+                              const gregorianDate = date
+                                .convert("gregorian")
+                                .toDate();
+                              // Format Gregorian date as "YYYY-MM-DD"
+                              const formattedDate = gregorianDate
+                                .toISOString()
+                                .split("T")[0];
+                              // Store formatted date
+                              field.onChange(formattedDate);
+                            } else {
+                              // Handle clearing the date
+                              field.onChange(null);
+                            }
+                          }}
+                          calendar={persian}
+                          locale={persian_fa}
+                          format="YYYY/MM/DD" // Jalaali format for display
+                          placeholder="تاریخ را انتخاب کنید"
+                          className="w-full p-2 border rounded"
+                          inputClass="w-full p-2 border rounded"
+                        />
+                      );
+                    }}
+                  />
+                );
+              }}
             />
+
             {errors.date && (
               <div className="invalid-feedback">{errors.date.message}</div>
             )}
@@ -284,6 +351,7 @@ const PillsTabs = () => {
                   ?.map((titleDirectToCat) => (
                     // col
                     <div
+                      key={titleDirectToCat?.uid}
                       className={` ${
                         titleDirectToCat?.name === "Immunofixation"
                           ? "flex-grow-1"
@@ -313,7 +381,6 @@ const PillsTabs = () => {
                             ? "fs-4 fw-bold d-flex align-items-start justify-content-start"
                             : ``
                         }`}
-                        key={titleDirectToCat?.uid}
                       >
                         <label
                           htmlFor={titleDirectToCat?.uid}
