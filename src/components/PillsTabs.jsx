@@ -113,8 +113,16 @@ const PillsTabs = () => {
 
   const handleSelect = (eventKey) => {
     setActiveTab(eventKey);
-    setDate(undefined); // Reset the date state when changing tabs
-    setValue("date", undefined); // Resets only the date field
+
+    reset();
+    setParentArray([]);
+    setSelectedName(undefined);
+    setDate(undefined);
+    setValue("date", undefined);
+
+    setAdditionalInputValue(undefined);
+    setimmunofixationUid(undefined);
+    setShowAdditionalInput(false);
   };
 
   const onSubmit = async (data) => {
@@ -216,6 +224,19 @@ const PillsTabs = () => {
     setcountOccurrences(countOccurrencesss);
     settitleOfAll(sub?.title);
     setorderstyletitle(countOccurrencesss);
+
+
+     // Resets only the date field
+     reset();
+     setParentArray([]);
+     setSelectedName(undefined);
+     setDate(undefined);
+     setValue("date", undefined); // Resets only the date field
+
+     setAdditionalInputValue(undefined);
+     setimmunofixationUid(undefined);
+     setShowAdditionalInput(false);
+
   };
 
   useEffect(() => {
@@ -281,57 +302,42 @@ const PillsTabs = () => {
               name="date"
               control={control}
               render={({ field }) => {
-                // Convert the stored Gregorian date to DateObject with Persian calendar for display
+                const selectedDate = field.value
+                  ? new DateObject({
+                      date: new Date(field.value),
+                      calendar: persian,
+                    })
+                  : null;
+
+                console.log("new Date(field.value)", selectedDate);
+
                 return (
-                  <Controller
-                    name="date"
-                    control={control}
-                    render={({ field }) => {
-                      // Convert stored Gregorian date to DateObject for Jalaali display
-                      const selectedDate = field.value
-                        ? new DateObject({
-                            date: new Date(field.value),
-                            calendar: persian,
-                          })
-                        : null;
-
-                      console.log("new Date(field.value)", selectedDate);
-
-                      return (
-                        <DatePicker
-                          {...field}
-                          value={selectedDate}
-                          onChange={(date) => {
-                            if (date) {
-                              // Convert Jalaali to Gregorian
-                              const gregorianDate = date
-                                .convert("gregorian")
-                                .toDate();
-                              // Format Gregorian date as "YYYY-MM-DD"
-                              const formattedDate = gregorianDate
-                                .toISOString()
-                                .split("T")[0];
-                              // Store formatted date
-                              field.onChange(formattedDate);
-                            } else {
-                              // Handle clearing the date
-                              field.onChange(null);
-                            }
-                          }}
-                          calendar={persian}
-                          locale={persian_fa}
-                          format="YYYY/MM/DD" // Jalaali format for display
-                          placeholder="تاریخ را انتخاب کنید"
-                          className="w-full p-2 border rounded"
-                          inputClass="w-full p-2 border rounded"
-                        />
-                      );
+                  <DatePicker
+                    {...field}
+                    value={selectedDate}
+                    onChange={(date) => {
+                      if (date) {
+                        const gregorianDate = date
+                          .convert("gregorian")
+                          .toDate();
+                        const formattedDate = gregorianDate
+                          .toISOString()
+                          .split("T")[0];
+                        field.onChange(formattedDate);
+                      } else {
+                        field.onChange(null);
+                      }
                     }}
+                    calendar={persian}
+                    locale={persian_fa}
+                    format="YYYY/MM/DD"
+                    placeholder="تاریخ را انتخاب کنید"
+                    className="w-full p-2 border rounded"
+                    inputClass="w-full p-2 border rounded"
                   />
                 );
               }}
             />
-
             {errors.date && (
               <div className="invalid-feedback">{errors.date.message}</div>
             )}
