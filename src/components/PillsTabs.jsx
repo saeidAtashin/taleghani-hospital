@@ -28,6 +28,8 @@ const PillsTabs = () => {
   const [immunofixationUid, setimmunofixationUid] = useState(""); // Track the name of selected dropdown item
   const [parentArray, setParentArray] = useState([]); // Track array of key-value pairs
 
+  const Exexex = ["IgA", "IgM"];
+
   const {
     control,
     handleSubmit,
@@ -203,7 +205,7 @@ const PillsTabs = () => {
   // console.log("countOccurrences", countOccurrences);
   // console.log("orderstyletitle", orderstyletitle);
   // console.log("countOccurrencesDirectTitle", countOccurrencesDirectTitle);
-  console.log("parentArray", parentArray);
+  // console.log("parentArray", parentArray);
   return (
     <Tab.Container activeKey={activeTab} onSelect={handleSelect}>
       <Nav variant="pills" className="mb-3">
@@ -279,6 +281,13 @@ const PillsTabs = () => {
               <div className="row">
                 {titleDirectToCategList
                   ?.sort((a, b) => (a?.ordering || 0) - (b?.ordering || 0))
+                  ?.filter((titleDirectToCat) => {
+                    // Remove "test1", "test2", "test3" unless someVariable matches the name
+                    const excludeNames = ["IgA", "IgM", "test3"].filter(
+                      (name) => name !== selectedName
+                    );
+                    return !excludeNames.includes(titleDirectToCat?.name);
+                  })
                   ?.map((titleDirectToCat) => (
                     // col
                     <div
@@ -298,7 +307,12 @@ const PillsTabs = () => {
                       }`}
                     >
                       <div
-                        className={` py-2 my-4 ${
+                        className={` ${
+                          titleDirectToCat?.name === "IgA" &&
+                          selectedName === "IgA"
+                            ? "bg-dark"
+                            : ""
+                        } py-2 my-4 ${
                           titleDirectToCat?.titled
                             ? "fs-4 fw-bold d-flex align-items-start justify-content-start"
                             : ``
@@ -334,6 +348,22 @@ const PillsTabs = () => {
                                           titleDirectToCat?.uid
                                         );
 
+                                        //   if (Exexex.includes(titleDirectToCat?.name) && Exexex.includes(selectedName)) {
+                                        //     // Remove the selectedName from the array
+                                        //     const index = Exexex.indexOf(selectedName);
+                                        //     if (index !== -1) {
+                                        //       Exexex.splice(index, 1);
+                                        //     }
+                                        // }
+                                        console.log(
+                                          "Exexex.includes",
+                                          Exexex.includes(selectedName)
+                                        );
+                                        console.log(
+                                          "titleDirectToCat?.name",
+                                          titleDirectToCat?.name
+                                        );
+
                                         setParentArray((prevArray) => {
                                           const updatedArray = prevArray.filter(
                                             (item) =>
@@ -361,64 +391,68 @@ const PillsTabs = () => {
                               }
                             />
                           ) : (
-                            <Controller
-                              name={titleDirectToCat?.uid}
-                              control={control}
-                              render={({ field }) => {
-                                const handleValueChange = (e) => {
-                                  let value = e.target.value;
+                            <>
+                              <Controller
+                                name={titleDirectToCat?.uid}
+                                control={control}
+                                render={({ field }) => {
+                                  const handleValueChange = (e) => {
+                                    let value = e.target.value;
 
-                                  if (titleDirectToCat?.type === "PERCENTAGE") {
-                                    value = parseFloat(value);
-                                    if (isNaN(value)) value = ""; // If the value isn't a number, reset to empty
-                                  } else if (
-                                    titleDirectToCat?.type === "FLOAT"
-                                  ) {
-                                    value = parseFloat(value);
+                                    if (
+                                      titleDirectToCat?.type === "PERCENTAGE"
+                                    ) {
+                                      value = parseFloat(value);
+                                      if (isNaN(value)) value = ""; // If the value isn't a number, reset to empty
+                                    } else if (
+                                      titleDirectToCat?.type === "FLOAT"
+                                    ) {
+                                      value = parseFloat(value);
 
-                                    if (isNaN(value)) value = ""; // If the value isn't a number, reset to empty
-                                  } else if (
-                                    titleDirectToCat?.type === "CHAR"
-                                  ) {
-                                    value = value.toString();
-                                  }
-
-                                  field.onChange(value);
-                                };
-
-                                return titleDirectToCat?.type ===
-                                  "PERCENTAGE" ? (
-                                  <IconField iconPosition="left">
-                                    <InputIcon className="pi pi-percentage">
-                                      {" "}
-                                    </InputIcon>
-                                    <InputText
-                                      placeholder="درصد"
-                                      className="w-100"
-                                      {...field}
-                                      keyfilter="num"
-                                      onChange={handleValueChange} // Custom value handling for PERCENTAGE
-                                    />
-                                  </IconField>
-                                ) : (
-                                  <InputText
-                                    {...field}
-                                    placeholder={`${
+                                      if (isNaN(value)) value = ""; // If the value isn't a number, reset to empty
+                                    } else if (
                                       titleDirectToCat?.type === "CHAR"
-                                        ? "متن"
-                                        : "عددی"
-                                    }`}
-                                    className="w-100"
-                                    keyfilter={
-                                      titleDirectToCat?.type === "CHAR"
-                                        ? "char"
-                                        : "decimal" // Allow only numeric values for FLOAT and PERCENTAGE
+                                    ) {
+                                      value = value.toString();
                                     }
-                                    onChange={handleValueChange} // Custom value handling for FLOAT and CHAR
-                                  />
-                                );
-                              }}
-                            />
+
+                                    field.onChange(value);
+                                  };
+
+                                  return titleDirectToCat?.type ===
+                                    "PERCENTAGE" ? (
+                                    <IconField iconPosition="left">
+                                      <InputIcon className="pi pi-percentage">
+                                        {" "}
+                                      </InputIcon>
+                                      <InputText
+                                        placeholder="درصد"
+                                        className="w-100"
+                                        {...field}
+                                        keyfilter="num"
+                                        onChange={handleValueChange} // Custom value handling for PERCENTAGE
+                                      />
+                                    </IconField>
+                                  ) : (
+                                    <InputText
+                                      {...field}
+                                      placeholder={`${
+                                        titleDirectToCat?.type === "CHAR"
+                                          ? "متن"
+                                          : "عددی"
+                                      }`}
+                                      className="w-100"
+                                      keyfilter={
+                                        titleDirectToCat?.type === "CHAR"
+                                          ? "char"
+                                          : "decimal" // Allow only numeric values for FLOAT and PERCENTAGE
+                                      }
+                                      onChange={handleValueChange} // Custom value handling for FLOAT and CHAR
+                                    />
+                                  );
+                                }}
+                              />
+                            </>
                           )}
                         </div>
                       </div>
@@ -559,3 +593,6 @@ const PillsTabs = () => {
 };
 
 export default PillsTabs;
+
+// ( titleDirectToCat?.name === "IgA" && selectedName === "IgA")
+// in this code, I want that titleDirectToCat?.name === "IgA" check array of  "IgA" "IgB" and when selectedName is equal to any of array, remove it from array
