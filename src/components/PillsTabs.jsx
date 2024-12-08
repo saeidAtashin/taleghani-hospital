@@ -295,24 +295,21 @@ const PillsTabs = () => {
                         titleDirectToCat?.titled
                           ? ""
                           : `col-md-${
-                              countOccurrencesDirectTitle[
-                                titleDirectToCat?.ordering
-                              ]
+                              titleDirectToCat?.name === "Immunofixation"
+                                ? 6
+                                : countOccurrencesDirectTitle[
+                                    titleDirectToCat?.ordering
+                                  ]
                                 ? 12 /
                                   countOccurrencesDirectTitle[
                                     titleDirectToCat?.ordering
                                   ]
-                                : titleDirectToCat?.ordering
+                                : 12
                             }`
                       }`}
                     >
                       <div
-                        className={` ${
-                          titleDirectToCat?.name === "IgA" &&
-                          selectedName === "IgA"
-                            ? "bg-dark"
-                            : ""
-                        } py-2 my-4 ${
+                        className={`  py-2 my-4 ${
                           titleDirectToCat?.titled
                             ? "fs-4 fw-bold d-flex align-items-start justify-content-start"
                             : ``
