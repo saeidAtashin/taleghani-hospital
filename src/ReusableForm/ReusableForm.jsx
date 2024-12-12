@@ -45,16 +45,6 @@ const ReusableForm = ({
   console.log("loadingBtn", loadingBtn);
   const toggleEditable = () => setEditable((prev) => !prev);
 
-  // useEffect(() => {
-  //   // Set default values from backend when they are available
-  //   if (
-  //     defaultValuesFromBackend &&
-  //     Object.keys(defaultValuesFromBackend).length > 0
-  //   ) {
-  //     reset(defaultValuesFromBackend); // Reset form with backend values
-  //   }
-  // }, [defaultValuesFromBackend, reset]);
-
   const getFieldsInRows = (fields, inputsPerRow) => {
     let rows = [];
     let startIndex = 0;
@@ -176,6 +166,7 @@ const ReusableForm = ({
                             }`}
                             id={field.name}
                             placeholder={field.placeholder || ""}
+                            style={{ textAlign: "right" }} // Align placeholder and value to the right
                             disabled={!editable || field?.readOnly}
                           />
                           {field.append && (
