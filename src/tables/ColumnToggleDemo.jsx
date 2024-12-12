@@ -6,6 +6,7 @@ import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import HeaderName from "../components/HeaderName";
 import apiRequest from "../api/apiService";
+import { Paginator } from "primereact/paginator";
 
 export default function ColumnToggleDemo() {
   const columns = [
@@ -20,16 +21,20 @@ export default function ColumnToggleDemo() {
   const [visibleColumns, setVisibleColumns] = useState(columns);
   const [loading, setLoading] = useState(columns);
   const [page, setPage] = useState(1); // current page
+  const [rows, setRows] = useState(10); // current page
+  const [count, setcount] = useState(10); // current page
+  const [first, setFirst] = useState(10); // current page
 
   const fetchData = async () => {
     setLoading(true); // Start loading state
     try {
       const response = await apiRequest(
         "GET",
-        `/patient/patient-info/?page=${page}&page_size=20`
+        `/patient/patient-info/?page=${page + 1}&page_size=${rows}`
       );
       const patients = response.data.data.results;
       setProducts(patients);
+      setcount(response.data?.data?.count);
       setLoading(false); // End loading state
     } catch (error) {
       setLoading(false);
@@ -40,7 +45,7 @@ export default function ColumnToggleDemo() {
   useEffect(() => {
     fetchData();
     localStorage.removeItem("defaultActiveKey");
-  }, [page]); // Trigger when page  changes
+  }, [page, rows]); // Trigger when page  changes
 
   const [selectedProducts, setSelectedProducts] = useState(null);
   const [globalFilter, setGlobalFilter] = useState(null);
@@ -109,7 +114,7 @@ export default function ColumnToggleDemo() {
           onSelectionChange={(e) => setSelectedProducts(e.value)}
           dataKey="uid"
           paginator
-          rows={10}
+          rows={rows}
           paginatorTemplate=""
           currentPageReportTemplate=""
           globalFilter={globalFilter}
@@ -132,6 +137,21 @@ export default function ColumnToggleDemo() {
           <Column header="جزئیات" body={detailsTemplate} />
         </DataTable>
       )}
+      <Paginator
+        dir="ltr"
+        first={first}
+        rows={rows}
+        totalRecords={count}
+        rowsPerPageOptions={[10, 20, 30]}
+        onPageChange={(event) => {
+          // setPage(event.first);
+          console.log(products);
+          console.log("event.rows", event);
+          setFirst(event.first);
+          setPage(event.page);
+          setRows(event.rows);
+        }}
+      />
     </div>
   );
 }
