@@ -76,7 +76,6 @@ const Step3Form = ({ patient_uid, onNext }) => {
             ),
             spleen: formData.spleen.trim() || undefined,
             b_symptoms: formData.b_symptoms.trim() || undefined,
-            stage: formData.stage.trim() || undefined,
           }
         : {
             primary_tumors:
@@ -106,9 +105,8 @@ const Step3Form = ({ patient_uid, onNext }) => {
                       met.description.trim()
                   )
                 : undefined,
-            stage: formData.stage.trim() || undefined,
           };
-
+  
     // Remove empty arrays or undefined values from diseaseData
     const cleanedDiseaseData = Object.keys(diseaseData).reduce((acc, key) => {
       if (Array.isArray(diseaseData[key]) && diseaseData[key].length > 0) {
@@ -118,14 +116,18 @@ const Step3Form = ({ patient_uid, onNext }) => {
       }
       return acc;
     }, {});
-
+  
+    // Construct the payload conditionally including disease_data
     const payload = {
       type: formType,
       diagnosis_uid: selectedDiagnosis,
       patient_uid,
-      disease_data: cleanedDiseaseData,
+      stage: formData.stage.trim() || undefined,
+      ...(Object.keys(cleanedDiseaseData).length > 0 && {
+        disease_data: cleanedDiseaseData,
+      }), // Include disease_data only if it's not empty
     };
-
+  
     try {
       const response = await axios.post(
         "https://cancerreg.ir/api/v1/patient/user-disease/",
@@ -137,6 +139,8 @@ const Step3Form = ({ patient_uid, onNext }) => {
       console.error("Submission Error:", error);
     }
   };
+  
+  
 
   const renderArrayField = (fieldName, label) => (
     <div>

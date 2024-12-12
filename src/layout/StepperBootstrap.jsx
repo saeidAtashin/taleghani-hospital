@@ -17,10 +17,8 @@ const StepperBootstrap = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [loadingBtn, setLoadingBtn] = useState(false);
-  // setLoadingBtn
   const patient_uid_info = localStorage.getItem("patient_uid_info");
 
-  console.log("activeIndex", activeIndex);
   const handleFormSubmit = async (data) => {
     setLoadingBtn(true);
     const currentFields =
