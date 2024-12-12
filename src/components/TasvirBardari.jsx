@@ -9,6 +9,7 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { tabsInnerImage } from "../pages/PatientsDetails";
 import { toast } from "react-toastify";
+import PillsTabsTasvir from "./PillsTabsTasvir";
 
 export default function TasvirBardari() {
   const [products, setProducts] = useState([]);
@@ -248,7 +249,7 @@ export default function TasvirBardari() {
               x
             </span>
           </div>
-          <PillsTabs tabs={tabsInnerImage} />
+          <PillsTabsTasvir tabs={tabsInnerImage} />
         </div>
       ) : (
         showAzmayeshPAge === "orderRegisterOrder" && (
