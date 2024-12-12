@@ -18,6 +18,7 @@ const ReusableForm = ({
   isLoading = false,
   defaultValuesFromBackend,
   activeIndex,
+  loadingBtn,
 }) => {
   const {
     control,
@@ -41,7 +42,7 @@ const ReusableForm = ({
   const [editable, setEditable] = useState(!isEditable);
   const [options, setOptions] = useState({});
   const [errorFields, setErrorFields] = useState({});
-
+  console.log("loadingBtn", loadingBtn);
   const toggleEditable = () => setEditable((prev) => !prev);
 
   // useEffect(() => {
@@ -484,7 +485,11 @@ const ReusableForm = ({
         <div className="d-flex justify-content-between mt-4">
           {onlyPost && (
             <>
-              <button type="submit" className="btn btn-primary w-100">
+              <button
+                type="submit"
+                className="btn btn-primary w-100"
+                disabled={loadingBtn}
+              >
                 ثبت اطلاعات و ادامه
               </button>
             </>

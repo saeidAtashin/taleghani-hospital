@@ -16,82 +16,60 @@ import Step3Form from "../pages/Step3Form";
 const StepperBootstrap = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [loadingBtn, setLoadingBtn] = useState(false);
+  // setLoadingBtn
   const patient_uid_info = localStorage.getItem("patient_uid_info");
 
-  // const transformDataForApi = (data, fields) => {
-  //   let transformedData = {};
-  //   fields.forEach((field) => {
-  //     const { name, name_to_send_api, dontSendApi } = field;
-  //     if (!dontSendApi) {
-  //       if (name_to_send_api) {
-  //         transformedData[name_to_send_api] = data[name];
-  //       } else {
-  //         transformedData[name] = data[name];
-  //       }
-  //     }
-  //   });
-  //   return transformedData;
-  // };
-
-  const makeApiRequest = async (
-    url,
-    requestData,
-    successCallback,
-    errorCallback
-  ) => {
-    setIsLoading(true);
-    try {
-      const response = await axios.post(url, requestData);
-      if (successCallback) successCallback(response);
-      setIsLoading(false);
-    } catch (error) {
-      if (error.response && error.response.status === 400) {
-        const errorDetails = error.response.data?.errors;
-        toast.warning(errorDetails?.[0]?.message || "Invalid inputs");
-      } else {
-        toast.warning("An error occurred while submitting data.");
-      }
-      console.error("Error submitting data:", error);
-      if (errorCallback) errorCallback(error);
-      setIsLoading(false);
-    }
-  };
-
+  console.log("activeIndex", activeIndex);
   const handleFormSubmit = async (data) => {
+    setLoadingBtn(true);
     const currentFields =
       activeIndex === 0 ? formFielsIdentity : formPatientsFields;
-
+  
     try {
+      // Validate the data based on the current form schema
       const schema = generateReusableSchema(currentFields);
       schema.parse(data);
-
+  
       if (activeIndex === 0) {
-        const { ...restOfData } = data; // Destructure to remove both `surgery` and `underlying-disease`
-
+        const { ...restOfData } = data;
+  
         const formattedData = {
           ...restOfData,
           patient_uid: patient_uid_info,
           marital_status: data?.["marital-status"]
             ? data?.["marital-status"]
-            : undefined, // Only include the `surgeries` field
+            : undefined,
         };
-
-        const url = "https://cancerreg.ir/api/v1" + PATIENT_INFO;
-
-        makeApiRequest(
-          url,
-          formattedData,
-          (response) => {
-            localStorage.setItem("patient_uid_info", response?.data?.data?.uid);
-            setActiveIndex(activeIndex + 1);
-          },
-          () => setIsLoading(false)
-        );
+  
+        setIsLoading(true);
+        try {
+          // Perform the API call
+          const response = await axios.post(
+            "https://cancerreg.ir/api/v1" + PATIENT_INFO,
+            formattedData
+          );
+  
+          if (response.status >= 200 && response.status < 400) {
+            // Update the local storage and active index on success
+            localStorage.setItem("patient_uid_info", response.data.data.uid);
+            setActiveIndex((prevIndex) => prevIndex + 1);
+            setLoadingBtn(false);
+            toast.success("ثبت شد");
+          }
+        } catch (error) {
+          // Handle errors from the API call
+          setLoadingBtn(false);
+          console.error("Error submitting data:", error);
+          setIsLoading(false);
+          if (error.response && error.response.status === 400) {
+            const errorDetails = error.response.data?.errors;
+            toast.warning(errorDetails?.[0]?.message || "Invalid inputs");
+          }
+        }
       }
-
+  
       if (activeIndex === 1) {
-        // const transformedData = data;
         const {
           surgery,
           "underlying-disease": underlyingDisease,
@@ -99,39 +77,44 @@ const StepperBootstrap = () => {
           "habit-disease": habitdisease,
           drugs,
           ...restOfData
-        } = data; // Destructure to remove both `surgery` and `underlying-disease`
-
+        } = data;
+  
         const formattedData = {
           ...restOfData,
           patient_uid: patient_uid_info,
-          surgeries: data?.surgery ? data.surgery : undefined, // Only include the `surgeries` field
-          underlying_diseases: underlyingDisease
-            ? underlyingDisease
-            : undefined, // Set `underlying_diseases` from `underlying-disease`
-          habits: habitdisease ? habitdisease : undefined, // Set `underlying_diseases` from `underlying-disease`
+          surgeries: data?.surgery ? data.surgery : undefined,
+          underlying_diseases: underlyingDisease ? underlyingDisease : undefined,
+          habits: habitdisease ? habitdisease : undefined,
           family_history: familyhistory ? familyhistory : undefined,
           drugs_records: data?.drugs ? data?.drugs : undefined,
         };
-
+  
         setIsLoading(true);
         try {
-          await axios.post(
+          // Perform the API call
+          const response = await axios.post(
             "https://cancerreg.ir/api/v1" + PATIENT_RECORDS,
             formattedData
           );
-          setActiveIndex(activeIndex + 1);
+  
+          if (response.status >= 200 && response.status < 400) {
+            setActiveIndex((prevIndex) => prevIndex + 1);
+            setLoadingBtn(false);
+          }
         } catch (error) {
+          setLoadingBtn(false);
           console.error("Error submitting data:", error);
           setIsLoading(false);
         }
-      } else {
-        setIsLoading(false);
       }
     } catch (error) {
+      // Handle validation errors
       setIsLoading(false);
+      setLoadingBtn(false);
       console.error("Validation error:", error);
     }
   };
+  
 
   return (
     <div className="container">
@@ -203,6 +186,7 @@ const StepperBootstrap = () => {
             formSchema={generateReusableSchema(formFielsIdentity)}
             onSubmit={handleFormSubmit}
             inputsPerRow={[2, 3, 2, 2, 2, 2, 3, 2, 1]}
+            loadingBtn={loadingBtn}
           />
         ) : (
           <ReusableForm
@@ -214,6 +198,7 @@ const StepperBootstrap = () => {
             formSchema={generateReusableSchema(formPatientsFields)}
             onSubmit={handleFormSubmit}
             inputsPerRow={[1, 2, 2, 3, 1]}
+            loadingBtn={loadingBtn}
           />
         )}
       </div>
