@@ -5,7 +5,6 @@ import {
   formPatientsFields,
   formPatientsInformationFields,
   generateReusableSchema,
-  InnerAzmayesh,
 } from "../form-fields/FormFields";
 import ReusableForm from "../ReusableForm/ReusableForm";
 import AzmayeshatTable from "../components/AzmayeshatTable";
@@ -19,8 +18,6 @@ import Ctscan from "../components/Ctscan";
 import ScanHastei from "../components/ScanHastei";
 import Petscan from "../components/Petscan";
 import SampleGraphy from "../components/SampleGraphy";
-
-const handleFormSubmit = (data) => {};
 
 export const tabsInnerImage = [
   {
