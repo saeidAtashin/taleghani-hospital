@@ -35,16 +35,21 @@ export default function AzmayeshatTable() {
   function nameTemplate(rowData) {
     const names = Array.isArray(rowData?.name) ? rowData.name : [];
 
-    console.log("names", names);
+    // console.log("rowData", rowData);
+
     return (
       <div>
         {names.map((nameItem, index) => (
           <span
+            onClick={() => {
+              console.log("batch_id?", rowData?.id);
+            }}
             key={index}
-            onClick={() => console.log(nameItem.value)}
+            // onClick={() => console.log(nameItem.value)}
             style={{
               cursor: "pointer",
-              color: nameItem.type === "secondary" ? "green" : "orange",
+              fontWeight: "bold",
+              color: nameItem.type === "info" ? "#aa9f00" : "green",
               marginRight: "8px",
             }}
           >
@@ -102,48 +107,6 @@ export default function AzmayeshatTable() {
 
     fetchData();
   }, [showAzmayeshPAge]);
-
-  // useEffect(() => {
-  //   const newData = [
-  //     {
-  //       id: 1,
-  //       name: [{ value: "خون", type: "secondary" }],
-  //       category: "General",
-  //       quantity: 10,
-  //       date: "2024-11-01",
-  //     },
-  //     {
-  //       id: 2,
-  //       name: [
-  //         { value: "تومور مارکرها", type: "secondary" },
-  //         { value: "گروه خون", type: "info" },
-  //       ],
-  //       category: "Special",
-  //       quantity: 5,
-  //       date: "2024-11-02",
-  //     },
-  //     {
-  //       id: 3,
-  //       name: [
-  //         { value: "تومور مارکرها", type: "secondary" },
-  //         { value: "روتین ", type: "secondary" },
-  //         { value: "مولکولار", type: "secondary" },
-  //         { value: "گروه خون", type: "primary" },
-  //       ],
-  //       category: "General",
-  //       quantity: 8,
-  //       date: "2024-11-03",
-  //     },
-  //     {
-  //       id: 3,
-  //       name: [{ value: "تومور مارکرها", type: "primary" }],
-  //       category: "General",
-  //       quantity: 8,
-  //       date: "2024-11-03",
-  //     },
-  //   ];
-  //   setProducts(newData);
-  // }, []);
 
   const handlePrint = () => {
     // Add your print logic here
