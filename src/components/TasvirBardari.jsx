@@ -83,7 +83,7 @@ export default function TasvirBardari() {
 
   useEffect(() => {
     fetchData(); // Fetch data when component mounts
-  }, [uid]);
+  }, [uid, showAzmayeshPAge]);
 
   const handlePrint = () => {
     console.log("Printing:", selectedProducts);
