@@ -2,6 +2,12 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { useParams } from "react-router-dom";
+import { Controller } from "react-hook-form";
+import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from "react-multi-date-picker";
+import persian from "react-date-object/calendars/persian";
+import persian_fa from "react-date-object/locales/persian_fa";
+import { toast } from "react-toastify";
 
 const SonographyForm = () => {
   const { uid } = useParams();
@@ -14,6 +20,20 @@ const SonographyForm = () => {
     birads: "",
     echogenicity: "",
   });
+
+  const [selectedDate, setSelectedDate] = useState(null);
+
+  const handleDateChange = (date) => {
+    if (date) {
+      const gregorianDate = date.convert("gregorian").toDate();
+      const formattedDate = gregorianDate.toISOString().split("T")[0];
+      setSelectedDate(date);
+      setFormData({ ...formData, date: formattedDate });
+    } else {
+      setSelectedDate(null);
+      setFormData({ ...formData, date: "" });
+    }
+  };
 
   const handleInputChange = (index, event) => {
     const { name, value } = event.target;
@@ -59,9 +79,9 @@ const SonographyForm = () => {
         "https://cancerreg.ir/api/v1/records/sonography/",
         formattedData
       );
-      alert("Data submitted successfully");
+      toast.success("Data submitted successfully");
     } catch (error) {
-      alert("Error submitting data");
+      toast.warning("Error submitting data");
       console.error(error);
     }
   };
@@ -69,13 +89,22 @@ const SonographyForm = () => {
   return (
     <Form onSubmit={handleSubmit}>
       <Form.Group>
-        <Form.Label>تاریخ</Form.Label>
-        <Form.Control
-          type="date"
-          name="date"
-          value={formData.date}
-          onChange={handleFieldChange}
-        />
+        <div className="d-flex flex-column">
+          <label className="label" htmlFor="date">
+            تاریخ
+          </label>
+          <DatePicker
+            value={selectedDate}
+            onChange={handleDateChange}
+            calendar={persian}
+            locale={persian_fa}
+            format="YYYY/MM/DD"
+            placeholder="تاریخ را انتخاب کنید"
+            className=" p-2 border rounded "
+            inputClass="w-full p-2 text-end w-100 border rounded"
+            position="bottom-right" // Change this to control the position
+          />
+        </div>
       </Form.Group>
 
       {formData.sizes.map((field, index) => (

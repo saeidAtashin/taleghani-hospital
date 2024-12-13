@@ -33,3 +33,5 @@ const PillsTabsTasvir = ({ tabs }) => {
 };
 
 export default PillsTabsTasvir;
+
+
