@@ -2,16 +2,35 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { useParams } from "react-router-dom";
+import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from "react-multi-date-picker";
+import persian from "react-date-object/calendars/persian";
+import persian_fa from "react-date-object/locales/persian_fa";
+import { toast } from "react-toastify";
 
 const Mammography = () => {
   const { uid } = useParams();
   const [formData, setFormData] = useState({
     patient_uid: uid,
     date: "",
-    sizes: [{ size: null, site: "", description: "" }], // Added description
+    sizes: [{ size: null, site: "", description: "" }],
     description: "",
     batch_uid: undefined,
   });
+
+  const [selectedDate, setSelectedDate] = useState(null);
+
+  const handleDateChange = (date) => {
+    if (date) {
+      const gregorianDate = date.convert("gregorian").toDate();
+      const formattedDate = gregorianDate.toISOString().split("T")[0];
+      setSelectedDate(date);
+      setFormData({ ...formData, date: formattedDate });
+    } else {
+      setSelectedDate(null);
+      setFormData({ ...formData, date: "" });
+    }
+  };
 
   const handleInputChange = (index, event) => {
     const { name, value } = event.target;
@@ -55,9 +74,9 @@ const Mammography = () => {
         "https://cancerreg.ir/api/v1/records/mammography/",
         formattedData
       );
-      alert("Data submitted successfully");
+      toast.success("ثبت شد");
     } catch (error) {
-      alert("Error submitting data");
+      toast.warning("خطایی رخ داده است");
       console.error(error);
     }
   };
@@ -65,13 +84,30 @@ const Mammography = () => {
   return (
     <Form onSubmit={handleSubmit}>
       <Form.Group>
-        <Form.Label>تاریخ</Form.Label>
+        {/* <Form.Label>تاریخ</Form.Label>
         <Form.Control
           type="date"
           name="date"
           value={formData.date}
           onChange={handleFieldChange}
-        />
+        /> */}
+
+        <div className="d-flex flex-column">
+          <label className="label" htmlFor="date">
+            تاریخ
+          </label>
+          <DatePicker
+            value={selectedDate}
+            onChange={handleDateChange}
+            calendar={persian}
+            locale={persian_fa}
+            format="YYYY/MM/DD"
+            placeholder="تاریخ را انتخاب کنید"
+            className=" p-2 border rounded "
+            inputClass="w-full p-2 text-end w-100 border rounded"
+            position="bottom-right" // Change this to control the position
+          />
+        </div>
       </Form.Group>
 
       {formData.sizes.map((field, index) => (
@@ -113,7 +149,7 @@ const Mammography = () => {
       ))}
 
       <Button variant="secondary" onClick={addInputFields}>
-        Add More
+        اضافه کردن
       </Button>
 
       {/* <Form.Group className="my-3">
