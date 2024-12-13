@@ -28,6 +28,8 @@ const PillsTabs = () => {
   const [activeSubCategoryIndex, setActiveSubCategoryIndex] = useState(null);
   const [showAdditionalInput, setShowAdditionalInput] = useState(false);
   const [isLoading, setisLoading] = useState(false);
+  const [isLoadingAll, setisLoadingAll] = useState(false);
+  const [gettedCategory, setgettedCategory] = useState(false);
   const [additionalInputValue, setAdditionalInputValue] = useState("");
   const [selectedName, setSelectedName] = useState("");
   const [immunofixationUid, setimmunofixationUid] = useState("");
@@ -48,12 +50,23 @@ const PillsTabs = () => {
   });
 
   useEffect(() => {
+    setisLoadingAll(true);
     const fetchDataCategory = async () => {
       try {
-        const response = await apiRequest("GET", `/tests/category-details/`);
-        const list = response?.data?.data?.result ?? [];
-        settabsNew(list);
+        // const response = await apiRequest("GET", `/tests/category-details/`);
+
+        const response = await axios.get(
+          `https://cancerreg.ir/api/v1/tests/category-details/`
+        );
+
+        if (response.status >= 200 && response.status < 400) {
+          const list = response?.data?.data?.result ?? [];
+          settabsNew(list);
+          setgettedCategory(true);
+        }
       } catch (error) {
+        setisLoadingAll(false);
+
         console.error("Error fetching data:", error);
       }
     };
@@ -97,13 +110,16 @@ const PillsTabs = () => {
           }, {});
 
           setcountOccurrencesDirectTitle(countOccurrences);
+          setisLoadingAll(false);
         }
       } catch (error) {
+        setisLoadingAll(false);
+
         console.error("Error fetching data:", error);
       }
     };
-    fetchDataCategoryUId();
-  }, [activeTab, tabsNew]);
+    activeTab && gettedCategory && fetchDataCategoryUId();
+  }, [activeTab, tabsNew, gettedCategory]);
 
   useEffect(() => {
     setActiveTab(tabsNew?.[0]?.uid ?? "");
@@ -246,6 +262,8 @@ const PillsTabs = () => {
     }
   }, [activeTab, tabsNew]);
 
+  if (isLoadingAll) return <>در حال دریافت اطلاعات...</>;
+
   return (
     <Tab.Container activeKey={activeTab} onSelect={handleSelect}>
       <Nav variant="pills" className="mb-3">
@@ -267,7 +285,7 @@ const PillsTabs = () => {
             </Nav.Item>
           ))}
       </Nav>
-      <h4 className="my-4 mx-2">ثبت {activeTab} جدید</h4>
+      {/* <h4 className="my-4 mx-2">ثبت {activeTab} جدید</h4> */}
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="p-4 mb-5 container shadow-lg">

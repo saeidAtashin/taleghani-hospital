@@ -30,6 +30,8 @@ export default function AzmayeshatTable() {
 
   function nameTemplate(rowData) {
     const names = Array.isArray(rowData?.name) ? rowData.name : [];
+
+    console.log("names", names);
     return (
       <div>
         {names.map((nameItem, index) => (
