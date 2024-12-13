@@ -62,7 +62,7 @@ function DashboardLayout() {
               onClick={() => toggleSubmenu("patients")}
               aria-expanded={activeSubmenu === "patients"}
             >
-              <i className="fst-normal d-flex align-items-center  p-2">
+              <i className="fst-normal d-flex align-items-center justify-content-between p-2">
                 بیماران
                 <span>
                   <img src="/images/dropdown.svg" alt="dd" />
@@ -104,8 +104,8 @@ function DashboardLayout() {
               onClick={() => toggleSubmenu("reports")}
               aria-expanded={activeSubmenu === "reports"}
             >
-              <i className="fst-normal d-flex align-items-center p-2">
-                گزارش <span>گیری</span>
+              <i className="fst-normal d-flex align-items-center p-2 justify-content-between">
+                <> گزارش</>
                 <span>
                   <img src="/images/dropdown.svg" alt="dd" />
                 </span>
