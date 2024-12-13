@@ -12,6 +12,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import DatePicker, { DateObject } from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
+import { useParams } from "react-router-dom";
 
 const PillsTabs = () => {
   const [tabsNew, settabsNew] = useState();
@@ -35,6 +36,7 @@ const PillsTabs = () => {
   const [immunofixationUid, setimmunofixationUid] = useState("");
   const [parentArray, setParentArray] = useState([]);
   const Exexex = ["IgA", "IgM", "IgG", "IgD", "Other"];
+  const { uid } = useParams();
 
   const {
     control,
@@ -144,7 +146,7 @@ const PillsTabs = () => {
     const additionalData = {
       date: data?.date,
       category_uid: activeTab,
-      patient_uid: "a39573c2-a8b1-4b18-bbb5-3fd44614a761",
+      patient_uid: uid,
     };
 
     delete data.date;
@@ -264,6 +266,7 @@ const PillsTabs = () => {
 
   if (isLoadingAll) return <>در حال دریافت اطلاعات...</>;
 
+  console.log("titleOfAll", titleOfAll);
   return (
     <Tab.Container activeKey={activeTab} onSelect={handleSelect}>
       <Nav variant="pills" className="mb-3">
@@ -349,6 +352,7 @@ const PillsTabs = () => {
                     placeholder="تاریخ را انتخاب کنید"
                     className="w-full p-2 border rounded"
                     inputClass="w-full p-2 border rounded"
+                    position="bottom-right"
                   />
                 );
               }}
@@ -358,6 +362,127 @@ const PillsTabs = () => {
             )}
           </div>
 
+          <div className="">
+            {titleOfAll?.length > 0 &&
+              titleOfAll?.map((title, idx) => {
+                if (title?.name === "CBC") {
+                  return (
+                    <div key={idx} className="">
+                      <h3 className="my-4">{title?.name}</h3>
+
+                      <div className="">
+                        {title?.field
+                          ?.sort(
+                            (a, b) => (a?.ordering || 0) - (b?.ordering || 0)
+                          )
+                          ?.reduce((acc, titleData) => {
+                            const { ordering } = titleData;
+                            if (!acc[ordering]) {
+                              acc[ordering] = [];
+                            }
+                            acc[ordering].push(titleData);
+                            return acc;
+                          }, {})
+                          ? Object.keys(
+                              title?.field?.reduce((acc, titleData) => {
+                                const { ordering } = titleData;
+                                if (!acc[ordering]) {
+                                  acc[ordering] = [];
+                                }
+                                acc[ordering].push(titleData);
+                                return acc;
+                              }, {})
+                            ).map((groupKey, idx) => (
+                              <div className="row bg-red" key={idx}>
+                                {title?.field
+                                  ?.filter(
+                                    (field) =>
+                                      field?.ordering.toString() === groupKey
+                                  )
+                                  .map((titleData) => (
+                                    <div
+                                      key={titleData?.uid}
+                                      className={` col-md-${
+                                        countOccurrences[titleData?.ordering]
+                                          ? 12 /
+                                            countOccurrences[
+                                              titleData?.ordering
+                                            ]
+                                          : titleData?.ordering
+                                      } mb-4`}
+                                    >
+                                      <label htmlFor={titleData?.uid}>
+                                        {titleData?.name}
+                                      </label>
+                                      {titleData?.options?.length > 0 ? (
+                                        <Controller
+                                          name={titleData?.uid}
+                                          control={control}
+                                          render={({ field }) => (
+                                            <DropD
+                                              titleData={titleData}
+                                              selectedValue={field.value}
+                                              setSelectedValue={(value) =>
+                                                field.onChange(value)
+                                              }
+                                            />
+                                          )}
+                                        />
+                                      ) : (
+                                        <Controller
+                                          name={titleData?.uid}
+                                          control={control}
+                                          render={({ field }) => {
+                                            const handleValueChange = (e) => {
+                                              let value = e.target.value;
+
+                                              if (titleData?.type === "FLOAT") {
+                                                value = parseFloat(value);
+                                              } else if (
+                                                titleData?.type === "PERCENTAGE"
+                                              ) {
+                                                value = parseFloat(value);
+                                              } else if (
+                                                titleData?.type === "CHAR"
+                                              ) {
+                                                value = value.toString();
+                                              }
+
+                                              field.onChange(value);
+                                            };
+
+                                            return (
+                                              <InputText
+                                                {...field}
+                                                onChange={handleValueChange}
+                                                className="w-100"
+                                                keyfilter={
+                                                  titleData?.type === "CHAR"
+                                                    ? "char"
+                                                    : titleData?.type ===
+                                                        "FLOAT" ||
+                                                      titleData?.type ===
+                                                        "PERCENTAGE"
+                                                    ? "decimal"
+                                                    : ""
+                                                }
+                                                placeholder={`${titleData?.name} را وارد نمایید`}
+                                              />
+                                            );
+                                          }}
+                                        />
+                                      )}
+                                    </div>
+                                  ))}
+                              </div>
+                            ))
+                          : null}
+                      </div>
+                    </div>
+                  );
+                }
+              })}
+          </div>
           <div className="">
             {titleDirectToCategList?.length > 0 && (
               <div className="row  d-flex">
@@ -410,7 +535,6 @@ const PillsTabs = () => {
                           {titleDirectToCat?.name === "Immunofixation"
                             ? titleDirectToCat?.name
                             : titleDirectToCat?.name}{" "}
-                          / {titleDirectToCat?.ordering}
                         </label>
                         <div className="">
                           {titleDirectToCat?.options?.length > 0 ? (
@@ -529,25 +653,22 @@ const PillsTabs = () => {
               </div>
             )}
           </div>
+
+          {/* org cbc */}
           <div className="">
             {titleOfAll?.length > 0 &&
-              titleOfAll.map((title, idx) => (
-                <div key={idx} className="">
-                  <h3 className="my-4">{title?.name}</h3>
+              titleOfAll.map((title, idx) => {
+                if (title.name !== "CBC") {
+                  return (
+                    <div key={idx} className="">
+                      <h3 className="my-4">{title?.name}</h3>
 
-                  <div className="">
-                    {title?.field
-                      ?.sort((a, b) => (a?.ordering || 0) - (b?.ordering || 0))
-                      ?.reduce((acc, titleData) => {
-                        const { ordering } = titleData;
-                        if (!acc[ordering]) {
-                          acc[ordering] = [];
-                        }
-                        acc[ordering].push(titleData);
-                        return acc;
-                      }, {})
-                      ? Object.keys(
-                          title?.field?.reduce((acc, titleData) => {
+                      <div className="">
+                        {title?.field
+                          ?.sort(
+                            (a, b) => (a?.ordering || 0) - (b?.ordering || 0)
+                          )
+                          ?.reduce((acc, titleData) => {
                             const { ordering } = titleData;
                             if (!acc[ordering]) {
                               acc[ordering] = [];
@@ -555,91 +676,105 @@ const PillsTabs = () => {
                             acc[ordering].push(titleData);
                             return acc;
                           }, {})
-                        ).map((groupKey, idx) => (
-                          <div className="row" key={idx}>
-                            {title?.field
-                              ?.filter(
-                                (field) =>
-                                  field?.ordering.toString() === groupKey
-                              )
-                              .map((titleData) => (
-                                <div
-                                  key={titleData?.uid}
-                                  className={` col-md-${
-                                    countOccurrences[titleData?.ordering]
-                                      ? 12 /
+                          ? Object.keys(
+                              title?.field?.reduce((acc, titleData) => {
+                                const { ordering } = titleData;
+                                if (!acc[ordering]) {
+                                  acc[ordering] = [];
+                                }
+                                acc[ordering].push(titleData);
+                                return acc;
+                              }, {})
+                            ).map((groupKey, idx) => (
+                              <div className="row bg-red" key={idx}>
+                                {title?.field
+                                  ?.filter(
+                                    (field) =>
+                                      field?.ordering.toString() === groupKey
+                                  )
+                                  .map((titleData) => (
+                                    <div
+                                      key={titleData?.uid}
+                                      className={` col-md-${
                                         countOccurrences[titleData?.ordering]
-                                      : titleData?.ordering
-                                  } mb-4`}
-                                >
-                                  <label htmlFor={titleData?.uid}>
-                                    {titleData?.name}
-                                  </label>
-                                  {titleData?.options?.length > 0 ? (
-                                    <Controller
-                                      name={titleData?.uid}
-                                      control={control}
-                                      render={({ field }) => (
-                                        <DropD
-                                          titleData={titleData}
-                                          selectedValue={field.value}
-                                          setSelectedValue={(value) =>
-                                            field.onChange(value)
-                                          }
+                                          ? 12 /
+                                            countOccurrences[
+                                              titleData?.ordering
+                                            ]
+                                          : titleData?.ordering
+                                      } mb-4`}
+                                    >
+                                      <label htmlFor={titleData?.uid}>
+                                        {titleData?.name}
+                                      </label>
+                                      {titleData?.options?.length > 0 ? (
+                                        <Controller
+                                          name={titleData?.uid}
+                                          control={control}
+                                          render={({ field }) => (
+                                            <DropD
+                                              titleData={titleData}
+                                              selectedValue={field.value}
+                                              setSelectedValue={(value) =>
+                                                field.onChange(value)
+                                              }
+                                            />
+                                          )}
+                                        />
+                                      ) : (
+                                        <Controller
+                                          name={titleData?.uid}
+                                          control={control}
+                                          render={({ field }) => {
+                                            const handleValueChange = (e) => {
+                                              let value = e.target.value;
+
+                                              if (titleData?.type === "FLOAT") {
+                                                value = parseFloat(value);
+                                              } else if (
+                                                titleData?.type === "PERCENTAGE"
+                                              ) {
+                                                value = parseFloat(value);
+                                              } else if (
+                                                titleData?.type === "CHAR"
+                                              ) {
+                                                value = value.toString();
+                                              }
+
+                                              field.onChange(value);
+                                            };
+
+                                            return (
+                                              <InputText
+                                                {...field}
+                                                onChange={handleValueChange}
+                                                className="w-100"
+                                                keyfilter={
+                                                  titleData?.type === "CHAR"
+                                                    ? "char"
+                                                    : titleData?.type ===
+                                                        "FLOAT" ||
+                                                      titleData?.type ===
+                                                        "PERCENTAGE"
+                                                    ? "decimal"
+                                                    : ""
+                                                }
+                                                placeholder={`${titleData?.name} را وارد نمایید`}
+                                              />
+                                            );
+                                          }}
                                         />
                                       )}
-                                    />
-                                  ) : (
-                                    <Controller
-                                      name={titleData?.uid}
-                                      control={control}
-                                      render={({ field }) => {
-                                        const handleValueChange = (e) => {
-                                          let value = e.target.value;
-
-                                          if (titleData?.type === "FLOAT") {
-                                            value = parseFloat(value);
-                                          } else if (
-                                            titleData?.type === "PERCENTAGE"
-                                          ) {
-                                            value = parseFloat(value);
-                                          } else if (
-                                            titleData?.type === "CHAR"
-                                          ) {
-                                            value = value.toString();
-                                          }
-
-                                          field.onChange(value);
-                                        };
-
-                                        return (
-                                          <InputText
-                                            {...field}
-                                            onChange={handleValueChange}
-                                            className="w-100"
-                                            keyfilter={
-                                              titleData?.type === "CHAR"
-                                                ? "char"
-                                                : titleData?.type === "FLOAT" ||
-                                                  titleData?.type ===
-                                                    "PERCENTAGE"
-                                                ? "decimal"
-                                                : ""
-                                            }
-                                            placeholder={`${titleData?.name} را وارد نمایید`}
-                                          />
-                                        );
-                                      }}
-                                    />
-                                  )}
-                                </div>
-                              ))}
-                          </div>
-                        ))
-                      : null}
-                  </div>
-                </div>
-              ))}
+                                    </div>
+                                  ))}
+                              </div>
+                            ))
+                          : null}
+                      </div>
+                    </div>
+                  );
+                }
+              })}
           </div>
 
           <button
