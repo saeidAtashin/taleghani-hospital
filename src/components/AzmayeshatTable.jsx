@@ -36,7 +36,7 @@ export default function AzmayeshatTable() {
     const names = Array.isArray(rowData?.name) ? rowData.name : [];
 
     // console.log("rowData", rowData);
-
+    console.log("rowData", rowData);
     return (
       <div>
         {names.map((nameItem, index) => (
@@ -258,16 +258,7 @@ export default function AzmayeshatTable() {
                   x
                 </span>
               </div>
-              <SelectableIconItem
-                icon="pi pi-check"
-                header="تومور مارکرها"
-                options={options}
-                type="bordered"
-                selectedValues={selectedOptions}
-                onChange={handleSelectionChange}
-                iconColor="green"
-                size="1.2rem"
-              />
+              {/* <SabteTasvir /> */}
             </div>
           </>
         )
