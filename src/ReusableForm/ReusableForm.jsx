@@ -42,7 +42,6 @@ const ReusableForm = ({
   const [editable, setEditable] = useState(!isEditable);
   const [options, setOptions] = useState({});
   const [errorFields, setErrorFields] = useState({});
-  console.log("loadingBtn", loadingBtn);
   const toggleEditable = () => setEditable((prev) => !prev);
 
   const getFieldsInRows = (fields, inputsPerRow) => {

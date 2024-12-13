@@ -7,12 +7,16 @@ import PillsTabs from "./PillsTabs";
 import { tabsInnerImage } from "../pages/PatientsDetails";
 // import BadgeIcon from "./BadgeIcon";
 import SelectableIconItem from "./BadgeIcon";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 export default function AzmayeshatTable() {
   const [products, setProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
+  const [refetchTableData, setRefetchTableData] = useState(false);
   const [showAzmayeshPAge, setShowAzmayeshPAge] = useState("home");
   const dt = useRef(null);
+  const { uid } = useParams();
 
   const numberTemplate = (rowData, { rowIndex }) => {
     return <span>{rowIndex + 1}</span>; // Display row index as the row number
@@ -59,46 +63,87 @@ export default function AzmayeshatTable() {
   ];
 
   useEffect(() => {
-    const newData = [
-      {
-        id: 1,
-        name: [{ value: "خون", type: "secondary" }],
-        category: "General",
-        quantity: 10,
-        date: "2024-11-01",
-      },
-      {
-        id: 2,
-        name: [
-          { value: "تومور مارکرها", type: "secondary" },
-          { value: "گروه خون", type: "info" },
-        ],
-        category: "Special",
-        quantity: 5,
-        date: "2024-11-02",
-      },
-      {
-        id: 3,
-        name: [
-          { value: "تومور مارکرها", type: "secondary" },
-          { value: "روتین ", type: "secondary" },
-          { value: "مولکولار", type: "secondary" },
-          { value: "گروه خون", type: "primary" },
-        ],
-        category: "General",
-        quantity: 8,
-        date: "2024-11-03",
-      },
-      {
-        id: 3,
-        name: [{ value: "تومور مارکرها", type: "primary" }],
-        category: "General",
-        quantity: 8,
-        date: "2024-11-03",
-      },
-    ];
-    setProducts(newData);
-  }, []);
+    console.log("test");
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `https://cancerreg.ir/api/v1/tests/batch-test/${uid}/`
+        );
+        const { results } = response.data;
+        console.log("results", results);
+        // Map the API response to the desired structure
+        // Adjust the mapping according to your actual data needs
+        const mappedData = results.map((item) => ({
+          id: item.uid,
+          // `name` field is an array of objects:
+          // In your original data, `name` had structure [{value: "...", type: "..."}]
+          // We can map the tests array similarly:
+          name: item.tests.map((test) => ({
+            value: test.category,
+            // You can map test.state to type. For example:
+            // "IN_PROGRESS" could map to "info", or any styling you'd like:
+            type: test.state === "IN_PROGRESS" ? "info" : "secondary",
+          })),
+          // category wasn't defined directly by the new API, you can pick something appropriate.
+          // For example, if you want to use `order_description` or a fallback:
+          category: item.order_description || "General",
+          // quantity was in your original data. You can use the length of tests as a quantity:
+          quantity: item.tests.length,
+          // date can be taken from created_at, slicing to get YYYY-MM-DD:
+          date: item.created_at ? item.created_at.slice(0, 10) : null,
+        }));
+
+        setProducts(mappedData);
+        console.log("mappedData", mappedData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [showAzmayeshPAge]);
+
+  // useEffect(() => {
+  //   const newData = [
+  //     {
+  //       id: 1,
+  //       name: [{ value: "خون", type: "secondary" }],
+  //       category: "General",
+  //       quantity: 10,
+  //       date: "2024-11-01",
+  //     },
+  //     {
+  //       id: 2,
+  //       name: [
+  //         { value: "تومور مارکرها", type: "secondary" },
+  //         { value: "گروه خون", type: "info" },
+  //       ],
+  //       category: "Special",
+  //       quantity: 5,
+  //       date: "2024-11-02",
+  //     },
+  //     {
+  //       id: 3,
+  //       name: [
+  //         { value: "تومور مارکرها", type: "secondary" },
+  //         { value: "روتین ", type: "secondary" },
+  //         { value: "مولکولار", type: "secondary" },
+  //         { value: "گروه خون", type: "primary" },
+  //       ],
+  //       category: "General",
+  //       quantity: 8,
+  //       date: "2024-11-03",
+  //     },
+  //     {
+  //       id: 3,
+  //       name: [{ value: "تومور مارکرها", type: "primary" }],
+  //       category: "General",
+  //       quantity: 8,
+  //       date: "2024-11-03",
+  //     },
+  //   ];
+  //   setProducts(newData);
+  // }, []);
 
   const handlePrint = () => {
     // Add your print logic here
