@@ -79,9 +79,9 @@ const SonographyForm = () => {
         "https://cancerreg.ir/api/v1/records/sonography/",
         formattedData
       );
-      toast.success("Data submitted successfully");
+      toast.success("ثبت شد");
     } catch (error) {
-      toast.warning("Error submitting data");
+      toast.warning("خطایی رخ داده است.");
       console.error(error);
     }
   };
