@@ -116,6 +116,7 @@ const SonographyForm = () => {
                 type="text"
                 name="site"
                 value={field.site}
+                className="text-right"
                 onChange={(e) => handleInputChange(index, e)}
               />
             </Form.Group>
@@ -127,21 +128,11 @@ const SonographyForm = () => {
                 type="number"
                 name="size"
                 value={field.size}
+                className="text-right"
                 onChange={(e) => handleInputChange(index, e)}
               />
             </Form.Group>
           </Col>
-          {/* <Col>
-            <Form.Group>
-              <Form.Label>Description</Form.Label>
-              <Form.Control
-                type="text"
-                name="description"
-                value={field.description}
-                onChange={(e) => handleInputChange(index, e)}
-              />
-            </Form.Group>
-          </Col> */}
         </Row>
       ))}
 
@@ -149,37 +140,40 @@ const SonographyForm = () => {
         اضافه کردن
       </Button>
 
-      {/* <Form.Group className="my-3">
-        <Form.Label>Batch UID</Form.Label>
-        <Form.Control
-          type="text"
-          name="batch_uid"
-          value={formData.batch_uid}
-          onChange={handleFieldChange}
-        />
-      </Form.Group> */}
-
       <Row className="my-3">
         <Col>
           <Form.Group>
             <Form.Label>BIRADS</Form.Label>
             <Form.Control
-              type="text"
+              as="select"
               name="birads"
               value={formData.birads}
               onChange={handleFieldChange}
-            />
+            >
+              <option value="">Select BIRADS</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </Form.Control>
           </Form.Group>
         </Col>
         <Col>
           <Form.Group>
             <Form.Label>Echo Genicity</Form.Label>
             <Form.Control
-              type="text"
+              as="select"
               name="echogenicity"
               value={formData.echogenicity}
               onChange={handleFieldChange}
-            />
+            >
+              <option value="">Select Echo Genicity</option>
+              <option value="ISO">ISO</option>
+              <option value="HYPO">HYPO</option>
+              <option value="HYPER">HYPER</option>
+              <option value="Mixed">Mixed</option>
+            </Form.Control>
           </Form.Group>
         </Col>
       </Row>

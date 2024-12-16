@@ -318,3 +318,10 @@ a.sidebar-link:hover {
     border: 1px solid #dedede;
   }
   
+
+input,
+textarea,
+select,
+.form-control {
+  text-align: right;
+}
