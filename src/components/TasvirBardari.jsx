@@ -19,6 +19,7 @@ export default function TasvirBardari() {
   const navigate = useNavigate();
   const { uid } = useParams();
   const [loading, setLoading] = useState(false);
+  const [btnLoading, setbtnLoading] = useState(false);
 
   const numberTemplate = (rowData, { rowIndex }) => {
     return <span>{rowIndex + 1}</span>;
@@ -144,6 +145,8 @@ export default function TasvirBardari() {
   };
 
   const handleSubmit = () => {
+    setbtnLoading(true);
+
     const payload = {
       patient_uid: uid,
       description: description,
@@ -153,10 +156,13 @@ export default function TasvirBardari() {
     axios
       .post(`https://cancerreg.ir/api/v1/records/records-order/`, payload)
       .then((response) => {
+        setbtnLoading(false);
         setShowAzmayeshPAge("home");
         handleRefresh();
       })
       .catch((error) => {
+        setbtnLoading(false);
+
         console.error("Error submitting data:", error);
         // Handle error
         toast.warning("مشکلی پیش آمده است.");
@@ -298,7 +304,7 @@ export default function TasvirBardari() {
                   onClick={handleSubmit}
                   type="submit"
                   className="btn btn-primary w-100"
-                  disabled={loading}
+                  disabled={btnLoading}
                 >
                   تایید و ثبت دستور تصویربرداری ها
                 </button>
