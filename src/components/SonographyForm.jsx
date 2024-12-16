@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { useParams } from "react-router-dom";
-import { Controller } from "react-hook-form";
-import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
@@ -11,16 +9,19 @@ import { toast } from "react-toastify";
 
 const SonographyForm = () => {
   const { uid } = useParams();
-  const [formData, setFormData] = useState({
+
+  // Define initial state constants
+  const initialFormData = {
     patient_uid: uid,
     date: "",
-    sizes: [{ size: null, site: "", description: "" }],
+    sizes: [{ size: undefined, site: "", description: "" }],
     description: "",
     batch_uid: undefined,
     birads: "",
     echogenicity: "",
-  });
+  };
 
+  const [formData, setFormData] = useState(initialFormData);
   const [selectedDate, setSelectedDate] = useState(null);
 
   const handleDateChange = (date) => {
@@ -50,7 +51,10 @@ const SonographyForm = () => {
   const addInputFields = () => {
     setFormData({
       ...formData,
-      sizes: [...formData.sizes, { size: null, site: "", description: "" }],
+      sizes: [
+        ...formData.sizes,
+        { size: undefined, site: "", description: "" },
+      ],
     });
   };
 
@@ -80,6 +84,10 @@ const SonographyForm = () => {
         formattedData
       );
       toast.success("ثبت شد");
+
+      // Reset form data and selected date
+      setFormData(initialFormData);
+      setSelectedDate(null);
     } catch (error) {
       toast.warning("خطایی رخ داده است.");
       console.error(error);
@@ -118,6 +126,7 @@ const SonographyForm = () => {
                 value={field.site}
                 className="text-right"
                 onChange={(e) => handleInputChange(index, e)}
+                required // Optional: Add validation if needed
               />
             </Form.Group>
           </Col>
@@ -130,6 +139,7 @@ const SonographyForm = () => {
                 value={field.size}
                 className="text-right"
                 onChange={(e) => handleInputChange(index, e)}
+                required // Optional: Add validation if needed
               />
             </Form.Group>
           </Col>
@@ -149,6 +159,7 @@ const SonographyForm = () => {
               name="birads"
               value={formData.birads}
               onChange={handleFieldChange}
+              required // Optional: Add validation if needed
             >
               <option value="">Select BIRADS</option>
               <option value="1">1</option>
@@ -167,6 +178,7 @@ const SonographyForm = () => {
               name="echogenicity"
               value={formData.echogenicity}
               onChange={handleFieldChange}
+              required // Optional: Add validation if needed
             >
               <option value="">Select Echo Genicity</option>
               <option value="ISO">ISO</option>
