@@ -2,8 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Tab, Nav } from "react-bootstrap";
 import { SelectButton } from "primereact/selectbutton";
 import apiRequest from "../api/apiService";
-import { Calendar } from "primereact/calendar";
+
 import { Dropdown } from "primereact/dropdown";
+import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from "react-multi-date-picker";
+import persian from "react-date-object/calendars/persian";
+import persian_fa from "react-date-object/locales/persian_fa";
+
 import axios from "axios";
 
 const NewPillsTabs = () => {
@@ -15,6 +20,20 @@ const NewPillsTabs = () => {
   const [selectedSubCategory, setSelectedSubCategory] = useState(null);
   const [date, setDate] = useState(null);
   const arr = [0, 0, 0, 0, 1, 1, 1, 2, 2];
+
+  const [selectedDate, setSelectedDate] = useState(null);
+
+  const handleDateChange = (date) => {
+    if (date) {
+      const gregorianDate = date.convert("gregorian").toDate();
+      const formattedDate = gregorianDate.toISOString().split("T")[0];
+      setSelectedDate(date);
+      setFormData({ ...formData, date: formattedDate });
+    } else {
+      setSelectedDate(null);
+      setFormData({ ...formData, date: "" });
+    }
+  };
 
   const transformResponse = (response) => {
     console.log("res", response);
@@ -183,7 +202,17 @@ const NewPillsTabs = () => {
               <div key={rowIndex} className="d-flex flex-column flex-wrap mb-3">
                 <div className="d-flex flex-column w-25">
                   <label>تاریخ</label>
-                  <Calendar value={date} onChange={(e) => setDate(e.value)} />
+                  <DatePicker
+                    value={selectedDate}
+                    onChange={handleDateChange}
+                    calendar={persian}
+                    locale={persian_fa}
+                    format="YYYY/MM/DD"
+                    placeholder="تاریخ را انتخاب کنید"
+                    className=" p-2 border rounded "
+                    inputClass="w-full p-2 text-end w-100 border rounded"
+                    position="bottom-right" // Change this to control the position
+                  />{" "}
                 </div>
                 <div className="d-flex flex-row flex-wrap mt-4">
                   {fields

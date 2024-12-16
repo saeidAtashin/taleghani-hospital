@@ -143,7 +143,7 @@ const Mri = () => {
       ))}
 
       <Button variant="secondary" onClick={addInputFields}>
-        Add More
+        اضافه کردن
       </Button>
 
       <Form.Group className="my-3">
