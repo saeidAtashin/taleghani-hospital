@@ -14,7 +14,7 @@ const SonographyForm = () => {
   const initialFormData = {
     patient_uid: uid,
     date: "",
-    sizes: [{ size: undefined, site: "", description: "" }],
+    sizes: [{ size: 0, site: "", description: "" }],
     description: "",
     batch_uid: undefined,
     birads: "",
@@ -23,6 +23,7 @@ const SonographyForm = () => {
 
   const [formData, setFormData] = useState(initialFormData);
   const [selectedDate, setSelectedDate] = useState(null);
+  const [loadingBtn, setloadingBtn] = useState(false);
 
   const handleDateChange = (date) => {
     if (date) {
@@ -51,21 +52,20 @@ const SonographyForm = () => {
   const addInputFields = () => {
     setFormData({
       ...formData,
-      sizes: [
-        ...formData.sizes,
-        { size: undefined, site: "", description: "" },
-      ],
+      sizes: [...formData.sizes, { size: 0, site: "", description: "" }],
     });
   };
 
   const handleSubmit = async (e) => {
+    setloadingBtn(true);
     e.preventDefault();
 
     // Map sizes to the required involvements format
     const involvements = formData.sizes.map((item) => ({
       site: item.site,
       size: item.size,
-      // additionalProp3: item.description,
+      // You can include description if needed
+      // description: item.description,
     }));
 
     const formattedData = {
@@ -86,9 +86,13 @@ const SonographyForm = () => {
       toast.success("ثبت شد");
 
       // Reset form data and selected date
+      setloadingBtn(false);
+
       setFormData(initialFormData);
       setSelectedDate(null);
     } catch (error) {
+      setloadingBtn(false);
+
       toast.warning("خطایی رخ داده است.");
       console.error(error);
     }
@@ -108,7 +112,7 @@ const SonographyForm = () => {
             locale={persian_fa}
             format="YYYY/MM/DD"
             placeholder="تاریخ را انتخاب کنید"
-            className=" p-2 border rounded "
+            className="p-2 border rounded"
             inputClass="w-full p-2 text-end w-100 border rounded"
             position="bottom-right" // Change this to control the position
           />
@@ -126,7 +130,7 @@ const SonographyForm = () => {
                 value={field.site}
                 className="text-right"
                 onChange={(e) => handleInputChange(index, e)}
-                required // Optional: Add validation if needed
+                placeholder="مکان را وارد کنید" // Optional: Add a placeholder
               />
             </Form.Group>
           </Col>
@@ -139,7 +143,7 @@ const SonographyForm = () => {
                 value={field.size}
                 className="text-right"
                 onChange={(e) => handleInputChange(index, e)}
-                required // Optional: Add validation if needed
+                placeholder="اندازه را وارد کنید" // Optional: Add a placeholder
               />
             </Form.Group>
           </Col>
@@ -159,7 +163,6 @@ const SonographyForm = () => {
               name="birads"
               value={formData.birads}
               onChange={handleFieldChange}
-              required // Optional: Add validation if needed
             >
               <option value="">Select BIRADS</option>
               <option value="1">1</option>
@@ -178,7 +181,6 @@ const SonographyForm = () => {
               name="echogenicity"
               value={formData.echogenicity}
               onChange={handleFieldChange}
-              required // Optional: Add validation if needed
             >
               <option value="">Select Echo Genicity</option>
               <option value="ISO">ISO</option>
@@ -202,7 +204,7 @@ const SonographyForm = () => {
         />
       </Form.Group>
 
-      <Button type="submit" variant="primary">
+      <Button type="submit" variant="primary" disabled={loadingBtn}>
         تایید و ثبت نتایج
       </Button>
     </Form>
