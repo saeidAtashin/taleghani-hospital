@@ -28,6 +28,32 @@ export default function AzmayeshatTable() {
     );
   };
 
+  // function nameTemplate(rowData) {
+  //   const names = Array.isArray(rowData?.name) ? rowData.name : [];
+
+  //   console.log("rowData", rowData);
+  //   return (
+  //     <div>
+  //       {names.map((nameItem, index) => (
+  //         <span
+  //           onClick={() => {
+  //             console.log("batch_id?", rowData?.id);
+  //           }}
+  //           key={index}
+  //           style={{
+  //             cursor: "pointer",
+  //             fontWeight: "bold",
+  //             color: nameItem.type === "info" ? "#aa9f00" : "green",
+  //             marginRight: "8px",
+  //           }}
+  //         >
+  //           {nameItem.value}
+  //         </span>
+  //       ))}
+  //     </div>
+  //   );
+  // }
+
   function nameTemplate(rowData) {
     const names = Array.isArray(rowData?.name) ? rowData.name : [];
 
@@ -36,14 +62,14 @@ export default function AzmayeshatTable() {
       <div>
         {names.map((nameItem, index) => (
           <span
-            onClick={() => {
-              console.log("batch_id?", rowData?.id);
-            }}
             key={index}
+            onClick={() => {
+              console.log("UID of the clicked item:", rowData?.id); // Log the uid when clicked
+            }}
             style={{
               cursor: "pointer",
               fontWeight: "bold",
-              color: nameItem.type === "info" ? "#aa9f00" : "green",
+              color: nameItem.type === "info" ? "#FF7518" : "green",
               marginRight: "8px",
             }}
           >
@@ -62,7 +88,6 @@ export default function AzmayeshatTable() {
   ];
 
   useEffect(() => {
-    console.log("test");
     const fetchData = async () => {
       try {
         const response = await axios.get(
@@ -231,3 +256,5 @@ export default function AzmayeshatTable() {
     </>
   );
 }
+
+//  in this code, i want that when click on any items in cell with test.state is "IN_PROGRESS" make its color yellow, and if DONE make it green, and when click on any of them, console.log its uid
