@@ -238,7 +238,7 @@ export default function AzmayeshatTable() {
                 x
               </span>
             </div>
-            {/* <PillsTabs tabs={tabsInnerImage} /> */}
+            <PillsTabs />
           </div>
         </>
       ) : (
