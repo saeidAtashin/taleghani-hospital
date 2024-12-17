@@ -1,57 +1,93 @@
 import React, { useState, useEffect } from "react";
 import { Tab, Nav } from "react-bootstrap";
+import SonographyForm from "./SonographyForm";
+import Mammography from "./Mammography";
+import Mri from "./Mri";
+import Ctscan from "./Ctscan";
+import ScanHastei from "./ScanHastei";
+import Petscan from "./Petscan";
+import SampleGraphy from "./SampleGraphy";
 
-const PillsTabsTasvir = ({ tabs, dataOfTable, allrow }) => {
-  const [activeTab, setActiveTab] = useState(tabs[0]?.title || "");
+const PillsTabsTasvir = ({ dataOfTable, allrow }) => {
+  const tabsInnerImage = [
+    {
+      eventKey: "sonography",
+      title: "سونوگرافی",
+      content: <SonographyForm />,
+    },
+    {
+      eventKey: "mammography",
+      title: "ماموگرافی",
+      content: <Mammography />,
+    },
+    {
+      eventKey: "mri",
+      title: "MRI",
+      content: <Mri />,
+    },
+    {
+      eventKey: "ctscan",
+      title: "CT-Scan",
+      content: <Ctscan />,
+    },
+    {
+      eventKey: "corescan",
+      title: "اسکن هسته ای",
+      content: <ScanHastei />,
+    },
+    {
+      eventKey: "petscan",
+      title: "PET-Scan",
+      content: <Petscan />,
+    },
+    {
+      eventKey: "othergraphy",
+      title: "گرافی ساده",
+      content: <SampleGraphy />,
+    },
+  ];
+
+  const [activeTab, setActiveTab] = useState(tabsInnerImage[0]?.eventKey || "");
 
   useEffect(() => {
-    console.log("tab.title", tabs);
-    console.log("record_type", dataOfTable?.uid);
-
     if (dataOfTable?.record_type) {
-      const matchedTab = tabs.find(
-        (tab) => tab?.eventKey === dataOfTable?.record_type
+      const matchedTab = tabsInnerImage.find(
+        (tab) => tab.eventKey === dataOfTable.record_type
       );
       if (matchedTab) {
-        setActiveTab(matchedTab.title);
+        setActiveTab(matchedTab.eventKey);
       }
     }
-  }, [dataOfTable, tabs]);
+  }, [dataOfTable]);
 
-  const handleSelect = (title) => {
-    setActiveTab(title);
+  const handleSelect = (selectedKey) => {
+    setActiveTab(selectedKey);
   };
 
-  // Helper function to check the state and return corresponding color
   const getTabBadgeColor = (tab) => {
-    // Find the first matching row for the current tab's eventKey
     const matchingRow = allrow.find((row) => row.record_type === tab.eventKey);
-
-    // If a matching row is found and its state is "IN_PROGRESS", return the orange color
     if (matchingRow && matchingRow.state === "IN_PROGRESS") {
-      return "#ff9008"; // Orange color
+      return "#ff9008"; // Orange
     }
     if (matchingRow && matchingRow.state === "DONE") {
-      return "#3ff369"; // Orange color
+      return "#3ff369"; // Green
     }
-    // "DONE"
-    return null; // Green color
+    return null;
   };
 
   return (
     <Tab.Container activeKey={activeTab} onSelect={handleSelect}>
-      <Nav variant="pills" className="">
-        {tabs.map((tab, index) => {
-          const badgeColor = getTabBadgeColor(tab); // Get badge color based on state
-          const isActive = activeTab === tab.title; // Check if tab is active
+      <Nav variant="pills">
+        {tabsInnerImage.map((tab) => {
+          const badgeColor = getTabBadgeColor(tab);
+          const isActive = activeTab === tab.eventKey;
           return (
-            <Nav.Item key={index} className="m-2 position-relative">
+            <Nav.Item key={tab.eventKey} className="m-2 position-relative">
               <Nav.Link
-                className={`border ${isActive ? "active-tab" : ""}`} // Apply active class to active tab
-                eventKey={tab.title}
+                className={`border ${isActive ? "active-tab" : ""}`}
+                eventKey={tab.eventKey}
               >
                 {tab.title}
-                {/* Top-right color indicator */}
                 {badgeColor && (
                   <span
                     style={{
@@ -61,7 +97,7 @@ const PillsTabsTasvir = ({ tabs, dataOfTable, allrow }) => {
                       width: "8px",
                       height: "8px",
                       borderRadius: "50%",
-                      backgroundColor: badgeColor, // Use the color based on state
+                      backgroundColor: badgeColor,
                     }}
                   ></span>
                 )}
@@ -70,10 +106,12 @@ const PillsTabsTasvir = ({ tabs, dataOfTable, allrow }) => {
           );
         })}
       </Nav>
-      <h4 className="my-4 mx-2">ثبت {activeTab} جدید</h4>
+      <h4 className="my-4 mx-2">
+        ثبت {tabsInnerImage.find((t) => t.eventKey === activeTab)?.title} جدید
+      </h4>
       <Tab.Content className="mt-3">
-        {tabs.map((tab, index) => (
-          <Tab.Pane eventKey={tab.title} key={index}>
+        {tabsInnerImage.map((tab) => (
+          <Tab.Pane eventKey={tab.eventKey} key={tab.eventKey}>
             {tab.content}
           </Tab.Pane>
         ))}

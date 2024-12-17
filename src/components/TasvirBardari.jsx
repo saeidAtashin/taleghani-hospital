@@ -7,7 +7,6 @@ import PillsTabs from "./PillsTabs";
 import SelectableIconItem from "./BadgeIcon";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-import { tabsInnerImage } from "../pages/PatientsDetails";
 import { toast } from "react-toastify";
 import PillsTabsTasvir from "./PillsTabsTasvir";
 
@@ -266,7 +265,7 @@ export default function TasvirBardari() {
             </span>
           </div>
           <PillsTabsTasvir
-            tabs={tabsInnerImage}
+            // tabs={tabsInnerImage}
             dataOfTable={tasvirDetailUid}
             allrow={allrow}
           />
@@ -330,3 +329,4 @@ export default function TasvirBardari() {
     </>
   );
 }
+

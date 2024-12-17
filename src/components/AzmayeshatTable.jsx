@@ -4,7 +4,7 @@ import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import moment from "jalali-moment";
 import PillsTabs from "./PillsTabs";
-import { tabsInnerImage } from "../pages/PatientsDetails";
+// import { tabsInnerImage } from "../pages/PatientsDetails";
 // import BadgeIcon from "./BadgeIcon";
 import SelectableIconItem from "./BadgeIcon";
 import { useParams } from "react-router-dom";
@@ -238,7 +238,7 @@ export default function AzmayeshatTable() {
                 x
               </span>
             </div>
-            <PillsTabs tabs={tabsInnerImage} />
+            {/* <PillsTabs tabs={tabsInnerImage} /> */}
           </div>
         </>
       ) : (

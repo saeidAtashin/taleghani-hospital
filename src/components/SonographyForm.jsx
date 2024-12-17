@@ -7,9 +7,9 @@ import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import { toast } from "react-toastify";
 
-const SonographyForm = (fetchData) => {
+const SonographyForm = (apiData) => {
   const { uid } = useParams();
-  console.log("fetchData", fetchData);
+  console.log("apiData", apiData);
   // Define initial state constants
   const initialFormData = {
     patient_uid: uid,
