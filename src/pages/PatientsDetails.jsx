@@ -21,7 +21,7 @@ import SampleGraphy from "../components/SampleGraphy";
 
 export const tabsInnerImage = [
   {
-    eventKey: "سونوگرافی",
+    eventKey: "sonography",
     title: "سونوگرافی",
     content: (
       <>
@@ -30,7 +30,7 @@ export const tabsInnerImage = [
     ),
   },
   {
-    eventKey: "ماموگرافی",
+    eventKey: "mammography",
     title: "ماموگرافی",
     content: (
       <>
@@ -39,7 +39,7 @@ export const tabsInnerImage = [
     ),
   },
   {
-    eventKey: "MRI",
+    eventKey: "mri",
     title: "MRI",
     content: (
       <>
@@ -48,7 +48,7 @@ export const tabsInnerImage = [
     ),
   },
   {
-    eventKey: "CT-Scan",
+    eventKey: "ctscan",
     title: "CT-Scan",
     content: (
       <>
@@ -57,7 +57,7 @@ export const tabsInnerImage = [
     ),
   },
   {
-    eventKey: "اسکن هسته ای",
+    eventKey: "corescan",
     title: "اسکن هسته ای",
     content: (
       <>
@@ -66,7 +66,7 @@ export const tabsInnerImage = [
     ),
   },
   {
-    eventKey: "PET-Scan",
+    eventKey: "petscan",
     title: "PET-Scan",
     content: (
       <>
@@ -75,7 +75,7 @@ export const tabsInnerImage = [
     ),
   },
   {
-    eventKey: "گرافی ساده",
+    eventKey: "othergraphy",
     title: "گرافی ساده",
     content: (
       <>

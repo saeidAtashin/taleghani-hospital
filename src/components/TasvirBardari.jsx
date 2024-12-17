@@ -15,6 +15,7 @@ export default function TasvirBardari() {
   const [products, setProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [showAzmayeshPAge, setShowAzmayeshPAge] = useState("home");
+  const [tasvirDetailUid, settasvirDetailUid] = useState(undefined);
   const dt = useRef(null);
   const navigate = useNavigate();
   const { uid } = useParams();
@@ -35,13 +36,19 @@ export default function TasvirBardari() {
     );
   };
 
+  const tasvirbardatiCellClick = (record) => {
+    settasvirDetailUid(record);
+    console.log("record", record);
+    setShowAzmayeshPAge("orderRegister");
+  };
+
   const nameTemplate = (rowData) => {
     return (
       <div>
         {rowData?.records?.map((record, index) => (
           <span
             key={index}
-            onClick={() => navigate(`/dashboard/record/${record.uid}`)}
+            onClick={() => tasvirbardatiCellClick(record)}
             style={{
               cursor: "pointer",
               color: record?.state === "IN_PROGRESS" ? "#FF7518" : "green",
@@ -255,7 +262,10 @@ export default function TasvirBardari() {
               x
             </span>
           </div>
-          <PillsTabsTasvir tabs={tabsInnerImage} />
+          <PillsTabsTasvir
+            tabs={tabsInnerImage}
+            dataOfTable={tasvirDetailUid}
+          />
         </div>
       ) : (
         showAzmayeshPAge === "orderRegisterOrder" && (
