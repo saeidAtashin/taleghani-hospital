@@ -32,7 +32,7 @@ const PillsTabsTasvir = ({ tabs, dataOfTable, allrow }) => {
       return "#ff9008"; // Orange color
     }
     if (matchingRow && matchingRow.state === "DONE") {
-      return "#28a745"; // Orange color
+      return "#3ff369"; // Orange color
     }
     // "DONE"
     return null; // Green color
