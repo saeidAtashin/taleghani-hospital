@@ -9,8 +9,7 @@ import { toast } from "react-toastify";
 
 const SonographyForm = (apiData) => {
   const { uid } = useParams();
-  console.log("apiData", apiData);
-  // Define initial state constants
+
   const initialFormData = {
     patient_uid: uid,
     date: "",

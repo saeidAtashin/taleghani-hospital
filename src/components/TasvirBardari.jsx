@@ -38,8 +38,6 @@ export default function TasvirBardari() {
 
   const tasvirbardatiCellClick = (record, allrow) => {
     settasvirDetailUid(record);
-    console.log("record", record);
-    console.log("allrow", allrow);
     setallrow(allrow);
     setShowAzmayeshPAge("orderRegister");
   };
@@ -95,9 +93,7 @@ export default function TasvirBardari() {
     fetchData(); // Fetch data when component mounts
   }, [uid, showAzmayeshPAge]);
 
-  const handlePrint = () => {
-    console.log("Printing:", selectedProducts);
-  };
+  const handlePrint = () => {};
 
   const headerNew = (
     <div className="d-flex flex-wrap gap-2 align-items-center justify-content-start">
@@ -329,4 +325,3 @@ export default function TasvirBardari() {
     </>
   );
 }
-
