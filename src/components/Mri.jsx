@@ -8,7 +8,7 @@ import DatePicker from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 
-const Mri = () => {
+const Mri = (fetchData) => {
   const { uid } = useParams();
   const [formData, setFormData] = useState({
     patient_uid: uid,

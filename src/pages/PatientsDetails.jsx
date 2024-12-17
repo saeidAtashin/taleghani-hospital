@@ -25,7 +25,9 @@ export const tabsInnerImage = [
     title: "سونوگرافی",
     content: (
       <>
-        <SonographyForm />
+        <SonographyForm
+        // fetchData={fetchData}
+        />
       </>
     ),
   },
@@ -34,7 +36,9 @@ export const tabsInnerImage = [
     title: "ماموگرافی",
     content: (
       <>
-        <Mammography />
+        <Mammography
+        // fetchData={fetchData}
+        />
       </>
     ),
   },
@@ -43,7 +47,9 @@ export const tabsInnerImage = [
     title: "MRI",
     content: (
       <>
-        <Mri />
+        <Mri
+        // fetchData={fetchData}
+        />
       </>
     ),
   },
@@ -52,7 +58,9 @@ export const tabsInnerImage = [
     title: "CT-Scan",
     content: (
       <>
-        <Ctscan />
+        <Ctscan
+        // fetchData={fetchData}
+        />
       </>
     ),
   },
@@ -61,7 +69,9 @@ export const tabsInnerImage = [
     title: "اسکن هسته ای",
     content: (
       <>
-        <ScanHastei />
+        <ScanHastei
+        // fetchData={fetchData}
+        />
       </>
     ),
   },
@@ -70,7 +80,9 @@ export const tabsInnerImage = [
     title: "PET-Scan",
     content: (
       <>
-        <Petscan />
+        <Petscan
+        // fetchData={fetchData}
+        />
       </>
     ),
   },
@@ -79,7 +91,9 @@ export const tabsInnerImage = [
     title: "گرافی ساده",
     content: (
       <>
-        <SampleGraphy />
+        <SampleGraphy
+        // fetchData={fetchData}
+        />
       </>
     ),
   },
