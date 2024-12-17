@@ -325,3 +325,14 @@ select,
 .form-control {
   text-align: right;
 }
+
+.active-tab {
+  background-color: #59a4f4 !important; /* Change this to your desired color */
+  color: white;
+  font-weight: bold;
+}
+
+/* Optional: Style for the top-right badge when the tab is active */
+.active-tab span {
+  background-color: #72a728; /* Green color for badge (or you can change it) */
+}

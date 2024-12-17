@@ -14,6 +14,7 @@ import PillsTabsTasvir from "./PillsTabsTasvir";
 export default function TasvirBardari() {
   const [products, setProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
+  const [allrow, setallrow] = useState([]);
   const [showAzmayeshPAge, setShowAzmayeshPAge] = useState("home");
   const [tasvirDetailUid, settasvirDetailUid] = useState(undefined);
   const dt = useRef(null);
@@ -36,9 +37,11 @@ export default function TasvirBardari() {
     );
   };
 
-  const tasvirbardatiCellClick = (record) => {
+  const tasvirbardatiCellClick = (record, allrow) => {
     settasvirDetailUid(record);
     console.log("record", record);
+    console.log("allrow", allrow);
+    setallrow(allrow);
     setShowAzmayeshPAge("orderRegister");
   };
 
@@ -48,7 +51,7 @@ export default function TasvirBardari() {
         {rowData?.records?.map((record, index) => (
           <span
             key={index}
-            onClick={() => tasvirbardatiCellClick(record)}
+            onClick={() => tasvirbardatiCellClick(record, rowData?.records)}
             style={{
               cursor: "pointer",
               color: record?.state === "IN_PROGRESS" ? "#FF7518" : "green",
@@ -265,6 +268,7 @@ export default function TasvirBardari() {
           <PillsTabsTasvir
             tabs={tabsInnerImage}
             dataOfTable={tasvirDetailUid}
+            allrow={allrow}
           />
         </div>
       ) : (
