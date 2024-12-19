@@ -11,6 +11,7 @@ import AzmayeshatTable from "../components/AzmayeshatTable";
 import { useParams } from "react-router-dom";
 import apiRequest from "../api/apiService";
 import TasvirBardari from "../components/TasvirBardari";
+import TreatmentTable from "../components/TreatmentTable";
 
 const PatientsDetails = () => {
   const { uid } = useParams();
@@ -172,7 +173,11 @@ const PatientsDetails = () => {
     {
       key: "درمان",
       label: "درمان",
-      content: <div>درمان</div>,
+      content: (
+        <>
+          <TreatmentTable />
+        </>
+      ),
     },
     {
       key: "follow up",
