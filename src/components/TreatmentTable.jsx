@@ -102,22 +102,17 @@ const TreatmentTable = () => {
     { label: "R2", value: "R2" },
   ];
 
-  // Recalculate isTreatmentForm whenever treatmentValue changes
   useEffect(() => {
     let mainSelection = null;
     let subSelection = null;
 
     if (Array.isArray(treatmentValue)) {
-      // This is when a nested selection is made and we get a path array
       mainSelection = treatmentValue[0]?.value;
       subSelection = treatmentValue[1]?.value;
     } else if (treatmentValue && treatmentValue.value) {
-      // This is when there's only a single-level selection
       mainSelection = treatmentValue.value;
     }
 
-    // Determine if it is the treatment form
-    // Condition: If "هورمون درمانی" or ("لوکال" and "TACE")
     const isForm =
       mainSelection === "هورمون درمانی" ||
       (mainSelection === "لوکال" && subSelection === "TACE");
