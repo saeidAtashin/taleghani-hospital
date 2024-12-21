@@ -335,37 +335,36 @@ const TreatmentTable = () => {
           ) : (
             // CHEMOTHERAPY FORM
             <>
-              <div className="p-field p-grid">
+              <div className="d-flex flex-column my-3 ">
                 <label className="p-col-12 p-md-2" htmlFor="start_date">
-                  Start Date:
+                  تاریخ شروع خط درمان:
                 </label>
-                <div className="p-col-12 p-md-10">
-                  <DatePicker
-                    value={startDateObj}
-                    onChange={handleStartDateChange}
-                    calendar={persian}
-                    locale={persian_fa}
-                    format="YYYY/MM/DD"
-                    placeholder="تاریخ را انتخاب کنید"
-                    className="p-2 border rounded"
-                    inputClass="w-full p-2 text-end w-100 border rounded"
-                    position="bottom-right"
-                  />
-                </div>
+                <DatePicker
+                  value={startDateObj}
+                  onChange={handleStartDateChange}
+                  calendar={persian}
+                  locale={persian_fa}
+                  format="YYYY/MM/DD"
+                  placeholder="تاریخ را انتخاب کنید"
+                  className="p-2 border rounded"
+                  inputClass="w-full p-2 text-end w-100 border rounded"
+                  position="bottom-right"
+                />
               </div>
 
-              <div className="p-field p-grid">
-                <label className="p-col-12 p-md-2" htmlFor="protocol">
+              <div className="">
+                <label className="p-col-12 p-md-2 mt-3" htmlFor="protocol">
                   پروتکل:
                 </label>
-                <div className="p-col-12 p-md-10">
+                <div className="p-col-12 p-md-10 mb-4 ">
                   <Dropdown
                     id="protocol"
                     value={selectedProtocol}
                     options={protocolOptions}
                     onChange={(e) => setSelectedProtocol(e.value)}
-                    placeholder="Select Protocol"
+                    placeholder="پروتکل را انتخاب نمایید"
                     optionLabel="label"
+                    className="w-100"
                   />
                 </div>
               </div>
@@ -423,7 +422,7 @@ const TreatmentTable = () => {
                 ))}
 
                 <Button
-                  label="Add Cycle"
+                  label="ثبت سیکل جدید"
                   icon="pi pi-plus"
                   className="p-button-text border rounded"
                   onClick={addCycle}
@@ -432,7 +431,7 @@ const TreatmentTable = () => {
 
               <div className="p-field p-grid">
                 <label className="p-col-12 p-md-2" htmlFor="evaluation_result">
-                  نتیجه:
+                  ارزیابی خط درمان:
                 </label>
                 <div className="p-col-12 p-md-10">
                   <Dropdown
@@ -440,7 +439,7 @@ const TreatmentTable = () => {
                     value={evaluationResult}
                     options={evaluationValues}
                     onChange={(e) => setEvaluationResult(e.value)}
-                    placeholder="Select Result"
+                    placeholder="ارزیابی را انتخاب کننید"
                     className="w-100"
                   />
                 </div>
@@ -478,12 +477,22 @@ const TreatmentTable = () => {
                 </div>
               </div>
 
-              <Button
-                label="Submit"
-                icon="pi pi-check"
-                onClick={handleSubmit}
-                loading={loading}
-              />
+              <div className="d-flex  flex-column gap-2 ">
+                <Button
+                  label="ذخیره"
+                  icon="pi pi-check"
+                  onClick={handleSubmit}
+                  loading={loading}
+                  className="w-100 bg-white text-dark"
+                />
+                <Button
+                  label="پایان درمان"
+                  icon="pi pi-check"
+                  onClick={handleSubmit}
+                  className="w-100"
+                  loading={loading}
+                />
+              </div>
             </>
           )}
         </div>
