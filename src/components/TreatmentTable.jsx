@@ -258,28 +258,26 @@ const TreatmentTable = () => {
           {isTreatmentForm ? (
             // TREATMENT FORM
             <>
-              <div className="p-field p-grid">
+              <div className="d-flex flex-column my-3 ">
                 <label className="p-col-12 p-md-2" htmlFor="start_date">
-                  Start Date:
+                  تاریخ شروع خط درمان:
                 </label>
-                <div className="p-col-12 p-md-10">
-                  <DatePicker
-                    value={startDateObj}
-                    onChange={handleStartDateChange}
-                    calendar={persian}
-                    locale={persian_fa}
-                    format="YYYY/MM/DD"
-                    placeholder="تاریخ را انتخاب کنید"
-                    className="p-2 border rounded"
-                    inputClass="w-full p-2 text-end w-100 border rounded"
-                    position="bottom-right"
-                  />
-                </div>
+                <DatePicker
+                  value={startDateObj}
+                  onChange={handleStartDateChange}
+                  calendar={persian}
+                  locale={persian_fa}
+                  format="YYYY/MM/DD"
+                  placeholder="تاریخ را انتخاب کنید"
+                  className="p-2 border rounded"
+                  inputClass="w-full p-2 text-end w-100 border rounded"
+                  position="bottom-right"
+                />
               </div>
 
-              <div className="p-field p-grid">
+              <div className="d-flex flex-column my-3">
                 <label className="p-col-12 p-md-2" htmlFor="evaluation_result">
-                  نتیجه:
+                  ارزیابی درمان:
                 </label>
                 <div className="p-col-12 p-md-10">
                   <Dropdown
@@ -287,31 +285,30 @@ const TreatmentTable = () => {
                     value={evaluationResult}
                     options={evaluationValues}
                     onChange={(e) => setEvaluationResult(e.value)}
-                    placeholder="Select Result"
+                    placeholder="ارزیابی را انتخاب کنید"
+                    className="w-100"
                   />
                 </div>
               </div>
 
-              <div className="p-field p-grid">
+              <div className="d-flex flex-column my-3 ">
                 <label className="p-col-12 p-md-2" htmlFor="end_date">
-                  End Date:
+                  تاریخ پایان درمان:
                 </label>
-                <div className="p-col-12 p-md-10">
-                  <DatePicker
-                    value={endDateObj}
-                    onChange={handleEndDateChange}
-                    calendar={persian}
-                    locale={persian_fa}
-                    format="YYYY/MM/DD"
-                    placeholder="تاریخ را انتخاب کنید"
-                    className="p-2 border rounded"
-                    inputClass="w-full p-2 text-end w-100 border rounded"
-                    position="bottom-right"
-                  />
-                </div>
+                <DatePicker
+                  value={endDateObj}
+                  onChange={handleEndDateChange}
+                  calendar={persian}
+                  locale={persian_fa}
+                  format="YYYY/MM/DD"
+                  placeholder="تاریخ را انتخاب کنید"
+                  className="p-2 border rounded"
+                  inputClass="w-full p-2 text-end w-100 border rounded"
+                  position="bottom-right"
+                />
               </div>
 
-              <div className="p-field p-grid">
+              <div className="d-flex flex-column my-3 ">
                 <label className="p-col-12 p-md-2" htmlFor="description">
                   توضیحات:
                 </label>
@@ -321,15 +318,18 @@ const TreatmentTable = () => {
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     rows={3}
+                    className="w-100"
+                    placeholder="توضیحات مرتبط با خط درمان را وارد نمایید."
                   />
                 </div>
               </div>
 
               <Button
-                label="Submit"
+                label="تایید و ثبت نتایج"
                 icon="pi pi-check"
                 onClick={handleSubmit}
                 loading={loading}
+                className="w-100"
               />
             </>
           ) : (
