@@ -254,7 +254,7 @@ const TreatmentTable = () => {
       </div>
 
       {treatmentValue && (
-        <div className="p-mt-3">
+        <div className="p-mt-3 mb-4 ">
           {isTreatmentForm ? (
             // TREATMENT FORM
             <>
