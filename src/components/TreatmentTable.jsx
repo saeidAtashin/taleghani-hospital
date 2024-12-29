@@ -11,6 +11,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
+import { useParams } from "react-router-dom";
 
 const TreatmentTable = () => {
   const [treatmentValue, setTreatmentValue] = useState(null);
@@ -102,6 +103,8 @@ const TreatmentTable = () => {
     { label: "R2", value: "R2" },
   ];
 
+  const { uid } = useParams();
+
   useEffect(() => {
     let mainSelection = null;
     let subSelection = null;
@@ -189,6 +192,7 @@ const TreatmentTable = () => {
 
     const payload = {
       type: isTreatmentForm ? "TREATMENT" : "CHEMOTHERAPY",
+      patient_uid: uid,
       start_date: startDate,
       end_date: endDate,
       description: description,
@@ -207,7 +211,7 @@ const TreatmentTable = () => {
     }
 
     axios
-      .post("YOUR_API_ENDPOINT", payload)
+      .post("https://cancerreg.ir/api/v1/teatment/treatment/", payload)
       .then(() => {
         toast.current.show({
           severity: "success",
@@ -220,8 +224,8 @@ const TreatmentTable = () => {
         console.error(err);
         toast.current.show({
           severity: "error",
-          summary: "Error",
-          detail: "An error occurred while saving data",
+          summary: "خطا",
+          detail: "مشکلی پیش آمده است.",
         });
         setLoading(false);
       });
