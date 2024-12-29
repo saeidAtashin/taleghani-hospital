@@ -196,7 +196,7 @@ const TreatmentTable = () => {
       start_date: startDate,
       end_date: endDate,
       description: description,
-      evaluation_result: evaluationResult,
+      evaluation_uid: evaluationResult,
       main_selection: mainSelection,
       sub_selection: subSelection,
     };
@@ -275,12 +275,12 @@ const TreatmentTable = () => {
               </div>
 
               <div className="d-flex flex-column my-3">
-                <label className="p-col-12 p-md-2" htmlFor="evaluation_result">
+                <label className="p-col-12 p-md-2" htmlFor="evaluation_uid">
                   ارزیابی درمان:
                 </label>
                 <div className="p-col-12 p-md-10">
                   <Dropdown
-                    id="evaluation_result"
+                    id="evaluation_uid"
                     value={evaluationResult}
                     options={evaluationValues}
                     onChange={(e) => setEvaluationResult(e.value)}
@@ -429,12 +429,12 @@ const TreatmentTable = () => {
               </fieldset>
 
               <div className="p-field p-grid">
-                <label className="p-col-12 p-md-2" htmlFor="evaluation_result">
+                <label className="p-col-12 p-md-2" htmlFor="evaluation_uid">
                   ارزیابی خط درمان:
                 </label>
                 <div className="p-col-12 p-md-10">
                   <Dropdown
-                    id="evaluation_result"
+                    id="evaluation_uid"
                     value={evaluationResult}
                     options={evaluationValues}
                     onChange={(e) => setEvaluationResult(e.value)}
