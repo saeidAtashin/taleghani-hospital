@@ -118,8 +118,8 @@ const TreatmentTable = () => {
 
     const isForm =
       mainSelection === "هورمون درمانی" ||
-      (mainSelection === "لوکال" && subSelection === "TACE");
-    setIsTreatmentForm(isForm);
+      mainSelection === "شیمی درمانی-ایمونوتراپی";
+    setIsTreatmentForm(!isForm);
 
     console.log(
       "treatmentValue:",
