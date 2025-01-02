@@ -68,7 +68,7 @@ const TreatmentTable = () => {
         const results = response.data?.data?.results || [];
         const formatted = results.map((item) => ({
           label: item.name,
-          value: item.id,
+          value: item.uid,
         }));
         setProtocolOptions(formatted);
       })
@@ -117,18 +117,8 @@ const TreatmentTable = () => {
     },
   ];
 
-  const evaluationValues = [
-    { label: "PR", value: "PR" },
-    { label: "CR", value: "CR" },
-    { label: "SD", value: "SD" },
-    { label: "PD", value: "PD" },
-    { label: "Relapse", value: "Relapse" },
-    { label: "Complication of Treatment", value: "Complication of Treatment" },
-    { label: "R0", value: "R0" },
-    { label: "R1", value: "R1" },
-    { label: "R2", value: "R2" },
-  ];
 
+  
   const { uid } = useParams();
 
   useEffect(() => {
@@ -218,18 +208,20 @@ const TreatmentTable = () => {
     setLoading(true);
     const mainSelection = treatmentValue?.[0];
     const subSelection = treatmentValue?.[1];
-
+  
     const payload = {
       type: isTreatmentForm ? "TREATMENT" : "CHEMOTHERAPY",
+      category: mainSelection,
+      sub_category: subSelection,
       patient_uid: uid,
       start_date: startDate,
       end_date: endDate,
       description: description,
-      evaluation_uid: evaluationResult,
+      evaluation_uid: selectedProtocol, // Corrected field
       main_selection: mainSelection,
       sub_selection: subSelection,
     };
-
+  
     if (!isTreatmentForm) {
       payload.protocol = selectedProtocol;
       payload.cycles = cycles.map((c) => ({
@@ -238,7 +230,9 @@ const TreatmentTable = () => {
         description: c.description,
       }));
     }
-
+  
+    console.log("payload", payload);
+  
     axios
       .post("https://cancerreg.ir/api/v1/teatment/treatment/", payload)
       .then(() => {
@@ -254,22 +248,18 @@ const TreatmentTable = () => {
         toast.current.show({
           severity: "error",
           summary: "خطا",
-          detail: "مشکلی پیش آمده است.",
+          detail: err.response?.data?.message || "مشکلی پیش آمده است.",
         });
         setLoading(false);
       });
   };
+  
 
   const handleSubmitLine = () => {
     setLoading(true);
 
-    
     setShowedPart("showCycle");
   };
-
-
-  
-  
 
   return (
     <>
@@ -319,12 +309,21 @@ const TreatmentTable = () => {
                   ارزیابی درمان:
                 </label>
                 <div className="p-col-12 p-md-10">
-                  <Dropdown
+                  {/* <Dropdown
                     id="evaluation_uid"
                     value={evaluationResult}
                     options={evaluationValues}
                     onChange={(e) => setEvaluationResult(e.value)}
                     placeholder="ارزیابی را انتخاب کنید"
+                    className="w-100"
+                  /> */}
+                  <Dropdown
+                    id="evaluation_uid"
+                    value={selectedProtocol}
+                    options={protocolOptions}
+                    onChange={(e) => setSelectedProtocol(e.value)}
+                    placeholder="ارزیابی را انتخاب کنید"
+                    optionLabel="label"
                     className="w-100"
                   />
                 </div>
