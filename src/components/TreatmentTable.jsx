@@ -18,7 +18,7 @@ const TreatmentTable = () => {
   const [protocolOptions, setProtocolOptions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [description, setDescription] = useState("");
-  const [evaluationResult, setEvaluationResult] = useState(null);
+  const [evaluationResult, setEvaluationResult] = useState(undefined);
 
   const [isTreatmentForm, setIsTreatmentForm] = useState(false);
 
@@ -231,6 +231,52 @@ const TreatmentTable = () => {
       });
   };
 
+  const handleSubmitLine = () => {
+    setLoading(true);
+    const mainSelection = treatmentValue?.[0];
+    const subSelection = treatmentValue?.[1];
+
+    const payload = {
+      type: isTreatmentForm ? "TREATMENT" : "CHEMOTHERAPY",
+      patient_uid: uid,
+      start_date: startDate,
+      end_date: endDate,
+      description: description,
+      evaluation_uid: evaluationResult,
+      main_selection: mainSelection,
+      sub_selection: subSelection,
+    };
+
+    if (!isTreatmentForm) {
+      payload.protocol = selectedProtocol;
+      payload.cycles = cycles.map((c) => ({
+        cycleNumber: c.cycleNumber,
+        date: c.date,
+        description: c.description,
+      }));
+    }
+
+    axios
+      .post("https://cancerreg.ir/api/v1/teatment/treatment/", payload)
+      .then(() => {
+        toast.current.show({
+          severity: "success",
+          summary: "Success",
+          detail: "Data saved successfully",
+        });
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.current.show({
+          severity: "error",
+          summary: "خطا",
+          detail: "مشکلی پیش آمده است.",
+        });
+        setLoading(false);
+      });
+  };
+
   return (
     <>
       <Toast ref={toast} />
@@ -350,8 +396,16 @@ const TreatmentTable = () => {
                   position="bottom-right"
                 />
               </div>
+              <Button
+                label="ذخیره"
+                icon="pi pi-check"
+                onClick={handleSubmitLine}
+                loading={loading}
+                className="w-100 bg-white text-dark"
+              />
 
-              <div className="">
+              {/* hidden part */}
+              {/* <div className="">
                 <label className="p-col-12 p-md-2 mt-3" htmlFor="protocol">
                   پروتکل:
                 </label>
@@ -491,7 +545,7 @@ const TreatmentTable = () => {
                   className="w-100"
                   loading={loading}
                 />
-              </div>
+              </div> */}
             </>
           )}
         </div>
