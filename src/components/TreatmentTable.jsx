@@ -5,13 +5,12 @@ import { InputTextarea } from "primereact/inputtextarea";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
 import axios from "axios";
-
-// For date pickers
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import { useParams } from "react-router-dom";
+import { TabMenu } from "primereact/tabmenu";
 
 const TreatmentTable = () => {
   const [treatmentValue, setTreatmentValue] = useState(null);
@@ -21,16 +20,42 @@ const TreatmentTable = () => {
   const [evaluationResult, setEvaluationResult] = useState(undefined);
 
   const [isTreatmentForm, setIsTreatmentForm] = useState(false);
+  const [isCycleVisible, setisCycleVisible] = useState(false);
 
   const [startDateObj, setStartDateObj] = useState(null);
   const [startDate, setStartDate] = useState("");
 
   const [endDateObj, setEndDateObj] = useState(null);
   const [endDate, setEndDate] = useState("");
+  const [showedPart, setShowedPart] = useState("");
+  const [counter, setCounter] = useState(2);
 
-  const [cycles, setCycles] = useState([
-    { cycleNumber: 1, date: "", dateObj: null, description: "" },
+  const [items, setItems] = useState([
+    {
+      label: "ثبت خط درمان جدید",
+      command: () => addNewTreatment(),
+    },
+    {
+      label: "خط درمان 1",
+      command: () => openModal(),
+    },
   ]);
+
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const addNewTreatment = () => {
+    const newItem = {
+      label: `خط درمان ${counter}`,
+      command: () => openModal(),
+    };
+    setItems((prevItems) => [...prevItems, newItem]);
+    setCounter((prevCounter) => prevCounter + 1);
+    setActiveIndex(items.length);
+  };
+
+  const openModal = () => {};
+
+  const [cycles, setCycles] = useState([]);
   const [selectedProtocol, setSelectedProtocol] = useState(null);
 
   const toast = useRef(null);
@@ -178,6 +203,7 @@ const TreatmentTable = () => {
   };
 
   const addCycle = () => {
+    setisCycleVisible(true);
     const newCycleNumber = cycles.length + 1;
     setCycles([
       ...cycles,
@@ -236,45 +262,47 @@ const TreatmentTable = () => {
     const mainSelection = treatmentValue?.[0];
     const subSelection = treatmentValue?.[1];
 
-    const payload = {
-      type: isTreatmentForm ? "TREATMENT" : "CHEMOTHERAPY",
-      patient_uid: uid,
-      start_date: startDate,
-      end_date: endDate,
-      description: description,
-      evaluation_uid: evaluationResult,
-      main_selection: mainSelection,
-      sub_selection: subSelection,
-    };
+    setShowedPart("showCycle");
 
-    if (!isTreatmentForm) {
-      payload.protocol = selectedProtocol;
-      payload.cycles = cycles.map((c) => ({
-        cycleNumber: c.cycleNumber,
-        date: c.date,
-        description: c.description,
-      }));
-    }
+    // const payload = {
+    //   type: isTreatmentForm ? "TREATMENT" : "CHEMOTHERAPY",
+    //   patient_uid: uid,
+    //   start_date: startDate,
+    //   end_date: endDate,
+    //   description: description,
+    //   evaluation_uid: evaluationResult,
+    //   main_selection: mainSelection,
+    //   sub_selection: subSelection,
+    // };
 
-    axios
-      .post("https://cancerreg.ir/api/v1/teatment/treatment/", payload)
-      .then(() => {
-        toast.current.show({
-          severity: "success",
-          summary: "Success",
-          detail: "Data saved successfully",
-        });
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        toast.current.show({
-          severity: "error",
-          summary: "خطا",
-          detail: "مشکلی پیش آمده است.",
-        });
-        setLoading(false);
-      });
+    // if (!isTreatmentForm) {
+    //   payload.protocol = selectedProtocol;
+    //   payload.cycles = cycles.map((c) => ({
+    //     cycleNumber: c.cycleNumber,
+    //     date: c.date,
+    //     description: c.description,
+    //   }));
+    // }
+
+    // axios
+    //   .post("https://cancerreg.ir/api/v1/teatment/treatment/", payload)
+    //   .then(() => {
+    //     toast.current.show({
+    //       severity: "success",
+    //       summary: "Success",
+    //       detail: "Data saved successfully",
+    //     });
+    //     setLoading(false);
+    //   })
+    //   .catch((err) => {
+    //     console.error(err);
+    //     toast.current.show({
+    //       severity: "error",
+    //       summary: "خطا",
+    //       detail: "مشکلی پیش آمده است.",
+    //     });
+    //     setLoading(false);
+    //   });
   };
 
   return (
@@ -380,9 +408,9 @@ const TreatmentTable = () => {
           ) : (
             // CHEMOTHERAPY FORM
             <>
-              <div className="d-flex flex-column my-3 ">
+              <div className="d-flex flex-column my-3">
                 <label className="p-col-12 p-md-2" htmlFor="start_date">
-                  تاریخ شروع خط درمان:
+                  تاریخ شروع درمان:
                 </label>
                 <DatePicker
                   value={startDateObj}
@@ -401,11 +429,149 @@ const TreatmentTable = () => {
                 icon="pi pi-check"
                 onClick={handleSubmitLine}
                 loading={loading}
-                className="w-100 bg-white text-dark"
+                className="w-100 bg-white text-dark "
               />
 
-              {/* hidden part */}
-              {/* <div className="">
+              {showedPart === "showCycle" && (
+                <div className=" mt-4 pt-4">
+                  <TabMenu
+                    scrollable
+                    model={items?.map((item) => ({
+                      label: item?.template || item?.label,
+                      command: item.command,
+                    }))}
+                    activeIndex={activeIndex === 0 ? 1 : activeIndex}
+                    onTabChange={(e) => setActiveIndex(e.index)}
+                  />
+
+                  <>
+                    <div className="d-flex flex-column my-3 ">
+                      <label className="p-col-12 p-md-2" htmlFor="start_date">
+                        تاریخ شروع خط درمان:
+                      </label>
+                      <DatePicker
+                        value={startDateObj}
+                        onChange={handleStartDateChange}
+                        calendar={persian}
+                        locale={persian_fa}
+                        format="YYYY/MM/DD"
+                        placeholder="تاریخ را انتخاب کنید"
+                        className="p-2 border rounded"
+                        inputClass="w-full p-2 text-end w-100 border rounded"
+                        position="bottom-right"
+                      />
+                    </div>
+                    <div className="">
+                      <label
+                        className="p-col-12 p-md-2 mt-3"
+                        htmlFor="protocol"
+                      >
+                        پروتکل:
+                      </label>
+                      <div className="p-col-12 p-md-10 mb-4 ">
+                        <Dropdown
+                          id="protocol"
+                          value={selectedProtocol}
+                          options={protocolOptions}
+                          onChange={(e) => setSelectedProtocol(e.value)}
+                          placeholder="پروتکل را انتخاب نمایید"
+                          optionLabel="label"
+                          className="w-100"
+                        />
+                      </div>
+                    </div>
+                  </>
+
+                  <Button
+                    label="ثبت سیکل جدید"
+                    icon="pi pi-plus"
+                    className="p-button-text border rounded mb-4"
+                    onClick={addCycle}
+                  />
+
+                  {isCycleVisible && (
+                    <fieldset
+                      style={{
+                        border: "1px solid #ccc",
+                        padding: "1rem",
+                        marginBottom: "1rem",
+                      }}
+                    >
+                      <legend>سیکل ها</legend>
+                      {cycles.map((cycle, index) => (
+                        <div key={index} style={{ marginBottom: "1rem" }}>
+                          <h5>سیکل {cycle.cycleNumber}</h5>
+                          <div className="d-flex flex-column">
+                            <label
+                              className="p-col-12 p-md-2"
+                              htmlFor={`cycle_date_${index}`}
+                            >
+                              تاریخ:
+                            </label>
+                            <DatePicker
+                              value={cycle.dateObj}
+                              onChange={(date) =>
+                                handleCycleDateChange(index, date)
+                              }
+                              calendar={persian}
+                              locale={persian_fa}
+                              format="YYYY/MM/DD"
+                              placeholder="تاریخ را انتخاب کنید"
+                              className="p-2 border rounded"
+                              inputClass="w-full p-2 text-end w-100 border rounded"
+                              position="bottom-right"
+                            />
+                          </div>
+                          <div className="p-field p-grid">
+                            <label
+                              className="p-col-12 p-md-2"
+                              htmlFor={`cycle_desc_${index}`}
+                            >
+                              توضیحات:
+                            </label>
+                            <div className="p-col-12 p-md-10">
+                              <InputTextarea
+                                id={`cycle_desc_${index}`}
+                                value={cycle.description}
+                                onChange={(e) =>
+                                  handleCycleDescriptionChange(
+                                    index,
+                                    e.target.value
+                                  )
+                                }
+                                rows={2}
+                                className="w-100"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+
+                      {/* <Button
+                      label="ثبت سیکل جدید"
+                      icon="pi pi-plus"
+                      className="p-button-text border rounded"
+                      onClick={addCycle}
+                    /> */}
+                    </fieldset>
+                  )}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      )}
+    </>
+  );
+};
+
+export default TreatmentTable;
+
+{
+  /* hidden part */
+}
+{
+  /* <div className="">
                 <label className="p-col-12 p-md-2 mt-3" htmlFor="protocol">
                   پروتکل:
                 </label>
@@ -545,13 +711,5 @@ const TreatmentTable = () => {
                   className="w-100"
                   loading={loading}
                 />
-              </div> */}
-            </>
-          )}
-        </div>
-      )}
-    </>
-  );
-};
-
-export default TreatmentTable;
+              </div> */
+}
