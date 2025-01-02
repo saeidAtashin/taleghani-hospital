@@ -61,6 +61,12 @@ const TreatmentTable = () => {
 
   const toast = useRef(null);
 
+  const { uid } = useParams();
+
+  // New state variables for main and sub selections
+  const [mainSelection, setMainSelection] = useState(null);
+  const [subSelection, setSubSelection] = useState(null);
+
   useEffect(() => {
     axios
       .get("https://cancerreg.ir/api/v1/common/treatment-evaluation/")
@@ -117,19 +123,30 @@ const TreatmentTable = () => {
     },
   ];
 
-
-  
-  const { uid } = useParams();
+  const evaluationValues = [
+    { label: "PR", value: "PR" },
+    { label: "CR", value: "CR" },
+    { label: "SD", value: "SD" },
+    { label: "PD", value: "PD" },
+    { label: "Relapse", value: "Relapse" },
+    { label: "Complication of Treatment", value: "Complication of Treatment" },
+    { label: "R0", value: "R0" },
+    { label: "R1", value: "R1" },
+    { label: "R2", value: "R2" },
+  ];
 
   useEffect(() => {
-    let mainSelection = null;
-    let subSelection = null;
-
     if (Array.isArray(treatmentValue)) {
-      mainSelection = treatmentValue[0]?.value;
-      subSelection = treatmentValue[1]?.value;
+      setMainSelection(treatmentValue[0]?.value || null);
+      setSubSelection(
+        treatmentValue[1]?.value || treatmentValue[0]?.value || null
+      );
     } else if (treatmentValue && treatmentValue.value) {
-      mainSelection = treatmentValue.value;
+      setMainSelection(treatmentValue.value);
+      setSubSelection(treatmentValue.value);
+    } else {
+      setMainSelection(null);
+      setSubSelection(null);
     }
 
     const isForm =
@@ -147,7 +164,7 @@ const TreatmentTable = () => {
       "isTreatmentForm:",
       isForm
     );
-  }, [treatmentValue]);
+  }, [treatmentValue, mainSelection, subSelection]);
 
   const handleStartDateChange = (date) => {
     if (date) {
@@ -206,9 +223,18 @@ const TreatmentTable = () => {
 
   const handleSubmit = () => {
     setLoading(true);
-    const mainSelection = treatmentValue?.[0];
-    const subSelection = treatmentValue?.[1];
-  
+
+    // Validate required fields
+    if (!mainSelection || !subSelection || !startDate || !selectedProtocol) {
+      toast.current.show({
+        severity: "error",
+        summary: "خطا",
+        detail: "لطفاً همه فیلدهای الزامی را پر کنید.",
+      });
+      setLoading(false);
+      return;
+    }
+
     const payload = {
       type: isTreatmentForm ? "TREATMENT" : "CHEMOTHERAPY",
       category: mainSelection,
@@ -217,11 +243,12 @@ const TreatmentTable = () => {
       start_date: startDate,
       end_date: endDate,
       description: description,
-      evaluation_uid: selectedProtocol, // Corrected field
-      main_selection: mainSelection,
-      sub_selection: subSelection,
+      evaluation_uid: selectedProtocol,
+      // Remove main_selection and sub_selection if not needed
+      // main_selection: mainSelection,
+      // sub_selection: subSelection,
     };
-  
+
     if (!isTreatmentForm) {
       payload.protocol = selectedProtocol;
       payload.cycles = cycles.map((c) => ({
@@ -230,9 +257,9 @@ const TreatmentTable = () => {
         description: c.description,
       }));
     }
-  
+
     console.log("payload", payload);
-  
+
     axios
       .post("https://cancerreg.ir/api/v1/teatment/treatment/", payload)
       .then(() => {
@@ -242,6 +269,7 @@ const TreatmentTable = () => {
           detail: "Data saved successfully",
         });
         setLoading(false);
+        // Optionally, reset the form or handle post-submission logic here
       })
       .catch((err) => {
         console.error(err);
@@ -253,12 +281,12 @@ const TreatmentTable = () => {
         setLoading(false);
       });
   };
-  
 
   const handleSubmitLine = () => {
     setLoading(true);
 
     setShowedPart("showCycle");
+    setLoading(false); // Reset loading if no async operations
   };
 
   return (
@@ -309,14 +337,6 @@ const TreatmentTable = () => {
                   ارزیابی درمان:
                 </label>
                 <div className="p-col-12 p-md-10">
-                  {/* <Dropdown
-                    id="evaluation_uid"
-                    value={evaluationResult}
-                    options={evaluationValues}
-                    onChange={(e) => setEvaluationResult(e.value)}
-                    placeholder="ارزیابی را انتخاب کنید"
-                    className="w-100"
-                  /> */}
                   <Dropdown
                     id="evaluation_uid"
                     value={selectedProtocol}
@@ -469,11 +489,7 @@ const TreatmentTable = () => {
                       }}
                     >
                       <legend>سیکل ها</legend>
-                      <Accordion
-                        activeIndex={[0]}
-                        // onTabChange={handleAccordionChange}
-                        multiple
-                      >
+                      <Accordion activeIndex={[0]} multiple>
                         {cycles.map((cycle, index) => (
                           <AccordionTab
                             key={index}
@@ -544,150 +560,3 @@ const TreatmentTable = () => {
 };
 
 export default TreatmentTable;
-
-{
-  /* hidden part */
-}
-{
-  /* <div className="">
-                <label className="p-col-12 p-md-2 mt-3" htmlFor="protocol">
-                  پروتکل:
-                </label>
-                <div className="p-col-12 p-md-10 mb-4 ">
-                  <Dropdown
-                    id="protocol"
-                    value={selectedProtocol}
-                    options={protocolOptions}
-                    onChange={(e) => setSelectedProtocol(e.value)}
-                    placeholder="پروتکل را انتخاب نمایید"
-                    optionLabel="label"
-                    className="w-100"
-                  />
-                </div>
-              </div>
-
-              <fieldset
-                style={{
-                  border: "1px solid #ccc",
-                  padding: "1rem",
-                  marginBottom: "1rem",
-                }}
-              >
-                <legend>سیکل ها</legend>
-                {cycles.map((cycle, index) => (
-                  <div key={index} style={{ marginBottom: "1rem" }}>
-                    <h5>سیکل {cycle.cycleNumber}</h5>
-                    <div className="d-flex flex-column">
-                      <label
-                        className="p-col-12 p-md-2"
-                        htmlFor={`cycle_date_${index}`}
-                      >
-                        تاریخ:
-                      </label>
-                      <DatePicker
-                        value={cycle.dateObj}
-                        onChange={(date) => handleCycleDateChange(index, date)}
-                        calendar={persian}
-                        locale={persian_fa}
-                        format="YYYY/MM/DD"
-                        placeholder="تاریخ را انتخاب کنید"
-                        className="p-2 border rounded"
-                        inputClass="w-full p-2 text-end w-100 border rounded"
-                        position="bottom-right"
-                      />
-                    </div>
-                    <div className="p-field p-grid">
-                      <label
-                        className="p-col-12 p-md-2"
-                        htmlFor={`cycle_desc_${index}`}
-                      >
-                        توضیحات:
-                      </label>
-                      <div className="p-col-12 p-md-10">
-                        <InputTextarea
-                          id={`cycle_desc_${index}`}
-                          value={cycle.description}
-                          onChange={(e) =>
-                            handleCycleDescriptionChange(index, e.target.value)
-                          }
-                          rows={2}
-                          className="w-100"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-
-                <Button
-                  label="ثبت سیکل جدید"
-                  icon="pi pi-plus"
-                  className="p-button-text border rounded"
-                  onClick={addCycle}
-                />
-              </fieldset>
-
-              <div className="p-field p-grid">
-                <label className="p-col-12 p-md-2" htmlFor="evaluation_uid">
-                  ارزیابی خط درمان:
-                </label>
-                <div className="p-col-12 p-md-10">
-                  <Dropdown
-                    id="evaluation_uid"
-                    value={evaluationResult}
-                    options={evaluationValues}
-                    onChange={(e) => setEvaluationResult(e.value)}
-                    placeholder="ارزیابی را انتخاب کننید"
-                    className="w-100"
-                  />
-                </div>
-              </div>
-
-              <div className="d-flex flex-column my-3 ">
-                <label className="p-col-12 p-md-2" htmlFor="end_date">
-                  تاریخ پایان خط درمان:
-                </label>
-                <DatePicker
-                  value={endDateObj}
-                  onChange={handleEndDateChange}
-                  calendar={persian}
-                  locale={persian_fa}
-                  format="YYYY/MM/DD"
-                  placeholder="تاریخ پایان خط درمان"
-                  className="p-2 border rounded "
-                  inputClass="w-full p-2 text-end w-100 border rounded"
-                  position="bottom-right"
-                />
-              </div>
-
-              <div className="w-100 my-3">
-                <label className="w-100" htmlFor="description">
-                  توضیحات:
-                </label>
-                <div className="w-100">
-                  <InputTextarea
-                    className="w-100"
-                    id="description"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    rows={3}
-                  />
-                </div>
-              </div>
-
-              <div className="d-flex  flex-column gap-2 ">
-                <Button
-                  label="ذخیره"
-                  icon="pi pi-check"
-                  onClick={handleSubmit}
-                  loading={loading}
-                  className="w-100 bg-white text-dark"
-                />
-                <Button
-                  label="پایان درمان"
-                  icon="pi pi-check"
-                  onClick={handleSubmit}
-                  className="w-100"
-                  loading={loading}
-                />
-              </div> */
-}
