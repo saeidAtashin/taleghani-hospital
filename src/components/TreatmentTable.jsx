@@ -4,6 +4,7 @@ import { Dropdown } from "primereact/dropdown";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
+import { Accordion, AccordionTab } from "primereact/accordion"; // وارد کردن Accordion
 import axios from "axios";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-multi-date-picker";
@@ -211,6 +212,10 @@ const TreatmentTable = () => {
     ]);
   };
 
+  const handleCycleapi = () => {
+  
+  };
+
   const handleSubmit = () => {
     setLoading(true);
     const mainSelection = treatmentValue?.[0];
@@ -263,46 +268,12 @@ const TreatmentTable = () => {
     const subSelection = treatmentValue?.[1];
 
     setShowedPart("showCycle");
+  };
 
-    // const payload = {
-    //   type: isTreatmentForm ? "TREATMENT" : "CHEMOTHERAPY",
-    //   patient_uid: uid,
-    //   start_date: startDate,
-    //   end_date: endDate,
-    //   description: description,
-    //   evaluation_uid: evaluationResult,
-    //   main_selection: mainSelection,
-    //   sub_selection: subSelection,
-    // };
+  const [activeAccordionIndices, setActiveAccordionIndices] = useState([]); // وضعیت Accordion
 
-    // if (!isTreatmentForm) {
-    //   payload.protocol = selectedProtocol;
-    //   payload.cycles = cycles.map((c) => ({
-    //     cycleNumber: c.cycleNumber,
-    //     date: c.date,
-    //     description: c.description,
-    //   }));
-    // }
-
-    // axios
-    //   .post("https://cancerreg.ir/api/v1/teatment/treatment/", payload)
-    //   .then(() => {
-    //     toast.current.show({
-    //       severity: "success",
-    //       summary: "Success",
-    //       detail: "Data saved successfully",
-    //     });
-    //     setLoading(false);
-    //   })
-    //   .catch((err) => {
-    //     console.error(err);
-    //     toast.current.show({
-    //       severity: "error",
-    //       summary: "خطا",
-    //       detail: "مشکلی پیش آمده است.",
-    //     });
-    //     setLoading(false);
-    //   });
+  const handleAccordionChange = (e) => {
+    setActiveAccordionIndices(e.value);
   };
 
   return (
@@ -329,7 +300,7 @@ const TreatmentTable = () => {
       {treatmentValue && (
         <div className="p-mt-3 mb-4 ">
           {isTreatmentForm ? (
-            // TREATMENT FORM
+            // فرم درمان
             <>
               <div className="d-flex flex-column my-3 ">
                 <label className="p-col-12 p-md-2" htmlFor="start_date">
@@ -406,7 +377,7 @@ const TreatmentTable = () => {
               />
             </>
           ) : (
-            // CHEMOTHERAPY FORM
+            // فرم شیمی‌درمانی
             <>
               <div className="d-flex flex-column my-3">
                 <label className="p-col-12 p-md-2" htmlFor="start_date">
@@ -498,61 +469,68 @@ const TreatmentTable = () => {
                       }}
                     >
                       <legend>سیکل ها</legend>
-                      {cycles.map((cycle, index) => (
-                        <div key={index} style={{ marginBottom: "1rem" }}>
-                          <h5>سیکل {cycle.cycleNumber}</h5>
-                          <div className="d-flex flex-column">
-                            <label
-                              className="p-col-12 p-md-2"
-                              htmlFor={`cycle_date_${index}`}
-                            >
-                              تاریخ:
-                            </label>
-                            <DatePicker
-                              value={cycle.dateObj}
-                              onChange={(date) =>
-                                handleCycleDateChange(index, date)
-                              }
-                              calendar={persian}
-                              locale={persian_fa}
-                              format="YYYY/MM/DD"
-                              placeholder="تاریخ را انتخاب کنید"
-                              className="p-2 border rounded"
-                              inputClass="w-full p-2 text-end w-100 border rounded"
-                              position="bottom-right"
-                            />
-                          </div>
-                          <div className="p-field p-grid">
-                            <label
-                              className="p-col-12 p-md-2"
-                              htmlFor={`cycle_desc_${index}`}
-                            >
-                              توضیحات:
-                            </label>
-                            <div className="p-col-12 p-md-10">
-                              <InputTextarea
-                                id={`cycle_desc_${index}`}
-                                value={cycle.description}
-                                onChange={(e) =>
-                                  handleCycleDescriptionChange(
-                                    index,
-                                    e.target.value
-                                  )
+                      <Accordion
+                        activeIndex={[0]}
+                        // onTabChange={handleAccordionChange}
+                        multiple
+                      >
+                        {cycles.map((cycle, index) => (
+                          <AccordionTab
+                            key={index}
+                            header={`سیکل ${cycle.cycleNumber}`}
+                          >
+                            <div className="d-flex flex-column my-3 ">
+                              <label
+                                className="p-col-12 p-md-2"
+                                htmlFor={`cycle_date_${index}`}
+                              >
+                                تاریخ:
+                              </label>
+                              <DatePicker
+                                value={cycle.dateObj}
+                                onChange={(date) =>
+                                  handleCycleDateChange(index, date)
                                 }
-                                rows={2}
-                                className="w-100"
+                                calendar={persian}
+                                locale={persian_fa}
+                                format="YYYY/MM/DD"
+                                placeholder="تاریخ را انتخاب کنید"
+                                className="p-2 border rounded"
+                                inputClass="w-full p-2 text-end w-100 border rounded"
+                                position="bottom-right"
                               />
                             </div>
-                          </div>
-                        </div>
-                      ))}
-
-                      {/* <Button
-                      label="ثبت سیکل جدید"
-                      icon="pi pi-plus"
-                      className="p-button-text border rounded"
-                      onClick={addCycle}
-                    /> */}
+                            <div className="p-field p-grid">
+                              <label
+                                className="p-col-12 p-md-2"
+                                htmlFor={`cycle_desc_${index}`}
+                              >
+                                توضیحات:
+                              </label>
+                              <div className="p-col-12 p-md-10">
+                                <InputTextarea
+                                  id={`cycle_desc_${index}`}
+                                  value={cycle.description}
+                                  onChange={(e) =>
+                                    handleCycleDescriptionChange(
+                                      index,
+                                      e.target.value
+                                    )
+                                  }
+                                  rows={2}
+                                  className="w-100"
+                                />
+                              </div>
+                            </div>
+                            <Button
+                              label="ذخیره"
+                              icon="pi"
+                              className="p-button border rounded mb-4"
+                              onClick={handleCycleapi}
+                            />
+                          </AccordionTab>
+                        ))}
+                      </Accordion>
                     </fieldset>
                   )}
                 </div>
