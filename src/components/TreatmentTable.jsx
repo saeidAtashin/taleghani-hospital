@@ -212,9 +212,7 @@ const TreatmentTable = () => {
     ]);
   };
 
-  const handleCycleapi = () => {
-  
-  };
+  const handleCycleapi = () => {};
 
   const handleSubmit = () => {
     setLoading(true);
@@ -264,17 +262,14 @@ const TreatmentTable = () => {
 
   const handleSubmitLine = () => {
     setLoading(true);
-    const mainSelection = treatmentValue?.[0];
-    const subSelection = treatmentValue?.[1];
 
+    
     setShowedPart("showCycle");
   };
 
-  const [activeAccordionIndices, setActiveAccordionIndices] = useState([]); // وضعیت Accordion
 
-  const handleAccordionChange = (e) => {
-    setActiveAccordionIndices(e.value);
-  };
+  
+  
 
   return (
     <>
@@ -383,25 +378,31 @@ const TreatmentTable = () => {
                 <label className="p-col-12 p-md-2" htmlFor="start_date">
                   تاریخ شروع درمان:
                 </label>
-                <DatePicker
-                  value={startDateObj}
-                  onChange={handleStartDateChange}
-                  calendar={persian}
-                  locale={persian_fa}
-                  format="YYYY/MM/DD"
-                  placeholder="تاریخ را انتخاب کنید"
-                  className="p-2 border rounded"
-                  inputClass="w-full p-2 text-end w-100 border rounded"
-                  position="bottom-right"
-                />
+                <div className="d-flex w-100">
+                  <div style={{ flex: 3, marginRight: "10px" }}>
+                    <DatePicker
+                      value={startDateObj}
+                      onChange={handleStartDateChange}
+                      calendar={persian}
+                      locale={persian_fa}
+                      format="YYYY/MM/DD"
+                      placeholder="تاریخ را انتخاب کنید"
+                      className="p-2 border rounded w-100"
+                      inputClass="w-100 p-2 text-end border rounded"
+                      position="bottom-right"
+                    />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <Button
+                      label="ذخیره"
+                      icon="pi pi-check"
+                      onClick={handleSubmitLine}
+                      loading={loading}
+                      className="w-100 bg-white text-dark rounded-3"
+                    />
+                  </div>
+                </div>
               </div>
-              <Button
-                label="ذخیره"
-                icon="pi pi-check"
-                onClick={handleSubmitLine}
-                loading={loading}
-                className="w-100 bg-white text-dark "
-              />
 
               {showedPart === "showCycle" && (
                 <div className=" mt-4 pt-4">
