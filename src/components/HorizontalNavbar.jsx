@@ -26,6 +26,8 @@ const HorizontalNavbar = () => {
     { name: "سابقه خانوادگی", endpoint: "/common/family-history/" },
     { name: "جراحی‌ها", endpoint: "/common/surgery/" },
     { name: "تشخیص", endpoint: "/common/diagnosis/" },
+    { name: "پروتکل", endpoint: "/common/protocol/" },
+    { name: "ارزیابی درمان", endpoint: "/common/treatment-evaluation/" },
   ];
 
   const handleClick = async (item) => {

@@ -23,15 +23,15 @@ const StepperBootstrap = () => {
     setLoadingBtn(true);
     const currentFields =
       activeIndex === 0 ? formFielsIdentity : formPatientsFields;
-  
+
     try {
       // Validate the data based on the current form schema
       const schema = generateReusableSchema(currentFields);
       schema.parse(data);
-  
+
       if (activeIndex === 0) {
         const { ...restOfData } = data;
-  
+
         const formattedData = {
           ...restOfData,
           patient_uid: patient_uid_info,
@@ -39,7 +39,7 @@ const StepperBootstrap = () => {
             ? data?.["marital-status"]
             : undefined,
         };
-  
+
         setIsLoading(true);
         try {
           // Perform the API call
@@ -47,7 +47,7 @@ const StepperBootstrap = () => {
             "https://cancerreg.ir/api/v1" + PATIENT_INFO,
             formattedData
           );
-  
+
           if (response.status >= 200 && response.status < 400) {
             // Update the local storage and active index on success
             localStorage.setItem("patient_uid_info", response.data.data.uid);
@@ -66,7 +66,7 @@ const StepperBootstrap = () => {
           }
         }
       }
-  
+
       if (activeIndex === 1) {
         const {
           surgery,
@@ -76,17 +76,19 @@ const StepperBootstrap = () => {
           drugs,
           ...restOfData
         } = data;
-  
+
         const formattedData = {
           ...restOfData,
           patient_uid: patient_uid_info,
           surgeries: data?.surgery ? data.surgery : undefined,
-          underlying_diseases: underlyingDisease ? underlyingDisease : undefined,
+          underlying_diseases: underlyingDisease
+            ? underlyingDisease
+            : undefined,
           habits: habitdisease ? habitdisease : undefined,
           family_history: familyhistory ? familyhistory : undefined,
           drugs_records: data?.drugs ? data?.drugs : undefined,
         };
-  
+
         setIsLoading(true);
         try {
           // Perform the API call
@@ -94,7 +96,7 @@ const StepperBootstrap = () => {
             "https://cancerreg.ir/api/v1" + PATIENT_RECORDS,
             formattedData
           );
-  
+
           if (response.status >= 200 && response.status < 400) {
             setActiveIndex((prevIndex) => prevIndex + 1);
             setLoadingBtn(false);
@@ -112,7 +114,6 @@ const StepperBootstrap = () => {
       console.error("Validation error:", error);
     }
   };
-  
 
   return (
     <div className="container">

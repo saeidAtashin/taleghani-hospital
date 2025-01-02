@@ -9,10 +9,6 @@ const BasicPatientDefinitions = () => {
     { label: "Contact", path: "contact" },
   ];
 
-  const handleLinkClick = (path) => {
-    // handle any additional navigation logic if needed
-  };
-
   return (
     <>
       <HorizontalNavbar />
