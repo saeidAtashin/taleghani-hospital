@@ -34,10 +34,21 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
   const [additionalInputValue, setAdditionalInputValue] = useState("");
   const [selectedName, setSelectedName] = useState("");
   const [immunofixationUid, setimmunofixationUid] = useState("");
+  const [kValue, setkValue] = useState(1);
+  const [landaValue, setlandaValue] = useState(1);
+  const [valueinja, setvalueinja] = useState(0);
   const [parentArray, setParentArray] = useState([]);
   const Exexex = ["IgA", "IgM", "IgG", "IgD", "Other"];
   const { uid } = useParams();
 
+  useEffect(() => {
+    setvalueinja(Number(kValue) / Number(landaValue));
+
+    console.log("valueinja", typeof valueinja === "number");
+    // console.log("kValue", kValue);
+    // console.log("landaValue", landaValue);
+    // console.log("kValue / landaValue", Number(kValue) / Number(landaValue));
+  }, [kValue, landaValue]);
   const {
     control,
     handleSubmit,
@@ -395,7 +406,7 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
                                 return acc;
                               }, {})
                             ).map((groupKey, idx) => (
-                              <div className="row bg-red" key={idx}>
+                              <div className="row " key={idx}>
                                 {title?.field
                                   ?.filter(
                                     (field) =>
@@ -688,7 +699,7 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
                                 return acc;
                               }, {})
                             ).map((groupKey, idx) => (
-                              <div className="row bg-red" key={idx}>
+                              <div className="row" key={idx}>
                                 {title?.field
                                   ?.filter(
                                     (field) =>
@@ -729,6 +740,20 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
                                           control={control}
                                           render={({ field }) => {
                                             const handleValueChange = (e) => {
+                                              console.log(
+                                                "object",
+                                                e.target.value
+                                              );
+                                              console.log(
+                                                "titleData",
+                                                titleData
+                                              );
+
+                                              titleData?.name === "κ"
+                                                ? setkValue(e.target.value)
+                                                : titleData?.name === "λ"
+                                                ? setlandaValue(e.target.value)
+                                                : "";
                                               let value = e.target.value;
 
                                               if (titleData?.type === "FLOAT") {
@@ -747,21 +772,44 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
                                             };
 
                                             return (
+                                              // <InputText
+                                              //   {...field}
+                                              //   onChange={handleValueChange}
+                                              //   className="w-100"
+                                              //   keyfilter={
+                                              //     titleData?.type === "CHAR"
+                                              //       ? "char"
+                                              //       : titleData?.type ===
+                                              //           "FLOAT" ||
+                                              //         titleData?.type ===
+                                              //           "PERCENTAGE"
+                                              //       ? "decimal"
+                                              //       : ""
+                                              //   }
+
+                                              //   placeholder={`${titleData?.name} را وارد نمایید`}
+                                              // />
                                               <InputText
                                                 {...field}
-                                                onChange={handleValueChange}
+                                                placeholder={`${
+                                                  titleData?.type === "CHAR"
+                                                    ? "متن"
+                                                    : "عددی"
+                                                }`}
                                                 className="w-100"
+                                                value={
+                                                  titleData?.name === "κ/λ" &&
+                                                  valueinja !== Infinity &&
+                                                  typeof valueinja === "number"
+                                                    ? valueinja
+                                                    : field.value
+                                                }
                                                 keyfilter={
                                                   titleData?.type === "CHAR"
                                                     ? "char"
-                                                    : titleData?.type ===
-                                                        "FLOAT" ||
-                                                      titleData?.type ===
-                                                        "PERCENTAGE"
-                                                    ? "decimal"
-                                                    : ""
+                                                    : "decimal"
                                                 }
-                                                placeholder={`${titleData?.name} را وارد نمایید`}
+                                                onChange={handleValueChange}
                                               />
                                             );
                                           }}
