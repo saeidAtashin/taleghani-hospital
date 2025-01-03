@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Tab, Nav } from "react-bootstrap";
-import apiRequest from "../api/apiService";
 import axios from "axios";
 import { InputText } from "primereact/inputtext";
 import DropD from "./DropD";
@@ -43,9 +42,6 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
 
   useEffect(() => {
     setvalueinja(Number(kValue) / Number(landaValue));
-
-    console.log("valueinja", typeof valueinja === "number");
-    // console.log("kValue / landaValue", Number(kValue) / Number(landaValue));
   }, [kValue, landaValue]);
   const {
     control,
@@ -64,8 +60,6 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
     setisLoadingAll(true);
     const fetchDataCategory = async () => {
       try {
-        // const response = await apiRequest("GET", `/tests/category-details/`);
-
         const response = await axios.get(
           `https://cancerreg.ir/api/v1/tests/category-details/`
         );
@@ -299,7 +293,6 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
             </Nav.Item>
           ))}
       </Nav>
-      {/* <h4 className="my-4 mx-2">ثبت {activeTab} جدید</h4> */}
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="p-4 mb-5 container shadow-lg">
