@@ -18,6 +18,7 @@ import moment from "jalali-moment";
 
 const TreatmentTable = () => {
   const [treatmentValue, setTreatmentValue] = useState(null);
+  const [treatmentLabel, setTreatmentLabel] = useState(null);
   const [protocolOptions, setProtocolOptions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [description, setDescription] = useState("");
@@ -60,7 +61,7 @@ const TreatmentTable = () => {
   const openModal = () => {};
 
   const [cycles, setCycles] = useState([]);
-  const [selectedProtocol, setSelectedProtocol] = useState(null);
+  const [selectedProtocol, setSelectedProtocol] = useState(undefined);
 
   const toast = useRef(null);
 
@@ -103,31 +104,31 @@ const TreatmentTable = () => {
   const cascadeOptions = [
     {
       label: "جراحی",
-      value: "جراحی",
+      value: "surgry",
       children: [
-        { label: "Curative", value: "Curative" },
-        { label: "Palliative", value: "Palliative" },
-        { label: "Metastasectomy", value: "Metastasectomy" },
+        { label: "CURATIVE", value: "SURGERY" },
+        { label: "PALLIATIVE", value: "SURGERY" },
+        { label: "METASTASECTOMY", value: "SURGERY" },
       ],
     },
     {
       label: "رادیوتراپی",
       value: "رادیوتراپی",
       children: [
-        { label: "Curative", value: "Curative" },
-        { label: "Palliative", value: "Palliative" },
-        { label: "Prophylactic", value: "Prophylactic" },
+        { label: "CURATIVE", value: "RADIOTHERAPY" },
+        { label: "PALLIATIVE", value: "RADIOTHERAPY" },
+        { label: "PROPHYLACTIC", value: "RADIOTHERAPY" },
       ],
     },
     {
       label: "لوکال",
-      value: "لوکال",
+      value: "LOCAL",
       children: [
-        { label: "MW", value: "MW" },
-        { label: "RF", value: "RF" },
-        { label: "TACE", value: "TACE" },
-        { label: "HIPEC", value: "HIPEC" },
-        { label: "PRRT", value: "PRRT" },
+        { label: "MW", value: "LOCAL" },
+        { label: "RF", value: "LOCAL" },
+        { label: "TACE", value: "LOCAL" },
+        { label: "HIPEC", value: "LOCAL" },
+        { label: "PRRT", value: "LOCAL" },
       ],
     },
     {
@@ -242,24 +243,24 @@ const TreatmentTable = () => {
     setLoading(true);
 
     // Validate required fields
-    if (!mainSelection || !subSelection || !startDate || !selectedProtocol) {
-      toast.current.show({
-        severity: "error",
-        summary: "خطا",
-        detail: "لطفاً همه فیلدهای الزامی را پر کنید.",
-      });
-      setLoading(false);
-      return;
-    }
-// 
+    // if (!mainSelection || !subSelection || !startDate || !selectedProtocol) {
+    //   toast.current.show({
+    //     severity: "error",
+    //     summary: "خطا",
+    //     detail: "لطفاً همه فیلدهای الزامی را پر کنید.",
+    //   });
+    //   setLoading(false);
+    //   return;
+    // }
+    //
     const payload = {
       type: isTreatmentForm ? "TREATMENT" : "CHEMOTHERAPY",
-      category: mainSelection,
-      sub_category: subSelection,
+      category: treatmentValue?.value,
+      sub_category: treatmentValue?.label,
       patient_uid: uid,
       start_date: startDate,
-      end_date: endDate,
-      description: description,
+      end_date: endDate ? endDate : undefined,
+      description: description ? description : undefined,
       evaluation_uid: selectedProtocol,
       // Remove main_selection and sub_selection if not needed
       // main_selection: mainSelection,
@@ -470,7 +471,11 @@ const TreatmentTable = () => {
                 optionGroupLabel={"label"}
                 optionGroupChildren={["children"]}
                 placeholder="Select a treatment"
-                onChange={(e) => setTreatmentValue(e.value)}
+                onChange={(e) => {
+                  console.log("object", e);
+                  setTreatmentValue(e.value);
+                  setTreatmentValue(e.value);
+                }}
                 style={{ minWidth: "14rem" }}
               />
             </div>
