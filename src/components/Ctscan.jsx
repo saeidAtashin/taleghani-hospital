@@ -8,7 +8,7 @@ import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import { toast } from "react-toastify";
 
-const Ctscan = (fetchData) => {
+const Ctscan = ({ setShowAzmayeshPAge }) => {
   const { uid } = useParams();
   const [formData, setFormData] = useState({
     patient_uid: uid,
@@ -67,6 +67,7 @@ const Ctscan = (fetchData) => {
         formattedData
       );
       toast.success("ثبت شد");
+      setShowAzmayeshPAge("home");
     } catch (error) {
       toast.warning("خطایی رخ داده است.");
       console.error(error);

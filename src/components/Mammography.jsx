@@ -8,7 +8,7 @@ import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import { toast } from "react-toastify";
 
-const Mammography = (fetchData) => {
+const Mammography = ({ setShowAzmayeshPAge }) => {
   const { uid } = useParams();
   const [formData, setFormData] = useState({
     patient_uid: uid,
@@ -75,6 +75,7 @@ const Mammography = (fetchData) => {
         formattedData
       );
       toast.success("ثبت شد");
+      setShowAzmayeshPAge("home")
     } catch (error) {
       toast.warning("خطایی رخ داده است");
       console.error(error);
@@ -90,8 +91,8 @@ const Mammography = (fetchData) => {
           name="date"
           value={formData.date}
           onChange={handleFieldChange}
-        /> */}15    
-
+        /> */}
+        15
         <div className="d-flex flex-column">
           <label className="label" htmlFor="date">
             تاریخ

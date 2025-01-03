@@ -8,42 +8,42 @@ import ScanHastei from "./ScanHastei";
 import Petscan from "./Petscan";
 import SampleGraphy from "./SampleGraphy";
 
-const PillsTabsTasvir = ({ dataOfTable, allrow }) => {
+const PillsTabsTasvir = ({ dataOfTable, allrow, setShowAzmayeshPAge }) => {
   const tabsInnerImage = [
     {
       eventKey: "sonography",
       title: "سونوگرافی",
-      content: <SonographyForm />,
+      content: <SonographyForm setShowAzmayeshPAge={setShowAzmayeshPAge} />,
     },
     {
       eventKey: "mammography",
       title: "ماموگرافی",
-      content: <Mammography />,
+      content: <Mammography setShowAzmayeshPAge={setShowAzmayeshPAge} />,
     },
     {
       eventKey: "mri",
       title: "MRI",
-      content: <Mri />,
+      content: <Mri setShowAzmayeshPAge={setShowAzmayeshPAge} />,
     },
     {
       eventKey: "ctscan",
       title: "CT-Scan",
-      content: <Ctscan />,
+      content: <Ctscan setShowAzmayeshPAge={setShowAzmayeshPAge} />,
     },
     {
       eventKey: "corescan",
       title: "اسکن هسته ای",
-      content: <ScanHastei />,
+      content: <ScanHastei setShowAzmayeshPAge={setShowAzmayeshPAge} />,
     },
     {
       eventKey: "petscan",
       title: "PET-Scan",
-      content: <Petscan />,
+      content: <Petscan setShowAzmayeshPAge={setShowAzmayeshPAge} />,
     },
     {
       eventKey: "othergraphy",
       title: "گرافی ساده",
-      content: <SampleGraphy />,
+      content: <SampleGraphy setShowAzmayeshPAge={setShowAzmayeshPAge} />,
     },
   ];
 

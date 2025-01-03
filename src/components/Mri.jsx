@@ -8,7 +8,7 @@ import DatePicker from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 
-const Mri = (fetchData) => {
+const Mri = ({ setShowAzmayeshPAge }) => {
   const { uid } = useParams();
   const [formData, setFormData] = useState({
     patient_uid: uid,
@@ -77,6 +77,7 @@ const Mri = (fetchData) => {
         formattedData
       );
       toast.success("ثبت شد");
+      setShowAzmayeshPAge("home");
     } catch (error) {
       toast.warning("خطایی رخ داده است.");
       console.error(error);

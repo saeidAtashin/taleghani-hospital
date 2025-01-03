@@ -6,8 +6,9 @@ import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
+import { toast } from "react-toastify";
 
-const ScanHastei = (fetchData) => {
+const ScanHastei = ({ setShowAzmayeshPAge }) => {
   const { uid } = useParams();
   const [formData, setFormData] = useState({
     patient_uid: uid,
@@ -61,9 +62,10 @@ const ScanHastei = (fetchData) => {
         "https://cancerreg.ir/api/v1/records/corescan/",
         formattedData
       );
-      alert("Data submitted successfully");
+      toast.success("ثبت شد");
+      setShowAzmayeshPAge("home");
     } catch (error) {
-      alert("Error submitting data");
+      toast.warning("خطایی رخ داده است");
       console.error(error);
     }
   };

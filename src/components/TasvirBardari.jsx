@@ -261,6 +261,7 @@ export default function TasvirBardari() {
             </span>
           </div>
           <PillsTabsTasvir
+            setShowAzmayeshPAge={setShowAzmayeshPAge}
             // tabs={tabsInnerImage}
             dataOfTable={tasvirDetailUid}
             allrow={allrow}

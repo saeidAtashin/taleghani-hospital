@@ -7,7 +7,7 @@ import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import { toast } from "react-toastify";
 
-const SonographyForm = (apiData) => {
+const SonographyForm = ({ setShowAzmayeshPAge }) => {
   const { uid } = useParams();
 
   const initialFormData = {
@@ -89,6 +89,7 @@ const SonographyForm = (apiData) => {
 
       setFormData(initialFormData);
       setSelectedDate(null);
+      setShowAzmayeshPAge("home");
     } catch (error) {
       setloadingBtn(false);
 
