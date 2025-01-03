@@ -27,6 +27,7 @@ const TabsComponents = ({
   const [selectedType, setSelectedType] = useState("");
   const [orderingtitle, setOrderingtitle] = useState(0);
   const [checked, setChecked] = useState(false);
+  const [hide, sethide] = useState(false);
 
   return (
     <div className="w-100 shadow-lg">
@@ -193,7 +194,8 @@ const TabsComponents = ({
                       orderingtitle,
                       selectedtitle,
                       selectedCategory2,
-                      checked
+                      checked,
+                      hide
                     );
                     setNametitle("");
                     // setSelectedtitle(""); // Reset the selected category after titlemission
@@ -295,12 +297,21 @@ const TabsComponents = ({
                   />
                 </div>
                 <div className="">
-                  {/* <label htmlFor="orderingtitle">ترتیب</label> */}
+                  <label htmlFor="orderingtitle">تایتل</label>
                   <InputSwitch
                     checked={checked}
                     onChange={(e) => {
                       console.log("checked", checked);
                       setChecked(e.value);
+                    }}
+                  />
+                </div>
+                <div className="">
+                  <label htmlFor="orderingtitle">مخفی</label>
+                  <InputSwitch
+                    checked={hide}
+                    onChange={(e) => {
+                      sethide(e.value);
                     }}
                   />
                 </div>

@@ -334,7 +334,8 @@ export default function TabComponent() {
     ordering,
     selectedTitle,
     selectedSubCategory,
-    checked
+    checked,
+    hide
   ) => {
     try {
       let payload = {
@@ -342,6 +343,7 @@ export default function TabComponent() {
         type,
         ordering,
         titled: checked,
+        other: hide,
       };
 
       const categoryUid = items[activeIndex]?.uid; // Adjust based on TabMenu index offset
