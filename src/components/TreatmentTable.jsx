@@ -17,6 +17,7 @@ import { Column } from "primereact/column";
 import moment from "jalali-moment";
 
 const TreatmentTable = () => {
+  // State variables
   const [treatmentValue, setTreatmentValue] = useState(null);
   const [protocolOptions, setProtocolOptions] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -47,23 +48,10 @@ const TreatmentTable = () => {
 
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const addNewTreatment = () => {
-    const newItem = {
-      label: `خط درمان ${counter}`,
-      command: () => openModal(),
-    };
-    setItems((prevItems) => [...prevItems, newItem]);
-    setCounter((prevCounter) => prevCounter + 1);
-    setActiveIndex(items.length);
-  };
-
-  const openModal = () => {};
-
   const [cycles, setCycles] = useState([]);
   const [selectedProtocol, setSelectedProtocol] = useState(undefined);
 
   const toast = useRef(null);
-
   const { uid } = useParams();
 
   const [mainSelection, setMainSelection] = useState(null);
@@ -81,6 +69,7 @@ const TreatmentTable = () => {
     PENDING: "state-pending",
   };
 
+  // Fetch protocol options on mount
   useEffect(() => {
     axios
       .get("https://cancerreg.ir/api/v1/common/treatment-evaluation/")
@@ -137,6 +126,7 @@ const TreatmentTable = () => {
     },
   ];
 
+  // Handle treatment value changes
   useEffect(() => {
     if (Array.isArray(treatmentValue)) {
       setMainSelection(treatmentValue[0]?.value || null);
@@ -168,6 +158,7 @@ const TreatmentTable = () => {
     );
   }, [treatmentValue, mainSelection, subSelection]);
 
+  // Date handlers
   const handleStartDateChange = (date) => {
     if (date) {
       const gregorianDate = date.convert("gregorian").toDate();
@@ -221,8 +212,26 @@ const TreatmentTable = () => {
     ]);
   };
 
-  const handleCycleapi = () => {};
+  const handleCycleapi = () => {
+    // Implement API call for cycle if needed
+  };
 
+  // Reset form fields after submission
+  const resetFormFields = () => {
+    setTreatmentValue(null);
+    setSelectedProtocol(undefined);
+    setStartDateObj(null);
+    setStartDate("");
+    setEndDateObj(null);
+    setEndDate("");
+    setDescription("");
+    setCycles([]);
+    setisCycleVisible(false);
+    setShowedPart("");
+    // Reset other states as needed
+  };
+
+  // Handle form submission
   const handleSubmit = () => {
     setLoading(true);
 
@@ -256,8 +265,11 @@ const TreatmentTable = () => {
           summary: "Success",
           detail: "Data saved successfully",
         });
-        setnewTreat(false);
+        // Decide whether to hide the form or keep it open
+        setnewTreat(false); // Uncomment if you want to hide the form
         setLoading(false);
+        // Reset form fields
+        resetFormFields();
       })
       .catch((err) => {
         console.error(err);
@@ -280,6 +292,7 @@ const TreatmentTable = () => {
   const [products, setProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
 
+  // Persian date formatter for DataTable
   const persianDateTemplate = (field) => (rowData) => {
     const dateValue = rowData?.[field];
 
@@ -326,9 +339,10 @@ const TreatmentTable = () => {
       },
       { field: "description", header: "توضیحات" },
     ],
-    [stateTranslations]
+    [stateTranslations, stateClasses]
   );
 
+  // Fetch treatments data
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -344,19 +358,20 @@ const TreatmentTable = () => {
     };
 
     fetchData();
-  }, []);
+  }, [uid]);
 
   const headerNew = (
-    <div className="d-flex flex-wrap gap-2 align-items-center  justify-content-start">
+    <div className="d-flex flex-wrap gap-2 align-items-center justify-content-start">
       <Button
         label="ایجاد درمان جدید"
         icon="pi pi-plus-circle ps-1"
         severity="primary"
         onClick={() => setnewTreat(true)}
-        className="rounded-3 "
+        className="rounded-3"
       />
     </div>
   );
+
   return (
     <>
       <Toast ref={toast} />
@@ -421,22 +436,18 @@ const TreatmentTable = () => {
 
       {newTreat && (
         <>
-          <>
-            <div className="container mt-5">
-              <div className="d-flex justify-content-between align-items-center">
-                <h2 className="m-2 pb-3">ایجاد درمان جدید</h2>
-                <span
-                  className="text-danger cursor-pointer"
-                  style={{ fontSize: "32px" }}
-                  onClick={() => {
-                    setnewTreat(false);
-                  }}
-                >
-                  x
-                </span>
-              </div>
+          <div className="container mt-5">
+            <div className="d-flex justify-content-between align-items-center">
+              <h2 className="m-2 pb-3">ایجاد درمان جدید</h2>
+              <span
+                className="text-danger cursor-pointer"
+                style={{ fontSize: "32px" }}
+                onClick={() => setnewTreat(false)}
+              >
+                x
+              </span>
             </div>
-          </>
+          </div>
           <div className="p-field p-grid">
             <label className="p-col-12 p-md-2" htmlFor="treatment">
               انتخاب درمان:
@@ -452,7 +463,6 @@ const TreatmentTable = () => {
                 onChange={(e) => {
                   console.log("object", e);
                   setTreatmentValue(e.value);
-                  setTreatmentValue(e.value);
                 }}
                 style={{ minWidth: "14rem" }}
               />
@@ -460,11 +470,11 @@ const TreatmentTable = () => {
           </div>
 
           {treatmentValue && (
-            <div className="p-mt-3 mb-4 ">
+            <div className="p-mt-3 mb-4">
               {isTreatmentForm ? (
-                // فرم درمان
+                // Treatment Form
                 <>
-                  <div className="d-flex flex-column my-3 ">
+                  <div className="d-flex flex-column my-3">
                     <label className="p-col-12 p-md-2" htmlFor="start_date">
                       تاریخ شروع خط درمان:
                     </label>
@@ -498,7 +508,7 @@ const TreatmentTable = () => {
                     </div>
                   </div>
 
-                  <div className="d-flex flex-column my-3 ">
+                  <div className="d-flex flex-column my-3">
                     <label className="p-col-12 p-md-2" htmlFor="end_date">
                       تاریخ پایان درمان:
                     </label>
@@ -515,7 +525,7 @@ const TreatmentTable = () => {
                     />
                   </div>
 
-                  <div className="d-flex flex-column my-3 ">
+                  <div className="d-flex flex-column my-3">
                     <label className="p-col-12 p-md-2" htmlFor="description">
                       توضیحات:
                     </label>
@@ -540,7 +550,7 @@ const TreatmentTable = () => {
                   />
                 </>
               ) : (
-                // فرم شیمی‌درمانی
+                // Chemotherapy Form
                 <>
                   <div className="d-flex flex-column my-3">
                     <label className="p-col-12 p-md-2" htmlFor="start_date">
@@ -573,7 +583,7 @@ const TreatmentTable = () => {
                   </div>
 
                   {showedPart === "showCycle" && (
-                    <div className=" mt-4 pt-4">
+                    <div className="mt-4 pt-4">
                       <TabMenu
                         scrollable
                         model={items?.map((item) => ({
@@ -584,46 +594,41 @@ const TreatmentTable = () => {
                         onTabChange={(e) => setActiveIndex(e.index)}
                       />
 
-                      <>
-                        <div className="d-flex flex-column my-3 ">
-                          <label
-                            className="p-col-12 p-md-2"
-                            htmlFor="start_date"
-                          >
-                            تاریخ شروع خط درمان:
-                          </label>
-                          <DatePicker
-                            value={startDateObj}
-                            onChange={handleStartDateChange}
-                            calendar={persian}
-                            locale={persian_fa}
-                            format="YYYY/MM/DD"
-                            placeholder="تاریخ را انتخاب کنید"
-                            className="p-2 border rounded"
-                            inputClass="w-full p-2 text-end w-100 border rounded"
-                            position="bottom-right"
+                      <div className="d-flex flex-column my-3">
+                        <label className="p-col-12 p-md-2" htmlFor="start_date">
+                          تاریخ شروع خط درمان:
+                        </label>
+                        <DatePicker
+                          value={startDateObj}
+                          onChange={handleStartDateChange}
+                          calendar={persian}
+                          locale={persian_fa}
+                          format="YYYY/MM/DD"
+                          placeholder="تاریخ را انتخاب کنید"
+                          className="p-2 border rounded"
+                          inputClass="w-full p-2 text-end w-100 border rounded"
+                          position="bottom-right"
+                        />
+                      </div>
+                      <div className="">
+                        <label
+                          className="p-col-12 p-md-2 mt-3"
+                          htmlFor="protocol"
+                        >
+                          پروتکل:
+                        </label>
+                        <div className="p-col-12 p-md-10 mb-4">
+                          <Dropdown
+                            id="protocol"
+                            value={selectedProtocol}
+                            options={protocolOptions}
+                            onChange={(e) => setSelectedProtocol(e.value)}
+                            placeholder="پروتکل را انتخاب نمایید"
+                            optionLabel="label"
+                            className="w-100"
                           />
                         </div>
-                        <div className="">
-                          <label
-                            className="p-col-12 p-md-2 mt-3"
-                            htmlFor="protocol"
-                          >
-                            پروتکل:
-                          </label>
-                          <div className="p-col-12 p-md-10 mb-4 ">
-                            <Dropdown
-                              id="protocol"
-                              value={selectedProtocol}
-                              options={protocolOptions}
-                              onChange={(e) => setSelectedProtocol(e.value)}
-                              placeholder="پروتکل را انتخاب نمایید"
-                              optionLabel="label"
-                              className="w-100"
-                            />
-                          </div>
-                        </div>
-                      </>
+                      </div>
 
                       <Button
                         label="ثبت سیکل جدید"
@@ -647,7 +652,7 @@ const TreatmentTable = () => {
                                 key={index}
                                 header={`سیکل ${cycle.cycleNumber}`}
                               >
-                                <div className="d-flex flex-column my-3 ">
+                                <div className="d-flex flex-column my-3">
                                   <label
                                     className="p-col-12 p-md-2"
                                     htmlFor={`cycle_date_${index}`}
@@ -692,7 +697,7 @@ const TreatmentTable = () => {
                                 </div>
                                 <Button
                                   label="ذخیره"
-                                  icon="pi"
+                                  icon="pi pi-check"
                                   className="p-button border rounded mb-4"
                                   onClick={handleCycleapi}
                                 />
