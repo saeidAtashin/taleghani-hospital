@@ -21,6 +21,7 @@ const Ctscan = ({ setShowAzmayeshPAge }) => {
   });
 
   const [selectedDate, setSelectedDate] = useState(null);
+  const [loadingBtn, setloadingBtn] = useState(false);
 
   const handleDateChange = (date) => {
     if (date) {
@@ -54,6 +55,7 @@ const Ctscan = ({ setShowAzmayeshPAge }) => {
   };
 
   const handleSubmit = async (e) => {
+    setloadingBtn(true);
     e.preventDefault();
     const formattedData = {
       ...formData,
@@ -66,9 +68,11 @@ const Ctscan = ({ setShowAzmayeshPAge }) => {
         "https://cancerreg.ir/api/v1/records/ctscan/",
         formattedData
       );
+      setloadingBtn(false);
       toast.success("ثبت شد");
       setShowAzmayeshPAge("home");
     } catch (error) {
+      setloadingBtn(false);
       toast.warning("خطایی رخ داده است.");
       console.error(error);
     }
@@ -99,25 +103,23 @@ const Ctscan = ({ setShowAzmayeshPAge }) => {
         <Row key={index} className="my-3">
           <Col>
             <Form.Group>
-              <Form.Label>Size</Form.Label>
-              <Form.Control
-                type="number"
-                name="size"
-                value={field.size}
-                onChange={(e) => handleInputChange(index, e)}
-                required
-              />
-            </Form.Group>
-          </Col>
-          <Col>
-            <Form.Group>
               <Form.Label>Site</Form.Label>
               <Form.Control
                 type="text"
                 name="site"
                 value={field.site}
                 onChange={(e) => handleInputChange(index, e)}
-                required
+              />
+            </Form.Group>
+          </Col>
+          <Col>
+            <Form.Group>
+              <Form.Label>Size</Form.Label>
+              <Form.Control
+                type="number"
+                name="size"
+                value={field.size}
+                onChange={(e) => handleInputChange(index, e)}
               />
             </Form.Group>
           </Col>
@@ -134,7 +136,6 @@ const Ctscan = ({ setShowAzmayeshPAge }) => {
           name="density" // Add the name attribute
           value={formData.density} // Bind the value to formData.density
           onChange={handleFieldChange} // Handle the change
-          required
         >
           <option value="">از زیر منو انتخاب کنید</option>
           <option value="Iso Dense">Iso Dense</option>
@@ -153,13 +154,12 @@ const Ctscan = ({ setShowAzmayeshPAge }) => {
               name="description"
               value={formData.description}
               onChange={handleFieldChange}
-              required
               placeholder="توضیحات مرتبط با آزمایش را وارد کنید"
             />
           </Form.Group>
         </Col>
       </Row>
-      <Button type="submit" variant="primary">
+      <Button type="submit" variant="primary" disabled={loadingBtn}>
         تایید و ثبت نتایج
       </Button>
     </Form>

@@ -20,6 +20,7 @@ const Mri = ({ setShowAzmayeshPAge }) => {
   });
 
   const [selectedDate, setSelectedDate] = useState(null);
+  const [loadingBtn, setloadingBtn] = useState(false);
 
   const handleDateChange = (date) => {
     if (date) {
@@ -54,6 +55,7 @@ const Mri = ({ setShowAzmayeshPAge }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setloadingBtn(true);
 
     // Map sizes to involvements
     const involvements = formData.sizes.map((item) => ({
@@ -76,9 +78,11 @@ const Mri = ({ setShowAzmayeshPAge }) => {
         "https://cancerreg.ir/api/v1/records/mri/",
         formattedData
       );
+      setloadingBtn(false);
       toast.success("ثبت شد");
       setShowAzmayeshPAge("home");
     } catch (error) {
+      setloadingBtn(false);
       toast.warning("خطایی رخ داده است.");
       console.error(error);
     }
@@ -188,7 +192,7 @@ const Mri = ({ setShowAzmayeshPAge }) => {
         </Col>
       </Row>
 
-      <Button type="submit" variant="primary">
+      <Button type="submit" variant="primary" disabled={loadingBtn}>
         تایید و ثبت نتایج
       </Button>
     </Form>

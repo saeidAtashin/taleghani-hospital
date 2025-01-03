@@ -19,6 +19,7 @@ const Mammography = ({ setShowAzmayeshPAge }) => {
   });
 
   const [selectedDate, setSelectedDate] = useState(null);
+  const [loadingBtn, setloadingBtn] = useState(false);
 
   const handleDateChange = (date) => {
     if (date) {
@@ -52,7 +53,9 @@ const Mammography = ({ setShowAzmayeshPAge }) => {
   };
 
   const handleSubmit = async (e) => {
+
     e.preventDefault();
+    setloadingBtn(true);
 
     // Map sizes to involvements
     const involvements = formData.sizes.map((item) => ({
@@ -74,9 +77,13 @@ const Mammography = ({ setShowAzmayeshPAge }) => {
         "https://cancerreg.ir/api/v1/records/mammography/",
         formattedData
       );
+      setloadingBtn(false);
+
       toast.success("ثبت شد");
-      setShowAzmayeshPAge("home")
+      setShowAzmayeshPAge("home");
     } catch (error) {
+      setloadingBtn(false);
+
       toast.warning("خطایی رخ داده است");
       console.error(error);
     }
@@ -175,7 +182,7 @@ const Mammography = ({ setShowAzmayeshPAge }) => {
         />
       </Form.Group>
 
-      <Button type="submit" variant="primary">
+      <Button type="submit" variant="primary" disabled={loadingBtn}>
         تایید و ثبت نتایج
       </Button>
     </Form>
