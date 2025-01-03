@@ -67,6 +67,7 @@ export default function TasvirBardari() {
     { field: "name", header: "آزمایش‌ها", body: nameTemplate },
     { field: "persianDate", header: "تاریخ انجام", body: persianDateTemplate },
     { field: "persianDate", header: "تاریخ ثبت", body: persianDateTemplate },
+    { field: "order_description", header: "توضیحات" },
   ];
 
   const fetchData = () => {
