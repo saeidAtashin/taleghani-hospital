@@ -230,7 +230,7 @@ export default function AzmayeshatTable() {
                 x
               </span>
             </div>
-            <PillsTabs />
+            <PillsTabs setShowAzmayeshPAge={setShowAzmayeshPAge} />
           </div>
         </>
       ) : (

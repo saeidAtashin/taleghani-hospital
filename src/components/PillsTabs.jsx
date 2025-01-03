@@ -14,7 +14,7 @@ import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import { useParams } from "react-router-dom";
 
-const PillsTabs = () => {
+const PillsTabs = ({ setShowAzmayeshPAge }) => {
   const [tabsNew, settabsNew] = useState();
   const [titleDirectToCategList, settitleDirectToCategList] = useState();
   const [titleOfAll, settitleOfAll] = useState();
@@ -192,6 +192,8 @@ const PillsTabs = () => {
         setisLoading(false);
         toast.success("ثبت شد");
       }
+      setShowAzmayeshPAge("home");
+
       reset();
       setParentArray([]);
       setSelectedName(undefined);

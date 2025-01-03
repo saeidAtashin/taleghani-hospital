@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { CascadeSelect } from "primereact/cascadeselect";
 import { Dropdown } from "primereact/dropdown";
 import { InputTextarea } from "primereact/inputtextarea";
@@ -69,6 +69,20 @@ const TreatmentTable = () => {
   // New state variables for main and sub selections
   const [mainSelection, setMainSelection] = useState(null);
   const [subSelection, setSubSelection] = useState(null);
+
+  const stateTranslations = {
+    IN_PROGRESS: "در حال انجام",
+    COMPLETED: "تکمیل شده",
+    PENDING: "در انتظار",
+    // Add other mappings as needed
+  };
+
+  const stateClasses = {
+    IN_PROGRESS: "state-in_progress",
+    COMPLETED: "state-completed",
+    PENDING: "state-pending",
+    // Add other mappings as needed
+  };
 
   useEffect(() => {
     axios
@@ -333,18 +347,30 @@ const TreatmentTable = () => {
   //     </div>
   //   );
   // }
-  const columns = [
-    { field: "created_at", header: "تاریخ ایجاد" },
-    { field: "patient", header: "بیمار" },
-    { field: "category", header: "دسته‌بندی" },
-    { field: "sub_category", header: "زیر دسته‌بندی" },
-    { field: "type", header: "نوع درمان" },
-    { field: "start_date", header: "تاریخ شروع" },
-    { field: "end_date", header: "تاریخ پایان" },
-    { field: "evaluation", header: "ارزیابی" },
-    { field: "state", header: "وضعیت" },
-    { field: "description", header: "توضیحات" },
-  ];
+
+  const columns = useMemo(
+    () => [
+      { field: "created_at", header: "تاریخ ایجاد", width: "150px" },
+      { field: "patient", header: "بیمار", width: "150px" },
+      { field: "category", header: "دسته‌بندی", width: "150px" },
+      { field: "sub_category", header: "زیر دسته‌بندی", width: "150px" },
+      { field: "type", header: "نوع درمان", width: "150px" },
+      { field: "start_date", header: "تاریخ شروع", width: "150px" },
+      { field: "end_date", header: "تاریخ پایان", width: "150px" },
+      { field: "evaluation", header: "ارزیابی", width: "150px" },
+      {
+        field: "state",
+        header: "وضعیت",
+        body: (rowData) => (
+          <span className={stateClasses[rowData.state] || ""}>
+            {stateTranslations[rowData.state] || rowData.state}
+          </span>
+        ),
+      },
+      { field: "description", header: "توضیحات" },
+    ],
+    [stateTranslations]
+  );
 
   function nameTemplate(rowData) {
     const names = Array.isArray(rowData?.name) ? rowData.name : [];
@@ -426,7 +452,7 @@ const TreatmentTable = () => {
       >
         <Column
           selectionMode="multiple"
-          headerStyle={{ width: "3em", borderBottom: "2px solid black" }}
+          headerStyle={{ borderBottom: "2px solid black" }}
         ></Column>
         {columns?.map((col, index) => (
           <Column
@@ -435,8 +461,15 @@ const TreatmentTable = () => {
             field={col.field}
             header={col.header}
             body={col.body}
-            style={{ textAlign: "right", direction: "rtl" }}
-            headerStyle={{ borderBottom: "2px solid black" }}
+            style={{
+              textAlign: "right",
+              direction: "rtl",
+              whiteSpace: "nowrap",
+            }}
+            headerStyle={{
+              borderBottom: "2px solid black",
+              whiteSpace: "nowrap",
+            }}
           />
         ))}
         <Column

@@ -337,6 +337,28 @@ select,
   background-color: #72a728; /* Green color for badge (or you can change it) */
 }
 
+
+/* Style for "در حال انجام" (IN_PROGRESS) */
+.state-in_progress {
+  color: orange; /* Change text color */
+  font-weight: bold; /* Optional: Make text bold */
+}
+
+/* Style for "تکمیل شده" (COMPLETED) */
+.state-completed {
+  color: green;
+  font-weight: bold;
+}
+
+/* Style for "در انتظار" (PENDING) */
+.state-pending {
+  color: red;
+  font-weight: bold;
+}
+
+
+
+
 /* .rmdp-container  {
   width: 90% ;
 } */
