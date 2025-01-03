@@ -45,7 +45,6 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
     setvalueinja(Number(kValue) / Number(landaValue));
 
     console.log("valueinja", typeof valueinja === "number");
-    // console.log("kValue", kValue);
     // console.log("landaValue", landaValue);
     // console.log("kValue / landaValue", Number(kValue) / Number(landaValue));
   }, [kValue, landaValue]);
