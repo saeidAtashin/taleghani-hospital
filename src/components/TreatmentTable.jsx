@@ -18,7 +18,6 @@ import moment from "jalali-moment";
 
 const TreatmentTable = () => {
   const [treatmentValue, setTreatmentValue] = useState(null);
-  const [treatmentLabel, setTreatmentLabel] = useState(null);
   const [protocolOptions, setProtocolOptions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [description, setDescription] = useState("");
@@ -67,7 +66,6 @@ const TreatmentTable = () => {
 
   const { uid } = useParams();
 
-  // New state variables for main and sub selections
   const [mainSelection, setMainSelection] = useState(null);
   const [subSelection, setSubSelection] = useState(null);
 
@@ -75,14 +73,12 @@ const TreatmentTable = () => {
     IN_PROGRESS: "در حال انجام",
     COMPLETED: "تکمیل شده",
     PENDING: "در انتظار",
-    // Add other mappings as needed
   };
 
   const stateClasses = {
     IN_PROGRESS: "state-in_progress",
     COMPLETED: "state-completed",
     PENDING: "state-pending",
-    // Add other mappings as needed
   };
 
   useEffect(() => {
@@ -139,18 +135,6 @@ const TreatmentTable = () => {
       label: "هورمون درمانی",
       value: "هورمون درمانی",
     },
-  ];
-
-  const evaluationValues = [
-    { label: "PR", value: "PR" },
-    { label: "CR", value: "CR" },
-    { label: "SD", value: "SD" },
-    { label: "PD", value: "PD" },
-    { label: "Relapse", value: "Relapse" },
-    { label: "Complication of Treatment", value: "Complication of Treatment" },
-    { label: "R0", value: "R0" },
-    { label: "R1", value: "R1" },
-    { label: "R2", value: "R2" },
   ];
 
   useEffect(() => {
@@ -242,17 +226,6 @@ const TreatmentTable = () => {
   const handleSubmit = () => {
     setLoading(true);
 
-    // Validate required fields
-    // if (!mainSelection || !subSelection || !startDate || !selectedProtocol) {
-    //   toast.current.show({
-    //     severity: "error",
-    //     summary: "خطا",
-    //     detail: "لطفاً همه فیلدهای الزامی را پر کنید.",
-    //   });
-    //   setLoading(false);
-    //   return;
-    // }
-    //
     const payload = {
       type: isTreatmentForm ? "TREATMENT" : "CHEMOTHERAPY",
       category: treatmentValue?.value,
@@ -262,9 +235,6 @@ const TreatmentTable = () => {
       end_date: endDate ? endDate : undefined,
       description: description ? description : undefined,
       evaluation_uid: selectedProtocol,
-      // Remove main_selection and sub_selection if not needed
-      // main_selection: mainSelection,
-      // sub_selection: subSelection,
     };
 
     if (!isTreatmentForm) {
@@ -286,8 +256,8 @@ const TreatmentTable = () => {
           summary: "Success",
           detail: "Data saved successfully",
         });
+        setnewTreat(false);
         setLoading(false);
-        // Optionally, reset the form or handle post-submission logic here
       })
       .catch((err) => {
         console.error(err);
@@ -310,14 +280,22 @@ const TreatmentTable = () => {
   const [products, setProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
 
-  const persianDateTemplate = (field) => (rowData) =>
-    (
-      <span>
-        {moment(rowData?.[field], "YYYY-MM-DD")
-          .locale("fa")
-          .format("jYYYY/jMM/jDD")}
-      </span>
-    );
+  const persianDateTemplate = (field) => (rowData) => {
+    const dateValue = rowData?.[field];
+
+    if (!dateValue) {
+      return <span>--</span>; // Placeholder for missing dates
+    }
+
+    // Parse the date with strict format checking
+    const persianDate = moment(dateValue, "YYYY-MM-DD", true);
+
+    if (!persianDate.isValid()) {
+      return <span>Invalid Date</span>; // Placeholder for invalid dates
+    }
+
+    return <span>{persianDate.locale("fa").format("jYYYY/jMM/jDD")}</span>;
+  };
 
   const columns = useMemo(
     () => [
