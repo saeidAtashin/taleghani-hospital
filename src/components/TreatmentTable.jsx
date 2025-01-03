@@ -12,6 +12,9 @@ import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import { useParams } from "react-router-dom";
 import { TabMenu } from "primereact/tabmenu";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
+import moment from "jalali-moment";
 
 const TreatmentTable = () => {
   const [treatmentValue, setTreatmentValue] = useState(null);
@@ -289,8 +292,173 @@ const TreatmentTable = () => {
     setLoading(false); // Reset loading if no async operations
   };
 
+  const [products, setProducts] = useState([]);
+  const [selectedProducts, setSelectedProducts] = useState([]);
+  const numberTemplate = (rowData, { rowIndex }) => {
+    return <span>{rowIndex + 1}</span>;
+  };
+
+  const persianDateTemplate = (rowData) => {
+    return (
+      <span>
+        {moment(rowData.date, "YYYY-MM-DD")
+          .locale("fa")
+          .format("jYYYY/jMM/jDD")}
+      </span>
+    );
+  };
+
+  // function nameTemplate(rowData) {
+  //   const names = Array.isArray(rowData?.name) ? rowData.name : [];
+
+  //   console.log("rowData", rowData);
+  //   return (
+  //     <div>
+  //       {names.map((nameItem, index) => (
+  //         <span
+  //           onClick={() => {
+  //             console.log("batch_id?", rowData?.id);
+  //           }}
+  //           key={index}
+  //           style={{
+  //             cursor: "pointer",
+  //             fontWeight: "bold",
+  //             color: nameItem.type === "info" ? "#aa9f00" : "green",
+  //             marginRight: "8px",
+  //           }}
+  //         >
+  //           {nameItem.value}
+  //         </span>
+  //       ))}
+  //     </div>
+  //   );
+  // }
+  const columns = [
+    { field: "created_at", header: "تاریخ ایجاد" },
+    { field: "patient", header: "بیمار" },
+    { field: "category", header: "دسته‌بندی" },
+    { field: "sub_category", header: "زیر دسته‌بندی" },
+    { field: "type", header: "نوع درمان" },
+    { field: "start_date", header: "تاریخ شروع" },
+    { field: "end_date", header: "تاریخ پایان" },
+    { field: "evaluation", header: "ارزیابی" },
+    { field: "state", header: "وضعیت" },
+    { field: "description", header: "توضیحات" },
+  ];
+
+  function nameTemplate(rowData) {
+    const names = Array.isArray(rowData?.name) ? rowData.name : [];
+
+    console.log("rowData", rowData);
+
+    return (
+      <div>
+        {names.map((nameItem, index) => (
+          <span
+            key={index}
+            onClick={() => {
+              console.log("UID of the clicked item:", rowData?.id); // Log the uid when clicked
+            }}
+            style={{
+              cursor: "pointer",
+              fontWeight: "bold",
+              color: nameItem.type === "info" ? "#FF7518" : "green",
+              marginRight: "8px",
+            }}
+          >
+            {nameItem.value}
+          </span>
+        ))}
+      </div>
+    );
+  }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `https://cancerreg.ir/api/v1/teatment/patient-treatments/${uid}/`
+        );
+        const { results } = response.data;
+
+        setProducts(results);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const headerNew = (
+    <div className="d-flex flex-wrap gap-2 align-items-center  justify-content-start">
+      <Button
+        label="ثبت نتیجه آزمایش"
+        icon="pi pi-plus"
+        severity="primary"
+        // onClick={() => setShowAzmayeshPAge("orderRegister")}
+        className="rounded-3 "
+      />
+      <Button
+        label="ثبت دستور آزمایش"
+        icon="pi pi-plus"
+        severity="primary"
+        // onClick={() => setShowAzmayeshPAge("orderRegisterOrder")}
+        className="rounded-3 "
+      />
+    </div>
+  );
   return (
     <>
+      <DataTable
+        dir="rtl"
+        value={products}
+        selection={selectedProducts}
+        onSelectionChange={(e) => setSelectedProducts(e.value)}
+        dataKey="uid"
+        paginator
+        rows={10}
+        rowsPerPageOptions={[5, 10, 25]}
+        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+        currentPageReportTemplate="نمایش {first} تا {last} از {totalRecords} اطلاعات"
+        globalFilter={null}
+        header={headerNew}
+      >
+        <Column
+          selectionMode="multiple"
+          headerStyle={{ width: "3em", borderBottom: "2px solid black" }}
+        ></Column>
+        {columns?.map((col, index) => (
+          <Column
+            sortable
+            key={index}
+            field={col.field}
+            header={col.header}
+            body={col.body}
+            style={{ textAlign: "right", direction: "rtl" }}
+            headerStyle={{ borderBottom: "2px solid black" }}
+          />
+        ))}
+        <Column
+          header="عملیات"
+          headerStyle={{ borderBottom: "2px solid black" }}
+          body={(rowData) => (
+            <button
+              type="button"
+              className="btn btn-outline-primary"
+              onClick={() =>
+                window.open(
+                  `/dashboard/patients-lists/${rowData.uid}`,
+                  "_blank"
+                )
+              }
+            >
+              مشاهده
+            </button>
+          )}
+        />
+      </DataTable>
+
       <Toast ref={toast} />
       <div className="p-field p-grid">
         <label className="p-col-12 p-md-2" htmlFor="treatment">
