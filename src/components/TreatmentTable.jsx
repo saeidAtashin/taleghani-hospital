@@ -312,52 +312,33 @@ const TreatmentTable = () => {
     return <span>{rowIndex + 1}</span>;
   };
 
-  const persianDateTemplate = (rowData) => {
-    return (
+  const persianDateTemplate = (field) => (rowData) =>
+    (
       <span>
-        {moment(rowData.date, "YYYY-MM-DD")
+        {moment(rowData?.[field], "YYYY-MM-DD")
           .locale("fa")
           .format("jYYYY/jMM/jDD")}
       </span>
     );
-  };
-
-  // function nameTemplate(rowData) {
-  //   const names = Array.isArray(rowData?.name) ? rowData.name : [];
-
-  //   console.log("rowData", rowData);
-  //   return (
-  //     <div>
-  //       {names.map((nameItem, index) => (
-  //         <span
-  //           onClick={() => {
-  //             console.log("batch_id?", rowData?.id);
-  //           }}
-  //           key={index}
-  //           style={{
-  //             cursor: "pointer",
-  //             fontWeight: "bold",
-  //             color: nameItem.type === "info" ? "#aa9f00" : "green",
-  //             marginRight: "8px",
-  //           }}
-  //         >
-  //           {nameItem.value}
-  //         </span>
-  //       ))}
-  //     </div>
-  //   );
-  // }
 
   const columns = useMemo(
     () => [
-      { field: "created_at", header: "تاریخ ایجاد", width: "150px" },
-      { field: "patient", header: "بیمار", width: "150px" },
-      { field: "category", header: "دسته‌بندی", width: "150px" },
-      { field: "sub_category", header: "زیر دسته‌بندی", width: "150px" },
-      { field: "type", header: "نوع درمان", width: "150px" },
-      { field: "start_date", header: "تاریخ شروع", width: "150px" },
-      { field: "end_date", header: "تاریخ پایان", width: "150px" },
-      { field: "evaluation", header: "ارزیابی", width: "150px" },
+      // { field: "created_at", header: "تاریخ ایجاد", width: "150px" },
+      {
+        field: "start_date",
+        header: "تاریخ شروع",
+        body: persianDateTemplate("start_date"),
+      },
+      {
+        field: "end_date",
+        header: "تاریخ پایان",
+        body: persianDateTemplate("end_date"),
+      },
+      // { field: "patient", header: "بیمار",  },
+      // { field: "category", header: "دسته‌بندی",  },
+      { field: "sub_category", header: "زیر دسته‌بندی" },
+      // { field: "type", header: "نوع درمان",  },
+      { field: "evaluation", header: "ارزیابی" },
       {
         field: "state",
         header: "وضعیت",
@@ -419,17 +400,10 @@ const TreatmentTable = () => {
   const headerNew = (
     <div className="d-flex flex-wrap gap-2 align-items-center  justify-content-start">
       <Button
-        label="ثبت نتیجه آزمایش"
-        icon="pi pi-plus"
+        label="ایحاد درمان جدید"
+        icon="pi pi-plus-circle ps-1"
         severity="primary"
         // onClick={() => setShowAzmayeshPAge("orderRegister")}
-        className="rounded-3 "
-      />
-      <Button
-        label="ثبت دستور آزمایش"
-        icon="pi pi-plus"
-        severity="primary"
-        // onClick={() => setShowAzmayeshPAge("orderRegisterOrder")}
         className="rounded-3 "
       />
     </div>
