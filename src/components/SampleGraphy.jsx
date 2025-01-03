@@ -46,8 +46,8 @@ const SampleGraphy = ({ setShowAzmayeshPAge }) => {
     e.preventDefault();
     const formattedData = {
       ...formData,
-      size: formData.sizes.map((item) => parseFloat(item.size) || 0),
-      site: formData.sizes.map((item) => item.site),
+      // size: formData.sizes.map((item) => parseFloat(item.size) || 0),
+      // site: formData.sizes.map((item) => item.site),
     };
 
     try {
@@ -86,7 +86,6 @@ const SampleGraphy = ({ setShowAzmayeshPAge }) => {
           name="title"
           value={formData.title}
           onChange={(e) => handleInputChange(index, e)}
-          required
         />
       </Form.Group>
 
@@ -100,7 +99,6 @@ const SampleGraphy = ({ setShowAzmayeshPAge }) => {
               name="description"
               value={formData.description}
               onChange={handleFieldChange}
-              required
               placeholder="توضیحات مرتبط با آزمایش را وارد کنید"
             />
           </Form.Group>

@@ -57,10 +57,19 @@ const Ctscan = ({ setShowAzmayeshPAge }) => {
   const handleSubmit = async (e) => {
     setloadingBtn(true);
     e.preventDefault();
+
+    const involvements = formData.sizes.map((item) => ({
+      site: item.site ? item.site : undefined,
+      size: item.size ? item.size : undefined,
+      // You can include description if needed
+      // description: item.description,
+    }));
+
+    const { sizes, ...rest } = formData;
+
     const formattedData = {
-      ...formData,
-      size: formData.sizes.map((item) => parseFloat(item.size) || 0),
-      site: formData.sizes.map((item) => item.site),
+      ...rest,
+      involvements,
     };
 
     try {
@@ -108,7 +117,9 @@ const Ctscan = ({ setShowAzmayeshPAge }) => {
                 type="text"
                 name="site"
                 value={field.site}
+                className="text-right"
                 onChange={(e) => handleInputChange(index, e)}
+                placeholder="مکان را وارد کنید" // Optional: Add a placeholder
               />
             </Form.Group>
           </Col>
@@ -119,7 +130,9 @@ const Ctscan = ({ setShowAzmayeshPAge }) => {
                 type="number"
                 name="size"
                 value={field.size}
+                className="text-right"
                 onChange={(e) => handleInputChange(index, e)}
+                placeholder="اندازه را وارد کنید" // Optional: Add a placeholder
               />
             </Form.Group>
           </Col>

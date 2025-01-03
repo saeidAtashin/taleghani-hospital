@@ -17,6 +17,7 @@ const ScanHastei = ({ setShowAzmayeshPAge }) => {
     description: "",
   });
   const [selectedDate, setSelectedDate] = useState(null);
+  const [loadingBtn, setloadingBtn] = useState(false);
 
   const handleDateChange = (date) => {
     if (date) {
@@ -51,10 +52,20 @@ const ScanHastei = ({ setShowAzmayeshPAge }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setloadingBtn(true);
+
+    const involvements = formData.sizes.map((item) => ({
+      site: item.site ? item.site : undefined,
+      size: item.size ? item.size : undefined,
+      // You can include description if needed
+      // description: item.description,
+    }));
+
+    const { sizes, ...rest } = formData;
+
     const formattedData = {
-      ...formData,
-      size: formData.sizes.map((item) => parseFloat(item.size) || 0),
-      site: formData.sizes.map((item) => item.site),
+      ...rest,
+      involvements,
     };
 
     try {
@@ -63,9 +74,13 @@ const ScanHastei = ({ setShowAzmayeshPAge }) => {
         formattedData
       );
       toast.success("ثبت شد");
+      setloadingBtn(false);
+
       setShowAzmayeshPAge("home");
     } catch (error) {
       toast.warning("خطایی رخ داده است");
+      setloadingBtn(false);
+
       console.error(error);
     }
   };
@@ -91,25 +106,27 @@ const ScanHastei = ({ setShowAzmayeshPAge }) => {
         <Row key={index} className="my-3">
           <Col>
             <Form.Group>
-              <Form.Label>Size</Form.Label>
-              <Form.Control
-                type="number"
-                name="size"
-                value={field.size}
-                onChange={(e) => handleInputChange(index, e)}
-                required
-              />
-            </Form.Group>
-          </Col>
-          <Col>
-            <Form.Group>
               <Form.Label>Site</Form.Label>
               <Form.Control
                 type="text"
                 name="site"
                 value={field.site}
+                className="text-right"
                 onChange={(e) => handleInputChange(index, e)}
-                required
+                placeholder="مکان را وارد کنید" // Optional: Add a placeholder
+              />
+            </Form.Group>
+          </Col>
+          <Col>
+            <Form.Group>
+              <Form.Label>Size</Form.Label>
+              <Form.Control
+                type="number"
+                name="size"
+                value={field.size}
+                className="text-right"
+                onChange={(e) => handleInputChange(index, e)}
+                placeholder="اندازه را وارد کنید" // Optional: Add a placeholder
               />
             </Form.Group>
           </Col>
@@ -130,13 +147,12 @@ const ScanHastei = ({ setShowAzmayeshPAge }) => {
               name="description"
               value={formData.description}
               onChange={handleFieldChange}
-              required
               placeholder="توضیحات مرتبط با آزمایش را وارد کنید"
             />
           </Form.Group>
         </Col>
       </Row>
-      <Button type="submit" variant="primary">
+      <Button type="submit" variant="primary" disabled={loadingBtn}>
         تایید و ثبت نتایج
       </Button>
     </Form>

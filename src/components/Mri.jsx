@@ -118,7 +118,9 @@ const Mri = ({ setShowAzmayeshPAge }) => {
                 type="text"
                 name="site"
                 value={field.site}
+                className="text-right"
                 onChange={(e) => handleInputChange(index, e)}
+                placeholder="مکان را وارد کنید" // Optional: Add a placeholder
               />
             </Form.Group>
           </Col>
@@ -129,7 +131,9 @@ const Mri = ({ setShowAzmayeshPAge }) => {
                 type="number"
                 name="size"
                 value={field.size}
+                className="text-right"
                 onChange={(e) => handleInputChange(index, e)}
+                placeholder="اندازه را وارد کنید" // Optional: Add a placeholder
               />
             </Form.Group>
           </Col>

@@ -18,6 +18,7 @@ const Petscan = ({ setShowAzmayeshPAge }) => {
     description: "",
   });
   const [selectedDate, setSelectedDate] = useState(null);
+  const [loadingBtn, setloadingBtn] = useState(false);
 
   const handleDateChange = (date) => {
     if (date) {
@@ -52,20 +53,32 @@ const Petscan = ({ setShowAzmayeshPAge }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setloadingBtn(true);
+
+    const involvements = formData.sizes.map((item) => ({
+      site: item.site ? item.site : undefined,
+      size: item.size ? item.size : undefined,
+      // You can include description if needed
+      // description: item.description,
+    }));
+
+    const { sizes, ...rest } = formData;
+
     const formattedData = {
-      ...formData,
-      size: formData.sizes.map((item) => parseFloat(item.size) || 0),
-      site: formData.sizes.map((item) => item.site),
+      ...rest,
+      involvements,
     };
 
     try {
       const response = await axios.post(
-        "https://cancerreg.ir/api/v1/records/corescan/",
+        "https://cancerreg.ir/api/v1/records/petscan/",
         formattedData
       );
+      setloadingBtn(false);
       toast.success("ثبت شد");
       setShowAzmayeshPAge("home");
     } catch (error) {
+      setloadingBtn(false);
       toast.warning("خطایی رخ داده است");
       console.error(error);
     }
@@ -92,23 +105,27 @@ const Petscan = ({ setShowAzmayeshPAge }) => {
         <Row key={index} className="my-3">
           <Col>
             <Form.Group>
-              <Form.Label>Size</Form.Label>
-              <Form.Control
-                type="number"
-                name="size"
-                value={field.size}
-                onChange={(e) => handleInputChange(index, e)}
-              />
-            </Form.Group>
-          </Col>
-          <Col>
-            <Form.Group>
               <Form.Label>Site</Form.Label>
               <Form.Control
                 type="text"
                 name="site"
                 value={field.site}
+                className="text-right"
                 onChange={(e) => handleInputChange(index, e)}
+                placeholder="مکان را وارد کنید" // Optional: Add a placeholder
+              />
+            </Form.Group>
+          </Col>
+          <Col>
+            <Form.Group>
+              <Form.Label>Size</Form.Label>
+              <Form.Control
+                type="number"
+                name="size"
+                value={field.size}
+                className="text-right"
+                onChange={(e) => handleInputChange(index, e)}
+                placeholder="اندازه را وارد کنید" // Optional: Add a placeholder
               />
             </Form.Group>
           </Col>
