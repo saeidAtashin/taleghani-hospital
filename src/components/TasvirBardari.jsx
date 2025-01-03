@@ -48,7 +48,7 @@ export default function TasvirBardari() {
         {rowData?.records?.map((record, index) => (
           <span
             key={index}
-            onClick={() => tasvirbardatiCellClick(record, rowData?.records)}
+            onClick={() => tasvirbardatiCellClick(record, rowData)}
             style={{
               cursor: "pointer",
               color: record?.state === "IN_PROGRESS" ? "#FF7518" : "green",

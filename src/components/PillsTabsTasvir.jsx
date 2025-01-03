@@ -9,9 +9,7 @@ import Petscan from "./Petscan";
 import SampleGraphy from "./SampleGraphy";
 
 const PillsTabsTasvir = ({ dataOfTable, allrow, setShowAzmayeshPAge }) => {
-  console.log("dataOfTable", dataOfTable);
   console.log("allrow", allrow);
-
   const tabsInnerImage = [
     {
       eventKey: "sonography",
@@ -68,7 +66,9 @@ const PillsTabsTasvir = ({ dataOfTable, allrow, setShowAzmayeshPAge }) => {
   };
 
   const getTabBadgeColor = (tab) => {
-    const matchingRow = allrow.find((row) => row.record_type === tab.eventKey);
+    const matchingRow = allrow?.records.find(
+      (row) => row.record_type === tab.eventKey
+    );
     if (matchingRow && matchingRow.state === "IN_PROGRESS") {
       return "#ff9008"; // Orange
     }
@@ -76,6 +76,10 @@ const PillsTabsTasvir = ({ dataOfTable, allrow, setShowAzmayeshPAge }) => {
       return "#3ff369"; // Green
     }
     return null;
+  };
+
+  const hasMatchingRecord = (eventKey) => {
+    return allrow?.records.some((record) => record.record_type === eventKey);
   };
 
   return (
@@ -112,11 +116,21 @@ const PillsTabsTasvir = ({ dataOfTable, allrow, setShowAzmayeshPAge }) => {
       <h4 className="my-4 mx-2">
         ثبت {tabsInnerImage.find((t) => t.eventKey === activeTab)?.title} جدید
       </h4>
+
       <Tab.Content className="mt-3">
         {tabsInnerImage.map((tab) => (
-          <Tab.Pane eventKey={tab.eventKey} key={tab.eventKey}>
-            {tab.content}
-          </Tab.Pane>
+          <>
+            <Tab.Pane eventKey={tab.eventKey} key={tab.eventKey}>
+              {activeTab === tab.eventKey &&
+                hasMatchingRecord(tab.eventKey) &&
+                allrow.order_description && (
+                  <h6 className="mb-5">
+                    توضیحات نسخه: {allrow.order_description}
+                  </h6>
+                )}
+              {tab.content}
+            </Tab.Pane>
+          </>
         ))}
       </Tab.Content>
     </Tab.Container>
