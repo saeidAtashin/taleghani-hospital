@@ -179,7 +179,7 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
     ];
 
     const formDataWithExtraData = {
-      fields: extendedFields,
+      fields: extendedFields?.length !== 0 ? extendedFields : undefined,
       ...additionalData,
     };
 
