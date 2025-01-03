@@ -4,7 +4,7 @@ import { Dropdown } from "primereact/dropdown";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
-import { Accordion, AccordionTab } from "primereact/accordion"; // وارد کردن Accordion
+import { Accordion, AccordionTab } from "primereact/accordion";
 import axios from "axios";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-multi-date-picker";
@@ -21,10 +21,10 @@ const TreatmentTable = () => {
   const [protocolOptions, setProtocolOptions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [description, setDescription] = useState("");
-  const [evaluationResult, setEvaluationResult] = useState(undefined);
 
   const [isTreatmentForm, setIsTreatmentForm] = useState(false);
   const [isCycleVisible, setisCycleVisible] = useState(false);
+  const [newTreat, setnewTreat] = useState(false);
 
   const [startDateObj, setStartDateObj] = useState(null);
   const [startDate, setStartDate] = useState("");
@@ -308,9 +308,6 @@ const TreatmentTable = () => {
 
   const [products, setProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
-  const numberTemplate = (rowData, { rowIndex }) => {
-    return <span>{rowIndex + 1}</span>;
-  };
 
   const persianDateTemplate = (field) => (rowData) =>
     (
@@ -353,33 +350,6 @@ const TreatmentTable = () => {
     [stateTranslations]
   );
 
-  function nameTemplate(rowData) {
-    const names = Array.isArray(rowData?.name) ? rowData.name : [];
-
-    console.log("rowData", rowData);
-
-    return (
-      <div>
-        {names.map((nameItem, index) => (
-          <span
-            key={index}
-            onClick={() => {
-              console.log("UID of the clicked item:", rowData?.id); // Log the uid when clicked
-            }}
-            style={{
-              cursor: "pointer",
-              fontWeight: "bold",
-              color: nameItem.type === "info" ? "#FF7518" : "green",
-              marginRight: "8px",
-            }}
-          >
-            {nameItem.value}
-          </span>
-        ))}
-      </div>
-    );
-  }
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -400,180 +370,121 @@ const TreatmentTable = () => {
   const headerNew = (
     <div className="d-flex flex-wrap gap-2 align-items-center  justify-content-start">
       <Button
-        label="ایحاد درمان جدید"
+        label="ایجاد درمان جدید"
         icon="pi pi-plus-circle ps-1"
         severity="primary"
-        // onClick={() => setShowAzmayeshPAge("orderRegister")}
+        onClick={() => setnewTreat(true)}
         className="rounded-3 "
       />
     </div>
   );
   return (
     <>
-      <DataTable
-        dir="rtl"
-        value={products}
-        selection={selectedProducts}
-        onSelectionChange={(e) => setSelectedProducts(e.value)}
-        dataKey="uid"
-        paginator
-        rows={10}
-        rowsPerPageOptions={[5, 10, 25]}
-        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-        currentPageReportTemplate="نمایش {first} تا {last} از {totalRecords} اطلاعات"
-        globalFilter={null}
-        header={headerNew}
-      >
-        <Column
-          selectionMode="multiple"
-          headerStyle={{ borderBottom: "2px solid black" }}
-        ></Column>
-        {columns?.map((col, index) => (
-          <Column
-            sortable
-            key={index}
-            field={col.field}
-            header={col.header}
-            body={col.body}
-            style={{
-              textAlign: "right",
-              direction: "rtl",
-              whiteSpace: "nowrap",
-            }}
-            headerStyle={{
-              borderBottom: "2px solid black",
-              whiteSpace: "nowrap",
-            }}
-          />
-        ))}
-        <Column
-          header="عملیات"
-          headerStyle={{ borderBottom: "2px solid black" }}
-          body={(rowData) => (
-            <button
-              type="button"
-              className="btn btn-outline-primary"
-              onClick={() =>
-                window.open(
-                  `/dashboard/patients-lists/${rowData.uid}`,
-                  "_blank"
-                )
-              }
-            >
-              مشاهده
-            </button>
-          )}
-        />
-      </DataTable>
-
       <Toast ref={toast} />
-      <div className="p-field p-grid">
-        <label className="p-col-12 p-md-2" htmlFor="treatment">
-          انتخاب درمان:
-        </label>
-        <div className="p-col-12 p-md-10">
-          <CascadeSelect
-            value={treatmentValue}
-            options={cascadeOptions}
-            optionLabel={"label"}
-            optionGroupLabel={"label"}
-            optionGroupChildren={["children"]}
-            placeholder="Select a treatment"
-            onChange={(e) => setTreatmentValue(e.value)}
-            style={{ minWidth: "14rem" }}
+
+      {!newTreat && (
+        <DataTable
+          dir="rtl"
+          value={products}
+          selection={selectedProducts}
+          onSelectionChange={(e) => setSelectedProducts(e.value)}
+          dataKey="uid"
+          paginator
+          rows={10}
+          rowsPerPageOptions={[5, 10, 25]}
+          paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+          currentPageReportTemplate="نمایش {first} تا {last} از {totalRecords} اطلاعات"
+          globalFilter={null}
+          header={headerNew}
+        >
+          <Column
+            selectionMode="multiple"
+            headerStyle={{ borderBottom: "2px solid black" }}
+          ></Column>
+          {columns?.map((col, index) => (
+            <Column
+              sortable
+              key={index}
+              field={col.field}
+              header={col.header}
+              body={col.body}
+              style={{
+                textAlign: "right",
+                direction: "rtl",
+                whiteSpace: "nowrap",
+              }}
+              headerStyle={{
+                borderBottom: "2px solid black",
+                whiteSpace: "nowrap",
+              }}
+            />
+          ))}
+          <Column
+            header="عملیات"
+            headerStyle={{ borderBottom: "2px solid black" }}
+            body={(rowData) => (
+              <button
+                type="button"
+                className="btn btn-outline-primary"
+                onClick={() =>
+                  window.open(
+                    `/dashboard/patients-lists/${rowData.uid}`,
+                    "_blank"
+                  )
+                }
+              >
+                مشاهده
+              </button>
+            )}
           />
-        </div>
-      </div>
+        </DataTable>
+      )}
 
-      {treatmentValue && (
-        <div className="p-mt-3 mb-4 ">
-          {isTreatmentForm ? (
-            // فرم درمان
-            <>
-              <div className="d-flex flex-column my-3 ">
-                <label className="p-col-12 p-md-2" htmlFor="start_date">
-                  تاریخ شروع خط درمان:
-                </label>
-                <DatePicker
-                  value={startDateObj}
-                  onChange={handleStartDateChange}
-                  calendar={persian}
-                  locale={persian_fa}
-                  format="YYYY/MM/DD"
-                  placeholder="تاریخ را انتخاب کنید"
-                  className="p-2 border rounded"
-                  inputClass="w-full p-2 text-end w-100 border rounded"
-                  position="bottom-right"
-                />
+      {newTreat && (
+        <>
+          <>
+            <div className="container mt-5">
+              <div className="d-flex justify-content-between align-items-center">
+                <h2 className="m-2 pb-3">ایجاد درمان جدید</h2>
+                <span
+                  className="text-danger cursor-pointer"
+                  style={{ fontSize: "32px" }}
+                  onClick={() => {
+                    setnewTreat(false);
+                  }}
+                >
+                  x
+                </span>
               </div>
-
-              <div className="d-flex flex-column my-3">
-                <label className="p-col-12 p-md-2" htmlFor="evaluation_uid">
-                  ارزیابی درمان:
-                </label>
-                <div className="p-col-12 p-md-10">
-                  <Dropdown
-                    id="evaluation_uid"
-                    value={selectedProtocol}
-                    options={protocolOptions}
-                    onChange={(e) => setSelectedProtocol(e.value)}
-                    placeholder="ارزیابی را انتخاب کنید"
-                    optionLabel="label"
-                    className="w-100"
-                  />
-                </div>
-              </div>
-
-              <div className="d-flex flex-column my-3 ">
-                <label className="p-col-12 p-md-2" htmlFor="end_date">
-                  تاریخ پایان درمان:
-                </label>
-                <DatePicker
-                  value={endDateObj}
-                  onChange={handleEndDateChange}
-                  calendar={persian}
-                  locale={persian_fa}
-                  format="YYYY/MM/DD"
-                  placeholder="تاریخ را انتخاب کنید"
-                  className="p-2 border rounded"
-                  inputClass="w-full p-2 text-end w-100 border rounded"
-                  position="bottom-right"
-                />
-              </div>
-
-              <div className="d-flex flex-column my-3 ">
-                <label className="p-col-12 p-md-2" htmlFor="description">
-                  توضیحات:
-                </label>
-                <div className="p-col-12 p-md-10">
-                  <InputTextarea
-                    id="description"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    rows={3}
-                    className="w-100"
-                    placeholder="توضیحات مرتبط با خط درمان را وارد نمایید."
-                  />
-                </div>
-              </div>
-
-              <Button
-                label="تایید و ثبت نتایج"
-                icon="pi pi-check"
-                onClick={handleSubmit}
-                loading={loading}
-                className="w-100"
+            </div>
+          </>
+          <div className="p-field p-grid">
+            <label className="p-col-12 p-md-2" htmlFor="treatment">
+              انتخاب درمان:
+            </label>
+            <div className="p-col-12 p-md-10">
+              <CascadeSelect
+                value={treatmentValue}
+                options={cascadeOptions}
+                optionLabel={"label"}
+                optionGroupLabel={"label"}
+                optionGroupChildren={["children"]}
+                placeholder="Select a treatment"
+                onChange={(e) => setTreatmentValue(e.value)}
+                style={{ minWidth: "14rem" }}
               />
-            </>
-          ) : (
-            // فرم شیمی‌درمانی
-            <>
-              <div className="d-flex flex-column my-3">
-                <label className="p-col-12 p-md-2" htmlFor="start_date">
-                  تاریخ شروع درمان:
-                </label>
-                <div className="d-flex w-100">
-                  <div style={{ flex: 3, marginRight: "10px" }}>
+            </div>
+          </div>
+
+          {treatmentValue && (
+            <div className="p-mt-3 mb-4 ">
+              {isTreatmentForm ? (
+                // فرم درمان
+                <>
+                  <div className="d-flex flex-column my-3 ">
+                    <label className="p-col-12 p-md-2" htmlFor="start_date">
+                      تاریخ شروع خط درمان:
+                    </label>
                     <DatePicker
                       value={startDateObj}
                       onChange={handleStartDateChange}
@@ -581,154 +492,239 @@ const TreatmentTable = () => {
                       locale={persian_fa}
                       format="YYYY/MM/DD"
                       placeholder="تاریخ را انتخاب کنید"
-                      className="p-2 border rounded w-100"
-                      inputClass="w-100 p-2 text-end border rounded"
+                      className="p-2 border rounded"
+                      inputClass="w-full p-2 text-end w-100 border rounded"
                       position="bottom-right"
                     />
                   </div>
-                  <div style={{ flex: 1 }}>
-                    <Button
-                      label="ذخیره"
-                      icon="pi pi-check"
-                      onClick={handleSubmitLine}
-                      loading={loading}
-                      className="w-100 bg-white text-dark rounded-3"
-                    />
-                  </div>
-                </div>
-              </div>
 
-              {showedPart === "showCycle" && (
-                <div className=" mt-4 pt-4">
-                  <TabMenu
-                    scrollable
-                    model={items?.map((item) => ({
-                      label: item?.template || item?.label,
-                      command: item.command,
-                    }))}
-                    activeIndex={activeIndex === 0 ? 1 : activeIndex}
-                    onTabChange={(e) => setActiveIndex(e.index)}
-                  />
-
-                  <>
-                    <div className="d-flex flex-column my-3 ">
-                      <label className="p-col-12 p-md-2" htmlFor="start_date">
-                        تاریخ شروع خط درمان:
-                      </label>
-                      <DatePicker
-                        value={startDateObj}
-                        onChange={handleStartDateChange}
-                        calendar={persian}
-                        locale={persian_fa}
-                        format="YYYY/MM/DD"
-                        placeholder="تاریخ را انتخاب کنید"
-                        className="p-2 border rounded"
-                        inputClass="w-full p-2 text-end w-100 border rounded"
-                        position="bottom-right"
+                  <div className="d-flex flex-column my-3">
+                    <label className="p-col-12 p-md-2" htmlFor="evaluation_uid">
+                      ارزیابی درمان:
+                    </label>
+                    <div className="p-col-12 p-md-10">
+                      <Dropdown
+                        id="evaluation_uid"
+                        value={selectedProtocol}
+                        options={protocolOptions}
+                        onChange={(e) => setSelectedProtocol(e.value)}
+                        placeholder="ارزیابی را انتخاب کنید"
+                        optionLabel="label"
+                        className="w-100"
                       />
                     </div>
-                    <div className="">
-                      <label
-                        className="p-col-12 p-md-2 mt-3"
-                        htmlFor="protocol"
-                      >
-                        پروتکل:
-                      </label>
-                      <div className="p-col-12 p-md-10 mb-4 ">
-                        <Dropdown
-                          id="protocol"
-                          value={selectedProtocol}
-                          options={protocolOptions}
-                          onChange={(e) => setSelectedProtocol(e.value)}
-                          placeholder="پروتکل را انتخاب نمایید"
-                          optionLabel="label"
-                          className="w-100"
+                  </div>
+
+                  <div className="d-flex flex-column my-3 ">
+                    <label className="p-col-12 p-md-2" htmlFor="end_date">
+                      تاریخ پایان درمان:
+                    </label>
+                    <DatePicker
+                      value={endDateObj}
+                      onChange={handleEndDateChange}
+                      calendar={persian}
+                      locale={persian_fa}
+                      format="YYYY/MM/DD"
+                      placeholder="تاریخ را انتخاب کنید"
+                      className="p-2 border rounded"
+                      inputClass="w-full p-2 text-end w-100 border rounded"
+                      position="bottom-right"
+                    />
+                  </div>
+
+                  <div className="d-flex flex-column my-3 ">
+                    <label className="p-col-12 p-md-2" htmlFor="description">
+                      توضیحات:
+                    </label>
+                    <div className="p-col-12 p-md-10">
+                      <InputTextarea
+                        id="description"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        rows={3}
+                        className="w-100"
+                        placeholder="توضیحات مرتبط با خط درمان را وارد نمایید."
+                      />
+                    </div>
+                  </div>
+
+                  <Button
+                    label="تایید و ثبت نتایج"
+                    icon="pi pi-check"
+                    onClick={handleSubmit}
+                    loading={loading}
+                    className="w-100"
+                  />
+                </>
+              ) : (
+                // فرم شیمی‌درمانی
+                <>
+                  <div className="d-flex flex-column my-3">
+                    <label className="p-col-12 p-md-2" htmlFor="start_date">
+                      تاریخ شروع درمان:
+                    </label>
+                    <div className="d-flex w-100">
+                      <div style={{ flex: 3, marginRight: "10px" }}>
+                        <DatePicker
+                          value={startDateObj}
+                          onChange={handleStartDateChange}
+                          calendar={persian}
+                          locale={persian_fa}
+                          format="YYYY/MM/DD"
+                          placeholder="تاریخ را انتخاب کنید"
+                          className="p-2 border rounded w-100"
+                          inputClass="w-100 p-2 text-end border rounded"
+                          position="bottom-right"
+                        />
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <Button
+                          label="ذخیره"
+                          icon="pi pi-check"
+                          onClick={handleSubmitLine}
+                          loading={loading}
+                          className="w-100 bg-white text-dark rounded-3"
                         />
                       </div>
                     </div>
-                  </>
+                  </div>
 
-                  <Button
-                    label="ثبت سیکل جدید"
-                    icon="pi pi-plus"
-                    className="p-button-text border rounded mb-4"
-                    onClick={addCycle}
-                  />
+                  {showedPart === "showCycle" && (
+                    <div className=" mt-4 pt-4">
+                      <TabMenu
+                        scrollable
+                        model={items?.map((item) => ({
+                          label: item?.template || item?.label,
+                          command: item.command,
+                        }))}
+                        activeIndex={activeIndex === 0 ? 1 : activeIndex}
+                        onTabChange={(e) => setActiveIndex(e.index)}
+                      />
 
-                  {isCycleVisible && (
-                    <fieldset
-                      style={{
-                        border: "1px solid #ccc",
-                        padding: "1rem",
-                        marginBottom: "1rem",
-                      }}
-                    >
-                      <legend>سیکل ها</legend>
-                      <Accordion activeIndex={[0]} multiple>
-                        {cycles.map((cycle, index) => (
-                          <AccordionTab
-                            key={index}
-                            header={`سیکل ${cycle.cycleNumber}`}
+                      <>
+                        <div className="d-flex flex-column my-3 ">
+                          <label
+                            className="p-col-12 p-md-2"
+                            htmlFor="start_date"
                           >
-                            <div className="d-flex flex-column my-3 ">
-                              <label
-                                className="p-col-12 p-md-2"
-                                htmlFor={`cycle_date_${index}`}
-                              >
-                                تاریخ:
-                              </label>
-                              <DatePicker
-                                value={cycle.dateObj}
-                                onChange={(date) =>
-                                  handleCycleDateChange(index, date)
-                                }
-                                calendar={persian}
-                                locale={persian_fa}
-                                format="YYYY/MM/DD"
-                                placeholder="تاریخ را انتخاب کنید"
-                                className="p-2 border rounded"
-                                inputClass="w-full p-2 text-end w-100 border rounded"
-                                position="bottom-right"
-                              />
-                            </div>
-                            <div className="p-field p-grid">
-                              <label
-                                className="p-col-12 p-md-2"
-                                htmlFor={`cycle_desc_${index}`}
-                              >
-                                توضیحات:
-                              </label>
-                              <div className="p-col-12 p-md-10">
-                                <InputTextarea
-                                  id={`cycle_desc_${index}`}
-                                  value={cycle.description}
-                                  onChange={(e) =>
-                                    handleCycleDescriptionChange(
-                                      index,
-                                      e.target.value
-                                    )
-                                  }
-                                  rows={2}
-                                  className="w-100"
-                                />
-                              </div>
-                            </div>
-                            <Button
-                              label="ذخیره"
-                              icon="pi"
-                              className="p-button border rounded mb-4"
-                              onClick={handleCycleapi}
+                            تاریخ شروع خط درمان:
+                          </label>
+                          <DatePicker
+                            value={startDateObj}
+                            onChange={handleStartDateChange}
+                            calendar={persian}
+                            locale={persian_fa}
+                            format="YYYY/MM/DD"
+                            placeholder="تاریخ را انتخاب کنید"
+                            className="p-2 border rounded"
+                            inputClass="w-full p-2 text-end w-100 border rounded"
+                            position="bottom-right"
+                          />
+                        </div>
+                        <div className="">
+                          <label
+                            className="p-col-12 p-md-2 mt-3"
+                            htmlFor="protocol"
+                          >
+                            پروتکل:
+                          </label>
+                          <div className="p-col-12 p-md-10 mb-4 ">
+                            <Dropdown
+                              id="protocol"
+                              value={selectedProtocol}
+                              options={protocolOptions}
+                              onChange={(e) => setSelectedProtocol(e.value)}
+                              placeholder="پروتکل را انتخاب نمایید"
+                              optionLabel="label"
+                              className="w-100"
                             />
-                          </AccordionTab>
-                        ))}
-                      </Accordion>
-                    </fieldset>
+                          </div>
+                        </div>
+                      </>
+
+                      <Button
+                        label="ثبت سیکل جدید"
+                        icon="pi pi-plus"
+                        className="p-button-text border rounded mb-4"
+                        onClick={addCycle}
+                      />
+
+                      {isCycleVisible && (
+                        <fieldset
+                          style={{
+                            border: "1px solid #ccc",
+                            padding: "1rem",
+                            marginBottom: "1rem",
+                          }}
+                        >
+                          <legend>سیکل ها</legend>
+                          <Accordion activeIndex={[0]} multiple>
+                            {cycles.map((cycle, index) => (
+                              <AccordionTab
+                                key={index}
+                                header={`سیکل ${cycle.cycleNumber}`}
+                              >
+                                <div className="d-flex flex-column my-3 ">
+                                  <label
+                                    className="p-col-12 p-md-2"
+                                    htmlFor={`cycle_date_${index}`}
+                                  >
+                                    تاریخ:
+                                  </label>
+                                  <DatePicker
+                                    value={cycle.dateObj}
+                                    onChange={(date) =>
+                                      handleCycleDateChange(index, date)
+                                    }
+                                    calendar={persian}
+                                    locale={persian_fa}
+                                    format="YYYY/MM/DD"
+                                    placeholder="تاریخ را انتخاب کنید"
+                                    className="p-2 border rounded"
+                                    inputClass="w-full p-2 text-end w-100 border rounded"
+                                    position="bottom-right"
+                                  />
+                                </div>
+                                <div className="p-field p-grid">
+                                  <label
+                                    className="p-col-12 p-md-2"
+                                    htmlFor={`cycle_desc_${index}`}
+                                  >
+                                    توضیحات:
+                                  </label>
+                                  <div className="p-col-12 p-md-10">
+                                    <InputTextarea
+                                      id={`cycle_desc_${index}`}
+                                      value={cycle.description}
+                                      onChange={(e) =>
+                                        handleCycleDescriptionChange(
+                                          index,
+                                          e.target.value
+                                        )
+                                      }
+                                      rows={2}
+                                      className="w-100"
+                                    />
+                                  </div>
+                                </div>
+                                <Button
+                                  label="ذخیره"
+                                  icon="pi"
+                                  className="p-button border rounded mb-4"
+                                  onClick={handleCycleapi}
+                                />
+                              </AccordionTab>
+                            ))}
+                          </Accordion>
+                        </fieldset>
+                      )}
+                    </div>
                   )}
-                </div>
+                </>
               )}
-            </>
+            </div>
           )}
-        </div>
+        </>
       )}
     </>
   );
