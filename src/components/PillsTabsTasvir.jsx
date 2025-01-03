@@ -66,7 +66,7 @@ const PillsTabsTasvir = ({ dataOfTable, allrow, setShowAzmayeshPAge }) => {
   };
 
   const getTabBadgeColor = (tab) => {
-    const matchingRow = allrow?.records.find(
+    const matchingRow = allrow?.records?.find(
       (row) => row.record_type === tab.eventKey
     );
     if (matchingRow && matchingRow.state === "IN_PROGRESS") {
@@ -79,13 +79,13 @@ const PillsTabsTasvir = ({ dataOfTable, allrow, setShowAzmayeshPAge }) => {
   };
 
   const hasMatchingRecord = (eventKey) => {
-    return allrow?.records.some((record) => record.record_type === eventKey);
+    return allrow?.records?.some((record) => record.record_type === eventKey);
   };
 
   return (
     <Tab.Container activeKey={activeTab} onSelect={handleSelect}>
       <Nav variant="pills">
-        {tabsInnerImage.map((tab) => {
+        {tabsInnerImage?.map((tab) => {
           const badgeColor = getTabBadgeColor(tab);
           const isActive = activeTab === tab.eventKey;
           return (
