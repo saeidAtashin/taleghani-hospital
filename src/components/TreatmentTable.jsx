@@ -251,7 +251,7 @@ const TreatmentTable = () => {
       setLoading(false);
       return;
     }
-
+// 
     const payload = {
       type: isTreatmentForm ? "TREATMENT" : "CHEMOTHERAPY",
       category: mainSelection,
