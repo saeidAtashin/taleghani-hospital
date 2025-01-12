@@ -117,11 +117,11 @@ const TreatmentTable = () => {
     },
     {
       label: "شیمی درمانی-ایمونوتراپی",
-      value: "شیمی درمانی-ایمونوتراپی",
+      value: "CHEMOTHERAPY",
     },
     {
       label: "هورمون درمانی",
-      value: "هورمون درمانی",
+      value: "HORMONETHERAPY",
     },
   ];
 
@@ -141,8 +141,7 @@ const TreatmentTable = () => {
     }
 
     const isForm =
-      mainSelection === "هورمون درمانی" ||
-      mainSelection === "شیمی درمانی-ایمونوتراپی";
+      mainSelection === "HORMONETHERAPY" || mainSelection === "CHEMOTHERAPY";
     setIsTreatmentForm(!isForm);
   }, [treatmentValue, mainSelection, subSelection]);
 
@@ -310,7 +309,7 @@ const TreatmentTable = () => {
         body: persianDateTemplate("end_date"),
       },
       // { field: "patient", header: "بیمار",  },
-      // { field: "category", header: "دسته‌بندی",  },
+      { field: "category", header: "دسته‌بندی" },
       { field: "sub_category", header: "زیر دسته‌بندی" },
       // { field: "type", header: "نوع درمان",  },
       { field: "evaluation", header: "ارزیابی" },
