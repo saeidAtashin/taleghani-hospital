@@ -12,7 +12,7 @@ const TestOptionForm = ({ selectedCategory }) => {
   const [ordering, setOrdering] = useState(0);
   const [fieldType, setFieldType] = useState("");
 
-  console.log("fields", fields);
+
   useEffect(() => {
     const fetchFields = async () => {
       try {
@@ -22,8 +22,8 @@ const TestOptionForm = ({ selectedCategory }) => {
 
         const fieldsData = response?.data?.data;
 
-        console.log("res", response?.data);
 
+        
         setFields(fieldsData);
       } catch (error) {
         console.error("Error fetching fields:", error);

@@ -144,9 +144,6 @@ export default function ColumnToggleDemo() {
         totalRecords={count}
         rowsPerPageOptions={[10, 20, 30]}
         onPageChange={(event) => {
-          // setPage(event.first);
-          console.log(products);
-          console.log("event.rows", event);
           setFirst(event.first);
           setPage(event.page);
           setRows(event.rows);

@@ -301,7 +301,7 @@ const TabsComponents = ({
                   <InputSwitch
                     checked={checked}
                     onChange={(e) => {
-                      console.log("checked", checked);
+
                       setChecked(e.value);
                     }}
                   />

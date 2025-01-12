@@ -35,10 +35,7 @@ export default function AzmayeshatTable() {
         {rowData.names.map((nameItem, index) => (
           <span
             key={index}
-            onClick={() => {
-              console.log("UID of the clicked item:", nameItem.id);
-              // You can navigate or perform actions based on nameItem.id
-            }}
+            onClick={() => {}}
             style={{
               cursor: "pointer",
               fontWeight: "bold",
@@ -63,7 +60,6 @@ export default function AzmayeshatTable() {
           `https://cancerreg.ir/api/v1/tests/batch-test/${uid}/`
         );
         const { results } = response.data;
-        console.log("results", results);
 
         // Map the data to include necessary fields
         const mappedData = results.map((item) => ({
@@ -95,7 +91,6 @@ export default function AzmayeshatTable() {
         );
 
         setGroupedData(groupedArray);
-        console.log("groupedData", groupedArray);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -104,10 +99,7 @@ export default function AzmayeshatTable() {
     fetchData();
   }, [showAzmayeshPAge, uid]);
 
-  const handlePrint = () => {
-    // Implement print functionality here
-    console.log("Print clicked");
-  };
+  const handlePrint = () => {};
 
   const headerNew = (
     <div className="d-flex flex-wrap gap-2 align-items-center  justify-content-start">
@@ -131,7 +123,7 @@ export default function AzmayeshatTable() {
   const handleDelete = () => {
     // Implement delete functionality based on groupedData
     // Note: Since data is grouped, deletion logic needs to be adjusted accordingly
-    console.log("Delete clicked");
+
     setSelectedGroups([]);
   };
 

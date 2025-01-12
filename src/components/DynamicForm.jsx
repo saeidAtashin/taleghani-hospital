@@ -73,10 +73,8 @@ const DynamicForm = ({ data }) => {
   const handleSubmit = () => {
     const hasErrors = Object.values(errors).some((error) => error !== null);
     if (hasErrors) {
-      console.log("Form has errors:", errors);
       return;
     }
-    console.log("Form Data:", formData);
   };
 
   return (

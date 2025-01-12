@@ -142,7 +142,6 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
         );
 
         if (response.status >= 200 && response.status < 400) {
-          console.log("ressssssssssssssssssss", response?.data?.data);
           setHiddenInputs(response?.data?.data);
         }
       } catch (error) {
@@ -282,7 +281,6 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
 
   if (isLoadingAll) return <>در حال دریافت اطلاعات...</>;
 
-  console.log("hiddenSubmittedData", hiddenSubmittedData);
   return (
     <Tab.Container activeKey={activeTab} onSelect={handleSelect}>
       <Nav variant="pills" className="mb-3">

@@ -36,10 +36,6 @@ const NewPillsTabs = () => {
   };
 
   const transformResponse = (response) => {
-    console.log("res", response);
-    console.log("tabsNew", tabsNew);
-    console.log("tabsNewTitle", tabsNewTitle);
-    console.log("groupedFields", groupedFields);
     const transformedTitle = [];
     const transformed = [];
     response?.forEach((category) => {
@@ -113,7 +109,6 @@ const NewPillsTabs = () => {
           `https://cancerreg.ir/api/v1/tests/category-details/${activeTab}`
         );
 
-        console.log("title direct to category", response?.data?.data?.title);
         settitleDirectToCateg(transformResponse(response?.data?.data?.title));
         settabsNewTitle(response?.data?.data?.title);
       } catch (error) {
@@ -128,7 +123,6 @@ const NewPillsTabs = () => {
   }, [tabsNew]);
 
   const handleSelect = (eventKey) => {
-    console.log("subCategoryOptions", subCategoryOptions);
     setActiveTab(eventKey);
     // setSelectedSubCategory(null);
   };
@@ -176,7 +170,6 @@ const NewPillsTabs = () => {
   }, {});
 
   const handleChange = (value) => {
-    console.log("Value selected:", value);
     // Perform additional handling (e.g., updating form state, calling a function, etc.)
   };
 
@@ -228,7 +221,6 @@ const NewPillsTabs = () => {
                             value={field?.value} // Set the full object, not just uid
                             options={field?.options} // Your array of objects with name and uid
                             onChange={(e) => {
-                              console.log("Selected option:", e.value); // Log the selected object
                               if (typeof field?.onChange === "function") {
                                 field?.onChange(e.value); // Pass the entire object to onChange
                               } else {

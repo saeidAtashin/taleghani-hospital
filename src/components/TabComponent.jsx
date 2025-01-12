@@ -278,8 +278,8 @@ export default function TabComponent() {
           "https://cancerreg.ir/api/v1/tests/mng-title/"
         );
         const results = response.data.data.result;
-        console.log("response.data.data.result", response.data.data.result);
 
+        
         setTitles(results);
       } catch (error) {
         console.error("Error fetching titles:", error);

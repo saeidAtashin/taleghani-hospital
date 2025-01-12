@@ -145,16 +145,7 @@ const TreatmentTable = () => {
       mainSelection === "شیمی درمانی-ایمونوتراپی";
     setIsTreatmentForm(!isForm);
 
-    console.log(
-      "treatmentValue:",
-      treatmentValue,
-      "mainSelection:",
-      mainSelection,
-      "subSelection:",
-      subSelection,
-      "isTreatmentForm:",
-      isForm
-    );
+
   }, [treatmentValue, mainSelection, subSelection]);
 
   const handleStartDateChange = (date) => {
@@ -253,8 +244,8 @@ const TreatmentTable = () => {
       }));
     }
 
-    console.log("payload", payload);
 
+    
     axios
       .post("https://cancerreg.ir/api/v1/teatment/treatment/", payload)
       .then(() => {
@@ -460,7 +451,7 @@ const TreatmentTable = () => {
                 optionGroupChildren={["children"]}
                 placeholder="Select a treatment"
                 onChange={(e) => {
-                  console.log("object", e);
+
                   setTreatmentValue(e.value);
                 }}
                 style={{ minWidth: "14rem" }}
