@@ -29,6 +29,8 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
 
   const [selectedName, setSelectedName] = useState("");
   const [immunofixationUid, setimmunofixationUid] = useState("");
+  const [getHideInput, setGetHideInput] = useState(false);
+  const [hiddenInputs, setHiddenInputs] = useState([]);
   const [kValue, setkValue] = useState(1);
   const [landaValue, setlandaValue] = useState(1);
   const [valueinja, setvalueinja] = useState(0);
@@ -77,8 +79,10 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
     const fetchDataCategoryUId = async () => {
       try {
         const response = await axios.get(
-          `https://cancerreg.ir/api/v1/tests/category-details/${activeTab}`
+          `https://cancerreg.ir/api/v1/tests/category-details/${activeTab}/`
         );
+
+        setGetHideInput(true);
 
         if (response?.data?.data?.sub_category?.length > 0) {
           setsubCategory(response?.data?.data?.sub_category ?? []);
@@ -113,6 +117,8 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
           setisLoadingAll(false);
         }
       } catch (error) {
+        setGetHideInput(false);
+
         setisLoadingAll(false);
 
         console.error("Error fetching data:", error);
@@ -124,6 +130,24 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
   useEffect(() => {
     setActiveTab(tabsNew?.[0]?.uid ?? "");
   }, [tabsNew]);
+
+  useEffect(() => {
+    const fetchDataCategoryHidden = async () => {
+      try {
+        const response = await axios.get(
+          `https://cancerreg.ir/api/v1/tests/order-fields/${activeTab}/`
+        );
+
+        if (response.status >= 200 && response.status < 400) {
+          console.log("ressssssssssssssssssss", response?.data?.data);
+          setHiddenInputs(response?.data?.data);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    getHideInput && activeTab && gettedCategory && fetchDataCategoryHidden();
+  }, [activeTab, tabsNew, gettedCategory]);
 
   const handleSelect = (eventKey) => {
     setActiveTab(eventKey);
@@ -254,7 +278,6 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
 
   if (isLoadingAll) return <>در حال دریافت اطلاعات...</>;
 
-  console.log("titleOfAll", titleOfAll);
   return (
     <Tab.Container activeKey={activeTab} onSelect={handleSelect}>
       <Nav variant="pills" className="mb-3">
@@ -312,8 +335,6 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
                       calendar: persian,
                     })
                   : null;
-
-                console.log("new Date(field.value)", selectedDate);
 
                 return (
                   <DatePicker
@@ -710,15 +731,6 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
                                           control={control}
                                           render={({ field }) => {
                                             const handleValueChange = (e) => {
-                                              console.log(
-                                                "object",
-                                                e.target.value
-                                              );
-                                              console.log(
-                                                "titleData",
-                                                titleData
-                                              );
-
                                               titleData?.name === "κ"
                                                 ? setkValue(e.target.value)
                                                 : titleData?.name === "λ"
