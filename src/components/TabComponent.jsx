@@ -279,7 +279,6 @@ export default function TabComponent() {
         );
         const results = response.data.data.result;
 
-        
         setTitles(results);
       } catch (error) {
         console.error("Error fetching titles:", error);

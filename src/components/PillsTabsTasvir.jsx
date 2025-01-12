@@ -9,7 +9,6 @@ import Petscan from "./Petscan";
 import SampleGraphy from "./SampleGraphy";
 
 const PillsTabsTasvir = ({ dataOfTable, allrow, setShowAzmayeshPAge }) => {
-
   const tabsInnerImage = [
     {
       eventKey: "sonography",

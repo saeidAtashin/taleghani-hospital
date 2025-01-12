@@ -14,7 +14,6 @@ export default function AzmayeshatTable() {
   const dt = useRef(null);
   const { uid } = useParams();
 
-  // Templates for rendering cells
   const numberTemplate = (rowData, { rowIndex }) => {
     return <span>{rowIndex + 1}</span>;
   };
@@ -52,7 +51,6 @@ export default function AzmayeshatTable() {
     );
   };
 
-  // Fetch and group data by date
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -61,18 +59,16 @@ export default function AzmayeshatTable() {
         );
         const { results } = response.data;
 
-        // Map the data to include necessary fields
         const mappedData = results.map((item) => ({
           id: item.uid,
           name: item.tests.map((test) => ({
             value: test.category,
             type: test.state === "IN_PROGRESS" ? "info" : "secondary",
-            id: test.id, // Assuming each test has a unique ID
+            id: test.id,
           })),
           date: item.created_at ? item.created_at.slice(0, 10) : null,
         }));
 
-        // Group data by date
         const grouped = mappedData.reduce((acc, current) => {
           const date = current.date;
           if (!acc[date]) {
@@ -85,7 +81,6 @@ export default function AzmayeshatTable() {
           return acc;
         }, {});
 
-        // Convert grouped object to array
         const groupedArray = Object.values(grouped).sort(
           (a, b) => new Date(a.date) - new Date(b.date)
         );
@@ -121,9 +116,6 @@ export default function AzmayeshatTable() {
   );
 
   const handleDelete = () => {
-    // Implement delete functionality based on groupedData
-    // Note: Since data is grouped, deletion logic needs to be adjusted accordingly
-
     setSelectedGroups([]);
   };
 

@@ -5,14 +5,12 @@ import { Button } from "primereact/button";
 
 const DynamicForm = ({ data }) => {
   const [formData, setFormData] = useState({});
-  const [errors, setErrors] = useState({}); // To track validation errors
+  const [errors, setErrors] = useState({});
 
-  // Handle input change for both text and select inputs
   const handleInputChange = (fieldUid, value, fieldType) => {
     let valid = true;
     let transformedValue = value;
 
-    // Validate and transform value based on type
     if (fieldType === "FLOAT") {
       transformedValue = parseFloat(value);
       if (isNaN(transformedValue)) {
@@ -61,7 +59,6 @@ const DynamicForm = ({ data }) => {
       }
     }
 
-    // Update state if valid
     if (valid) {
       setFormData((prevData) => ({
         ...prevData,

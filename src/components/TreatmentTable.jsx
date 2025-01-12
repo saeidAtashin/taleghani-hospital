@@ -144,8 +144,6 @@ const TreatmentTable = () => {
       mainSelection === "هورمون درمانی" ||
       mainSelection === "شیمی درمانی-ایمونوتراپی";
     setIsTreatmentForm(!isForm);
-
-
   }, [treatmentValue, mainSelection, subSelection]);
 
   const handleStartDateChange = (date) => {
@@ -244,8 +242,6 @@ const TreatmentTable = () => {
       }));
     }
 
-
-    
     axios
       .post("https://cancerreg.ir/api/v1/teatment/treatment/", payload)
       .then(() => {
@@ -451,7 +447,6 @@ const TreatmentTable = () => {
                 optionGroupChildren={["children"]}
                 placeholder="Select a treatment"
                 onChange={(e) => {
-
                   setTreatmentValue(e.value);
                 }}
                 style={{ minWidth: "14rem" }}
@@ -462,7 +457,6 @@ const TreatmentTable = () => {
           {treatmentValue && (
             <div className="p-mt-3 mb-4">
               {isTreatmentForm ? (
-                // Treatment Form
                 <>
                   <div className="d-flex flex-column my-3">
                     <label className="p-col-12 p-md-2" htmlFor="start_date">
@@ -540,7 +534,6 @@ const TreatmentTable = () => {
                   />
                 </>
               ) : (
-                // Chemotherapy Form
                 <>
                   <div className="d-flex flex-column my-3">
                     <label className="p-col-12 p-md-2" htmlFor="start_date">
