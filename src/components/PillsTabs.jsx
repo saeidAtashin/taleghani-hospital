@@ -38,6 +38,8 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
   const [parentArray, setParentArray] = useState([]);
   const Exexex = ["IgA", "IgM", "IgG", "IgD", "Other"];
   const { uid } = useParams();
+  const [submittedInputs, setSubmittedInputs] = useState([]);
+  const [hiddenSubmittedData, setHiddenSubmittedData] = useState([]);
 
   useEffect(() => {
     setvalueinja(Number(kValue) / Number(landaValue));
@@ -196,6 +198,7 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
         const [uid, value] = Object.entries(item)[0];
         return { uid, value };
       }),
+      ...(hiddenSubmittedData ? [hiddenSubmittedData] : []),
     ];
 
     const formDataWithExtraData = {
@@ -279,6 +282,7 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
 
   if (isLoadingAll) return <>در حال دریافت اطلاعات...</>;
 
+  console.log("hiddenSubmittedData", hiddenSubmittedData);
   return (
     <Tab.Container activeKey={activeTab} onSelect={handleSelect}>
       <Nav variant="pills" className="mb-3">
@@ -793,7 +797,12 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
           </div>
 
           {hiddenInputs?.length > 0 && (
-            <HiddenInputsModal hiddenInputs={hiddenInputs} />
+            <HiddenInputsModal
+              hiddenInputs={hiddenInputs}
+              submittedInputs={submittedInputs}
+              setSubmittedInputs={setSubmittedInputs}
+              setHiddenSubmittedData={setHiddenSubmittedData}
+            />
           )}
 
           <button

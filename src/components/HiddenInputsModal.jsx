@@ -5,7 +5,12 @@ import { InputText } from "primereact/inputtext";
 import { InputNumber } from "primereact/inputnumber";
 import { Button } from "primereact/button";
 
-const HiddenInputsModal = ({ hiddenInputs }) => {
+const HiddenInputsModal = ({
+  hiddenInputs,
+  setSubmittedInputs,
+  submittedInputs,
+  setHiddenSubmittedData,
+}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedHiddenInput, setSelectedHiddenInput] = useState(null);
   const [inputValue, setInputValue] = useState("");
@@ -22,8 +27,22 @@ const HiddenInputsModal = ({ hiddenInputs }) => {
 
   const handleSubmit = () => {
     if (selectedHiddenInput) {
-      console.log("UID:", selectedHiddenInput.uid);
-      console.log("Input Value:", inputValue);
+      const submittedData = {
+        uid: selectedHiddenInput.uid,
+        value: inputValue,
+      };
+
+      setHiddenSubmittedData(submittedData);
+      // Log the data in the requested format
+
+      // Add the submitted input to the list of submitted inputs
+      setSubmittedInputs((prev) => [
+        ...prev,
+        { name: selectedHiddenInput.name, value: inputValue },
+      ]);
+
+      // Close the modal and reset the form
+      handleCloseModal();
     }
   };
 
@@ -63,7 +82,7 @@ const HiddenInputsModal = ({ hiddenInputs }) => {
         {selectedHiddenInput && (
           <div className="p-field d-flex flex-column my-4">
             <label className="mb-1" htmlFor="inputValue">
-              {inputType === "CHAR" ? "نتیجه آزمایش" : "نتیجه آزمایش(عدد)"}
+              {inputType === "CHAR" ? "نتیجه آزمایش" : "نتیجه آزمایش (عدد)"}
             </label>
             {inputType === "CHAR" ? (
               <InputText
@@ -97,6 +116,30 @@ const HiddenInputsModal = ({ hiddenInputs }) => {
           />
         </div>
       </Dialog>
+
+      {/* Render submitted inputs */}
+      <div style={{ marginTop: "20px" }}>
+        {submittedInputs?.length > 0 && <h3>آزمایش ثبت‌شده</h3>}
+        {submittedInputs?.map((input, index) => (
+          <div
+            key={index}
+            className="submitted-input d-flex flex-column my-2"
+            style={{ marginBottom: "10px" }}
+          >
+            <label>{input.name}:</label>
+            <input
+              type="text"
+              value={input.value}
+              readOnly
+              style={{
+                marginLeft: "10px",
+                padding: "5px",
+                width: "200px",
+              }}
+            />
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
