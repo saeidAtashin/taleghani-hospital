@@ -47,7 +47,9 @@ const HiddenInputsModal = ({ hiddenInputs }) => {
         style={{ width: "30vw" }}
       >
         <div className="p-field d-flex flex-column my-2">
-          <label className="mb-1" htmlFor="hiddenInputSelect">آزمایش</label>
+          <label className="mb-1" htmlFor="hiddenInputSelect">
+            آزمایش
+          </label>
           <Dropdown
             id="hiddenInputSelect"
             value={selectedHiddenInput}
