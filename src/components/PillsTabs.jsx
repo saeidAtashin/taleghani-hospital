@@ -19,18 +19,14 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
   const [titleOfAll, settitleOfAll] = useState();
   const [subCategory, setsubCategory] = useState();
   const [activeTab, setActiveTab] = useState("");
-  const [date, setDate] = useState(null);
-  const [activeSubCategory, setActiveSubCategory] = useState(null);
-  const [orderstyletitle, setorderstyletitle] = useState([]);
   const [countOccurrences, setcountOccurrences] = useState([]);
   const [countOccurrencesDirectTitle, setcountOccurrencesDirectTitle] =
     useState([]);
   const [activeSubCategoryIndex, setActiveSubCategoryIndex] = useState(null);
-  const [showAdditionalInput, setShowAdditionalInput] = useState(false);
   const [isLoading, setisLoading] = useState(false);
   const [isLoadingAll, setisLoadingAll] = useState(false);
   const [gettedCategory, setgettedCategory] = useState(false);
-  const [additionalInputValue, setAdditionalInputValue] = useState("");
+
   const [selectedName, setSelectedName] = useState("");
   const [immunofixationUid, setimmunofixationUid] = useState("");
   const [kValue, setkValue] = useState(1);
@@ -47,7 +43,6 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
     control,
     handleSubmit,
     reset,
-    getValues,
     setValue,
     formState: { errors },
   } = useForm({
@@ -136,12 +131,9 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
     reset();
     setParentArray([]);
     setSelectedName(undefined);
-    setDate(undefined);
     setValue("date", undefined);
 
-    setAdditionalInputValue(undefined);
     setimmunofixationUid(undefined);
-    setShowAdditionalInput(false);
   };
 
   const onSubmit = async (data) => {
@@ -200,12 +192,9 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
       reset();
       setParentArray([]);
       setSelectedName(undefined);
-      setDate(undefined);
-      setValue("date", undefined); // Resets only the date field
+      setValue("date", undefined);
 
-      setAdditionalInputValue(undefined);
       setimmunofixationUid(undefined);
-      setShowAdditionalInput(false);
     } catch (error) {
       setisLoading(false);
 
@@ -220,7 +209,6 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
   };
 
   const handleSubCategoryClick = (sub, index) => {
-    setActiveSubCategory(sub);
     setActiveSubCategoryIndex(index);
 
     settitleDirectToCategList(sub?.field ?? []);
@@ -245,18 +233,13 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
 
     setcountOccurrences(countOccurrencesss);
     settitleOfAll(sub?.title);
-    setorderstyletitle(countOccurrencesss);
 
-    // Resets only the date field
     reset();
     setParentArray([]);
     setSelectedName(undefined);
-    setDate(undefined);
-    setValue("date", undefined); // Resets only the date field
+    setValue("date", undefined);
 
-    setAdditionalInputValue(undefined);
     setimmunofixationUid(undefined);
-    setShowAdditionalInput(false);
   };
 
   useEffect(() => {
@@ -284,7 +267,6 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
                 eventKey={tab?.uid ?? ""}
                 onClick={() => {
                   settitleOfAll(undefined);
-                  setActiveSubCategory(undefined);
                   settitleDirectToCategList(undefined);
                 }}
               >
@@ -554,8 +536,6 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
                                       setSelectedValue={(value, name) => {
                                         field.onChange(value);
                                         setSelectedName(name);
-                                        setShowAdditionalInput(true);
-                                        setAdditionalInputValue("");
                                         setimmunofixationUid(
                                           titleDirectToCat?.uid
                                         );
@@ -580,7 +560,6 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
                                     selectedValue={field.value}
                                     setSelectedValue={(value) => {
                                       field.onChange(value);
-                                      setShowAdditionalInput(true);
                                     }}
                                   />
                                 )
@@ -763,23 +742,6 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
                                             };
 
                                             return (
-                                              // <InputText
-                                              //   {...field}
-                                              //   onChange={handleValueChange}
-                                              //   className="w-100"
-                                              //   keyfilter={
-                                              //     titleData?.type === "CHAR"
-                                              //       ? "char"
-                                              //       : titleData?.type ===
-                                              //           "FLOAT" ||
-                                              //         titleData?.type ===
-                                              //           "PERCENTAGE"
-                                              //       ? "decimal"
-                                              //       : ""
-                                              //   }
-
-                                              //   placeholder={`${titleData?.name} را وارد نمایید`}
-                                              // />
                                               <InputText
                                                 {...field}
                                                 placeholder={`${
@@ -821,7 +783,7 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
           <button
             type="submit"
             className="btn btn-primary mt-5 w-100 text-center"
-            disabled={isLoading} // Disable the button while loading
+            disabled={isLoading}
           >
             {isLoading ? (
               <>
