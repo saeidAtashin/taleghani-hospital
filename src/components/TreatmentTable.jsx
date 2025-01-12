@@ -19,6 +19,7 @@ import moment from "jalali-moment";
 const TreatmentTable = () => {
   const [treatmentValue, setTreatmentValue] = useState(null);
   const [protocolOptions, setProtocolOptions] = useState([]);
+  const [treatment, setTreatment] = useState([]);
   const [loading, setLoading] = useState(false);
   const [description, setDescription] = useState("");
 
@@ -49,6 +50,7 @@ const TreatmentTable = () => {
 
   const [cycles, setCycles] = useState([]);
   const [selectedProtocol, setSelectedProtocol] = useState(undefined);
+  const [selectedTreatment, setSelectedTreatment] = useState(undefined);
 
   const toast = useRef(null);
   const { uid } = useParams();
@@ -71,6 +73,22 @@ const TreatmentTable = () => {
   useEffect(() => {
     axios
       .get("https://cancerreg.ir/api/v1/common/treatment-evaluation/")
+      .then((response) => {
+        const results = response.data?.data?.results || [];
+        const formatted = results.map((item) => ({
+          label: item.name,
+          value: item.uid,
+        }));
+        setTreatment(formatted);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get("https://cancerreg.ir/api/v1/common/protocol/")
       .then((response) => {
         const results = response.data?.data?.results || [];
         const formatted = results.map((item) => ({
@@ -201,6 +219,7 @@ const TreatmentTable = () => {
   const resetFormFields = () => {
     setTreatmentValue(null);
     setSelectedProtocol(undefined);
+    setSelectedTreatment(undefined);
     setStartDateObj(null);
     setStartDate("");
     setEndDateObj(null);
@@ -222,10 +241,12 @@ const TreatmentTable = () => {
       start_date: startDate,
       end_date: endDate ? endDate : undefined,
       description: description ? description : undefined,
-      evaluation_uid: selectedProtocol,
+      evaluation_uid: selectedTreatment,
+      protocol_uid: selectedProtocol,
     };
 
     if (!isTreatmentForm) {
+      payload.evaluation = selectedTreatment;
       payload.protocol = selectedProtocol;
       payload.cycles = cycles.map((c) => ({
         cycleNumber: c.cycleNumber,
@@ -472,9 +493,9 @@ const TreatmentTable = () => {
                     <div className="p-col-12 p-md-10">
                       <Dropdown
                         id="evaluation_uid"
-                        value={selectedProtocol}
-                        options={protocolOptions}
-                        onChange={(e) => setSelectedProtocol(e.value)}
+                        value={selectedTreatment}
+                        options={treatment}
+                        onChange={(e) => setSelectedTreatment(e.value)}
                         placeholder="ارزیابی را انتخاب کنید"
                         optionLabel="label"
                         className="w-100"
@@ -592,7 +613,7 @@ const TreatmentTable = () => {
                           <Dropdown
                             id="protocol"
                             value={selectedProtocol}
-                            options={protocolOptions}
+                            options={treatment}
                             onChange={(e) => setSelectedProtocol(e.value)}
                             placeholder="پروتکل را انتخاب نمایید"
                             optionLabel="label"
