@@ -3,7 +3,6 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import moment from "jalali-moment";
-import PillsTabs from "./PillsTabs";
 import SelectableIconItem from "./BadgeIcon";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
@@ -17,7 +16,7 @@ export default function TasvirBardari() {
   const [showAzmayeshPAge, setShowAzmayeshPAge] = useState("home");
   const [tasvirDetailUid, settasvirDetailUid] = useState(undefined);
   const dt = useRef(null);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { uid } = useParams();
   const [loading, setLoading] = useState(false);
   const [btnLoading, setbtnLoading] = useState(false);
@@ -71,7 +70,7 @@ export default function TasvirBardari() {
   ];
 
   const fetchData = () => {
-    setLoading(true); // Start loading
+    setLoading(true);
     axios
       .get(`https://cancerreg.ir/api/v1/records/batch-records/${uid}/`)
       .then((response) => {
@@ -87,11 +86,11 @@ export default function TasvirBardari() {
         console.error("Error fetching data:", error);
         toast.error("خطا در بارگذاری داده‌ها");
       })
-      .finally(() => setLoading(false)); // End loading
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => {
-    fetchData(); // Fetch data when component mounts
+    fetchData();
   }, [uid, showAzmayeshPAge]);
 
   const handlePrint = () => {};
@@ -105,6 +104,8 @@ export default function TasvirBardari() {
         onClick={() => {
           setSelectedOptions([]);
           setShowAzmayeshPAge("orderRegister");
+          settasvirDetailUid(undefined);
+          setallrow([]);
         }}
         className="rounded-3"
       />
