@@ -33,7 +33,7 @@ const TreatmentTable = () => {
   const [endDateObj, setEndDateObj] = useState(null);
   const [endDate, setEndDate] = useState("");
   const [showedPart, setShowedPart] = useState("");
-  const [counter, setCounter] = useState(2);
+  const [refreshTreatTable, setRefreshTreatTable] = useState(false);
 
   const [items, setItems] = useState([
     {
@@ -69,7 +69,6 @@ const TreatmentTable = () => {
     PENDING: "state-pending",
   };
 
-  // Fetch protocol options on mount
   useEffect(() => {
     axios
       .get("https://cancerreg.ir/api/v1/common/treatment-evaluation/")
@@ -158,7 +157,6 @@ const TreatmentTable = () => {
     );
   }, [treatmentValue, mainSelection, subSelection]);
 
-  // Date handlers
   const handleStartDateChange = (date) => {
     if (date) {
       const gregorianDate = date.convert("gregorian").toDate();
@@ -266,6 +264,7 @@ const TreatmentTable = () => {
           detail: "Data saved successfully",
         });
         // Decide whether to hide the form or keep it open
+        setRefreshTreatTable(!refreshTreatTable);
         setnewTreat(false); // Uncomment if you want to hide the form
         setLoading(false);
         // Reset form fields
@@ -358,7 +357,7 @@ const TreatmentTable = () => {
     };
 
     fetchData();
-  }, [uid]);
+  }, [uid, refreshTreatTable]);
 
   const headerNew = (
     <div className="d-flex flex-wrap gap-2 align-items-center justify-content-start">
