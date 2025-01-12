@@ -34,6 +34,7 @@ const HiddenInputsModal = ({ hiddenInputs }) => {
       {hiddenInputs?.length > 0 && (
         <Button
           type="button"
+          className="rounded"
           label="ثبت آزمایش جدید"
           onClick={handleOpenModal}
         />
@@ -46,7 +47,7 @@ const HiddenInputsModal = ({ hiddenInputs }) => {
         style={{ width: "30vw" }}
       >
         <div className="p-field d-flex flex-column my-2">
-          <label htmlFor="hiddenInputSelect">آزمایش</label>
+          <label className="mb-1" htmlFor="hiddenInputSelect">آزمایش</label>
           <Dropdown
             id="hiddenInputSelect"
             value={selectedHiddenInput}
@@ -59,7 +60,7 @@ const HiddenInputsModal = ({ hiddenInputs }) => {
 
         {selectedHiddenInput && (
           <div className="p-field d-flex flex-column my-4">
-            <label htmlFor="inputValue">
+            <label className="mb-1" htmlFor="inputValue">
               {inputType === "CHAR" ? "نتیجه آزمایش" : "نتیجه آزمایش(عدد)"}
             </label>
             {inputType === "CHAR" ? (
