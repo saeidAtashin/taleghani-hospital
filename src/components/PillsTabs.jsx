@@ -821,25 +821,3 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
 };
 
 export default PillsTabs;
-
-// I have this response for hiddenInputs:
-// {
-//   "message": "Fields list successfully retrieved.",
-//   "data": [
-//     {
-//       "name": "teeeest",
-//       "uid": "2bf9c13a-3c01-40f1-9b8e-e705626adcf5",
-//       "ordering": 0,
-//       "relation": {
-//         "relation": "CATEGORY",
-//         "name": "Hematology"
-//       },
-//       "type": "CHAR",
-//       "multiple_value": false,
-//       "titled": false,
-//       "other": true
-//     },
-//   ]
-// }
-
-// I want to show a btn to open a modal that show all hiddenInputs names as a primereact selectinput and when select it, show another input base on type of  CHAR or PERCENTAGE / FLOAT to send str or number or number input, and have a btn to send selected hiddenInputs uid and input value to console.log
