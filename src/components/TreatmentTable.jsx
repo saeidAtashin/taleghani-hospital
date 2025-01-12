@@ -538,23 +538,23 @@ const TreatmentTable = () => {
                     <label className="p-col-12 p-md-2" htmlFor="start_date">
                       تاریخ شروع درمان:
                     </label>
-                    <div className="d-flex w-100">
-                      <div style={{ flex: 3, marginRight: "10px" }}>
-                        <DatePicker
-                          value={startDateObj}
-                          onChange={handleStartDateChange}
-                          calendar={persian}
-                          locale={persian_fa}
-                          format="YYYY/MM/DD"
-                          placeholder="تاریخ را انتخاب کنید"
-                          className="p-2 border rounded w-100"
-                          inputClass="w-100 p-2 text-end border rounded"
-                          position="bottom-right"
-                        />
-                      </div>
+                    <div className="d-flex w-100 gap-5">
+                      {/* <div style={{ flex: 3, marginRight: "10px" }}> */}
+                      <DatePicker
+                        value={startDateObj}
+                        onChange={handleStartDateChange}
+                        calendar={persian}
+                        locale={persian_fa}
+                        format="YYYY/MM/DD"
+                        placeholder="تاریخ را انتخاب کنید"
+                        className="p-2 border rounded w-100"
+                        inputClass="w-100 p-2 text-end border rounded"
+                        position="bottom-right"
+                      />
+                      {/* </div> */}
                       <div style={{ flex: 1 }}>
                         <Button
-                          label="ذخیره"
+                          label="شروع درمان"
                           icon="pi pi-check"
                           onClick={handleSubmitLine}
                           loading={loading}
