@@ -613,7 +613,7 @@ const TreatmentTable = () => {
                           <Dropdown
                             id="protocol"
                             value={selectedProtocol}
-                            options={treatment}
+                            options={protocolOptions}
                             onChange={(e) => setSelectedProtocol(e.value)}
                             placeholder="پروتکل را انتخاب نمایید"
                             optionLabel="label"
