@@ -414,7 +414,10 @@ const TreatmentTable = () => {
               <span
                 className="text-danger cursor-pointer"
                 style={{ fontSize: "32px" }}
-                onClick={() => setnewTreat(false)}
+                onClick={() => {
+                  resetFormFields();
+                  setnewTreat(false);
+                }}
               >
                 x
               </span>
@@ -433,6 +436,7 @@ const TreatmentTable = () => {
                 optionGroupChildren={["children"]}
                 placeholder="Select a treatment"
                 onChange={(e) => {
+                  resetFormFields();
                   setTreatmentValue(e.value);
                 }}
                 style={{ minWidth: "14rem" }}
