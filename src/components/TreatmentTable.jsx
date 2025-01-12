@@ -17,7 +17,6 @@ import { Column } from "primereact/column";
 import moment from "jalali-moment";
 
 const TreatmentTable = () => {
-  // State variables
   const [treatmentValue, setTreatmentValue] = useState(null);
   const [protocolOptions, setProtocolOptions] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -125,7 +124,6 @@ const TreatmentTable = () => {
     },
   ];
 
-  // Handle treatment value changes
   useEffect(() => {
     if (Array.isArray(treatmentValue)) {
       setMainSelection(treatmentValue[0]?.value || null);
@@ -198,11 +196,8 @@ const TreatmentTable = () => {
     ]);
   };
 
-  const handleCycleapi = () => {
-    // Implement API call for cycle if needed
-  };
+  const handleCycleapi = () => {};
 
-  // Reset form fields after submission
   const resetFormFields = () => {
     setTreatmentValue(null);
     setSelectedProtocol(undefined);
@@ -214,10 +209,8 @@ const TreatmentTable = () => {
     setCycles([]);
     setisCycleVisible(false);
     setShowedPart("");
-    // Reset other states as needed
   };
 
-  // Handle form submission
   const handleSubmit = () => {
     setLoading(true);
 
@@ -249,11 +242,9 @@ const TreatmentTable = () => {
           summary: "Success",
           detail: "Data saved successfully",
         });
-        // Decide whether to hide the form or keep it open
         setRefreshTreatTable(!refreshTreatTable);
-        setnewTreat(false); // Uncomment if you want to hide the form
+        setnewTreat(false);
         setLoading(false);
-        // Reset form fields
         resetFormFields();
       })
       .catch((err) => {
@@ -269,27 +260,24 @@ const TreatmentTable = () => {
 
   const handleSubmitLine = () => {
     setLoading(true);
-
     setShowedPart("showCycle");
-    setLoading(false); // Reset loading if no async operations
+    setLoading(false);
   };
 
   const [products, setProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
 
-  // Persian date formatter for DataTable
   const persianDateTemplate = (field) => (rowData) => {
     const dateValue = rowData?.[field];
 
     if (!dateValue) {
-      return <span>--</span>; // Placeholder for missing dates
+      return <span>--</span>;
     }
 
-    // Parse the date with strict format checking
     const persianDate = moment(dateValue, "YYYY-MM-DD", true);
 
     if (!persianDate.isValid()) {
-      return <span>Invalid Date</span>; // Placeholder for invalid dates
+      return <span>Invalid Date</span>;
     }
 
     return <span>{persianDate.locale("fa").format("jYYYY/jMM/jDD")}</span>;
@@ -327,7 +315,6 @@ const TreatmentTable = () => {
     [stateTranslations, stateClasses]
   );
 
-  // Fetch treatments data
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -539,7 +526,6 @@ const TreatmentTable = () => {
                       تاریخ شروع درمان:
                     </label>
                     <div className="d-flex w-100 gap-5">
-                      {/* <div style={{ flex: 3, marginRight: "10px" }}> */}
                       <DatePicker
                         value={startDateObj}
                         onChange={handleStartDateChange}
@@ -551,7 +537,6 @@ const TreatmentTable = () => {
                         inputClass="w-100 p-2 text-end border rounded"
                         position="bottom-right"
                       />
-                      {/* </div> */}
                       <div style={{ flex: 1 }}>
                         <Button
                           label="شروع درمان"
