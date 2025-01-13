@@ -217,7 +217,13 @@ const TreatmentTable = () => {
     ]);
   };
 
-  const handleCycleapi = () => {};
+  const handleCycleapi = () => {
+    if (cycle.cycleNumber === 1) {
+      console.log("cycle.cycleNumber === 1");
+    } else {
+      console.log("cycle.cycleNumber chande ?");
+    }
+  };
 
   const resetFormFields = () => {
     setTreatmentValue(null);
@@ -784,15 +790,17 @@ const TreatmentTable = () => {
                       )}
                     </div>
                   )}
-                  <div style={{ flex: 1 }}>
-                    <Button
-                      label="پایان خط درمان"
-                      icon="pi pi-check"
-                      onClick={handleSubmitLine}
-                      loading={loading}
-                      className="w-100 bg-white text-dark rounded-3"
-                    />
-                  </div>
+                  {!showStartTreatBtn && (
+                    <div style={{ flex: 1 }}>
+                      <Button
+                        label="پایان خط درمان"
+                        icon="pi pi-check"
+                        onClick={handleSubmitLine}
+                        loading={loading}
+                        className="w-100 bg-white text-dark rounded-3"
+                      />
+                    </div>
+                  )}
                 </>
               )}
             </div>
