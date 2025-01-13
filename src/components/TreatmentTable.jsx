@@ -217,7 +217,7 @@ const TreatmentTable = () => {
     ]);
   };
 
-  const handleCycleapi = () => {
+  const handleCycleapi = (cycle) => {
     if (cycle.cycleNumber === 1) {
       console.log("cycle.cycleNumber === 1");
     } else {
@@ -710,10 +710,11 @@ const TreatmentTable = () => {
                       </div>
 
                       <Button
-                        label="ثبت سیکل جدید"
+                        label={`\u00A0 ثبت سیکل جدید`}
                         icon="pi pi-plus"
                         className="p-button-text border rounded mb-4"
                         onClick={addCycle}
+                        type="button"
                       />
 
                       {isCycleVisible && (
@@ -732,7 +733,7 @@ const TreatmentTable = () => {
                             {cycles.map((cycle, index) => (
                               <AccordionTab
                                 key={index}
-                                header={`سیکل ${cycle.cycleNumber}`}
+                                header={`\u00A0 سیکل ${cycle.cycleNumber} `}
                               >
                                 <div className="d-flex flex-column my-3">
                                   <label
@@ -779,15 +780,51 @@ const TreatmentTable = () => {
                                 </div>
                                 <Button
                                   label="ذخیره"
+                                  type="button"
                                   icon="pi pi-check"
                                   className="p-button border rounded mb-4"
-                                  onClick={handleCycleapi}
+                                  onClick={() => handleCycleapi(cycle)}
                                 />
                               </AccordionTab>
                             ))}
                           </Accordion>
                         </fieldset>
                       )}
+                      <div className="d-flex flex-column my-4">
+                        <label
+                          className="p-col-12 p-md-2"
+                          htmlFor="evaluation_uid"
+                        >
+                          ارزیابی درمان:
+                        </label>
+                        <div className="p-col-12 p-md-10">
+                          <Dropdown
+                            id="evaluation_uid"
+                            value={selectedTreatment}
+                            options={treatment}
+                            onChange={(e) => setSelectedTreatment(e.value)}
+                            placeholder="ارزیابی را انتخاب کنید"
+                            optionLabel="label"
+                            className="w-100"
+                          />
+                        </div>
+                      </div>
+                      <div className="d-flex flex-column my-3">
+                        <label className="p-col-12 p-md-2" htmlFor="end_date">
+                          تاریخ پایان خط درمان:
+                        </label>
+                        <DatePicker
+                          value={endDateObj}
+                          onChange={handleEndDateChange}
+                          calendar={persian}
+                          locale={persian_fa}
+                          format="YYYY/MM/DD"
+                          placeholder="تاریخ را انتخاب کنید"
+                          className="p-2 border rounded"
+                          inputClass="w-full p-2 text-end w-100 border rounded"
+                          position="bottom-right"
+                        />
+                      </div>
                     </div>
                   )}
                   {!showStartTreatBtn && (
