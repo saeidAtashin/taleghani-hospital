@@ -26,6 +26,7 @@ const TreatmentTable = () => {
   const [isTreatmentForm, setIsTreatmentForm] = useState(false);
   const [isCycleVisible, setisCycleVisible] = useState(false);
   const [newTreat, setnewTreat] = useState(false);
+  const [showStartTreatBtn, setShowStartTreatBtn] = useState(true);
 
   const [startDateObj, setStartDateObj] = useState(null);
   const [startDate, setStartDate] = useState("");
@@ -274,6 +275,7 @@ const TreatmentTable = () => {
         "first_treatment_line_uid",
         response?.data?.data?.first_treatment_line_uid
       );
+      setShowStartTreatBtn(false);
 
       setRefreshTreatTable(!refreshTreatTable);
       if (isTreatmentForm) {
@@ -286,6 +288,7 @@ const TreatmentTable = () => {
       setShowedPart("showCycle");
       setLoading(false);
     } catch (err) {
+      setShowStartTreatBtn(true);
       console.error(err);
 
       toast.current.show({
@@ -579,15 +582,17 @@ const TreatmentTable = () => {
                         inputClass="w-100 p-2 text-end border rounded"
                         position="bottom-right"
                       />
-                      <div style={{ flex: 1 }}>
-                        <Button
-                          label="شروع درمان"
-                          icon="pi pi-check"
-                          onClick={handleSubmitLine}
-                          loading={loading}
-                          className="w-100 bg-white text-dark rounded-3"
-                        />
-                      </div>
+                      {showStartTreatBtn && (
+                        <div style={{ flex: 1 }}>
+                          <Button
+                            label="شروع درمان"
+                            icon="pi pi-check"
+                            onClick={handleSubmitLine}
+                            loading={loading}
+                            className="w-100 bg-white text-dark rounded-3"
+                          />
+                        </div>
+                      )}
                     </div>
                   </div>
 
