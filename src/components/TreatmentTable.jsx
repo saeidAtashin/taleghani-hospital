@@ -133,11 +133,11 @@ const TreatmentTable = () => {
       ],
     },
     {
-      label: "شیمی درمانی-ایمونوتراپی",
+      label: "CHEMOTHERAPY",
       value: "CHEMOTHERAPY",
     },
     {
-      label: "هورمون درمانی",
+      label: "HORMONETHERAPY",
       value: "HORMONETHERAPY",
     },
   ];
@@ -236,7 +236,7 @@ const TreatmentTable = () => {
     const payload = {
       type: isTreatmentForm ? "TREATMENT" : "CHEMOTHERAPY",
       category: treatmentValue?.value,
-      sub_category: treatmentValue?.label,
+      sub_category: isTreatmentForm ? treatmentValue?.label : undefined,
       patient_uid: uid,
       start_date: startDate,
       end_date: endDate ? endDate : undefined,
@@ -246,8 +246,10 @@ const TreatmentTable = () => {
     };
 
     if (!isTreatmentForm) {
-      payload.evaluation = selectedTreatment;
-      payload.protocol = selectedProtocol;
+      payload.evaluation_uid = selectedTreatment
+        ? selectedTreatment
+        : "8a8c5bc2-0030-44ca-ad7a-c8b69228bdec";
+      payload.protocol_uid = selectedProtocol;
       payload.cycles = cycles.map((c) => ({
         cycleNumber: c.cycleNumber,
         date: c.date,
@@ -280,6 +282,7 @@ const TreatmentTable = () => {
   };
 
   const handleSubmitLine = () => {
+    handleSubmit();
     setLoading(true);
     setShowedPart("showCycle");
     setLoading(false);
