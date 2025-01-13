@@ -45,9 +45,19 @@ const TreatmentTable = () => {
     },
     {
       label: "خط درمان 1",
-      command: () => openModal(),
+      command: () => null,
     },
   ]);
+
+  const addNewTreatment = () => {
+    setItems((prevItems) => [
+      ...prevItems,
+      {
+        label: `خط درمان ${prevItems.length}`,
+        command: null, // No command for this item
+      },
+    ]);
+  };
 
   const [activeIndex, setActiveIndex] = useState(0);
 
