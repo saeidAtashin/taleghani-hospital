@@ -31,6 +31,9 @@ const TreatmentTable = () => {
   const [startDateObj, setStartDateObj] = useState(null);
   const [startDate, setStartDate] = useState("");
 
+  const [treatmentStartDateObj, setTreatmentStartDateObj] = useState(null);
+  const [treatmentStartDate, setTreatmentStartDate] = useState("");
+
   const [endDateObj, setEndDateObj] = useState(null);
   const [endDate, setEndDate] = useState("");
   const [showedPart, setShowedPart] = useState("");
@@ -53,7 +56,7 @@ const TreatmentTable = () => {
     setItems((prevItems) => [
       ...prevItems,
       {
-        label: `خط درمان ${prevItems.length}`,
+        label: ` خط درمان ${prevItems.length}`,
         command: null, // No command for this item
       },
     ]);
@@ -186,6 +189,18 @@ const TreatmentTable = () => {
     }
   };
 
+  const handleTreatmentStartDateChange = (date) => {
+    if (date) {
+      const gregorianDate = date.convert("gregorian").toDate();
+      const formattedDate = gregorianDate.toISOString().split("T")[0];
+      setTreatmentStartDateObj(date);
+      setTreatmentStartDate(formattedDate);
+    } else {
+      setTreatmentStartDateObj(null);
+      setTreatmentStartDate("");
+    }
+  };
+
   const handleEndDateChange = (date) => {
     if (date) {
       const gregorianDate = date.convert("gregorian").toDate();
@@ -240,6 +255,8 @@ const TreatmentTable = () => {
     setSelectedProtocol(undefined);
     setSelectedTreatment(undefined);
     setStartDateObj(null);
+    setTreatmentStartDateObj(null);
+    setTreatmentStartDate("");
     setStartDate("");
     setEndDateObj(null);
     setEndDate("");
@@ -257,7 +274,7 @@ const TreatmentTable = () => {
       category: treatmentValue?.value,
       sub_category: isTreatmentForm ? treatmentValue?.label : undefined,
       patient_uid: uid,
-      start_date: startDate,
+      start_date: treatmentStartDate,
       end_date: endDate ? endDate : undefined,
       description: description ? description : undefined,
       evaluation_uid: selectedTreatment,
@@ -647,8 +664,8 @@ const TreatmentTable = () => {
                     </label>
                     <div className="d-flex w-100 gap-5">
                       <DatePicker
-                        value={startDateObj}
-                        onChange={handleStartDateChange}
+                        value={treatmentStartDateObj}
+                        onChange={handleTreatmentStartDateChange}
                         calendar={persian}
                         locale={persian_fa}
                         format="YYYY/MM/DD"
@@ -674,7 +691,7 @@ const TreatmentTable = () => {
                   {showedPart === "showCycle" && (
                     <div className="mt-4 pt-4">
                       <TabMenu
-                        scrollable
+                        // scrollable
                         model={items?.map((item) => ({
                           label: item?.template || item?.label,
                           command: item.command,
@@ -859,3 +876,7 @@ const TreatmentTable = () => {
 };
 
 export default TreatmentTable;
+
+// in this code, I want that make تاریخ شروع درمان and تاریخ شروع خط درمان be diffrent value and handler
+
+// also in this code, I want that when addNewTreatment is called, set new tab as active tab, and reset inner inputs
