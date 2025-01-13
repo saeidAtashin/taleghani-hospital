@@ -600,7 +600,7 @@ const TreatmentTable = () => {
 
                   <div className="d-flex flex-column my-3">
                     <label className="p-col-12 p-md-2" htmlFor="evaluation_uid">
-                      ارزیابی درمان:
+                      ارزیابی خط درمان:
                     </label>
                     <div className="p-col-12 p-md-10">
                       <Dropdown
