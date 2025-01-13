@@ -34,6 +34,8 @@ const TreatmentTable = () => {
   const [endDateObj, setEndDateObj] = useState(null);
   const [endDate, setEndDate] = useState("");
   const [showedPart, setShowedPart] = useState("");
+  const [treatmentLineUid, setTreatmentLineUid] = useState(undefined);
+  const [responseUid, setResponseUid] = useState(undefined);
   const [refreshTreatTable, setRefreshTreatTable] = useState(false);
 
   const [items, setItems] = useState([
@@ -266,15 +268,17 @@ const TreatmentTable = () => {
 
       toast.current.show({
         severity: "success",
-        summary: "Success",
-        detail: "Data saved successfully",
+        summary: "موفق",
+        detail: "ذخیره شد",
       });
 
       console.log("uid", response?.data?.data?.uid);
+      setResponseUid(response?.data?.data?.uid);
       console.log(
         "first_treatment_line_uid",
         response?.data?.data?.first_treatment_line_uid
       );
+      setTreatmentLineUid(response?.data?.data?.first_treatment_line_uid);
       setShowStartTreatBtn(false);
 
       setRefreshTreatTable(!refreshTreatTable);
@@ -302,7 +306,62 @@ const TreatmentTable = () => {
   };
 
   const handleSubmitLine = async () => {
-    await handleSubmit();
+    const payload = {
+      treatment_uid: responseUid,
+      start_date: startDate,
+      end_date: endDate ? endDate : undefined,
+      description: description ? description : undefined,
+      evaluation_uid: selectedTreatment,
+      protocol_uid: selectedProtocol,
+    };
+
+    if (!isTreatmentForm) {
+      payload.evaluation_uid = selectedTreatment
+        ? selectedTreatment
+        : "8a8c5bc2-0030-44ca-ad7a-c8b69228bdec";
+      payload.protocol_uid = selectedProtocol;
+      payload.cycles_list = cycles.map((c) => ({
+        date: c.date,
+        description: c.description,
+      }));
+    }
+
+    try {
+      const response = await axios.post(
+        "https://cancerreg.ir/api/v1/teatment/treatment-line/",
+        payload
+      );
+
+      toast.current.show({
+        severity: "success",
+        summary: "موفق",
+        detail: "ذخیره شد",
+      });
+
+      console.log("treatment-line resp", response?.data?.data);
+      // setTreatmentLineUid(response?.data?.data?.first_treatment_line_uid);
+      // setShowStartTreatBtn(false);
+
+      // setRefreshTreatTable(!refreshTreatTable);
+      // if (isTreatmentForm) {
+      //   setnewTreat(false);
+      //   resetFormFields();
+      // }
+
+      // Run additional logic on success
+      // setLoading(true);
+      // setShowedPart("showCycle");
+      // setLoading(false);
+    } catch (err) {
+      setShowStartTreatBtn(true);
+      console.error(err);
+
+      toast.current.show({
+        severity: "error",
+        summary: "خطا",
+        detail: err.response?.data?.message || "مشکلی پیش آمده است.",
+      });
+    }
   };
 
   const [products, setProducts] = useState([]);
@@ -587,7 +646,7 @@ const TreatmentTable = () => {
                           <Button
                             label="شروع درمان"
                             icon="pi pi-check"
-                            onClick={handleSubmitLine}
+                            onClick={handleSubmit}
                             loading={loading}
                             className="w-100 bg-white text-dark rounded-3"
                           />
@@ -722,6 +781,15 @@ const TreatmentTable = () => {
                       )}
                     </div>
                   )}
+                  <div style={{ flex: 1 }}>
+                    <Button
+                      label="پایان خط درمان"
+                      icon="pi pi-check"
+                      onClick={handleSubmitLine}
+                      loading={loading}
+                      className="w-100 bg-white text-dark rounded-3"
+                    />
+                  </div>
                 </>
               )}
             </div>

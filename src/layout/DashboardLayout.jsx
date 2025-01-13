@@ -133,7 +133,7 @@ function DashboardLayout() {
               onClick={() => toggleSubmenu("users")}
               aria-expanded={activeSubmenu === "users"}
             >
-              <i className="fst-normal d-flex align-items-center  p-2">
+              <i className="fst-normal d-flex align-items-center justify-content-between p-2">
                 کاربران <span className="">و دسترسی‌ها</span>
                 <span>
                   <img src="/images/dropdown.svg" alt="dd" />
@@ -165,10 +165,12 @@ function DashboardLayout() {
               onClick={() => toggleSubmenu("definitions")}
               aria-expanded={activeSubmenu === "definitions"}
             >
-              <i className="fst-normal d-flex align-items-center  p-2">
-                تعاریف <span>پایه</span>
-                <span>
-                  <img src="/images/dropdown.svg" alt="dd" />
+              <i className="fst-normal d-flex align-items-center justify-content-between p-2">
+                <div>
+                  تعاریف <span>پایه</span>
+                </div>
+                <span className="flex">
+                  <img src="/images/dropdown.svg" alt="dd" className="" />
                 </span>
               </i>
             </a>
