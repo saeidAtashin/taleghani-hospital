@@ -719,7 +719,10 @@ const TreatmentTable = () => {
                           }}
                         >
                           <legend>سیکل ها</legend>
-                          <Accordion activeIndex={[0]} multiple>
+                          <Accordion
+                            activeIndex={[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
+                            multiple
+                          >
                             {cycles.map((cycle, index) => (
                               <AccordionTab
                                 key={index}
