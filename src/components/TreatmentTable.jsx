@@ -230,7 +230,7 @@ const TreatmentTable = () => {
     setShowedPart("");
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setLoading(true);
 
     const payload = {
@@ -257,35 +257,49 @@ const TreatmentTable = () => {
       }));
     }
 
-    axios
-      .post("https://cancerreg.ir/api/v1/teatment/treatment/", payload)
-      .then(() => {
-        toast.current.show({
-          severity: "success",
-          summary: "Success",
-          detail: "Data saved successfully",
-        });
-        setRefreshTreatTable(!refreshTreatTable);
-        setnewTreat(false);
-        setLoading(false);
-        resetFormFields();
-      })
-      .catch((err) => {
-        console.error(err);
-        toast.current.show({
-          severity: "error",
-          summary: "خطا",
-          detail: err.response?.data?.message || "مشکلی پیش آمده است.",
-        });
-        setLoading(false);
+    try {
+      const response = await axios.post(
+        "https://cancerreg.ir/api/v1/teatment/treatment/",
+        payload
+      );
+
+      toast.current.show({
+        severity: "success",
+        summary: "Success",
+        detail: "Data saved successfully",
       });
+
+      console.log("uid", response?.data?.data?.uid);
+      console.log(
+        "first_treatment_line_uid",
+        response?.data?.data?.first_treatment_line_uid
+      );
+
+      setRefreshTreatTable(!refreshTreatTable);
+      if (isTreatmentForm) {
+        setnewTreat(false);
+        resetFormFields();
+      }
+
+      // Run additional logic on success
+      setLoading(true);
+      setShowedPart("showCycle");
+      setLoading(false);
+    } catch (err) {
+      console.error(err);
+
+      toast.current.show({
+        severity: "error",
+        summary: "خطا",
+        detail: err.response?.data?.message || "مشکلی پیش آمده است.",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleSubmitLine = () => {
-    handleSubmit();
-    setLoading(true);
-    setShowedPart("showCycle");
-    setLoading(false);
+  const handleSubmitLine = async () => {
+    await handleSubmit();
   };
 
   const [products, setProducts] = useState([]);
