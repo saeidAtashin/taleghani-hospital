@@ -12,6 +12,7 @@ import { useParams } from "react-router-dom";
 import apiRequest from "../api/apiService";
 import TasvirBardari from "../components/TasvirBardari";
 import TreatmentTable from "../components/TreatmentTable";
+import FollwoUp from "../components/FollwoUp";
 
 const PatientsDetails = () => {
   const { uid } = useParams();
@@ -182,7 +183,11 @@ const PatientsDetails = () => {
     {
       key: "follow up",
       label: "follow up",
-      content: <div>follow up</div>,
+      content: (
+        <div>
+          <FollwoUp />
+        </div>
+      ),
     },
   ];
 
