@@ -5,7 +5,7 @@ import { Button } from "primereact/button";
 import moment from "jalali-moment";
 import SelectableIconItem from "./BadgeIcon";
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import PillsTabsTasvir from "./PillsTabsTasvir";
 
@@ -16,7 +16,6 @@ export default function FollwoUp() {
   const [showAzmayeshPAge, setShowAzmayeshPAge] = useState("home");
   const [tasvirDetailUid, settasvirDetailUid] = useState(undefined);
   const dt = useRef(null);
-  // const navigate = useNavigate();
   const { uid } = useParams();
   const [loading, setLoading] = useState(false);
   const [btnLoading, setbtnLoading] = useState(false);
@@ -28,7 +27,7 @@ export default function FollwoUp() {
   const persianDateTemplate = (rowData) => {
     return (
       <span>
-        {moment(rowData.created_at, "YYYY-MM-DD")
+        {moment(rowData.date, "YYYY-MM-DD")
           .locale("fa")
           .format("jYYYY/jMM/jDD")}
       </span>
@@ -71,11 +70,10 @@ export default function FollwoUp() {
   };
 
   const graphic_recordsTemplate = (rowData) => {
-    console.log("graphic_recordsTemplate", rowData?.medical_tests);
     return (
       <div>
-        {rowData?.medical_tests?.length > 0 ? (
-          rowData?.medical_tests.map((record, index) => (
+        {rowData?.graphic_records?.length > 0 ? (
+          rowData?.graphic_records.map((record, index) => (
             <span
               key={index}
               onClick={() => tasvirbardatiCellClick(record, rowData)}
@@ -90,7 +88,37 @@ export default function FollwoUp() {
                 marginRight: "8px",
               }}
             >
-              {record.category}
+              {record.name}
+            </span>
+          ))
+        ) : (
+          <>--</>
+        )}
+      </div>
+    );
+  };
+
+  const treatmentsTemplate = (rowData) => {
+    console.log("treatmentsTemplate", rowData?.treatmentsTemplate);
+    return (
+      <div>
+        {rowData?.treatmentsTemplate?.length > 0 ? (
+          rowData?.treatmentsTemplate.map((record, index) => (
+            <span
+              key={index}
+              onClick={() => tasvirbardatiCellClick(record, rowData)}
+              style={{
+                cursor: "pointer",
+                color:
+                  record?.state === "IN_PROGRESS"
+                    ? "#FF7518"
+                    : record?.state === "DONE"
+                    ? "green"
+                    : "blue",
+                marginRight: "8px",
+              }}
+            >
+              {record.name}
             </span>
           ))
         ) : (
@@ -102,6 +130,7 @@ export default function FollwoUp() {
 
   const columns = [
     { field: "number", header: "ردیف", body: numberTemplate },
+    { field: "persianDate", header: "تاریخ مراجعه", body: persianDateTemplate },
     {
       field: "medical_tests",
       header: "آزمایش‌ها",
@@ -112,9 +141,11 @@ export default function FollwoUp() {
       header: "تصویربرداری‌ها",
       body: graphic_recordsTemplate,
     },
-    { field: "persianDate", header: "تاریخ انجام", body: persianDateTemplate },
-    { field: "persianDate", header: "تاریخ ثبت", body: persianDateTemplate },
-    { field: "order_description", header: "توضیحات" },
+    {
+      field: "treatments",
+      header: "درمان‌ها",
+      body: treatmentsTemplate,
+    },
   ];
 
   const fetchData = () => {
@@ -146,30 +177,7 @@ export default function FollwoUp() {
   const handlePrint = () => {};
 
   const headerNew = (
-    <div className="d-flex flex-wrap gap-2 align-items-center justify-content-start">
-      <Button
-        label="ثبت نتیجه تصویربرداری"
-        icon="pi pi-plus"
-        severity="primary"
-        onClick={() => {
-          setSelectedOptions([]);
-          setShowAzmayeshPAge("orderRegister");
-          settasvirDetailUid(undefined);
-          setallrow([]);
-        }}
-        className="rounded-3"
-      />
-      <Button
-        label="ثبت دستور تصویربرداری"
-        icon="pi pi-plus"
-        severity="primary"
-        onClick={() => {
-          setSelectedOptions([]);
-          setShowAzmayeshPAge("orderRegisterOrder");
-        }}
-        className="rounded-3"
-      />
-    </div>
+    <div className="d-flex flex-wrap gap-2 align-items-center justify-content-start"></div>
   );
 
   const handleDelete = () => {
@@ -260,24 +268,6 @@ export default function FollwoUp() {
                 headerStyle={{ borderBottom: "2px solid black" }}
               />
             ))}
-            <Column
-              header="عملیات"
-              headerStyle={{ borderBottom: "2px solid black" }}
-              body={(rowData) => (
-                <button
-                  type="button"
-                  className="btn btn-outline-primary"
-                  onClick={() =>
-                    window.open(
-                      `/dashboard/patients/batch-graphic-records/${rowData.uid}`,
-                      "_blank"
-                    )
-                  }
-                >
-                  مشاهده
-                </button>
-              )}
-            />
           </DataTable>
 
           {selectedProducts.length > 0 && (
