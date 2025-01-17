@@ -876,7 +876,3 @@ const TreatmentTable = () => {
 };
 
 export default TreatmentTable;
-
-// in this code, I want that make تاریخ شروع درمان and تاریخ شروع خط درمان be diffrent value and handler
-
-// also in this code, I want that when addNewTreatment is called, set new tab as active tab, and reset inner inputs
