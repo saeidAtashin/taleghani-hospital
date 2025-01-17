@@ -99,7 +99,6 @@ export default function FollwoUp() {
   };
 
   const treatmentsTemplate = (rowData) => {
-    console.log("treatmentsTemplate", rowData?.treatmentsTemplate);
     return (
       <div>
         {rowData?.treatmentsTemplate?.length > 0 ? (

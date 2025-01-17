@@ -244,9 +244,7 @@ const TreatmentTable = () => {
 
   const handleCycleapi = (cycle) => {
     if (cycle.cycleNumber === 1) {
-      console.log("cycle.cycleNumber === 1");
     } else {
-      console.log("cycle.cycleNumber chande ?");
     }
   };
 
@@ -305,12 +303,7 @@ const TreatmentTable = () => {
         detail: "ذخیره شد",
       });
 
-      console.log("uid", response?.data?.data?.uid);
       setResponseUid(response?.data?.data?.uid);
-      console.log(
-        "first_treatment_line_uid",
-        response?.data?.data?.first_treatment_line_uid
-      );
       setTreatmentLineUid(response?.data?.data?.first_treatment_line_uid);
       setShowStartTreatBtn(false);
 
@@ -371,7 +364,6 @@ const TreatmentTable = () => {
         detail: "ذخیره شد",
       });
 
-      console.log("treatment-line resp", response?.data?.data);
       // setTreatmentLineUid(response?.data?.data?.first_treatment_line_uid);
       // setShowStartTreatBtn(false);
 
@@ -477,7 +469,6 @@ const TreatmentTable = () => {
     </div>
   );
 
-  console.log("products", products);
 
   const handleRowClick = async (rowData) => {
     const uid = rowData.uid;
@@ -487,7 +478,6 @@ const TreatmentTable = () => {
       const response = await fetch(apiUrl);
       const data = await response.json();
 
-      console.log("data.rowData", rowData?.sub_category);
       if (data.results && data.results.length > 0) {
         const treatmentData = data.results[0]; // Use first treatment line
 
@@ -499,10 +489,7 @@ const TreatmentTable = () => {
         );
         setStartDateObj(treatmentData.start_date || "");
         setEndDateObj(treatmentData.end_date || "");
-        setSelectedTreatment(
-          treatment.find((item) => item.value === treatmentData.evaluation) ||
-            null
-        );
+        setSelectedTreatment(treatmentData.treatment_uid);
         setSelectedProtocol(
           protocolOptions.find(
             (item) => item.value === treatmentData.protocol
