@@ -274,7 +274,7 @@ const TreatmentTable = () => {
       category: treatmentValue?.value,
       sub_category: isTreatmentForm ? treatmentValue?.label : undefined,
       patient_uid: uid,
-      start_date: treatmentStartDate,
+      start_date: startDate ? startDate : treatmentStartDate,
       end_date: endDate ? endDate : undefined,
       description: description ? description : undefined,
       evaluation_uid: selectedTreatment,
