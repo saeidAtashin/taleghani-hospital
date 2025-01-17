@@ -477,6 +477,48 @@ const TreatmentTable = () => {
     </div>
   );
 
+  console.log("products", products);
+
+  const handleRowClick = async (rowData) => {
+    const uid = rowData.uid;
+    const apiUrl = `https://cancerreg.ir/api/v1/teatment/treatment-line/${uid}/`;
+
+    try {
+      const response = await fetch(apiUrl);
+      const data = await response.json();
+
+      console.log("data.rowData", rowData?.sub_category);
+      if (data.results && data.results.length > 0) {
+        const treatmentData = data.results[0]; // Use first treatment line
+
+        // Populate form fields
+        setTreatmentValue(
+          rowData?.sub_category
+            ? rowData?.sub_category
+            : rowData?.category || ""
+        );
+        setStartDateObj(treatmentData.start_date || "");
+        setEndDateObj(treatmentData.end_date || "");
+        setSelectedTreatment(
+          treatment.find((item) => item.value === treatmentData.evaluation) ||
+            null
+        );
+        setSelectedProtocol(
+          protocolOptions.find(
+            (item) => item.value === treatmentData.protocol
+          ) || null
+        );
+        setDescription(treatmentData.description || "");
+
+        setnewTreat(true); // Show form when row is clicked
+      } else {
+        console.warn("No treatment data found.");
+      }
+    } catch (error) {
+      console.error("Error fetching treatment data:", error);
+    }
+  };
+
   return (
     <>
       <Toast ref={toast} />
@@ -495,6 +537,7 @@ const TreatmentTable = () => {
           currentPageReportTemplate="نمایش {first} تا {last} از {totalRecords} اطلاعات"
           globalFilter={null}
           header={headerNew}
+          onRowClick={(e) => handleRowClick(e.data)} // Add onRowClick event
         >
           <Column
             selectionMode="multiple"
