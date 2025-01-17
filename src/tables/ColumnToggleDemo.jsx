@@ -10,9 +10,9 @@ import { Paginator } from "primereact/paginator";
 
 export default function ColumnToggleDemo() {
   const columns = [
-    { field: "national_id", header: "کد ملی" },
     { field: "first_name", header: "نام" },
     { field: "last_name", header: "نام خانوادگی" },
+    { field: "national_id", header: "کد ملی" },
     { field: "created_at", header: "تاریخ ثبت" },
     { field: "updated_at", header: "تاریخ بروزرسانی" },
   ];
