@@ -248,7 +248,7 @@ export default function TasvirBardari() {
           )}
         </div>
       ) : showAzmayeshPAge === "orderRegister" ? (
-        <div className="container mt-5">
+        <div className="container my-5">
           <div className="d-flex justify-content-between align-items-center">
             <h2 className="m-2 pb-3">ثبت نتیجه تصویربرداری</h2>
             <span
@@ -271,7 +271,7 @@ export default function TasvirBardari() {
         </div>
       ) : (
         showAzmayeshPAge === "orderRegisterOrder" && (
-          <div className="container mt-5">
+          <div className="container my-5">
             <div className="d-flex justify-content-between align-items-center">
               <h2 className="m-2 pb-3">ثبت دستور تصویربرداری</h2>
               <span
