@@ -37,7 +37,6 @@ const TreatmentTable = () => {
   const [endDateObj, setEndDateObj] = useState(null);
   const [endDate, setEndDate] = useState("");
   const [showedPart, setShowedPart] = useState("");
-  const [treatmentLineUid, setTreatmentLineUid] = useState(undefined);
   const [responseUid, setResponseUid] = useState(undefined);
   const [refreshTreatTable, setRefreshTreatTable] = useState(false);
 
@@ -57,7 +56,7 @@ const TreatmentTable = () => {
       ...prevItems,
       {
         label: ` خط درمان ${prevItems.length}`,
-        command: null, // No command for this item
+        command: null,
       },
     ]);
   };
@@ -304,7 +303,6 @@ const TreatmentTable = () => {
       });
 
       setResponseUid(response?.data?.data?.uid);
-      setTreatmentLineUid(response?.data?.data?.first_treatment_line_uid);
       setShowStartTreatBtn(false);
 
       setRefreshTreatTable(!refreshTreatTable);
@@ -313,7 +311,6 @@ const TreatmentTable = () => {
         resetFormFields();
       }
 
-      // Run additional logic on success
       setLoading(true);
       setShowedPart("showCycle");
       setLoading(false);
@@ -363,20 +360,6 @@ const TreatmentTable = () => {
         summary: "موفق",
         detail: "ذخیره شد",
       });
-
-      // setTreatmentLineUid(response?.data?.data?.first_treatment_line_uid);
-      // setShowStartTreatBtn(false);
-
-      // setRefreshTreatTable(!refreshTreatTable);
-      // if (isTreatmentForm) {
-      //   setnewTreat(false);
-      //   resetFormFields();
-      // }
-
-      // Run additional logic on success
-      // setLoading(true);
-      // setShowedPart("showCycle");
-      // setLoading(false);
     } catch (err) {
       setShowStartTreatBtn(true);
       console.error(err);
@@ -410,7 +393,6 @@ const TreatmentTable = () => {
 
   const columns = useMemo(
     () => [
-      // { field: "created_at", header: "تاریخ ایجاد", width: "150px" },
       {
         field: "start_date",
         header: "تاریخ شروع",
@@ -421,10 +403,8 @@ const TreatmentTable = () => {
         header: "تاریخ پایان",
         body: persianDateTemplate("end_date"),
       },
-      // { field: "patient", header: "بیمار",  },
       { field: "category", header: "دسته‌بندی" },
       { field: "sub_category", header: "زیر دسته‌بندی" },
-      // { field: "type", header: "نوع درمان",  },
       { field: "evaluation", header: "ارزیابی" },
       {
         field: "state",
@@ -469,7 +449,6 @@ const TreatmentTable = () => {
     </div>
   );
 
-
   const handleRowClick = async (rowData) => {
     const uid = rowData.uid;
     const apiUrl = `https://cancerreg.ir/api/v1/teatment/treatment-line/${uid}/`;
@@ -479,9 +458,7 @@ const TreatmentTable = () => {
       const data = await response.json();
 
       if (data.results && data.results.length > 0) {
-        const treatmentData = data.results[0]; // Use first treatment line
-
-        // Populate form fields
+        const treatmentData = data.results[0];
         setTreatmentValue(
           rowData?.sub_category
             ? rowData?.sub_category
@@ -497,7 +474,7 @@ const TreatmentTable = () => {
         );
         setDescription(treatmentData.description || "");
 
-        setnewTreat(true); // Show form when row is clicked
+        setnewTreat(true);
       } else {
         console.warn("No treatment data found.");
       }
@@ -524,7 +501,7 @@ const TreatmentTable = () => {
           currentPageReportTemplate="نمایش {first} تا {last} از {totalRecords} اطلاعات"
           globalFilter={null}
           header={headerNew}
-          onRowClick={(e) => handleRowClick(e.data)} // Add onRowClick event
+          onRowClick={(e) => handleRowClick(e.data)}
         >
           <Column
             selectionMode="multiple"
@@ -721,7 +698,6 @@ const TreatmentTable = () => {
                   {showedPart === "showCycle" && (
                     <div className="mt-4 pt-4">
                       <TabMenu
-                        // scrollable
                         model={items?.map((item) => ({
                           label: item?.template || item?.label,
                           command: item.command,
