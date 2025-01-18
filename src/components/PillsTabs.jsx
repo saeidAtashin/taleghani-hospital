@@ -193,11 +193,11 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
 
     const extendedFields = [
       ...fields,
-      ...parentArray.map((item) => {
+      ...parentArray.flatMap((item) => {
         const [uid, value] = Object.entries(item)[0];
-        return { uid, value };
+        return uid && value && { uid, value }; // Return empty only if both uid and value exist
       }),
-      ...(hiddenSubmittedData ? [hiddenSubmittedData] : []),
+      // ...(hiddenSubmittedData && [hiddenSubmittedData]),
     ];
 
     const formDataWithExtraData = {
