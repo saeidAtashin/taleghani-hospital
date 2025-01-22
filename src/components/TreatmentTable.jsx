@@ -51,14 +51,36 @@ const TreatmentTable = () => {
     },
   ]);
 
+  const handleTabChange = (e) => {
+    setActiveIndex(e.index);
+
+    setSelectedProtocol(undefined);
+    // setSelectedTreatment(undefined);
+
+    // setTreatmentValue(null);
+    // setSelectedProtocol(undefined);
+    // setSelectedTreatment(undefined);
+    setStartDateObj(null);
+    // setTreatmentStartDateObj(null);
+    // setTreatmentStartDate("");
+    // setStartDate("");
+    setEndDateObj(null);
+    // setEndDate("");
+    // setDescription("");
+    setCycles([]);
+    // setisCycleVisible(false);
+    // setShowedPart("");
+  };
+
   const addNewTreatment = () => {
     setItems((prevItems) => [
       ...prevItems,
       {
-        label: ` خط درمان ${prevItems.length}`,
+        label: `خط درمان ${prevItems.length}`,
         command: null,
       },
     ]);
+    handleTabChange(prevItems.length);
   };
 
   const [activeIndex, setActiveIndex] = useState(0);
@@ -66,6 +88,7 @@ const TreatmentTable = () => {
   const [cycles, setCycles] = useState([]);
   const [selectedProtocol, setSelectedProtocol] = useState(undefined);
   const [selectedTreatment, setSelectedTreatment] = useState(undefined);
+  const [treatmentLinesData, setTreatmentLinesData] = useState({});
 
   const toast = useRef(null);
   const { uid } = useParams();
@@ -325,6 +348,7 @@ const TreatmentTable = () => {
       });
     } finally {
       setLoading(false);
+      setShowStartTreatBtn(false);
     }
   };
 
@@ -354,6 +378,7 @@ const TreatmentTable = () => {
         "https://cancerreg.ir/api/v1/teatment/treatment-line/",
         payload
       );
+      setShowStartTreatBtn(true);
 
       toast.current.show({
         severity: "success",
@@ -703,7 +728,12 @@ const TreatmentTable = () => {
                           command: item.command,
                         }))}
                         activeIndex={activeIndex === 0 ? 1 : activeIndex}
-                        onTabChange={(e) => setActiveIndex(e.index)}
+                        // onTabChange={(e) => setActiveIndex(e.index)}
+                        onTabChange={
+                          activeIndex === 0
+                            ? console.log("test")
+                            : handleTabChange
+                        }
                       />
 
                       <div className="d-flex flex-column my-3">
@@ -882,3 +912,5 @@ const TreatmentTable = () => {
 };
 
 export default TreatmentTable;
+
+// in this code, I want that when click on "ثبا خط درمان جدید"  reset inner inputs,

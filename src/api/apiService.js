@@ -18,12 +18,12 @@ const apiRequest = async (
     return response;
   } catch (error) {
     console.error(`Error in API call to ${endpoint}:`, error);
-    Swal.fire({
-      title: "مشکلی پیش آمده است.",
-      icon: "error",
-      showConfirmButton: false,
-      timer: 2000,
-    });
+    // Swal.fire({
+    //   title: "مشکلی پیش آمده است.",
+    //   icon: "error",
+    //   showConfirmButton: false,
+    //   timer: 2000,
+    // });
     throw error;
   }
 };
