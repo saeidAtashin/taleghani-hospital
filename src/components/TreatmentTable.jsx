@@ -57,36 +57,61 @@ const TreatmentTable = () => {
     },
   ]);
 
-  const handleTabChange = (e) => {
-    setActiveIndex(3);
+  // const handleTabChange = (e) => {
+  //   setActiveIndex(3);
 
+  //   setSelectedProtocol(undefined);
+  //   // setSelectedTreatment(undefined);
+
+  //   // setTreatmentValue(null);
+  //   // setSelectedProtocol(undefined);
+  //   // setSelectedTreatment(undefined);
+  //   setStartDateObj(null);
+  //   // setTreatmentStartDateObj(null);
+  //   // setTreatmentStartDate("");
+  //   // setStartDate("");
+  //   setEndDateObj(null);
+  //   // setEndDate("");
+  //   // setDescription("");
+  //   setCycles([]);
+  //   // setisCycleVisible(false);
+  //   // setShowedPart("");
+  // };
+
+  const handleTabChange = (index) => {
+    setActiveIndex(index);
+
+    // Reset inner inputs
     setSelectedProtocol(undefined);
-    // setSelectedTreatment(undefined);
-
-    // setTreatmentValue(null);
-    // setSelectedProtocol(undefined);
-    // setSelectedTreatment(undefined);
+    setSelectedTreatment(undefined);
     setStartDateObj(null);
-    // setTreatmentStartDateObj(null);
-    // setTreatmentStartDate("");
-    // setStartDate("");
     setEndDateObj(null);
-    // setEndDate("");
-    // setDescription("");
+    setDescription("");
     setCycles([]);
-    // setisCycleVisible(false);
-    // setShowedPart("");
   };
 
+  // const addNewTreatment = () => {
+  //   setItems((prevItems) => [
+  //     ...prevItems,
+  //     {
+  //       label: `خط درمان ${prevItems?.length}`,
+  //       command: null,
+  //     },
+  //   ]);
+  //   handleTabChange(prevItems?.length);
+  // };
+
   const addNewTreatment = () => {
-    setItems((prevItems) => [
-      ...prevItems,
-      {
-        label: `خط درمان ${prevItems?.length}`,
-        command: null,
-      },
-    ]);
-    handleTabChange(prevItems?.length);
+    setItems((prevItems) => {
+      const newItem = {
+        label: `خط درمان ${prevItems.length}`,
+        command: () => handleTabChange(prevItems.length),
+      };
+      return [...prevItems, newItem];
+    });
+
+    // Automatically activate the new treatment
+    handleTabChange(items.length);
   };
 
   const stateTranslations = {
