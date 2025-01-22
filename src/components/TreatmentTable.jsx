@@ -76,11 +76,11 @@ const TreatmentTable = () => {
     setItems((prevItems) => [
       ...prevItems,
       {
-        label: `خط درمان ${prevItems.length}`,
+        label: `خط درمان ${prevItems?.length}`,
         command: null,
       },
     ]);
-    handleTabChange(prevItems.length);
+    handleTabChange(prevItems?.length);
   };
 
   const [activeIndex, setActiveIndex] = useState(0);
@@ -88,7 +88,7 @@ const TreatmentTable = () => {
   const [cycles, setCycles] = useState([]);
   const [selectedProtocol, setSelectedProtocol] = useState(undefined);
   const [selectedTreatment, setSelectedTreatment] = useState(undefined);
-  const [treatmentLinesData, setTreatmentLinesData] = useState({});
+  // const [treatmentLinesData, setTreatmentLinesData] = useState({});
 
   const toast = useRef(null);
   const { uid } = useParams();
@@ -380,20 +380,24 @@ const TreatmentTable = () => {
       );
       // setShowStartTreatBtn(true);
 
-      toast.current.show({
-        severity: "success",
-        summary: "موفق",
-        detail: "ذخیره شد",
-      });
+      if (response?.status >= 200 && response?.status < 400) {
+        toast.current.show({
+          severity: "success",
+          summary: "موفق",
+          detail: "ذخیره شد",
+        });
+        addNewTreatment();
+      }
     } catch (err) {
-      // setShowStartTreatBtn(true);
-      console.error(err);
-
-      toast.current.show({
-        severity: "error",
-        summary: "خطا",
-        detail: err.response?.data?.message || "مشکلی پیش آمده است.",
-      });
+      if (response?.status >= 400) {
+        // setShowStartTreatBtn(true);
+        console.error(err);
+        toast.current.show({
+          severity: "error",
+          summary: "خطا",
+          detail: err.response?.data?.message || "مشکلی پیش آمده است.",
+        });
+      }
     }
   };
 
