@@ -22,24 +22,29 @@ const TreatmentTable = () => {
   const [treatment, setTreatment] = useState([]);
   const [loading, setLoading] = useState(false);
   const [description, setDescription] = useState("");
-
   const [isTreatmentForm, setIsTreatmentForm] = useState(false);
   const [isCycleVisible, setisCycleVisible] = useState(false);
   const [newTreat, setnewTreat] = useState(false);
   const [showStartTreatBtn, setShowStartTreatBtn] = useState(true);
-
   const [startDateObj, setStartDateObj] = useState(null);
   const [startDate, setStartDate] = useState("");
-
   const [treatmentStartDateObj, setTreatmentStartDateObj] = useState(null);
   const [treatmentStartDate, setTreatmentStartDate] = useState("");
-
   const [endDateObj, setEndDateObj] = useState(null);
   const [endDate, setEndDate] = useState("");
   const [showedPart, setShowedPart] = useState("");
   const [responseUid, setResponseUid] = useState(undefined);
   const [refreshTreatTable, setRefreshTreatTable] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [cycles, setCycles] = useState([]);
+  const [selectedProtocol, setSelectedProtocol] = useState(undefined);
+  const [selectedTreatment, setSelectedTreatment] = useState(undefined);
+  const toast = useRef(null);
+  const { uid } = useParams();
+  const [mainSelection, setMainSelection] = useState(null);
+  const [subSelection, setSubSelection] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [selectedProducts, setSelectedProducts] = useState([]);
 
   const [items, setItems] = useState([
     {
@@ -83,17 +88,6 @@ const TreatmentTable = () => {
     ]);
     handleTabChange(prevItems?.length);
   };
-
-  const [cycles, setCycles] = useState([]);
-  const [selectedProtocol, setSelectedProtocol] = useState(undefined);
-  const [selectedTreatment, setSelectedTreatment] = useState(undefined);
-  // const [treatmentLinesData, setTreatmentLinesData] = useState({});
-
-  const toast = useRef(null);
-  const { uid } = useParams();
-
-  const [mainSelection, setMainSelection] = useState(null);
-  const [subSelection, setSubSelection] = useState(null);
 
   const stateTranslations = {
     IN_PROGRESS: "در حال انجام",
@@ -397,9 +391,6 @@ const TreatmentTable = () => {
       }
     }
   };
-
-  const [products, setProducts] = useState([]);
-  const [selectedProducts, setSelectedProducts] = useState([]);
 
   const persianDateTemplate = (field) => (rowData) => {
     const dateValue = rowData?.[field];
@@ -913,5 +904,3 @@ const TreatmentTable = () => {
 };
 
 export default TreatmentTable;
-
-// in this code, I want that when click on "ثبا خط درمان جدید"  reset inner inputs,
