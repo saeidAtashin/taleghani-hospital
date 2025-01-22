@@ -57,27 +57,6 @@ const TreatmentTable = () => {
     },
   ]);
 
-  // const handleTabChange = (e) => {
-  //   setActiveIndex(3);
-
-  //   setSelectedProtocol(undefined);
-  //   // setSelectedTreatment(undefined);
-
-  //   // setTreatmentValue(null);
-  //   // setSelectedProtocol(undefined);
-  //   // setSelectedTreatment(undefined);
-  //   setStartDateObj(null);
-  //   // setTreatmentStartDateObj(null);
-  //   // setTreatmentStartDate("");
-  //   // setStartDate("");
-  //   setEndDateObj(null);
-  //   // setEndDate("");
-  //   // setDescription("");
-  //   setCycles([]);
-  //   // setisCycleVisible(false);
-  //   // setShowedPart("");
-  // };
-
   const handleTabChange = (index) => {
     setActiveIndex(test ? index?.index : index);
     console.log("index", index?.index);
@@ -89,17 +68,6 @@ const TreatmentTable = () => {
     setDescription("");
     setCycles([]);
   };
-
-  // const addNewTreatment = () => {
-  //   setItems((prevItems) => [
-  //     ...prevItems,
-  //     {
-  //       label: `خط درمان ${prevItems?.length}`,
-  //       command: null,
-  //     },
-  //   ]);
-  //   handleTabChange(prevItems?.length);
-  // };
 
   const addNewTreatment = () => {
     setItems((prevItems) => {
