@@ -378,7 +378,7 @@ const TreatmentTable = () => {
         "https://cancerreg.ir/api/v1/teatment/treatment-line/",
         payload
       );
-      setShowStartTreatBtn(true);
+      // setShowStartTreatBtn(true);
 
       toast.current.show({
         severity: "success",
@@ -386,7 +386,7 @@ const TreatmentTable = () => {
         detail: "ذخیره شد",
       });
     } catch (err) {
-      setShowStartTreatBtn(true);
+      // setShowStartTreatBtn(true);
       console.error(err);
 
       toast.current.show({
