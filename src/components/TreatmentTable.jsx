@@ -78,9 +78,9 @@ const TreatmentTable = () => {
   //   // setShowedPart("");
   // };
 
-  const handleTabChange = (index) => {
-    setActiveIndex(index);
-
+  const handleTabChange = (index, test) => {
+    setActiveIndex(test ? index?.index : index);
+    console.log("index", index?.index);
     // Reset inner inputs
     setSelectedProtocol(undefined);
     setSelectedTreatment(undefined);
@@ -105,13 +105,13 @@ const TreatmentTable = () => {
     setItems((prevItems) => {
       const newItem = {
         label: `خط درمان ${prevItems.length}`,
-        command: () => handleTabChange(prevItems.length),
+        command: () => handleTabChange(prevItems.length, false),
       };
       return [...prevItems, newItem];
     });
 
     // Automatically activate the new treatment
-    handleTabChange(items.length);
+    handleTabChange(items.length, true);
   };
 
   const stateTranslations = {
@@ -337,36 +337,38 @@ const TreatmentTable = () => {
         payload
       );
 
-      toast.current.show({
-        severity: "success",
-        summary: "موفق",
-        detail: "ذخیره شد",
-      });
+      if (response?.status >= 200 && response?.status < 400) {
+        toast.current.show({
+          severity: "success",
+          summary: "موفق",
+          detail: "ذخیره شد",
+        });
 
-      setResponseUid(response?.data?.data?.uid);
-      setShowStartTreatBtn(false);
+        setResponseUid(response?.data?.data?.uid);
+        setShowStartTreatBtn(false);
 
-      setRefreshTreatTable(!refreshTreatTable);
-      if (isTreatmentForm) {
-        setnewTreat(false);
-        resetFormFields();
+        setRefreshTreatTable(!refreshTreatTable);
+        if (isTreatmentForm) {
+          setnewTreat(false);
+          resetFormFields();
+        }
+
+        setLoading(true);
+        setShowedPart("showCycle");
+        setLoading(false);
       }
-
-      setLoading(true);
-      setShowedPart("showCycle");
-      setLoading(false);
     } catch (err) {
-      setShowStartTreatBtn(true);
-      console.error(err);
-
-      toast.current.show({
-        severity: "error",
-        summary: "خطا",
-        detail: err.response?.data?.message || "مشکلی پیش آمده است.",
-      });
+      if (err?.status >= 400) {
+        setShowStartTreatBtn(true);
+        console.error(err);
+        setLoading(false);
+        toast.current.show({
+          severity: "error",
+          summary: "خطا",
+          detail: err.response?.data?.message || "مشکلی پیش آمده است.",
+        });
+      }
     } finally {
-      setLoading(false);
-      setShowStartTreatBtn(false);
     }
   };
 
