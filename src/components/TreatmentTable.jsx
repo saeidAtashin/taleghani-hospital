@@ -78,7 +78,7 @@ const TreatmentTable = () => {
   //   // setShowedPart("");
   // };
 
-  const handleTabChange = (index, test) => {
+  const handleTabChange = (index) => {
     setActiveIndex(test ? index?.index : index);
     console.log("index", index?.index);
     // Reset inner inputs
@@ -105,13 +105,13 @@ const TreatmentTable = () => {
     setItems((prevItems) => {
       const newItem = {
         label: `خط درمان ${prevItems.length}`,
-        command: () => handleTabChange(prevItems.length, false),
+        command: () => handleTabChange(prevItems.length),
       };
       return [...prevItems, newItem];
     });
 
     // Automatically activate the new treatment
-    handleTabChange(items.length, true);
+    handleTabChange(items.length);
   };
 
   const stateTranslations = {
