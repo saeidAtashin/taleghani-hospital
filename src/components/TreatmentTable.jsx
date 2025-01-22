@@ -39,6 +39,7 @@ const TreatmentTable = () => {
   const [showedPart, setShowedPart] = useState("");
   const [responseUid, setResponseUid] = useState(undefined);
   const [refreshTreatTable, setRefreshTreatTable] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const [items, setItems] = useState([
     {
@@ -52,7 +53,7 @@ const TreatmentTable = () => {
   ]);
 
   const handleTabChange = (e) => {
-    setActiveIndex(e.index);
+    setActiveIndex(3);
 
     setSelectedProtocol(undefined);
     // setSelectedTreatment(undefined);
@@ -82,8 +83,6 @@ const TreatmentTable = () => {
     ]);
     handleTabChange(prevItems?.length);
   };
-
-  const [activeIndex, setActiveIndex] = useState(0);
 
   const [cycles, setCycles] = useState([]);
   const [selectedProtocol, setSelectedProtocol] = useState(undefined);
@@ -378,7 +377,6 @@ const TreatmentTable = () => {
         "https://cancerreg.ir/api/v1/teatment/treatment-line/",
         payload
       );
-      // setShowStartTreatBtn(true);
 
       if (response?.status >= 200 && response?.status < 400) {
         toast.current.show({
@@ -389,8 +387,7 @@ const TreatmentTable = () => {
         addNewTreatment();
       }
     } catch (err) {
-      if (response?.status >= 400) {
-        // setShowStartTreatBtn(true);
+      if (err?.status >= 400) {
         console.error(err);
         toast.current.show({
           severity: "error",
