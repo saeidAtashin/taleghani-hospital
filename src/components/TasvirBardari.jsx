@@ -25,11 +25,39 @@ export default function TasvirBardari() {
   };
 
   const persianDateTemplate = (rowData) => {
+    // Check if rowData or rowData.date is missing
+    if (!rowData || !rowData.date) {
+      const fallbackDate = rowData.created_at
+        ? rowData.created_at.split("T")[0]
+        : null;
+
+      // Check if fallbackDate is valid, otherwise return an error message
+      if (fallbackDate) {
+        // Convert fallback date (created_at) to Jalali format
+        return (
+          <span>
+            {moment(fallbackDate, "YYYY-MM-DD")
+              .locale("fa")
+              .format("jYYYY/jMM/jDD")}
+          </span>
+        );
+      } else {
+        return <span style={{ color: "red" }}>تاریخ نامعتبر</span>;
+      }
+    }
+
+    // Extract the date part (YYYY-MM-DD) from rowData.date and check if it's a valid date
+    const date = rowData.date.split("T")[0]; // Get date part (YYYY-MM-DD)
+
+    // If rowData.date is invalid, use rowData.created_at as fallback
+    if (!moment(date, "YYYY-MM-DD", true).isValid()) {
+      // Fallback to rowData.created_at if rowData.date is invalid
+    }
+
+    // If rowData.date is valid, convert it to Jalali format
     return (
       <span>
-        {moment(rowData.created_at, "YYYY-MM-DD")
-          .locale("fa")
-          .format("jYYYY/jMM/jDD")}
+        {moment(date, "YYYY-MM-DD").locale("fa").format("jYYYY/jMM/jDD")}
       </span>
     );
   };
