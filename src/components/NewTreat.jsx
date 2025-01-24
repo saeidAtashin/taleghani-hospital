@@ -43,9 +43,11 @@ const NewTreat = ({
   setItems,
   protocolOptions,
   setProtocolOptions,
+  endDateObj,
+  setEndDateObj,
+  endDate,
+  setEndDate,
 }) => {
-  const [endDateObj, setEndDateObj] = useState(null);
-  const [endDate, setEndDate] = useState("");
   const [showStartTreatBtn, setShowStartTreatBtn] = useState(true);
   const [isCycleVisible, setisCycleVisible] = useState(false);
   const [loading, setLoading] = useState(false);

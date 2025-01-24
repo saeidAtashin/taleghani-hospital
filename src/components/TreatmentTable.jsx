@@ -26,6 +26,8 @@ const TreatmentTable = () => {
   const { uid } = useParams();
   const [products, setProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
+  const [endDateObj, setEndDateObj] = useState(null);
+  const [endDate, setEndDate] = useState("");
 
   console.log("newTreat", newTreat);
   const handleTabChange = (index) => {
@@ -312,6 +314,10 @@ const TreatmentTable = () => {
           setItems={setItems}
           protocolOptions={protocolOptions}
           setProtocolOptions={setProtocolOptions}
+          endDate={endDate}
+          setEndDate={setEndDate}
+          endDateObj={endDateObj}
+          setEndDateObj={setEndDateObj}
         />
       )}
     </>
