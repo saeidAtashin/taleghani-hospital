@@ -39,28 +39,28 @@ const TreatmentTable = () => {
     setCycles([]);
   };
 
-  const [items, setItems] = useState([
-    {
-      label: "ثبت خط درمان جدید",
-      command: () => addNewTreatment(),
-    },
-    {
-      label: "خط درمان 1",
-      command: () => null,
-    },
-  ]);
+  // const [items, setItems] = useState([
+  //   {
+  //     label: "ثبت خط درمان جدید",
+  //     command: () => addNewTreatment(),
+  //   },
+  //   {
+  //     label: "خط درمان 1",
+  //     command: () => null,
+  //   },
+  // ]);
 
-  const addNewTreatment = () => {
-    setItems((prevItems) => {
-      const newItem = {
-        label: `خط درمان ${prevItems.length}`,
-        command: () => handleTabChange(prevItems.length),
-      };
-      return [...prevItems, newItem];
-    });
+  // const addNewTreatment = () => {
+  //   setItems((prevItems) => {
+  //     const newItem = {
+  //       label: `خط درمان ${prevItems.length}`,
+  //       command: () => handleTabChange(prevItems.length),
+  //     };
+  //     return [...prevItems, newItem];
+  //   });
 
-    handleTabChange(items.length);
-  };
+  //   handleTabChange(items.length);
+  // };
 
   const stateTranslations = {
     IN_PROGRESS: "در حال انجام",
@@ -278,8 +278,8 @@ const TreatmentTable = () => {
           newTreat={newTreat}
           setRefreshTreatTable={setRefreshTreatTable}
           refreshTreatTable={refreshTreatTable}
-          items={items}
-          setItems={setItems}
+          // items={items}
+          // setItems={setItems}
           protocolOptions={protocolOptions}
           setProtocolOptions={setProtocolOptions}
           endDate={endDate}

@@ -38,8 +38,8 @@ const NewTreat = ({
   newTreat,
   setRefreshTreatTable,
   refreshTreatTable,
-  items,
-  setItems,
+  // items,
+  // setItems,
   protocolOptions,
   setProtocolOptions,
   endDateObj,
@@ -434,7 +434,7 @@ const NewTreat = ({
               showStartTreatBtn={showStartTreatBtn}
               loading={loading}
               showedPart={showedPart}
-              items={items}
+              // items={items}
               activeIndex={activeIndex}
               handleTabChange={handleTabChange}
               startDateObj={startDateObj}
