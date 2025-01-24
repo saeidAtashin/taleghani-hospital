@@ -85,6 +85,11 @@ const TreatChemi = ({
     }
   };
 
+  const removeCycle = (index) => {
+    const updatedCycles = cycles.filter((_, i) => i !== index);
+    setCycles(updatedCycles);
+  };
+
   return (
     <>
       <div className="d-flex flex-column my-3">
@@ -192,6 +197,15 @@ const TreatChemi = ({
                     key={index}
                     header={`\u00A0 سیکل ${cycle.cycleNumber} `}
                   >
+                    <div className="d-flex justify-content-between align-items-center">
+                      <h5>سیکل {cycle.cycleNumber}</h5>
+                      <Button
+                        icon="pi pi-trash"
+                        className="p-button-rounded p-button-danger"
+                        onClick={() => removeCycle(index)}
+                        tooltip="حذف سیکل"
+                      />
+                    </div>
                     <div className="d-flex flex-column my-3">
                       <label
                         className="p-col-12 p-md-2"
