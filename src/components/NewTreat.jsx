@@ -53,6 +53,7 @@ const NewTreat = ({
   setShowStartTreatBtn,
   showedPart,
   setShowedPart,
+  setAllDatas,
 }) => {
   const [isCycleVisible, setisCycleVisible] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -428,6 +429,7 @@ const NewTreat = ({
           ) : (
             <TreatChemi
               allDatas={allDatas}
+              setAllDatas={setAllDatas}
               setTreatmentStartDateObj={setTreatmentStartDateObj}
               treatmentStartDateObj={treatmentStartDateObj}
               setTreatmentStartDate={setTreatmentStartDate}
@@ -454,6 +456,7 @@ const NewTreat = ({
               cycles={cycles}
               handleSubmitLine={handleSubmitLine}
               uidForCycle={uidForCycle}
+              setStartDate={setStartDate}
             />
           )}
         </div>

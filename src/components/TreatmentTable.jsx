@@ -277,6 +277,7 @@ const TreatmentTable = () => {
 
       {newTreat && (
         <NewTreat
+          setAllDatas={setAllDatas}
           showedPart={showedPart}
           setShowedPart={setShowedPart}
           showStartTreatBtn={showStartTreatBtn}
