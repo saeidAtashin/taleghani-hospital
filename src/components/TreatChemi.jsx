@@ -35,7 +35,7 @@ const TreatChemi = ({
   handleEndDateChange,
   setSelectedTreatment,
   cycles,
-
+  allDatas,
   handleSubmitLine,
 }) => {
   const handleTreatmentStartDateChange = (date) => {
@@ -91,6 +91,13 @@ const TreatChemi = ({
     const updatedCycles = cycles.filter((_, i) => i !== index);
     setCycles(updatedCycles);
   };
+
+  console.log(" allDatas in TreatChemi", allDatas);
+//  allDatas
+//  رو واسه تمام خط درمان ها توی حالتی که اینجا ایم میخوایم.
+
+
+
 
   return (
     <>

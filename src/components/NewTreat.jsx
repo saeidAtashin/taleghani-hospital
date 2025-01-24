@@ -47,13 +47,15 @@ const NewTreat = ({
   endDate,
   setEndDate,
   handleTabChange,
+  allDatas,
+  isTreatmentForm,
+  setIsTreatmentForm,
 }) => {
   const [showStartTreatBtn, setShowStartTreatBtn] = useState(true);
   const [isCycleVisible, setisCycleVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [mainSelection, setMainSelection] = useState(null);
   const [subSelection, setSubSelection] = useState(null);
-  const [isTreatmentForm, setIsTreatmentForm] = useState(false);
   const [showedPart, setShowedPart] = useState("");
   const toast = useRef(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -102,9 +104,6 @@ const NewTreat = ({
   const handleSubmit = async () => {
     setLoading(true);
 
-    console.log("startDate", startDate);
-    console.log("treatmentStartDate", treatmentStartDate);
-
     const payload = {
       type: isTreatmentForm ? "TREATMENT" : "CHEMOTHERAPY",
       category: treatmentValue?.value,
@@ -136,8 +135,6 @@ const NewTreat = ({
       );
 
       if (response?.status >= 200 && response?.status < 400) {
-        console.log("shit");
-
         setLoading(false);
 
         toast.current.show({
@@ -154,7 +151,6 @@ const NewTreat = ({
           setnewTreat(false);
           resetFormFields();
         }
-        console.log("shit");
 
         setShowedPart("showCycle");
         setLoading(false);
@@ -243,10 +239,7 @@ const NewTreat = ({
           value: item.uid,
         }));
 
-        console.log("Fetched options:", formatted); // Debug API response format
         setTreatment(formatted);
-
-        console.log("Current selectedTreatment:", selectedTreatment);
 
         // Find and set default value
         const defaultOption = formatted.find(
@@ -254,7 +247,6 @@ const NewTreat = ({
         );
 
         if (defaultOption) {
-          console.log("Setting default:", defaultOption); // Debug to check if we found the default option
           setSelectedTreatment(defaultOption); // ✅ Ensure it's set
         }
       })
@@ -431,6 +423,7 @@ const NewTreat = ({
             </>
           ) : (
             <TreatChemi
+              allDatas={allDatas}
               setTreatmentStartDateObj={setTreatmentStartDateObj}
               treatmentStartDateObj={treatmentStartDateObj}
               setTreatmentStartDate={setTreatmentStartDate}

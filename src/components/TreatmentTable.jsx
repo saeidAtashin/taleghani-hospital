@@ -28,8 +28,8 @@ const TreatmentTable = () => {
   const [endDateObj, setEndDateObj] = useState(null);
   const [endDate, setEndDate] = useState("");
   const [allDatas, setAllDatas] = useState(undefined);
+  const [isTreatmentForm, setIsTreatmentForm] = useState(false);
 
-  console.log("newTreat", newTreat);
   const handleTabChange = (index) => {
     console.log("index", index?.index);
     setSelectedProtocol(undefined);
@@ -153,7 +153,6 @@ const TreatmentTable = () => {
     fetchData();
   }, [uid, refreshTreatTable]);
 
-  console.log("allDatas", allDatas);
   const headerNew = (
     <div className="d-flex flex-wrap gap-2 align-items-center justify-content-start">
       <Button
@@ -167,15 +166,27 @@ const TreatmentTable = () => {
   );
 
   const handleRowClick = async (rowData) => {
+    console.log("isTreatmentForm", isTreatmentForm);
     const uid = rowData.uid;
-    const apiUrl = `https://cancerreg.ir/api/v1/teatment/treatment-line/${uid}/`;
+    const getTreatment = `https://cancerreg.ir/api/v1/teatment/treatment/${uid}/`;
+    const getTreatmentLine = `https://cancerreg.ir/api/v1/teatment/treatment-line/${uid}/`;
 
+    if (!isTreatmentForm) {
+      try {
+        const response = await fetch(getTreatmentLine);
+        const data = await response.json();
+        setAllDatas(data?.results);
+        console.log("holy data?.results", data?.results);
+      } catch (error) {
+        console.error("Error fetching treatment data:", error);
+      }
+    }
     try {
-      const response = await fetch(apiUrl);
+      const response = await fetch(getTreatment);
       const data = await response.json();
-      console.log("data injaaaaaaa", data?.results);
-      setAllDatas(data?.results);
-      const treatmentData = data?.results;
+      console.log("data injaaaaaaa", data?.data);
+
+      const treatmentData = data?.data;
       setTreatmentValue(
         rowData?.sub_category ? rowData?.sub_category : rowData?.category || ""
       );
@@ -188,6 +199,18 @@ const TreatmentTable = () => {
       );
       setDescription(treatmentData.description || "");
       setnewTreat(true);
+    } catch (error) {
+      console.error("Error fetching treatment data:", error);
+    }
+  };
+
+  const handleRowClick2 = async (rowData) => {
+    const uid = rowData.uid;
+
+    try {
+      const response = await fetch(apiUrl);
+      const data = await response.json();
+      setAllDatas(data?.results);
     } catch (error) {
       console.error("Error fetching treatment data:", error);
     }
@@ -256,6 +279,8 @@ const TreatmentTable = () => {
 
       {newTreat && (
         <NewTreat
+          isTreatmentForm={isTreatmentForm}
+          setIsTreatmentForm={setIsTreatmentForm}
           responseUid={responseUid}
           setResponseUid={setResponseUid}
           treatmentValue={treatmentValue}
@@ -290,6 +315,7 @@ const TreatmentTable = () => {
           endDateObj={endDateObj}
           setEndDateObj={setEndDateObj}
           handleTabChange={handleTabChange}
+          allDatas={allDatas}
         />
       )}
     </>
