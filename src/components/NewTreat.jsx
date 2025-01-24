@@ -185,10 +185,13 @@ const NewTreat = ({
       setSubSelection(null);
     }
 
-    if (!showLine) {
     const isForm =
       mainSelection === "HORMONETHERAPY" || mainSelection === "CHEMOTHERAPY";
     setIsTreatmentForm(!isForm);
+    console.log("showLine", showLine);
+    console.log("isForm", isForm);
+    if (showLine) {
+      setIsTreatmentForm(false);
     }
   }, [treatmentValue, mainSelection, subSelection]);
 
@@ -332,6 +335,7 @@ const NewTreat = ({
             onChange={(e) => {
               resetFormFields();
               setTreatmentValue(e.value);
+              
             }}
             style={{ minWidth: "14rem" }}
           />
