@@ -102,6 +102,9 @@ const NewTreat = ({
   const handleSubmit = async () => {
     setLoading(true);
 
+    console.log("startDate", startDate);
+    console.log("treatmentStartDate", treatmentStartDate);
+
     const payload = {
       type: isTreatmentForm ? "TREATMENT" : "CHEMOTHERAPY",
       category: treatmentValue?.value,
@@ -263,7 +266,7 @@ const NewTreat = ({
   const handleSubmitLine = async () => {
     const payload = {
       treatment_uid: responseUid,
-      start_date: startDate,
+      start_date: treatmentStartDate ? treatmentStartDate : startDate,
       end_date: endDate ? endDate : undefined,
       description: description ? description : undefined,
       evaluation_uid: selectedTreatment,

@@ -27,6 +27,7 @@ const TreatmentTable = () => {
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [endDateObj, setEndDateObj] = useState(null);
   const [endDate, setEndDate] = useState("");
+  const [allDatas, setAllDatas] = useState(undefined);
 
   console.log("newTreat", newTreat);
   const handleTabChange = (index) => {
@@ -152,6 +153,7 @@ const TreatmentTable = () => {
     fetchData();
   }, [uid, refreshTreatTable]);
 
+  console.log("allDatas", allDatas);
   const headerNew = (
     <div className="d-flex flex-wrap gap-2 align-items-center justify-content-start">
       <Button
@@ -166,13 +168,14 @@ const TreatmentTable = () => {
 
   const handleRowClick = async (rowData) => {
     const uid = rowData.uid;
-    const apiUrl = `https://cancerreg.ir/api/v1/teatment/treatment/${uid}/`;
+    const apiUrl = `https://cancerreg.ir/api/v1/teatment/treatment-line/${uid}/`;
 
     try {
       const response = await fetch(apiUrl);
       const data = await response.json();
-      console.log("data injaaaaaaa", data?.data);
-      const treatmentData = data?.data;
+      console.log("data injaaaaaaa", data?.results);
+      setAllDatas(data?.results);
+      const treatmentData = data?.results;
       setTreatmentValue(
         rowData?.sub_category ? rowData?.sub_category : rowData?.category || ""
       );

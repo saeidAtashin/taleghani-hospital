@@ -43,7 +43,9 @@ const TreatChemi = ({
       const gregorianDate = date.convert("gregorian").toDate();
       const formattedDate = gregorianDate.toISOString().split("T")[0];
       setTreatmentStartDateObj(date);
+
       setTreatmentStartDate(formattedDate);
+      setStartDate(formattedDate);
     } else {
       setTreatmentStartDateObj(null);
       setTreatmentStartDate("");
