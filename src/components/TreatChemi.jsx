@@ -44,7 +44,7 @@ const TreatChemi = ({
   const [showModal, setShowModal] = useState(false);
   const [loadingtar, setLoadingtar] = useState(false);
   const [savedCycles, setSavedCycles] = useState([]); // Track saved cycles
-
+  console.log("showStartTreatBtn", showStartTreatBtn);
   const handleTreatmentStartDateChange = (date) => {
     if (date) {
       const gregorianDate = date.convert("gregorian").toDate();

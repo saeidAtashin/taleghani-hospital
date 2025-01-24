@@ -49,14 +49,16 @@ const NewTreat = ({
   isTreatmentForm,
   setIsTreatmentForm,
   showLine,
+  showStartTreatBtn,
+  setShowStartTreatBtn,
+  showedPart,
+  setShowedPart,
 }) => {
-  const [showStartTreatBtn, setShowStartTreatBtn] = useState(true);
   const [isCycleVisible, setisCycleVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [mainSelection, setMainSelection] = useState(null);
   const [subSelection, setSubSelection] = useState(null);
   const [uidForCycle, setuidForCycle] = useState(null);
-  const [showedPart, setShowedPart] = useState("");
   const toast = useRef(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [treatment, setTreatment] = useState([]);
@@ -335,7 +337,6 @@ const NewTreat = ({
             onChange={(e) => {
               resetFormFields();
               setTreatmentValue(e.value);
-              
             }}
             style={{ minWidth: "14rem" }}
           />

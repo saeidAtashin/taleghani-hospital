@@ -32,6 +32,8 @@ const TreatmentTable = () => {
   const [endDate, setEndDate] = useState("");
   const [allDatas, setAllDatas] = useState(undefined);
   const [isTreatmentForm, setIsTreatmentForm] = useState(false);
+  const [showStartTreatBtn, setShowStartTreatBtn] = useState(true);
+  const [showedPart, setShowedPart] = useState("");
 
   const [showLine, setshowLine] = useState(false);
 
@@ -171,7 +173,8 @@ const TreatmentTable = () => {
       const response = await fetch(getTreatment);
       const data = await response.json();
       console.log("data injaaaaaaa", data?.data);
-
+      setShowStartTreatBtn(false);
+      setShowedPart("showCycle");
       const treatmentData = data?.data;
       setTreatmentValue(
         rowData?.sub_category ? rowData?.sub_category : rowData?.category || ""
@@ -274,6 +277,10 @@ const TreatmentTable = () => {
 
       {newTreat && (
         <NewTreat
+          showedPart={showedPart}
+          setShowedPart={setShowedPart}
+          showStartTreatBtn={showStartTreatBtn}
+          setShowStartTreatBtn={setShowStartTreatBtn}
           showLine={showLine}
           isTreatmentForm={isTreatmentForm}
           setIsTreatmentForm={setIsTreatmentForm}
