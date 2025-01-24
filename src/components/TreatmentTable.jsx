@@ -11,7 +11,6 @@ import NewTreat from "./NewTreat";
 const TreatmentTable = () => {
   const [treatmentValue, setTreatmentValue] = useState(null);
   const [protocolOptions, setProtocolOptions] = useState([]);
-  const [treatment, setTreatment] = useState([]);
   const [description, setDescription] = useState("");
   const [newTreat, setnewTreat] = useState(false);
   const [startDateObj, setStartDateObj] = useState(null);
@@ -74,36 +73,6 @@ const TreatmentTable = () => {
     COMPLETED: "state-completed",
     PENDING: "state-pending",
   };
-
-  useEffect(() => {
-    axios
-      .get("https://cancerreg.ir/api/v1/common/treatment-evaluation/")
-      .then((response) => {
-        const results = response.data?.data?.results || [];
-        const formatted = results.map((item) => ({
-          label: item.name,
-          value: item.uid,
-        }));
-
-        console.log("Fetched options:", formatted); // Debug API response format
-        setTreatment(formatted);
-
-        console.log("Current selectedTreatment:", selectedTreatment);
-
-        // Find and set default value
-        const defaultOption = formatted.find(
-          (t) => t.label === selectedTreatment
-        );
-
-        if (defaultOption) {
-          console.log("Setting default:", defaultOption); // Debug to check if we found the default option
-          setSelectedTreatment(defaultOption); // ✅ Ensure it's set
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, [newTreat, selectedTreatment]);
 
   useEffect(() => {
     axios
@@ -304,7 +273,6 @@ const TreatmentTable = () => {
           setDescription={setDescription}
           cycles={cycles}
           setCycles={setCycles}
-          treatment={treatment}
           uid={uid}
           setnewTreat={setnewTreat}
           newTreat={newTreat}
@@ -318,6 +286,7 @@ const TreatmentTable = () => {
           setEndDate={setEndDate}
           endDateObj={endDateObj}
           setEndDateObj={setEndDateObj}
+          handleTabChange={handleTabChange}
         />
       )}
     </>

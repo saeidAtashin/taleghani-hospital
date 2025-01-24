@@ -4,13 +4,13 @@ import { Dropdown } from "primereact/dropdown";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
-import { Accordion, AccordionTab } from "primereact/accordion";
 import axios from "axios";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import { TabMenu } from "primereact/tabmenu";
+import TreatChemi from "./TreatChemi";
 
 const NewTreat = ({
   responseUid,
@@ -33,7 +33,6 @@ const NewTreat = ({
   setDescription,
   cycles,
   setCycles,
-  treatment,
   uid,
   setnewTreat,
   newTreat,
@@ -47,6 +46,7 @@ const NewTreat = ({
   setEndDateObj,
   endDate,
   setEndDate,
+  handleTabChange,
 }) => {
   const [showStartTreatBtn, setShowStartTreatBtn] = useState(true);
   const [isCycleVisible, setisCycleVisible] = useState(false);
@@ -57,6 +57,7 @@ const NewTreat = ({
   const [showedPart, setShowedPart] = useState("");
   const toast = useRef(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [treatment, setTreatment] = useState([]);
 
   const handleStartDateChange = (date) => {
     if (date) {
@@ -70,18 +71,6 @@ const NewTreat = ({
     }
   };
 
-  const handleTreatmentStartDateChange = (date) => {
-    if (date) {
-      const gregorianDate = date.convert("gregorian").toDate();
-      const formattedDate = gregorianDate.toISOString().split("T")[0];
-      setTreatmentStartDateObj(date);
-      setTreatmentStartDate(formattedDate);
-    } else {
-      setTreatmentStartDateObj(null);
-      setTreatmentStartDate("");
-    }
-  };
-
   const handleEndDateChange = (date) => {
     if (date) {
       const gregorianDate = date.convert("gregorian").toDate();
@@ -91,41 +80,6 @@ const NewTreat = ({
     } else {
       setEndDateObj(null);
       setEndDate("");
-    }
-  };
-
-  const handleCycleDateChange = (index, date) => {
-    const updatedCycles = [...cycles];
-    if (date) {
-      const gregorianDate = date.convert("gregorian").toDate();
-      const formattedDate = gregorianDate.toISOString().split("T")[0];
-      updatedCycles[index].date = formattedDate;
-      updatedCycles[index].dateObj = date;
-    } else {
-      updatedCycles[index].date = "";
-      updatedCycles[index].dateObj = null;
-    }
-    setCycles(updatedCycles);
-  };
-
-  const handleCycleDescriptionChange = (index, val) => {
-    const updatedCycles = [...cycles];
-    updatedCycles[index].description = val;
-    setCycles(updatedCycles);
-  };
-
-  const addCycle = () => {
-    setisCycleVisible(true);
-    const newCycleNumber = cycles.length + 1;
-    setCycles([
-      ...cycles,
-      { cycleNumber: newCycleNumber, date: "", dateObj: null, description: "" },
-    ]);
-  };
-
-  const handleCycleapi = (cycle) => {
-    if (cycle.cycleNumber === 1) {
-    } else {
     }
   };
 
@@ -236,6 +190,76 @@ const NewTreat = ({
     setIsTreatmentForm(!isForm);
   }, [treatmentValue, mainSelection, subSelection]);
 
+  const cascadeOptions = [
+    {
+      label: "جراحی",
+      value: "surgry",
+      children: [
+        { label: "CURATIVE", value: "SURGERY" },
+        { label: "PALLIATIVE", value: "SURGERY" },
+        { label: "METASTASECTOMY", value: "SURGERY" },
+      ],
+    },
+    {
+      label: "رادیوتراپی",
+      value: "رادیوتراپی",
+      children: [
+        { label: "CURATIVE", value: "RADIOTHERAPY" },
+        { label: "PALLIATIVE", value: "RADIOTHERAPY" },
+        { label: "PROPHYLACTIC", value: "RADIOTHERAPY" },
+      ],
+    },
+    {
+      label: "لوکال",
+      value: "LOCAL",
+      children: [
+        { label: "MW", value: "LOCAL" },
+        { label: "RF", value: "LOCAL" },
+        { label: "TACE", value: "LOCAL" },
+        { label: "HIPEC", value: "LOCAL" },
+        { label: "PRRT", value: "LOCAL" },
+      ],
+    },
+    {
+      label: "CHEMOTHERAPY",
+      value: "CHEMOTHERAPY",
+    },
+    {
+      label: "HORMONETHERAPY",
+      value: "HORMONETHERAPY",
+    },
+  ];
+
+  useEffect(() => {
+    axios
+      .get("https://cancerreg.ir/api/v1/common/treatment-evaluation/")
+      .then((response) => {
+        const results = response.data?.data?.results || [];
+        const formatted = results.map((item) => ({
+          label: item.name,
+          value: item.uid,
+        }));
+
+        console.log("Fetched options:", formatted); // Debug API response format
+        setTreatment(formatted);
+
+        console.log("Current selectedTreatment:", selectedTreatment);
+
+        // Find and set default value
+        const defaultOption = formatted.find(
+          (t) => t.label === selectedTreatment
+        );
+
+        if (defaultOption) {
+          console.log("Setting default:", defaultOption); // Debug to check if we found the default option
+          setSelectedTreatment(defaultOption); // ✅ Ensure it's set
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, [newTreat, selectedTreatment]);
+
   const handleSubmitLine = async () => {
     const payload = {
       treatment_uid: responseUid,
@@ -282,46 +306,6 @@ const NewTreat = ({
       }
     }
   };
-
-  const cascadeOptions = [
-    {
-      label: "جراحی",
-      value: "surgry",
-      children: [
-        { label: "CURATIVE", value: "SURGERY" },
-        { label: "PALLIATIVE", value: "SURGERY" },
-        { label: "METASTASECTOMY", value: "SURGERY" },
-      ],
-    },
-    {
-      label: "رادیوتراپی",
-      value: "رادیوتراپی",
-      children: [
-        { label: "CURATIVE", value: "RADIOTHERAPY" },
-        { label: "PALLIATIVE", value: "RADIOTHERAPY" },
-        { label: "PROPHYLACTIC", value: "RADIOTHERAPY" },
-      ],
-    },
-    {
-      label: "لوکال",
-      value: "LOCAL",
-      children: [
-        { label: "MW", value: "LOCAL" },
-        { label: "RF", value: "LOCAL" },
-        { label: "TACE", value: "LOCAL" },
-        { label: "HIPEC", value: "LOCAL" },
-        { label: "PRRT", value: "LOCAL" },
-      ],
-    },
-    {
-      label: "CHEMOTHERAPY",
-      value: "CHEMOTHERAPY",
-    },
-    {
-      label: "HORMONETHERAPY",
-      value: "HORMONETHERAPY",
-    },
-  ];
 
   return (
     <>
@@ -443,211 +427,33 @@ const NewTreat = ({
               />
             </>
           ) : (
-            <>
-              <div className="d-flex flex-column my-3">
-                <label className="p-col-12 p-md-2" htmlFor="start_date">
-                  تاریخ شروع درمان:
-                </label>
-                <div className="d-flex w-100 gap-5">
-                  <DatePicker
-                    value={treatmentStartDateObj}
-                    onChange={handleTreatmentStartDateChange}
-                    calendar={persian}
-                    locale={persian_fa}
-                    format="YYYY/MM/DD"
-                    placeholder="تاریخ را انتخاب کنید"
-                    className="p-2 border rounded w-100"
-                    inputClass="w-100 p-2 text-end border rounded"
-                    position="bottom-right"
-                  />
-                  {showStartTreatBtn && (
-                    <div style={{ flex: 1 }}>
-                      <Button
-                        label="شروع درمان"
-                        icon="pi pi-check"
-                        onClick={handleSubmit}
-                        loading={loading}
-                        className="w-100 bg-white text-dark rounded-3"
-                      />
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {showedPart === "showCycle" && (
-                <div className="mt-4 pt-4">
-                  <TabMenu
-                    model={items?.map((item) => ({
-                      label: item?.template || item?.label,
-                      command: item.command,
-                    }))}
-                    activeIndex={activeIndex === 0 ? 1 : activeIndex}
-                    // onTabChange={(e) => setActiveIndex(e.index)}
-                    onTabChange={
-                      activeIndex === 0 ? console.log("test") : handleTabChange
-                    }
-                  />
-
-                  <div className="d-flex flex-column my-3">
-                    <label className="p-col-12 p-md-2" htmlFor="start_date">
-                      تاریخ شروع خط درمان:
-                    </label>
-                    <DatePicker
-                      value={startDateObj}
-                      onChange={handleStartDateChange}
-                      calendar={persian}
-                      locale={persian_fa}
-                      format="YYYY/MM/DD"
-                      placeholder="تاریخ را انتخاب کنید"
-                      className="p-2 border rounded"
-                      inputClass="w-full p-2 text-end w-100 border rounded"
-                      position="bottom-right"
-                    />
-                  </div>
-                  <div className="">
-                    <label className="p-col-12 p-md-2 mt-3" htmlFor="protocol">
-                      پروتکل:
-                    </label>
-                    <div className="p-col-12 p-md-10 mb-4">
-                      <Dropdown
-                        id="protocol"
-                        value={selectedProtocol}
-                        options={protocolOptions}
-                        onChange={(e) => setSelectedProtocol(e.value)}
-                        placeholder="پروتکل را انتخاب نمایید"
-                        optionLabel="label"
-                        className="w-100"
-                      />
-                    </div>
-                  </div>
-
-                  <Button
-                    label={`\u00A0 ثبت سیکل جدید`}
-                    icon="pi pi-plus"
-                    className="p-button-text border rounded mb-4"
-                    onClick={addCycle}
-                    type="button"
-                  />
-
-                  {isCycleVisible && (
-                    <fieldset
-                      style={{
-                        border: "1px solid #ccc",
-                        padding: "1rem",
-                        marginBottom: "1rem",
-                      }}
-                    >
-                      <legend>سیکل ها</legend>
-                      <Accordion
-                        activeIndex={[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
-                        multiple
-                      >
-                        {cycles.map((cycle, index) => (
-                          <AccordionTab
-                            key={index}
-                            header={`\u00A0 سیکل ${cycle.cycleNumber} `}
-                          >
-                            <div className="d-flex flex-column my-3">
-                              <label
-                                className="p-col-12 p-md-2"
-                                htmlFor={`cycle_date_${index}`}
-                              >
-                                تاریخ:
-                              </label>
-                              <DatePicker
-                                value={cycle.dateObj}
-                                onChange={(date) =>
-                                  handleCycleDateChange(index, date)
-                                }
-                                calendar={persian}
-                                locale={persian_fa}
-                                format="YYYY/MM/DD"
-                                placeholder="تاریخ را انتخاب کنید"
-                                className="p-2 border rounded"
-                                inputClass="w-full p-2 text-end w-100 border rounded"
-                                position="bottom-right"
-                              />
-                            </div>
-                            <div className="p-field p-grid">
-                              <label
-                                className="p-col-12 p-md-2"
-                                htmlFor={`cycle_desc_${index}`}
-                              >
-                                توضیحات:
-                              </label>
-                              <div className="p-col-12 p-md-10">
-                                <InputTextarea
-                                  id={`cycle_desc_${index}`}
-                                  value={cycle.description}
-                                  onChange={(e) =>
-                                    handleCycleDescriptionChange(
-                                      index,
-                                      e.target.value
-                                    )
-                                  }
-                                  rows={2}
-                                  className="w-100"
-                                />
-                              </div>
-                            </div>
-                            <Button
-                              label="ذخیره"
-                              type="button"
-                              icon="pi pi-check"
-                              className="p-button border rounded mb-4"
-                              onClick={() => handleCycleapi(cycle)}
-                            />
-                          </AccordionTab>
-                        ))}
-                      </Accordion>
-                    </fieldset>
-                  )}
-                  <div className="d-flex flex-column my-4">
-                    <label className="p-col-12 p-md-2" htmlFor="evaluation_uid">
-                      ارزیابی درمان:
-                    </label>
-                    <div className="p-col-12 p-md-10">
-                      <Dropdown
-                        id="evaluation_uid"
-                        value={selectedTreatment}
-                        options={treatment}
-                        onChange={(e) => setSelectedTreatment(e.value)}
-                        placeholder="ارزیابی را انتخاب کنید"
-                        optionLabel="label"
-                        className="w-100"
-                      />
-                    </div>
-                  </div>
-                  <div className="d-flex flex-column my-3">
-                    <label className="p-col-12 p-md-2" htmlFor="end_date">
-                      تاریخ پایان خط درمان:
-                    </label>
-                    <DatePicker
-                      value={endDateObj}
-                      onChange={handleEndDateChange}
-                      calendar={persian}
-                      locale={persian_fa}
-                      format="YYYY/MM/DD"
-                      placeholder="تاریخ را انتخاب کنید"
-                      className="p-2 border rounded"
-                      inputClass="w-full p-2 text-end w-100 border rounded"
-                      position="bottom-right"
-                    />
-                  </div>
-                </div>
-              )}
-              {!showStartTreatBtn && (
-                <div style={{ flex: 1 }}>
-                  <Button
-                    label="پایان خط درمان"
-                    icon="pi pi-check"
-                    onClick={handleSubmitLine}
-                    loading={loading}
-                    className="w-100 bg-white text-dark rounded-3"
-                  />
-                </div>
-              )}
-            </>
+            <TreatChemi
+              setTreatmentStartDateObj={setTreatmentStartDateObj}
+              treatmentStartDateObj={treatmentStartDateObj}
+              setTreatmentStartDate={setTreatmentStartDate}
+              showStartTreatBtn={showStartTreatBtn}
+              loading={loading}
+              showedPart={showedPart}
+              items={items}
+              activeIndex={activeIndex}
+              handleTabChange={handleTabChange}
+              startDateObj={startDateObj}
+              handleStartDateChange={handleStartDateChange}
+              selectedProtocol={selectedProtocol}
+              protocolOptions={protocolOptions}
+              setSelectedProtocol={setSelectedProtocol}
+              setCycles={setCycles}
+              isCycleVisible={isCycleVisible}
+              setisCycleVisible={setisCycleVisible}
+              handleSubmit={handleSubmit}
+              selectedTreatment={selectedTreatment}
+              treatment={treatment}
+              endDateObj={endDateObj}
+              handleEndDateChange={handleEndDateChange}
+              setSelectedTreatment={setSelectedTreatment}
+              cycles={cycles}
+              handleSubmitLine={handleSubmitLine}
+            />
           )}
         </div>
       )}
