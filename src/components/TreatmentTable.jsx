@@ -196,6 +196,7 @@ const TreatmentTable = () => {
             .format("YYYY/MM/DD")
         : "";
       setStartDateObj(startDateJalali);
+      setTreatmentStartDateObj(startDateJalali);
 
       setEndDateObj(endDateJalali);
       setSelectedTreatment(treatmentData.evaluation);
