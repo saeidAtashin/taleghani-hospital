@@ -51,9 +51,6 @@ const NewTreat = ({
   isTreatmentForm,
   setIsTreatmentForm,
 }) => {
-
-  
-
   const [showStartTreatBtn, setShowStartTreatBtn] = useState(true);
   const [isCycleVisible, setisCycleVisible] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -122,7 +119,7 @@ const NewTreat = ({
     if (!isTreatmentForm) {
       payload.evaluation_uid = selectedTreatment
         ? selectedTreatment
-        : "8a8c5bc2-0030-44ca-ad7a-c8b69228bdec";
+        : undefined;
       payload.protocol_uid = selectedProtocol;
       payload.cycles = cycles.map((c) => ({
         cycleNumber: c.cycleNumber,
@@ -245,15 +242,6 @@ const NewTreat = ({
         }));
 
         setTreatment(formatted);
-
-        // Find and set default value
-        const defaultOption = formatted.find(
-          (t) => t.label === selectedTreatment
-        );
-
-        if (defaultOption) {
-          setSelectedTreatment(defaultOption); // ✅ Ensure it's set
-        }
       })
       .catch((err) => {
         console.error(err);
@@ -273,7 +261,7 @@ const NewTreat = ({
     if (!isTreatmentForm) {
       payload.evaluation_uid = selectedTreatment
         ? selectedTreatment
-        : "8a8c5bc2-0030-44ca-ad7a-c8b69228bdec";
+        : undefined;
       payload.protocol_uid = selectedProtocol;
       payload.cycles_list = cycles.map((c) => ({
         date: c.date,
@@ -307,6 +295,8 @@ const NewTreat = ({
     }
   };
 
+  console.log("selectedTreatment:", selectedTreatment);
+  console.log("treatment array:", treatment);
   return (
     <>
       <Toast ref={toast} />
@@ -375,7 +365,10 @@ const NewTreat = ({
                 <div className="p-col-12 p-md-10">
                   <Dropdown
                     id="evaluation_uid"
-                    value={selectedTreatment}
+                    value={
+                      treatment.find((t) => t.value === selectedTreatment) ||
+                      null
+                    }
                     options={treatment}
                     onChange={(e) => setSelectedTreatment(e.value)}
                     placeholder="ارزیابی را انتخاب کنید"
