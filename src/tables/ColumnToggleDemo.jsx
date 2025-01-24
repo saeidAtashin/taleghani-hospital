@@ -13,20 +13,22 @@ export default function ColumnToggleDemo() {
     { field: "first_name", header: "نام" },
     { field: "last_name", header: "نام خانوادگی" },
     { field: "national_id", header: "کد ملی" },
-    { field: "created_at", header: "تاریخ ثبت" },
-    { field: "updated_at", header: "تاریخ بروزرسانی" },
+    { field: "disease.first_reference", header: "تاریخ اولین مراجعه" },
+    { field: "disease.last_reference", header: "تاریخ آخرین مراجعه" },
+    { field: "disease.type", header: "نوع بدخیمی" },
+    { field: "disease.diagnosis", header: "تشخیص" },
   ];
 
   const [products, setProducts] = useState([]);
   const [visibleColumns, setVisibleColumns] = useState(columns);
-  const [loading, setLoading] = useState(columns);
-  const [page, setPage] = useState(1); // current page
-  const [rows, setRows] = useState(10); // current page
-  const [count, setcount] = useState(10); // current page
-  const [first, setFirst] = useState(10); // current page
+  const [loading, setLoading] = useState(false); // Fixed incorrect initial state
+  const [page, setPage] = useState(0); // Fixed to 0-based index for consistency
+  const [rows, setRows] = useState(10);
+  const [count, setCount] = useState(0);
+  const [first, setFirst] = useState(0);
 
   const fetchData = async () => {
-    setLoading(true); // Start loading state
+    setLoading(true);
     try {
       const response = await apiRequest(
         "GET",
@@ -34,21 +36,22 @@ export default function ColumnToggleDemo() {
       );
       const patients = response.data.data.results;
       setProducts(patients);
-      setcount(response.data?.data?.count);
-      setLoading(false); // End loading state
+      setCount(response.data?.data?.count || 0);
     } catch (error) {
-      setLoading(false);
       console.error("Error fetching patient data:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchData();
     localStorage.removeItem("defaultActiveKey");
-  }, [page, rows]); // Trigger when page  changes
+  }, [page, rows]); // Ensure dependencies are correct
 
   const [selectedProducts, setSelectedProducts] = useState(null);
-  const [globalFilter, setGlobalFilter] = useState(null);
+  const [globalFilter, setGlobalFilter] = useState("");
+
   const dt = useRef(null);
 
   const headerNew = (
@@ -65,7 +68,8 @@ export default function ColumnToggleDemo() {
       <IconField iconPosition="left">
         <InputText
           type="search"
-          onInput={(e) => setGlobalFilter(e.target.value)}
+          value={globalFilter}
+          onChange={(e) => setGlobalFilter(e.target.value)}
           placeholder="جستجوی کد ملی"
           style={{ textAlign: "right" }}
         />
@@ -85,17 +89,18 @@ export default function ColumnToggleDemo() {
     </button>
   );
 
-  // Custom rendering function for the created_at column
-  const createdAtTemplate = (rowData) => {
-    const formattedDate = new Date(rowData.created_at).toLocaleDateString(
-      "fa-IR",
-      {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      }
-    );
-    return formattedDate;
+  // Custom rendering function for date columns
+  const dateTemplate = (rowData, field) => {
+    const dateValue = field
+      .split(".")
+      .reduce((o, key) => (o ? o[key] : null), rowData);
+    return dateValue
+      ? new Date(dateValue).toLocaleDateString("fa-IR", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        })
+      : "-";
   };
 
   return (
@@ -113,30 +118,38 @@ export default function ColumnToggleDemo() {
           selection={selectedProducts}
           onSelectionChange={(e) => setSelectedProducts(e.value)}
           dataKey="uid"
-          paginator
           rows={rows}
-          paginatorTemplate=""
-          currentPageReportTemplate=""
           globalFilter={globalFilter}
           header={headerNew}
         >
           {visibleColumns.map((col, index) => (
             <Column
-              sortable
               key={index}
               field={col.field}
               header={col.header}
-              body={
-                col.field === "created_at" || col.field === "updated_at"
-                  ? createdAtTemplate
-                  : undefined
-              }
+              sortable
+              body={(rowData) => {
+                if (
+                  col.field === "disease.last_reference" ||
+                  col.field === "disease.first_reference" ||
+                  col.field === "created_at"
+                ) {
+                  return dateTemplate(rowData, col.field);
+                }
+
+                // Handle nested properties safely
+                const fieldValue = col.field
+                  .split(".")
+                  .reduce((o, key) => (o ? o[key] : null), rowData);
+                return fieldValue ?? "-"; // Show "-" if value is null/undefined
+              }}
               style={{ textAlign: "right", direction: "rtl" }}
             />
           ))}
           <Column header="جزئیات" body={detailsTemplate} />
         </DataTable>
       )}
+
       <Paginator
         dir="ltr"
         first={first}
