@@ -5,7 +5,7 @@ import { Button } from "primereact/button";
 import moment from "jalali-moment";
 import SelectableIconItem from "./BadgeIcon";
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import PillsTabsTasvir from "./PillsTabsTasvir";
 
@@ -16,7 +16,6 @@ export default function TasvirBardari() {
   const [showAzmayeshPAge, setShowAzmayeshPAge] = useState("home");
   const [tasvirDetailUid, settasvirDetailUid] = useState(undefined);
   const dt = useRef(null);
-  // const navigate = useNavigate();
   const { uid } = useParams();
   const [loading, setLoading] = useState(false);
   const [btnLoading, setbtnLoading] = useState(false);
