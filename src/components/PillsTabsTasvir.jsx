@@ -9,41 +9,90 @@ import Petscan from "./Petscan";
 import SampleGraphy from "./SampleGraphy";
 
 const PillsTabsTasvir = ({ dataOfTable, allrow, setShowAzmayeshPAge }) => {
+
+  const getTabBadgeColor = (tab) => {
+    const matchingRow = allrow?.records?.find(
+      (row) => row.record_type === tab.eventKey
+    );
+    if (matchingRow && matchingRow.state === "IN_PROGRESS") {
+      return "#ff9008"; // Orange
+    }
+    if (matchingRow && matchingRow.state === "DONE") {
+      return "#3ff369"; // Green
+    }
+    return null;
+  };
+  
   const tabsInnerImage = [
     {
       eventKey: "sonography",
       title: "سونوگرافی",
-      content: <SonographyForm setShowAzmayeshPAge={setShowAzmayeshPAge} />,
+      content: (
+        <SonographyForm
+          setShowAzmayeshPAge={setShowAzmayeshPAge}
+          badgeColor={getTabBadgeColor({ eventKey: "sonography" })}
+        />
+      ),
     },
     {
       eventKey: "mammography",
       title: "ماموگرافی",
-      content: <Mammography setShowAzmayeshPAge={setShowAzmayeshPAge} />,
+      content: (
+        <Mammography
+          setShowAzmayeshPAge={setShowAzmayeshPAge}
+          badgeColor={getTabBadgeColor({ eventKey: "mammography" })}
+        />
+      ),
     },
     {
       eventKey: "mri",
       title: "MRI",
-      content: <Mri setShowAzmayeshPAge={setShowAzmayeshPAge} />,
+      content: (
+        <Mri
+          setShowAzmayeshPAge={setShowAzmayeshPAge}
+          badgeColor={getTabBadgeColor({ eventKey: "mri" })}
+        />
+      ),
     },
     {
       eventKey: "ctscan",
       title: "CT-Scan",
-      content: <Ctscan setShowAzmayeshPAge={setShowAzmayeshPAge} />,
+      content: (
+        <Ctscan
+          setShowAzmayeshPAge={setShowAzmayeshPAge}
+          badgeColor={getTabBadgeColor({ eventKey: "ctscan" })}
+        />
+      ),
     },
     {
       eventKey: "corescan",
       title: "اسکن هسته ای",
-      content: <ScanHastei setShowAzmayeshPAge={setShowAzmayeshPAge} />,
+      content: (
+        <ScanHastei
+          setShowAzmayeshPAge={setShowAzmayeshPAge}
+          badgeColor={getTabBadgeColor({ eventKey: "corescan" })}
+        />
+      ),
     },
     {
       eventKey: "petscan",
       title: "PET-Scan",
-      content: <Petscan setShowAzmayeshPAge={setShowAzmayeshPAge} />,
+      content: (
+        <Petscan
+          setShowAzmayeshPAge={setShowAzmayeshPAge}
+          badgeColor={getTabBadgeColor({ eventKey: "petscan" })}
+        />
+      ),
     },
     {
       eventKey: "othergraphy",
       title: "گرافی ساده",
-      content: <SampleGraphy setShowAzmayeshPAge={setShowAzmayeshPAge} />,
+      content: (
+        <SampleGraphy
+          setShowAzmayeshPAge={setShowAzmayeshPAge}
+          badgeColor={getTabBadgeColor({ eventKey: "othergraphy" })}
+        />
+      ),
     },
   ];
 
@@ -62,19 +111,6 @@ const PillsTabsTasvir = ({ dataOfTable, allrow, setShowAzmayeshPAge }) => {
 
   const handleSelect = (selectedKey) => {
     setActiveTab(selectedKey);
-  };
-
-  const getTabBadgeColor = (tab) => {
-    const matchingRow = allrow?.records?.find(
-      (row) => row.record_type === tab.eventKey
-    );
-    if (matchingRow && matchingRow.state === "IN_PROGRESS") {
-      return "#ff9008"; // Orange
-    }
-    if (matchingRow && matchingRow.state === "DONE") {
-      return "#3ff369"; // Green
-    }
-    return null;
   };
 
   const hasMatchingRecord = (eventKey) => {

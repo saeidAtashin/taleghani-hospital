@@ -7,9 +7,10 @@ import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import { toast } from "react-toastify";
 
-const SonographyForm = ({ setShowAzmayeshPAge }) => {
+const SonographyForm = ({ setShowAzmayeshPAge, badgeColor }) => {
   const { uid } = useParams();
 
+  console.log("badgeColor in in", badgeColor);
   const initialFormData = {
     patient_uid: uid,
     date: "",

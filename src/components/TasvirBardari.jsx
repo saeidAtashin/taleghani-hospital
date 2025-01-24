@@ -107,6 +107,8 @@ export default function TasvirBardari() {
           created_at: moment().format("YYYY-MM-DD"),
         }));
         setProducts(fetchedData);
+
+        console.log("fetchedData tasvir", fetchedData);
         setSelectedOptions([]);
       })
       .catch((error) => {
