@@ -6,7 +6,7 @@ import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
 import axios from "axios";
 import "react-datepicker/dist/react-datepicker.css";
-import DatePicker from "react-multi-date-picker";
+import DatePicker, { DateObject } from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import { TabMenu } from "primereact/tabmenu";
@@ -51,6 +51,9 @@ const NewTreat = ({
   isTreatmentForm,
   setIsTreatmentForm,
 }) => {
+
+  
+
   const [showStartTreatBtn, setShowStartTreatBtn] = useState(true);
   const [isCycleVisible, setisCycleVisible] = useState(false);
   const [loading, setLoading] = useState(false);

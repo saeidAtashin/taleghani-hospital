@@ -7,6 +7,9 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import moment from "jalali-moment";
 import NewTreat from "./NewTreat";
+import { DateObject } from "react-multi-date-picker";
+import persian from "react-date-object/calendars/persian";
+import persian_fa from "react-date-object/locales/persian_fa";
 
 const TreatmentTable = () => {
   const [treatmentValue, setTreatmentValue] = useState(null);
@@ -195,8 +198,30 @@ const TreatmentTable = () => {
       setTreatmentValue(
         rowData?.sub_category ? rowData?.sub_category : rowData?.category || ""
       );
-      setStartDateObj(treatmentData.start_date || "");
-      setEndDateObj(treatmentData.end_date || "");
+      // setStartDateObj(treatmentData.start_date || "");
+      const startDateGregorian = treatmentData.start_date || "";
+      const endDateGregorian = treatmentData.end_date || "";
+      const startDateJalali = startDateGregorian
+        ? new DateObject({
+            date: startDateGregorian,
+            calendar: "gregorian",
+          })
+            .convert(persian)
+            .format("YYYY/MM/DD")
+        : "";
+
+      const endDateJalali = endDateGregorian
+        ? new DateObject({
+            date: endDateGregorian,
+            calendar: "gregorian",
+          })
+            .convert(persian)
+            .format("YYYY/MM/DD")
+        : "";
+      console.log("treatmentData.start_date", treatmentData.start_date);
+      setStartDateObj(startDateJalali);
+
+      setEndDateObj(endDateJalali);
       setSelectedTreatment(treatmentData.evaluation);
       setSelectedProtocol(
         protocolOptions.find((item) => item.value === treatmentData.protocol) ||
