@@ -10,12 +10,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
-import { useParams } from "react-router-dom";
 import { TabMenu } from "primereact/tabmenu";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
-import moment from "jalali-moment";
-// import { addNewTreatment } from "./TreatmentTable";
 
 const NewTreat = ({
   responseUid,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Button } from "primereact/button";
 import axios from "axios";
 import "react-datepicker/dist/react-datepicker.css";
@@ -29,9 +29,7 @@ const TreatmentTable = () => {
 
   console.log("newTreat", newTreat);
   const handleTabChange = (index) => {
-    // setActiveIndex(test ? index?.index : index);
     console.log("index", index?.index);
-    // Reset inner inputs
     setSelectedProtocol(undefined);
     setSelectedTreatment(undefined);
     setStartDateObj(null);
@@ -103,7 +101,7 @@ const TreatmentTable = () => {
       .catch((err) => {
         console.error(err);
       });
-  }, [newTreat, selectedTreatment]); // Ensure dependencies are correct
+  }, [newTreat, selectedTreatment]);
 
   useEffect(() => {
     axios
@@ -203,7 +201,6 @@ const TreatmentTable = () => {
       const response = await fetch(apiUrl);
       const data = await response.json();
       console.log("data injaaaaaaa", data?.data);
-      // if (data.results && data.results.length > 0) {
       const treatmentData = data?.data;
       setTreatmentValue(
         rowData?.sub_category ? rowData?.sub_category : rowData?.category || ""
@@ -216,11 +213,7 @@ const TreatmentTable = () => {
           null
       );
       setDescription(treatmentData.description || "");
-
       setnewTreat(true);
-      // } else {
-      //   console.warn("No treatment data found.");
-      // }
     } catch (error) {
       console.error("Error fetching treatment data:", error);
     }
@@ -317,7 +310,8 @@ const TreatmentTable = () => {
           refreshTreatTable={refreshTreatTable}
           items={items}
           setItems={setItems}
-          protocolOptions={protocolOptions} setProtocolOptions={setProtocolOptions}
+          protocolOptions={protocolOptions}
+          setProtocolOptions={setProtocolOptions}
         />
       )}
     </>
