@@ -33,6 +33,8 @@ const TreatmentTable = () => {
   const [allDatas, setAllDatas] = useState(undefined);
   const [isTreatmentForm, setIsTreatmentForm] = useState(false);
 
+  const [showLine, setshowLine] = useState(false);
+
   const handleTabChange = (index) => {
     setSelectedProtocol(undefined);
     setSelectedTreatment(undefined);
@@ -153,8 +155,9 @@ const TreatmentTable = () => {
       rowData?.category === "HORMONETHERAPY" ||
       rowData?.category === "CHEMOTHERAPY";
     setIsTreatmentForm(!isForm);
+    setshowLine(isForm);
     if (isForm) {
-      setIsTreatmentForm(!isTreatmentForm);
+      // setIsTreatmentForm(!isTreatmentForm);
       try {
         const response = await fetch(getTreatmentLine);
         const data = await response.json();
@@ -270,6 +273,7 @@ const TreatmentTable = () => {
 
       {newTreat && (
         <NewTreat
+          showLine={showLine}
           isTreatmentForm={isTreatmentForm}
           setIsTreatmentForm={setIsTreatmentForm}
           responseUid={responseUid}

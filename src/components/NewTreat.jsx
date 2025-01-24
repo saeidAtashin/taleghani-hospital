@@ -38,8 +38,6 @@ const NewTreat = ({
   newTreat,
   setRefreshTreatTable,
   refreshTreatTable,
-  // items,
-  // setItems,
   protocolOptions,
   setProtocolOptions,
   endDateObj,
@@ -50,6 +48,7 @@ const NewTreat = ({
   allDatas,
   isTreatmentForm,
   setIsTreatmentForm,
+  showLine,
 }) => {
   const [showStartTreatBtn, setShowStartTreatBtn] = useState(true);
   const [isCycleVisible, setisCycleVisible] = useState(false);
@@ -186,10 +185,10 @@ const NewTreat = ({
       setSubSelection(null);
     }
 
-    if (isTreatmentForm) {
-      const isForm =
-        mainSelection === "HORMONETHERAPY" || mainSelection === "CHEMOTHERAPY";
-      setIsTreatmentForm(!isForm);
+    if (!showLine) {
+    const isForm =
+      mainSelection === "HORMONETHERAPY" || mainSelection === "CHEMOTHERAPY";
+    setIsTreatmentForm(!isForm);
     }
   }, [treatmentValue, mainSelection, subSelection]);
 
