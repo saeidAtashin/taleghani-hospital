@@ -184,9 +184,11 @@ const NewTreat = ({
       setSubSelection(null);
     }
 
-    const isForm =
-      mainSelection === "HORMONETHERAPY" || mainSelection === "CHEMOTHERAPY";
-    setIsTreatmentForm(!isForm);
+    if (isTreatmentForm) {
+      const isForm =
+        mainSelection === "HORMONETHERAPY" || mainSelection === "CHEMOTHERAPY";
+      setIsTreatmentForm(!isForm);
+    }
   }, [treatmentValue, mainSelection, subSelection]);
 
   const cascadeOptions = [

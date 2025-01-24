@@ -170,13 +170,18 @@ const TreatmentTable = () => {
     const uid = rowData.uid;
     const getTreatment = `https://cancerreg.ir/api/v1/teatment/treatment/${uid}/`;
     const getTreatmentLine = `https://cancerreg.ir/api/v1/teatment/treatment-line/${uid}/`;
-
-    if (!isTreatmentForm) {
+    setIsTreatmentForm(!isTreatmentForm);
+    const isForm =
+      rowData?.category === "HORMONETHERAPY" ||
+      rowData?.category === "CHEMOTHERAPY";
+    setIsTreatmentForm(!isForm);
+    if (isForm) {
+      setIsTreatmentForm(!isTreatmentForm);
       try {
         const response = await fetch(getTreatmentLine);
         const data = await response.json();
         setAllDatas(data?.results);
-        console.log("holy data?.results", data?.results);
+        console.log("holy data for treat line", data?.results);
       } catch (error) {
         console.error("Error fetching treatment data:", error);
       }
