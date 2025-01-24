@@ -136,7 +136,9 @@ const TreatChemi = ({
               تاریخ شروع خط درمان:
             </label>
             <DatePicker
-              value={startDateObj}
+              value={
+                treatmentStartDateObj ? treatmentStartDateObj : startDateObj
+              }
               onChange={handleStartDateChange}
               calendar={persian}
               locale={persian_fa}
