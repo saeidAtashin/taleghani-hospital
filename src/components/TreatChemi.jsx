@@ -10,6 +10,7 @@ import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import { TabMenu } from "primereact/tabmenu";
 import { Dialog } from "primereact/dialog";
+import axios from "axios";
 
 const TreatChemi = ({
   treatmentStartDateObj,
@@ -38,8 +39,11 @@ const TreatChemi = ({
   cycles,
   allDatas,
   handleSubmitLine,
+  uidForCycle,
 }) => {
   const [showModal, setShowModal] = useState(false);
+  const [loadingtar, setLoadingtar] = useState(false);
+  const [savedCycles, setSavedCycles] = useState([]); // Track saved cycles
 
   const handleTreatmentStartDateChange = (date) => {
     if (date) {
@@ -84,10 +88,47 @@ const TreatChemi = ({
     ]);
   };
 
-  const handleCycleapi = (cycle) => {
-    if (cycle.cycleNumber === 1) {
-    } else {
+  const handleCycleapi = async (cycle) => {
+    const cycleData = {
+      treatment_line_uid: uidForCycle,
+      date: cycle.date,
+      description: cycle.description,
+    };
+
+    try {
+      setLoadingtar(true);
+
+      const response = await axios.post(
+        "https://cancerreg.ir/api/v1/teatment/cycle/",
+        cycleData
+      );
+
+      console.log(
+        "API response for cycle",
+        cycle.cycleNumber,
+        ":",
+        response.data
+      );
+      setSavedCycles((prevSavedCycles) => [
+        ...prevSavedCycles,
+        cycle.cycleNumber,
+      ]);
+    } catch (error) {
+      console.error(
+        "Error in API call for cycle",
+        cycle.cycleNumber,
+        ":",
+        error
+      );
+    } finally {
+      setLoadingtar(false);
     }
+  };
+
+  const handleSubmitAllCycles = () => {
+    cycles.forEach((cycle) => {
+      handleCycleapi(cycle);
+    });
   };
 
   const removeCycle = (index) => {
@@ -96,8 +137,8 @@ const TreatChemi = ({
   };
 
   const handleSubmitModal = () => {
-    setShowModal(false); // Hide modal
-    handleSubmit(); // Call your submit function
+    setShowModal(false);
+    handleSubmit();
   };
 
   console.log(" allDatas in TreatChemi", allDatas);
@@ -144,7 +185,6 @@ const TreatChemi = ({
               command: item.command,
             }))}
             activeIndex={activeIndex === 0 ? 1 : activeIndex}
-            // onTabChange={(e) => setActiveIndex(e.index)}
             onTabChange={
               activeIndex === 0 ? console.log("test") : handleTabChange
             }
@@ -213,12 +253,14 @@ const TreatChemi = ({
                   >
                     <div className="d-flex justify-content-between align-items-center">
                       <h5>سیکل {cycle.cycleNumber}</h5>
-                      <Button
-                        icon="pi pi-trash"
-                        className="p-button-rounded p-button-danger"
-                        onClick={() => removeCycle(index)}
-                        tooltip="حذف سیکل"
-                      />
+                      {!savedCycles.includes(cycle.cycleNumber) && (
+                        <Button
+                          icon="pi pi-trash"
+                          className="p-button-rounded p-button-danger"
+                          onClick={() => removeCycle(index)}
+                          tooltip="حذف سیکل"
+                        />
+                      )}
                     </div>
                     <div className="d-flex flex-column my-3">
                       <label
@@ -258,16 +300,26 @@ const TreatChemi = ({
                         />
                       </div>
                     </div>
-                    <Button
-                      label="ذخیره"
-                      type="button"
-                      icon="pi pi-check"
-                      className="p-button border rounded mb-4"
-                      onClick={() => handleCycleapi(cycle)}
-                    />
+                    {!savedCycles.includes(cycle.cycleNumber) && (
+                      <Button
+                        label="ذخیره سیکل"
+                        type="button"
+                        icon="pi pi-check"
+                        className="p-button border rounded mb-4"
+                        onClick={() => handleCycleapi(cycle)}
+                        loading={loadingtar}
+                      />
+                    )}
                   </AccordionTab>
                 ))}
               </Accordion>
+              {/* <Button
+                label="ثبت همه سیکل ها"
+                icon="pi pi-save"
+                onClick={handleSubmitAllCycles}
+                loading={loadingtar}
+                className="w-100 bg-white text-dark rounded-3"
+              /> */}
             </fieldset>
           )}
           <div className=" my-3 w-100 d-flex align-items-center justify-content-center">

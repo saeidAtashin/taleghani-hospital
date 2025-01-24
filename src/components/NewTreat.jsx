@@ -56,6 +56,7 @@ const NewTreat = ({
   const [loading, setLoading] = useState(false);
   const [mainSelection, setMainSelection] = useState(null);
   const [subSelection, setSubSelection] = useState(null);
+  const [uidForCycle, setuidForCycle] = useState(null);
   const [showedPart, setShowedPart] = useState("");
   const toast = useRef(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -144,6 +145,7 @@ const NewTreat = ({
         });
 
         setResponseUid(response?.data?.data?.uid);
+        setuidForCycle(response?.data?.data?.first_treatment_line_uid);
         setShowStartTreatBtn(false);
 
         setRefreshTreatTable(!refreshTreatTable);
@@ -447,6 +449,7 @@ const NewTreat = ({
               setSelectedTreatment={setSelectedTreatment}
               cycles={cycles}
               handleSubmitLine={handleSubmitLine}
+              uidForCycle={uidForCycle}
             />
           )}
         </div>
