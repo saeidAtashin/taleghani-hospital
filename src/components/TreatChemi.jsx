@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Dropdown } from "primereact/dropdown";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Button } from "primereact/button";
@@ -9,6 +9,7 @@ import DatePicker from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import { TabMenu } from "primereact/tabmenu";
+import { Dialog } from "primereact/dialog";
 
 const TreatChemi = ({
   treatmentStartDateObj,
@@ -38,6 +39,8 @@ const TreatChemi = ({
   allDatas,
   handleSubmitLine,
 }) => {
+  const [showModal, setShowModal] = useState(false);
+
   const handleTreatmentStartDateChange = (date) => {
     if (date) {
       const gregorianDate = date.convert("gregorian").toDate();
@@ -92,12 +95,14 @@ const TreatChemi = ({
     setCycles(updatedCycles);
   };
 
+  const handleSubmitModal = () => {
+    setShowModal(false); // Hide modal
+    handleSubmit(); // Call your submit function
+  };
+
   console.log(" allDatas in TreatChemi", allDatas);
-//  allDatas
-//  رو واسه تمام خط درمان ها توی حالتی که اینجا ایم میخوایم.
-
-
-
+  //  allDatas
+  //  رو واسه تمام خط درمان ها توی حالتی که اینجا ایم میخوایم.
 
   return (
     <>
@@ -188,7 +193,7 @@ const TreatChemi = ({
             type="button"
           />
 
-          {isCycleVisible && (
+          {isCycleVisible && cycles?.length > 0 && (
             <fieldset
               style={{
                 border: "1px solid #ccc",
@@ -265,51 +270,93 @@ const TreatChemi = ({
               </Accordion>
             </fieldset>
           )}
-          <div className="d-flex flex-column my-4">
-            <label className="p-col-12 p-md-2" htmlFor="evaluation_uid">
-              ارزیابی درمان:
-            </label>
-            <div className="p-col-12 p-md-10">
-              <Dropdown
-                id="evaluation_uid"
-                value={selectedTreatment}
-                options={treatment}
-                onChange={(e) => setSelectedTreatment(e.value)}
-                placeholder="ارزیابی را انتخاب کنید"
-                optionLabel="label"
-                className="w-100"
-              />
-            </div>
-          </div>
-          <div className="d-flex flex-column my-3">
-            <label className="p-col-12 p-md-2" htmlFor="end_date">
-              تاریخ پایان خط درمان:
-            </label>
-            <DatePicker
-              value={endDateObj}
-              onChange={handleEndDateChange}
-              calendar={persian}
-              locale={persian_fa}
-              format="YYYY/MM/DD"
-              placeholder="تاریخ را انتخاب کنید"
-              className="p-2 border rounded"
-              inputClass="w-full p-2 text-end w-100 border rounded"
-              position="bottom-right"
+          <div className=" my-3 w-100 d-flex align-items-center justify-content-center">
+            <Button
+              label="ذخیره"
+              icon="pi pi-check"
+              onClick={handleSubmitLine}
+              loading={loading}
+              className="w-100 bg-blue text-white rounded-3"
             />
           </div>
         </div>
       )}
       {!showStartTreatBtn && (
         <div style={{ flex: 1 }}>
+          {/* <Button
+            label="ذخیره"
+            icon="pi pi-check"
+            onClick={handleSubmitLine}
+            loading={loading}
+            className="w-100 bg-white text-dark rounded-3"
+          /> */}
           <Button
             label="پایان خط درمان"
             icon="pi pi-check"
-            onClick={handleSubmitLine}
+            onClick={() => setShowModal(true)}
             loading={loading}
             className="w-100 bg-white text-dark rounded-3"
           />
         </div>
       )}
+
+      <Dialog
+        visible={showModal}
+        className="w-50"
+        onHide={() => setShowModal(false)}
+        header="پایان خط درمان"
+        footer={
+          <div className="d-flex justify-content-end w-100">
+            <Button
+              label="بستن"
+              icon="pi pi-times"
+              onClick={() => setShowModal(false)}
+              className="p-button-text"
+            />
+            <Button
+              label="تایید"
+              icon="pi pi-check"
+              onClick={handleSubmitModal}
+              loading={loading}
+              className="p-button-primary"
+            />
+          </div>
+        }
+      >
+        {/* Modal content */}
+        <div className="d-flex flex-column my-4 w-100">
+          <label className="p-col-12 p-md-2" htmlFor="evaluation_uid">
+            ارزیابی خط درمان:
+          </label>
+          <div className="p-col-12 p-md-10">
+            <Dropdown
+              id="evaluation_uid"
+              value={selectedTreatment}
+              options={treatment}
+              onChange={(e) => setSelectedTreatment(e.value)}
+              placeholder="ارزیابی را انتخاب کنید"
+              optionLabel="label"
+              className="w-100"
+            />
+          </div>
+        </div>
+        <div className="d-flex flex-column my-3">
+          <label className="p-col-12 p-md-2" htmlFor="end_date">
+            تاریخ پایان خط درمان:
+          </label>
+          <DatePicker
+            value={endDateObj}
+            onChange={handleEndDateChange}
+            calendar={persian}
+            locale={persian_fa}
+            format="YYYY/MM/DD"
+            placeholder="تاریخ را انتخاب کنید"
+            className="p-2 border rounded"
+            inputClass="w-full p-2 text-end w-100 border rounded"
+            position="bottom-right"
+          />
+        </div>{" "}
+      </Dialog>
     </>
   );
 };
