@@ -103,12 +103,26 @@ const TreatmentTable = () => {
           label: item.name,
           value: item.uid,
         }));
+
+        console.log("Fetched options:", formatted); // Debug API response format
         setTreatment(formatted);
+
+        console.log("Current selectedTreatment:", selectedTreatment);
+
+        // Find and set default value
+        const defaultOption = formatted.find(
+          (t) => t.label === selectedTreatment
+        );
+
+        if (defaultOption) {
+          console.log("Setting default:", defaultOption); // Debug to check if we found the default option
+          setSelectedTreatment(defaultOption); // ✅ Ensure it's set
+        }
       })
       .catch((err) => {
         console.error(err);
       });
-  }, []);
+  }, [newTreat, selectedTreatment]); // Ensure dependencies are correct
 
   useEffect(() => {
     axios
@@ -463,33 +477,30 @@ const TreatmentTable = () => {
 
   const handleRowClick = async (rowData) => {
     const uid = rowData.uid;
-    const apiUrl = `https://cancerreg.ir/api/v1/teatment/treatment-line/${uid}/`;
+    const apiUrl = `https://cancerreg.ir/api/v1/teatment/treatment/${uid}/`;
 
     try {
       const response = await fetch(apiUrl);
       const data = await response.json();
+      console.log("data injaaaaaaa", data?.data);
+      // if (data.results && data.results.length > 0) {
+      const treatmentData = data?.data;
+      setTreatmentValue(
+        rowData?.sub_category ? rowData?.sub_category : rowData?.category || ""
+      );
+      setStartDateObj(treatmentData.start_date || "");
+      setEndDateObj(treatmentData.end_date || "");
+      setSelectedTreatment(treatmentData.evaluation);
+      setSelectedProtocol(
+        protocolOptions.find((item) => item.value === treatmentData.protocol) ||
+          null
+      );
+      setDescription(treatmentData.description || "");
 
-      if (data.results && data.results.length > 0) {
-        const treatmentData = data.results[0];
-        setTreatmentValue(
-          rowData?.sub_category
-            ? rowData?.sub_category
-            : rowData?.category || ""
-        );
-        setStartDateObj(treatmentData.start_date || "");
-        setEndDateObj(treatmentData.end_date || "");
-        setSelectedTreatment(treatmentData.treatment_uid);
-        setSelectedProtocol(
-          protocolOptions.find(
-            (item) => item.value === treatmentData.protocol
-          ) || null
-        );
-        setDescription(treatmentData.description || "");
-
-        setnewTreat(true);
-      } else {
-        console.warn("No treatment data found.");
-      }
+      setnewTreat(true);
+      // } else {
+      //   console.warn("No treatment data found.");
+      // }
     } catch (error) {
       console.error("Error fetching treatment data:", error);
     }
