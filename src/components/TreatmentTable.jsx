@@ -34,7 +34,6 @@ const TreatmentTable = () => {
   const [isTreatmentForm, setIsTreatmentForm] = useState(false);
 
   const handleTabChange = (index) => {
-    console.log("index", index?.index);
     setSelectedProtocol(undefined);
     setSelectedTreatment(undefined);
     setStartDateObj(null);
@@ -42,29 +41,6 @@ const TreatmentTable = () => {
     setDescription("");
     setCycles([]);
   };
-
-  // const [items, setItems] = useState([
-  //   {
-  //     label: "ثبت خط درمان جدید",
-  //     command: () => addNewTreatment(),
-  //   },
-  //   {
-  //     label: "خط درمان 1",
-  //     command: () => null,
-  //   },
-  // ]);
-
-  // const addNewTreatment = () => {
-  //   setItems((prevItems) => {
-  //     const newItem = {
-  //       label: `خط درمان ${prevItems.length}`,
-  //       command: () => handleTabChange(prevItems.length),
-  //     };
-  //     return [...prevItems, newItem];
-  //   });
-
-  //   handleTabChange(items.length);
-  // };
 
   const stateTranslations = {
     IN_PROGRESS: "در حال انجام",
@@ -169,7 +145,6 @@ const TreatmentTable = () => {
   );
 
   const handleRowClick = async (rowData) => {
-    console.log("isTreatmentForm", isTreatmentForm);
     const uid = rowData.uid;
     const getTreatment = `https://cancerreg.ir/api/v1/teatment/treatment/${uid}/`;
     const getTreatmentLine = `https://cancerreg.ir/api/v1/teatment/treatment-line/${uid}/`;
@@ -198,7 +173,6 @@ const TreatmentTable = () => {
       setTreatmentValue(
         rowData?.sub_category ? rowData?.sub_category : rowData?.category || ""
       );
-      // setStartDateObj(treatmentData.start_date || "");
       const startDateGregorian = treatmentData.start_date || "";
       const endDateGregorian = treatmentData.end_date || "";
       const startDateJalali = startDateGregorian
@@ -218,7 +192,6 @@ const TreatmentTable = () => {
             .convert(persian)
             .format("YYYY/MM/DD")
         : "";
-      console.log("treatmentData.start_date", treatmentData.start_date);
       setStartDateObj(startDateJalali);
 
       setEndDateObj(endDateJalali);
@@ -229,18 +202,6 @@ const TreatmentTable = () => {
       );
       setDescription(treatmentData.description || "");
       setnewTreat(true);
-    } catch (error) {
-      console.error("Error fetching treatment data:", error);
-    }
-  };
-
-  const handleRowClick2 = async (rowData) => {
-    const uid = rowData.uid;
-
-    try {
-      const response = await fetch(apiUrl);
-      const data = await response.json();
-      setAllDatas(data?.results);
     } catch (error) {
       console.error("Error fetching treatment data:", error);
     }
@@ -336,8 +297,6 @@ const TreatmentTable = () => {
           newTreat={newTreat}
           setRefreshTreatTable={setRefreshTreatTable}
           refreshTreatTable={refreshTreatTable}
-          // items={items}
-          // setItems={setItems}
           protocolOptions={protocolOptions}
           setProtocolOptions={setProtocolOptions}
           endDate={endDate}
