@@ -85,9 +85,17 @@ const TreatChemi = ({
     const newCycleNumber = allDatas[treatmentIndex]?.cycles?.length + 1;
 
     const updatedTreatments = [...allDatas];
+    const currentProtocol = updatedTreatments[treatmentIndex].protocol; // Get the protocol for the specific treatment
+
     updatedTreatments[treatmentIndex].cycles = [
       ...updatedTreatments[treatmentIndex].cycles,
-      { cycleNumber: newCycleNumber, date: "", dateObj: null, description: "" },
+      {
+        cycleNumber: newCycleNumber,
+        date: "",
+        dateObj: null,
+        description: "",
+        protocol: currentProtocol,
+      },
     ];
 
     setAllDatas(updatedTreatments);
@@ -159,6 +167,7 @@ const TreatChemi = ({
   };
 
   console.log(" allDatas in TreatChemi", allDatas);
+  console.log(" selectedProtocol", selectedProtocol);
 
   return (
     <>
@@ -229,9 +238,13 @@ const TreatChemi = ({
                     </label>
                     <div className="p-col-12 p-md-10 mb-4">
                       <Dropdown
-                        id="protocol"
                         value={treatment.protocol}
                         options={protocolOptions}
+                        onChange={(e) => {
+                          const updatedTreatments = [...allDatas];
+                          updatedTreatments[index].protocol = e.value;
+                          setAllDatas(updatedTreatments);
+                        }}
                         placeholder="پروتکل را انتخاب نمایید"
                         optionLabel="label"
                         className="w-100"
