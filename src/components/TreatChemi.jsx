@@ -46,7 +46,6 @@ const TreatChemi = ({
   const [showModal, setShowModal] = useState(false);
   const [loadingtar, setLoadingtar] = useState(false);
   const [savedCycles, setSavedCycles] = useState([]); // Track saved cycles
-  console.log("showStartTreatBtn", showStartTreatBtn);
   const handleTreatmentStartDateChange = (date) => {
     if (date) {
       const gregorianDate = date.convert("gregorian").toDate();
@@ -117,12 +116,6 @@ const TreatChemi = ({
         cycleData
       );
 
-      console.log(
-        "API response for cycle",
-        cycle.cycleNumber,
-        ":",
-        response.data
-      );
       setSavedCycles((prevSavedCycles) => [
         ...prevSavedCycles,
         cycle.cycleNumber,
@@ -166,9 +159,6 @@ const TreatChemi = ({
       },
     ]);
   };
-
-  console.log(" allDatas in TreatChemi", allDatas);
-  console.log(" selectedProtocol", selectedProtocol);
 
   return (
     <>

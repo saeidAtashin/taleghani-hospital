@@ -192,8 +192,6 @@ const NewTreat = ({
     const isForm =
       mainSelection === "HORMONETHERAPY" || mainSelection === "CHEMOTHERAPY";
     setIsTreatmentForm(!isForm);
-    console.log("showLine", showLine);
-    console.log("isForm", isForm);
     if (showLine) {
       setIsTreatmentForm(false);
     }
@@ -303,8 +301,6 @@ const NewTreat = ({
     }
   };
 
-  console.log("selectedTreatment:", selectedTreatment);
-  console.log("treatment array:", treatment);
   return (
     <>
       <Toast ref={toast} />
@@ -337,6 +333,8 @@ const NewTreat = ({
             optionGroupChildren={["children"]}
             placeholder="Select a treatment"
             onChange={(e) => {
+              setShowStartTreatBtn(true);
+
               resetFormFields();
               setTreatmentValue(e.value);
               // setnewTreat(true);
@@ -344,7 +342,9 @@ const NewTreat = ({
                 rowData?.category === "HORMONETHERAPY" ||
                 rowData?.category === "CHEMOTHERAPY";
               setIsTreatmentForm(isForm ? true : false);
-              setShowStartTreatBtn(isForm ? true : false);
+              setShowStartTreatBtn(true);
+              setShowedPart(isForm ? "showCycle" : "");
+
               // setshowLine(isForm);
             }}
             style={{ minWidth: "14rem" }}

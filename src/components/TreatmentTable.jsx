@@ -165,7 +165,6 @@ const TreatmentTable = () => {
         const data = await response.json();
         setAllDatas(data?.results);
         // setCycles()
-        console.log("holy data for treat line", data?.results);
       } catch (error) {
         console.error("Error fetching treatment data:", error);
       }
@@ -173,7 +172,6 @@ const TreatmentTable = () => {
     try {
       const response = await fetch(getTreatment);
       const data = await response.json();
-      console.log("data injaaaaaaa", data?.data);
       setShowStartTreatBtn(false);
       setShowedPart("showCycle");
       const treatmentData = data?.data;
