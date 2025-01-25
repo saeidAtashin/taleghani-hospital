@@ -190,19 +190,13 @@ const TreatChemi = ({
 
       {showedPart === "showCycle" && (
         <>
-          <Button
-                    label={`\u00A0 افزودن خط درمان`}
-                    icon="pi pi-plus"
-                    className="p-button-text border rounded mb-4"
-                    onClick={addTreatmentLine}
-                    type="button"
-                  />
-
           <Accordion
             multiple
-            activeIndex={[...Array(allDatas ? allDatas?.length + 1 : 0).keys()]}
+            activeIndex={[
+              ...Array(allDatas?.length > 0 ? allDatas?.length : 1).keys(),
+            ]}
           >
-            {[...Array(allDatas ? allDatas?.length + 1 : [])].map(
+            {[...Array(allDatas?.length > 0 ? allDatas?.length : [])].map(
               (_, index) => (
                 <AccordionTab
                   className="my-3 rounded-3"
@@ -366,6 +360,13 @@ const TreatChemi = ({
               )
             )}
           </Accordion>
+          <Button
+            label={`\u00A0 افزودن خط درمان`}
+            icon="pi pi-plus"
+            className="p-button-text border rounded mb-4"
+            onClick={addTreatmentLine}
+            type="button"
+          />
         </>
       )}
       {!showStartTreatBtn && (

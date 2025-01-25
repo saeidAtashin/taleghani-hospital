@@ -122,7 +122,7 @@ const NewTreat = ({
     if (!isTreatmentForm) {
       payload.evaluation_uid = selectedTreatment
         ? selectedTreatment
-        : undefined;
+        : "198d8af8-3957-4585-8f4b-2fc5e11d2e07";
       payload.protocol_uid = selectedProtocol;
       payload.cycles = cycles.map((c) => ({
         cycleNumber: c.cycleNumber,
@@ -268,7 +268,7 @@ const NewTreat = ({
     if (!isTreatmentForm) {
       payload.evaluation_uid = selectedTreatment
         ? selectedTreatment
-        : undefined;
+        : "198d8af8-3957-4585-8f4b-2fc5e11d2e07";
       payload.protocol_uid = selectedProtocol;
       payload.cycles_list = cycles.map((c) => ({
         date: c.date,
