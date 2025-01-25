@@ -164,6 +164,7 @@ const TreatmentTable = () => {
         const response = await fetch(getTreatmentLine);
         const data = await response.json();
         setAllDatas(data?.results);
+        // setCycles()
         console.log("holy data for treat line", data?.results);
       } catch (error) {
         console.error("Error fetching treatment data:", error);

@@ -80,13 +80,17 @@ const TreatChemi = ({
     setCycles(updatedCycles);
   };
 
-  const addCycle = () => {
+  const addCycle = (treatmentIndex) => {
     setisCycleVisible(true);
-    const newCycleNumber = cycles.length + 1;
-    setCycles([
-      ...cycles,
+    const newCycleNumber = allDatas[treatmentIndex]?.cycles?.length + 1;
+
+    const updatedTreatments = [...allDatas];
+    updatedTreatments[treatmentIndex].cycles = [
+      ...updatedTreatments[treatmentIndex].cycles,
       { cycleNumber: newCycleNumber, date: "", dateObj: null, description: "" },
-    ]);
+    ];
+
+    setAllDatas(updatedTreatments);
   };
 
   const handleCycleapi = async (cycle) => {
@@ -196,169 +200,121 @@ const TreatChemi = ({
               ...Array(allDatas?.length > 0 ? allDatas?.length : 1).keys(),
             ]}
           >
-            {[...Array(allDatas?.length > 0 ? allDatas?.length : [])].map(
-              (_, index) => (
-                <AccordionTab
-                  className="my-3 rounded-3"
-                  key={index}
-                  header={`خط درمان ${index + 1}`}
-                >
-                  <div about="dropadd" className="">
-                    <div className="d-flex flex-column">
-                      <label className="p-col-12 p-md-2" htmlFor="start_date">
-                        تاریخ شروع خط درمان:
-                      </label>
-                      <DatePicker
-                        value={
-                          treatmentStartDateObj
-                            ? treatmentStartDateObj
-                            : startDateObj
-                        }
-                        onChange={handleStartDateChange}
-                        calendar={persian}
-                        locale={persian_fa}
-                        format="YYYY/MM/DD"
-                        placeholder="تاریخ را انتخاب کنید"
-                        className="p-2 border rounded"
-                        inputClass="w-full p-2 text-end w-100 border rounded"
-                        position="bottom-right"
-                      />
-                    </div>
-                    <div className="">
-                      <label
-                        className="p-col-12 p-md-2 mt-3"
-                        htmlFor="protocol"
-                      >
-                        پروتکل:
-                      </label>
-                      <div className="p-col-12 p-md-10 mb-4">
-                        <Dropdown
-                          id="protocol"
-                          value={selectedProtocol}
-                          options={protocolOptions}
-                          onChange={(e) => setSelectedProtocol(e.value)}
-                          placeholder="پروتکل را انتخاب نمایید"
-                          optionLabel="label"
-                          className="w-100"
-                        />
-                      </div>
-                    </div>
-
-                    <Button
-                      label={`\u00A0 ثبت سیکل جدید`}
-                      icon="pi pi-plus"
-                      className="p-button-text border rounded mb-4"
-                      onClick={addCycle}
-                      type="button"
+            {allDatas?.map((treatment, index) => (
+              <AccordionTab
+                className="my-3 rounded-3"
+                key={treatment.uid}
+                header={`خط درمان ${index + 1}`}
+              >
+                <div about="dropadd" className="">
+                  <div className="d-flex flex-column">
+                    <label className="p-col-12 p-md-2" htmlFor="start_date">
+                      تاریخ شروع خط درمان:
+                    </label>
+                    <DatePicker
+                      value={treatment.start_date}
+                      calendar={persian}
+                      locale={persian_fa}
+                      format="YYYY/MM/DD"
+                      placeholder="تاریخ را انتخاب کنید"
+                      className="p-2 border rounded"
+                      inputClass="w-full p-2 text-end w-100 border rounded"
+                      position="bottom-right"
                     />
+                  </div>
 
-                    {isCycleVisible && cycles?.length > 0 && (
-                      <fieldset
-                        style={{
-                          border: "1px solid #ccc",
-                          padding: "1rem",
-                          marginBottom: "1rem",
-                        }}
-                      >
-                        <legend>سیکل ها</legend>
-                        <Accordion
-                          activeIndex={[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
-                          multiple
-                        >
-                          {cycles?.map((cycle, index) => (
-                            <AccordionTab
-                              key={index}
-                              header={`\u00A0 سیکل ${cycle.cycleNumber} `}
-                            >
-                              <div className="d-flex justify-content-between align-items-center">
-                                <h5>سیکل {cycle.cycleNumber}</h5>
-                                {!savedCycles.includes(cycle.cycleNumber) && (
-                                  <Button
-                                    icon="pi pi-trash"
-                                    className="p-button-rounded p-button-danger"
-                                    onClick={() => removeCycle(index)}
-                                    tooltip="حذف سیکل"
-                                  />
-                                )}
-                              </div>
-                              <div className="d-flex flex-column my-3">
-                                <label
-                                  className="p-col-12 p-md-2"
-                                  htmlFor={`cycle_date_${index}`}
-                                >
-                                  تاریخ:
-                                </label>
-                                <DatePicker
-                                  value={cycle.dateObj}
-                                  onChange={(date) =>
-                                    handleCycleDateChange(index, date)
-                                  }
-                                  calendar={persian}
-                                  locale={persian_fa}
-                                  format="YYYY/MM/DD"
-                                  placeholder="تاریخ را انتخاب کنید"
-                                  className="p-2 border rounded"
-                                  inputClass="w-full p-2 text-end w-100 border rounded"
-                                  position="bottom-right"
-                                />
-                              </div>
-                              <div className="p-field p-grid">
-                                <label
-                                  className="p-col-12 p-md-2"
-                                  htmlFor={`cycle_desc_${index}`}
-                                >
-                                  توضیحات:
-                                </label>
-                                <div className="p-col-12 p-md-10">
-                                  <InputTextarea
-                                    id={`cycle_desc_${index}`}
-                                    value={cycle.description}
-                                    onChange={(e) =>
-                                      handleCycleDescriptionChange(
-                                        index,
-                                        e.target.value
-                                      )
-                                    }
-                                    rows={2}
-                                    className="w-100"
-                                  />
-                                </div>
-                              </div>
-                              {!savedCycles.includes(cycle.cycleNumber) && (
-                                <Button
-                                  label="ذخیره سیکل"
-                                  type="button"
-                                  icon="pi pi-check"
-                                  className="p-button border rounded mb-4"
-                                  onClick={() => handleCycleapi(cycle)}
-                                  loading={loadingtar}
-                                />
-                              )}
-                            </AccordionTab>
-                          ))}
-                        </Accordion>
-                        {/* <Button
-                label="ثبت همه سیکل ها"
-                icon="pi pi-save"
-                onClick={handleSubmitAllCycles}
-                loading={loadingtar}
-                className="w-100 bg-white text-dark rounded-3"
-              /> */}
-                      </fieldset>
-                    )}
-                    <div className=" my-3 w-100 d-flex align-items-center justify-content-center">
-                      <Button
-                        label="ذخیره"
-                        icon="pi pi-check"
-                        onClick={handleSubmitLine}
-                        loading={loading}
-                        className="w-100 bg-blue text-white rounded-3"
+                  <div className="">
+                    <label className="p-col-12 p-md-2 mt-3" htmlFor="protocol">
+                      پروتکل:
+                    </label>
+                    <div className="p-col-12 p-md-10 mb-4">
+                      <Dropdown
+                        id="protocol"
+                        value={treatment.protocol}
+                        options={protocolOptions}
+                        placeholder="پروتکل را انتخاب نمایید"
+                        optionLabel="label"
+                        className="w-100"
                       />
                     </div>
                   </div>
-                </AccordionTab>
-              )
-            )}
+
+                  <Button
+                    label={`\u00A0 ثبت سیکل جدید`}
+                    icon="pi pi-plus"
+                    className="p-button-text border rounded mb-4"
+                    onClick={() => addCycle(index)} // Pass the treatment line index
+                    type="button"
+                  />
+
+                  {treatment.cycles?.length > 0 && (
+                    <fieldset
+                      style={{
+                        border: "1px solid #ccc",
+                        padding: "1rem",
+                        marginBottom: "1rem",
+                      }}
+                    >
+                      <legend>سیکل ها</legend>
+                      <Accordion multiple>
+                        {treatment.cycles.map((cycle, cycleIndex) => (
+                          <AccordionTab
+                            key={cycle.uid}
+                            header={`\u00A0 سیکل ${cycleIndex + 1} `}
+                          >
+                            <div className="d-flex justify-content-between align-items-center">
+                              <h5>سیکل {cycleIndex + 1}</h5>
+                              <Button
+                                icon="pi pi-trash"
+                                className="p-button-rounded p-button-danger"
+                                onClick={() => removeCycle(cycleIndex)}
+                                tooltip="حذف سیکل"
+                              />
+                            </div>
+
+                            <div className="d-flex flex-column my-3">
+                              <label
+                                className="p-col-12 p-md-2"
+                                htmlFor={`cycle_date_${cycleIndex}`}
+                              >
+                                تاریخ:
+                              </label>
+                              <DatePicker
+                                value={cycle.date}
+                                calendar={persian}
+                                locale={persian_fa}
+                                format="YYYY/MM/DD"
+                                placeholder="تاریخ را انتخاب کنید"
+                                className="p-2 border rounded"
+                                inputClass="w-full p-2 text-end w-100 border rounded"
+                                position="bottom-right"
+                              />
+                            </div>
+
+                            <div className="p-field p-grid">
+                              <label
+                                className="p-col-12 p-md-2"
+                                htmlFor={`cycle_desc_${cycleIndex}`}
+                              >
+                                توضیحات:
+                              </label>
+                              <div className="p-col-12 p-md-10">
+                                <InputTextarea
+                                  id={`cycle_desc_${cycleIndex}`}
+                                  value={cycle.description}
+                                  rows={2}
+                                  className="w-100"
+                                />
+                              </div>
+                            </div>
+                          </AccordionTab>
+                        ))}
+                      </Accordion>
+                    </fieldset>
+                  )}
+                </div>
+              </AccordionTab>
+            ))}
           </Accordion>
           <Button
             label={`\u00A0 افزودن خط درمان`}
