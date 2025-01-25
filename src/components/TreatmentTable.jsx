@@ -319,6 +319,7 @@ const TreatmentTable = () => {
           setEndDateObj={setEndDateObj}
           handleTabChange={handleTabChange}
           allDatas={allDatas}
+          setshowLine={setshowLine}
         />
       )}
     </>

@@ -41,6 +41,7 @@ const TreatChemi = ({
   handleSubmitLine,
   uidForCycle,
   setAllDatas,
+  setShowStartTreatBtn,
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [loadingtar, setLoadingtar] = useState(false);

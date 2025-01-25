@@ -54,6 +54,7 @@ const NewTreat = ({
   showedPart,
   setShowedPart,
   setAllDatas,
+  setshowLine,
 }) => {
   const [isCycleVisible, setisCycleVisible] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -338,6 +339,13 @@ const NewTreat = ({
             onChange={(e) => {
               resetFormFields();
               setTreatmentValue(e.value);
+              // setnewTreat(true);
+              const isForm =
+                rowData?.category === "HORMONETHERAPY" ||
+                rowData?.category === "CHEMOTHERAPY";
+              setIsTreatmentForm(isForm ? true : false);
+              setShowStartTreatBtn(isForm ? true : false);
+              // setshowLine(isForm);
             }}
             style={{ minWidth: "14rem" }}
           />
@@ -457,6 +465,7 @@ const NewTreat = ({
               handleSubmitLine={handleSubmitLine}
               uidForCycle={uidForCycle}
               setStartDate={setStartDate}
+              setShowStartTreatBtn={setShowStartTreatBtn}
             />
           )}
         </div>
