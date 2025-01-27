@@ -57,7 +57,6 @@ const Mri = ({ setShowAzmayeshPAge }) => {
     e.preventDefault();
     setloadingBtn(true);
 
-    // Map sizes to involvements
     const involvements = formData.sizes.map((item) => ({
       additionalProp1: item.site,
       additionalProp2: item.size,

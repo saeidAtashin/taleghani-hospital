@@ -201,7 +201,12 @@ const TreatmentTable = () => {
       setTreatmentStartDateObj(startDateJalali);
 
       setEndDateObj(endDateJalali);
-      setSelectedTreatment(treatmentData.evaluation);
+      // setSelectedTreatment(treatmentData.evaluation_uid);
+      setSelectedTreatment({
+        value: treatmentData.evaluation_uid,
+        label: treatmentData.evaluation,
+      });
+
       setSelectedProtocol(
         protocolOptions.find((item) => item.value === treatmentData.protocol) ||
           null

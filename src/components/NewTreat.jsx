@@ -301,6 +301,9 @@ const NewTreat = ({
     }
   };
 
+  console.log("selectedTreatment", selectedTreatment);
+  console.log("treatment", treatment);
+
   return (
     <>
       <Toast ref={toast} />
@@ -338,9 +341,13 @@ const NewTreat = ({
               resetFormFields();
               setTreatmentValue(e.value);
               // setnewTreat(true);
+              // const isForm =
+              //   rowData?.category === "HORMONETHERAPY" ||
+              //   rowData?.category === "CHEMOTHERAPY";
+
               const isForm =
-                rowData?.category === "HORMONETHERAPY" ||
-                rowData?.category === "CHEMOTHERAPY";
+                mainSelection === "HORMONETHERAPY" ||
+                mainSelection === "CHEMOTHERAPY";
               setIsTreatmentForm(isForm ? true : false);
               setShowStartTreatBtn(true);
               setShowedPart(isForm ? "showCycle" : "");
@@ -380,10 +387,7 @@ const NewTreat = ({
                 <div className="p-col-12 p-md-10">
                   <Dropdown
                     id="evaluation_uid"
-                    value={
-                      treatment.find((t) => t.value === selectedTreatment) ||
-                      null
-                    }
+                    value={selectedTreatment || null} // Use the full object here
                     options={treatment}
                     onChange={(e) => setSelectedTreatment(e.value)}
                     placeholder="ارزیابی را انتخاب کنید"

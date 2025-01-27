@@ -81,14 +81,24 @@ const TreatChemi = ({
   };
 
   const addCycle = (treatmentIndex) => {
+    console.log("treatmentIndex", treatmentIndex);
+    console.log("allDatas", allDatas);
+
     setisCycleVisible(true);
-    const newCycleNumber = allDatas[treatmentIndex]?.cycles?.length + 1;
 
     const updatedTreatments = [...allDatas];
-    const currentProtocol = updatedTreatments[treatmentIndex].protocol; // Get the protocol for the specific treatment
+
+    // Initialize `cycles` if it doesn't exist
+    if (!Array.isArray(updatedTreatments[treatmentIndex]?.cycles)) {
+      updatedTreatments[treatmentIndex].cycles = [];
+    }
+
+    const newCycleNumber = updatedTreatments[treatmentIndex].cycles.length + 1;
+
+    const currentProtocol = updatedTreatments[treatmentIndex]?.protocol; // Get the protocol for the specific treatment
 
     updatedTreatments[treatmentIndex].cycles = [
-      ...updatedTreatments[treatmentIndex].cycles,
+      ...updatedTreatments[treatmentIndex].cycles, // Spread existing cycles
       {
         cycleNumber: newCycleNumber,
         date: "",
@@ -99,13 +109,16 @@ const TreatChemi = ({
     ];
 
     setAllDatas(updatedTreatments);
+
+    console.log("allDatas after update", allDatas);
+    console.log("updatedTreatments after update", updatedTreatments);
   };
 
   const handleCycleapi = async (cycle) => {
     const cycleData = {
       treatment_line_uid: uidForCycle,
       date: cycle.date,
-      description: cycle.description,
+      description: "cycle.description",
     };
 
     try {
@@ -251,7 +264,7 @@ const TreatChemi = ({
                     type="button"
                   />
 
-                  {treatment.cycles?.length > 0 && (
+                  {treatment?.cycles?.length > 0 && (
                     <fieldset
                       style={{
                         border: "1px solid #ccc",
@@ -311,6 +324,15 @@ const TreatChemi = ({
                                 />
                               </div>
                             </div>
+                            <div>
+                              <Button
+                                label={`\u00A0 ثبت سیکل`}
+                                icon="pi pi-plus"
+                                className="p-button-text border rounded mb-4"
+                                onClick={handleCycleapi}
+                                type="button"
+                              />
+                            </div>
                           </AccordionTab>
                         ))}
                       </Accordion>
@@ -331,13 +353,13 @@ const TreatChemi = ({
       )}
       {!showStartTreatBtn && (
         <div style={{ flex: 1 }}>
-          {/* <Button
+          <Button
             label="ذخیره"
             icon="pi pi-check"
             onClick={handleSubmitLine}
             loading={loading}
             className="w-100 bg-white text-dark rounded-3"
-          /> */}
+          />
           <Button
             label="پایان خط درمان"
             icon="pi pi-check"
