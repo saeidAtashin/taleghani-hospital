@@ -7,6 +7,7 @@ import { Button } from "primereact/button";
 import HeaderName from "../components/HeaderName";
 import apiRequest from "../api/apiService";
 import { Paginator } from "primereact/paginator";
+import { useNavigate } from "react-router-dom";
 
 export default function ColumnToggleDemo() {
   const columns = [
@@ -53,6 +54,7 @@ export default function ColumnToggleDemo() {
   const [globalFilter, setGlobalFilter] = useState("");
 
   const dt = useRef(null);
+  const navigate = useNavigate();
 
   const headerNew = (
     <div
@@ -106,7 +108,15 @@ export default function ColumnToggleDemo() {
   return (
     <div className="card screen-width p-5" style={{ direction: "rtl" }}>
       <HeaderName HeaderName="لیست بیماران" />
-
+      <div></div>
+      <Button
+        label="افزودن بیمار جدید"
+        icon="pi pi-plus"
+        severity="primary"
+        onClick={() => navigate("/dashboard/register-patient")}
+        className="rounded-3 w-25 mb-4"
+        // 
+      />
       {loading ? (
         <div>در حال دریافت اطلاعات ... </div>
       ) : (
