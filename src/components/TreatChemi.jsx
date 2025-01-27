@@ -173,6 +173,9 @@ const TreatChemi = ({
     ]);
   };
 
+  console.log("selectedTreatment", selectedTreatment);
+  console.log("selectedProtocol", selectedProtocol);
+
   return (
     <>
       <div className="d-flex flex-column my-3">
@@ -242,9 +245,10 @@ const TreatChemi = ({
                     </label>
                     <div className="p-col-12 p-md-10 mb-4">
                       <Dropdown
-                        value={treatment.protocol}
+                        value={selectedProtocol}
                         options={protocolOptions}
                         onChange={(e) => {
+                          setSelectedProtocol(e.value);
                           const updatedTreatments = [...allDatas];
                           updatedTreatments[index].protocol = e.value;
                           setAllDatas(updatedTreatments);

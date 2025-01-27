@@ -207,10 +207,20 @@ const TreatmentTable = () => {
         label: treatmentData.evaluation,
       });
 
-      setSelectedProtocol(
-        protocolOptions.find((item) => item.value === treatmentData.protocol) ||
-          null
-      );
+      console.log("selectedTreatment", selectedTreatment);
+      console.log("selectedProtocol", selectedProtocol);
+      console.log("treatmentData", treatmentData);
+
+      // setSelectedProtocol(
+      //   protocolOptions.find((item) => item.value === treatmentData.protocol) ||
+      //     null
+      // );
+
+      setSelectedProtocol({
+        value: treatmentData.protocol_uid,
+        label: treatmentData.protocol,
+      });
+
       setDescription(treatmentData.description || "");
       setnewTreat(true);
     } catch (error) {
