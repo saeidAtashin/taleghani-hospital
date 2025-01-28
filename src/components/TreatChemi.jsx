@@ -282,6 +282,7 @@ const TreatChemi = ({
                           <AccordionTab
                             key={cycle.uid}
                             header={`\u00A0 سیکل ${cycleIndex + 1} `}
+                            className="bg-dark "
                           >
                             <div className="d-flex justify-content-between align-items-center">
                               <h5>سیکل {cycleIndex + 1}</h5>

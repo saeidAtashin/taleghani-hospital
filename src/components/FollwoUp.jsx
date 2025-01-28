@@ -150,9 +150,7 @@ export default function FollwoUp() {
   const fetchData = () => {
     setLoading(true);
     axios
-      .get(
-        `https://cancerreg.ir/api/v1/reports/follow-up/75b0eae1-f731-4f6a-97c0-3339467f13b7/`
-      )
+      .get(`https://cancerreg.ir/api/v1/reports/follow-up/${uid}/`)
       .then((response) => {
         const fetchedData = response.data.results.map((item) => ({
           ...item,
