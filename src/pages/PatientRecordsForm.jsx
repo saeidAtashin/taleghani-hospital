@@ -5,12 +5,16 @@ import { Button } from "primereact/button";
 import "react-datepicker/dist/react-datepicker.css";
 import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
+import { Chip } from "primereact/chip";
 
 const PatientRecordsForm = () => {
   const [patient, setPatient] = useState(null);
   const [dropdownData, setDropdownData] = useState({});
   const [updatedFields, setUpdatedFields] = useState({});
   const [isFormDisabled, setIsFormDisabled] = useState(true);
+  const [drugName, setDrugName] = useState("");
+  const [drugDose, setDrugDose] = useState("");
+
   const { uid } = useParams();
 
   const patientUid = uid;
@@ -21,12 +25,7 @@ const PatientRecordsForm = () => {
     habits: "https://cancerreg.ir/api/v1/common/habit-disease/",
     family_history: "https://cancerreg.ir/api/v1/common/family-history/",
     surgeries: "https://cancerreg.ir/api/v1/common/surgery/",
-    residential_city: "https://cancerreg.ir/api/v1/common/city/",
-    birth_city: "https://cancerreg.ir/api/v1/common/city/",
-    job: "https://cancerreg.ir/api/v1/common/job/",
-    marital_status: "https://cancerreg.ir/api/v1/common/marital-status/",
   };
-
   const dropdownLabels = {
     height: "قد",
     weight: "وزن",
@@ -48,6 +47,32 @@ const PatientRecordsForm = () => {
     weight: "w-50",
   };
 
+  const handleAddDrug = () => {
+    if (drugName && drugDose) {
+      const newDrugRecord = { name: drugName, dose: parseFloat(drugDose) };
+      const updatedDrugsRecords = [
+        ...(patient.drugs_records || []),
+        newDrugRecord,
+      ];
+      setPatient((prev) => ({
+        ...prev,
+        drugs_records: updatedDrugsRecords,
+      }));
+      setDrugName(""); // Clear input fields after adding
+      setDrugDose("");
+    }
+  };
+
+  const handleRemoveDrug = (drugNameToRemove) => {
+    const updatedDrugsRecords = patient.drugs_records.filter(
+      (drug) => drug.name !== drugNameToRemove
+    );
+    setPatient((prev) => ({
+      ...prev,
+      drugs_records: updatedDrugsRecords,
+    }));
+  };
+
   const sortedDropdownKeys = Object.keys(dropdownLabels);
 
   const toggleForm = () => {
@@ -66,40 +91,62 @@ const PatientRecordsForm = () => {
       fetch(dropdownApis[key])
         .then((res) => res.json())
         .then((data) => {
+          console.log("setDropdownData", data.data?.results);
+
           setDropdownData((prev) => ({ ...prev, [key]: data.data.results }));
         });
     });
   }, []);
 
   useEffect(() => {
-    if (patient) {
+    if (patient && dropdownData) {
+      const updatedPatient = { ...patient };
+      let hasChanges = false;
+
       Object.keys(dropdownData).forEach((key) => {
-        if (dropdownData[key]) {
+        if (dropdownData[key] && patient[key]) {
           const selectedValues = patient[key]?.map((item) =>
-            dropdownData[key]?.find((option) => option.name === item)
+            dropdownData[key]?.find((option) => option?.name === item)
           );
-          if (selectedValues) {
-            setPatient((prev) => ({ ...prev, [key]: selectedValues }));
+
+          // Only update if values are different
+          if (
+            selectedValues &&
+            !areArraysEqual(updatedPatient[key], selectedValues)
+          ) {
+            updatedPatient[key] = selectedValues;
+            hasChanges = true;
           }
         }
       });
+
+      // Only set patient state if there are actual changes
+      if (hasChanges) {
+        setPatient(updatedPatient);
+      }
     }
   }, [patient, dropdownData]);
 
-  const handleChange = (e, field) => {
-    const selectedValues = e.value; // e.value will be an array of selected objects from MultiSelect
+  // Helper function to compare arrays
+  const areArraysEqual = (arr1, arr2) => {
+    if (!arr1 || !arr2) return false;
+    if (arr1.length !== arr2.length) return false;
+    for (let i = 0; i < arr1.length; i++) {
+      if (arr1[i] !== arr2[i]) return false;
+    }
+    return true;
+  };
 
-    // Ensure you're updating both patient and updatedFields with the correct value
+  const handleChange = (e, field) => {
+    const selectedValues = e.value;
     setUpdatedFields((prev) => ({ ...prev, [field]: selectedValues }));
 
     if (dropdownApis[field]) {
-      // Update `patient` with full objects from selected items (not just `uid`)
       setPatient((prev) => ({
         ...prev,
-        [field]: selectedValues.map((selected) => selected.name), // Storing the names of selected options
+        [field]: selectedValues.map((selected) => selected?.name),
       }));
     } else {
-      // If not a dropdown field, update the field directly with the new value
       setPatient((prev) => ({ ...prev, [field]: e.target.value }));
     }
   };
@@ -113,6 +160,7 @@ const PatientRecordsForm = () => {
       body: JSON.stringify({
         ...updatedFields,
         patient_uid: uid,
+        drugs_records: patient?.drugs_records,
       }),
     })
       .then(async (res) => {
@@ -172,46 +220,94 @@ const PatientRecordsForm = () => {
                 : "w-100"
             }`}
           >
-            <div
-              className={`p-field d-flex flex-column mb-3 ${
-                dropdownLabels[field] === "رشته تحصیلی" ? "flex-row" : ""
-              }`}
-            >
-              <label>{dropdownLabels[field]}</label>
+            {dropdownLabels[field] === "سوابق دارویی" ? (
+              <div className="p-field mb-4">
+                <label>سوابق دارویی</label>
+                {!isFormDisabled && (
+                  <div className="d-flex gap-2 w-100">
+                    <InputText
+                      value={drugName}
+                      onChange={(e) => setDrugName(e.target.value)}
+                      placeholder="نام دارو"
+                    />
+                    <InputText
+                      value={drugDose}
+                      onChange={(e) => setDrugDose(e.target.value)}
+                      placeholder="دوز دارو"
+                    />
+                    <Button
+                      label="افزودن"
+                      className="rounded"
+                      onClick={handleAddDrug}
+                    />
+                  </div>
+                )}
+                <div className="mt-3">
+                  {patient?.drugs_records?.map((drug, index) => (
+                    <Chip
+                      label={` ${drug.name} (${drug.dose} mg )`}
+                      removable={!isFormDisabled}
+                      key={index}
+                      value={`${drug.name} (${drug.dose} mg)`}
+                      className="mx-2 "
+                      style={{ cursor: "pointer" }}
+                      onClick={() =>
+                        !isFormDisabled && handleRemoveDrug(drug.name)
+                      }
+                    />
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div
+                className={`p-field d-flex flex-column mb-3 ${
+                  dropdownLabels[field] === "رشته تحصیلی" ? "flex-row" : ""
+                }`}
+              >
+                <label>{dropdownLabels[field]}</label>
 
-              {dropdownApis[field] ? (
-                <MultiSelect
-                  value={patient[field]?.map((item) => item?.uid)} // The selected values
-                  options={dropdownData[field]}
-                  onChange={(e) => handleChange(e, field)}
-                  optionLabel="name"
-                  placeholder={`انتخاب ${dropdownLabels[field]}`}
-                  className={`custom-dropdown ${
-                    classNameMapping[field] || "w-100"
-                  }`}
-                  disabled={isFormDisabled}
-                  filter
-                />
-              ) : (
-                <InputText
-                  value={patient[field] || ""}
-                  onChange={(e) => handleChange(e, field)}
-                  placeholder={`لطفا ${dropdownLabels[field]} را وارد کنید`}
-                  className={
-                    dropdownLabels[field] === "bsa" ||
-                    dropdownLabels[field] === "bmi"
-                      ? "custom-disabled"
-                      : ""
-                  }
-                  disabled={
-                    dropdownLabels[field] === "bsa" ||
-                    dropdownLabels[field] === "bmi"
-                      ? true
-                      : isFormDisabled
-                  }
-                />
-              )}
-            </div>
+                {dropdownApis[field] ? (
+                  <MultiSelect
+                    value={
+                      patient[field]
+                        ? patient[field].map((item) => {
+                            return dropdownData[field]?.find(
+                              (option) => option.name === item
+                            );
+                          })
+                        : []
+                    }
+                    options={dropdownData[field]}
+                    onChange={(e) => handleChange(e, field)}
+                    optionLabel="name"
+                    placeholder={`انتخاب ${dropdownLabels[field]}`}
+                    className={`custom-dropdown ${
+                      classNameMapping[field] || "w-100"
+                    }`}
+                    disabled={isFormDisabled}
+                    filter
+                  />
+                ) : (
+                  <InputText
+                    value={patient[field] || ""}
+                    onChange={(e) => handleChange(e, field)}
+                    placeholder={`لطفا ${dropdownLabels[field]} را وارد کنید`}
+                    className={
+                      dropdownLabels[field] === "bsa" ||
+                      dropdownLabels[field] === "bmi"
+                        ? "custom-disabled"
+                        : ""
+                    }
+                    disabled={
+                      dropdownLabels[field] === "bsa" ||
+                      dropdownLabels[field] === "bmi"
+                        ? true
+                        : isFormDisabled
+                    }
+                  />
+                )}
+              </div>
+            )}
           </div>
         ))}
       </div>
