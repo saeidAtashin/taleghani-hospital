@@ -117,7 +117,7 @@ const PatientForm = () => {
     }).then((res) => {
       res.json();
       toggleForm();
-      toast.success("ویرایش انجام شد");
+      toast.success("ویرایش شما انجام شد");
     });
   };
 
