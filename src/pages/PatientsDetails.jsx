@@ -13,6 +13,7 @@ import apiRequest from "../api/apiService";
 import TasvirBardari from "../components/TasvirBardari";
 import TreatmentTable from "../components/TreatmentTable";
 import FollwoUp from "../components/FollwoUp";
+import PatientInfoForm from "./PatientInfoForm";
 
 const PatientsDetails = () => {
   const { uid } = useParams();
@@ -82,21 +83,21 @@ const PatientsDetails = () => {
     fetchDataRecord();
   }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await apiRequest(
-          "GET",
-          `/patient/patient-info/${uid}/`
-        );
-        const solidData = response.data.data;
-        setsolidIdentityData(solidData);
-      } catch (error) {
-        console.error("Error fetching patient data:", error);
-      }
-    };
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await apiRequest(
+  //         "GET",
+  //         `/patient/patient-info/${uid}/`
+  //       );
+  //       const solidData = response.data.data;
+  //       setsolidIdentityData(solidData);
+  //     } catch (error) {
+  //       console.error("Error fetching patient data:", error);
+  //     }
+  //   };
+  //   fetchData();
+  // }, []);
 
   const defaultValues = {
     birth_province: "someValueFromBackend",
@@ -111,14 +112,16 @@ const PatientsDetails = () => {
       label: "اطلاعات هویتی",
       content: (
         <div>
-          <ReusableForm
+          {/* <ReusableForm
             isEditable={true}
             fields={formFielsIdentity}
             formSchema={generateReusableSchema(formFielsIdentity)}
             onSubmit={handleFormSubmit}
             inputsPerRow={[1, 2, 3, 2, 2, 2, 2, 3, 2, 1]}
             defaultValuesFromBackend={userIdentityData} // Pass default values here
-          />
+          /> */}
+
+          <PatientInfoForm />
         </div>
         // in this code, I want that inputs, have value, set them when came from back, and set them as default value.
       ),
