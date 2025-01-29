@@ -19,38 +19,38 @@ import PatientRecordsForm from "./PatientRecordsForm";
 const PatientsDetails = () => {
   const { uid } = useParams();
   const defaultActiveKey = localStorage.getItem("defaultActiveKey");
-  const columns = [
-    { field: "uid", header: "کد ملی" },
-    { field: "first_name", header: "نام" },
-    { field: "last_name", header: "نام خانوادگی" },
-    { field: "created_at", header: "تاریخ ثبت" },
-    { field: "updated_at", header: "تاریخ بروزرسانی" },
-  ];
+  // const columns = [
+  //   { field: "uid", header: "کد ملی" },
+  //   { field: "first_name", header: "نام" },
+  //   { field: "last_name", header: "نام خانوادگی" },
+  //   { field: "created_at", header: "تاریخ ثبت" },
+  //   { field: "updated_at", header: "تاریخ بروزرسانی" },
+  // ];
 
-  const [products, setProducts] = useState([]);
+  // const [products, setProducts] = useState([]);
   const [userIdentityData, setUserIdentityData] = useState([]);
-  const [userRecords, setuserRecords] = useState([]);
-  const [solidIdentityData, setsolidIdentityData] = useState(columns);
+  // const [userRecords, setuserRecords] = useState([]);
+  // const [solidIdentityData, setsolidIdentityData] = useState(columns);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await apiRequest(
-          "GET",
-          `/records/batch-records/${uid}/`
-        );
-        const patients = response?.data?.data?.results;
-        setProducts(patients);
-      } catch (error) {
-        console.error("Error fetching patient data:", error);
-      }
-    };
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await apiRequest(
+  //         "GET",
+  //         `/records/batch-records/${uid}/`
+  //       );
+  //       const patients = response?.data?.data?.results;
+  //       setProducts(patients);
+  //     } catch (error) {
+  //       console.error("Error fetching patient data:", error);
+  //     }
+  //   };
+  //   fetchData();
+  // }, []);
 
-  const dt = useRef(null);
+  // const dt = useRef(null);
 
-  const handleFormSubmit = (data) => {};
+  // const handleFormSubmit = (data) => {};
 
   useEffect(() => {
     const fetchData = async () => {
@@ -68,21 +68,21 @@ const PatientsDetails = () => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    const fetchDataRecord = async () => {
-      try {
-        const response = await apiRequest(
-          "GET",
-          `/patient/patient-records/${uid}/`
-        );
-        const recordsData = response.data.data;
-        setuserRecords(recordsData);
-      } catch (error) {
-        console.error("Error fetching patient data:", error);
-      }
-    };
-    fetchDataRecord();
-  }, []);
+  // useEffect(() => {
+  //   const fetchDataRecord = async () => {
+  //     try {
+  //       const response = await apiRequest(
+  //         "GET",
+  //         `/patient/patient-records/${uid}/`
+  //       );
+  //       const recordsData = response.data.data;
+  //       setuserRecords(recordsData);
+  //     } catch (error) {
+  //       console.error("Error fetching patient data:", error);
+  //     }
+  //   };
+  //   fetchDataRecord();
+  // }, []);
 
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -100,22 +100,18 @@ const PatientsDetails = () => {
   //   fetchData();
   // }, []);
 
-  const defaultValues = {
-    birth_province: "someValueFromBackend",
-    birth_city: "anotherValueFromBackend",
-    residential_province: "yetAnotherValue",
-    residential_city: "finalValue",
-  };
+  // const defaultValues = {
+  //   birth_province: "someValueFromBackend",
+  //   birth_city: "anotherValueFromBackend",
+  //   residential_province: "yetAnotherValue",
+  //   residential_city: "finalValue",
+  // };
 
   const tabs = [
     {
       key: "اطلاعات هویتی",
       label: "اطلاعات هویتی",
-      content: (
-        <div>
-          <PatientInfoForm />
-        </div>
-      ),
+      content: <div>{/* <PatientInfoForm /> */}</div>,
     },
     {
       key: "سوابق بیمار",
@@ -135,62 +131,62 @@ const PatientsDetails = () => {
         </div>
       ),
     },
-    {
-      key: "اطلاعات بیماری",
-      label: "اطلاعات بیماری",
-      content: (
-        <div>
-          <ReusableForm
-            isEditable={true}
-            fields={formPatientsInformationFields}
-            formSchema={generateReusableSchema(formPatientsInformationFields)}
-            onSubmit={handleFormSubmit}
-            inputsPerRow={[1, 2, 3, 2, 2, 2, 2, 3, 2, 1]}
-            defaultValuesFromBackend={solidIdentityData} // Pass default values here
-          />
-        </div>
-        // in this code, I want that inputs, have value, set them when came from back, and set them as default value.
-      ),
-    },
-    {
-      key: "تصویربرداری",
-      label: "تصویربرداری",
-      content: <TasvirBardari />,
-    },
-    {
-      key: "آزمایشات",
-      label: "آزمایشات",
-      content: (
-        <>
-          <AzmayeshatTable />
-        </>
-      ),
-    },
-    {
-      key: "درمان",
-      label: "درمان",
-      content: (
-        <>
-          <TreatmentTable />
-        </>
-      ),
-    },
-    {
-      key: "follow up",
-      label: "follow up",
-      content: (
-        <div>
-          <FollwoUp />
-        </div>
-      ),
-    },
+    // {
+    //   key: "اطلاعات بیماری",
+    //   label: "اطلاعات بیماری",
+    //   content: (
+    //     <div>
+    //       <ReusableForm
+    //         isEditable={true}
+    //         fields={formPatientsInformationFields}
+    //         formSchema={generateReusableSchema(formPatientsInformationFields)}
+    //         onSubmit={handleFormSubmit}
+    //         inputsPerRow={[1, 2, 3, 2, 2, 2, 2, 3, 2, 1]}
+    //         defaultValuesFromBackend={solidIdentityData} // Pass default values here
+    //       />
+    //     </div>
+    //     // in this code, I want that inputs, have value, set them when came from back, and set them as default value.
+    //   ),
+    // },
+    // {
+    //   key: "تصویربرداری",
+    //   label: "تصویربرداری",
+    //   content: <TasvirBardari />,
+    // },
+    // {
+    //   key: "آزمایشات",
+    //   label: "آزمایشات",
+    //   content: (
+    //     <>
+    //       <AzmayeshatTable />
+    //     </>
+    //   ),
+    // },
+    // {
+    //   key: "درمان",
+    //   label: "درمان",
+    //   content: (
+    //     <>
+    //       <TreatmentTable />
+    //     </>
+    //   ),
+    // },
+    // {
+    //   key: "follow up",
+    //   label: "follow up",
+    //   content: (
+    //     <div>
+    //       <FollwoUp />
+    //     </div>
+    //   ),
+    // },
   ];
 
   return (
     <div className="container mt-5">
       <h2 className="mb-5">
-        بیمار {userIdentityData?.first_name} / {userIdentityData?.last_name} /
-        {userIdentityData?.phone_number}{" "}
+        بیمار {userIdentityData?.first_name} {userIdentityData?.last_name} -{" "}
+        {userIdentityData?.phone_number}
       </h2>
       <ReusableTabs
         tabs={tabs}

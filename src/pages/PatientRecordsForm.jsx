@@ -3,23 +3,21 @@ import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { Button } from "primereact/button";
 import "react-datepicker/dist/react-datepicker.css";
-import DatePicker, { DateObject } from "react-multi-date-picker";
-import persian from "react-date-object/calendars/persian";
-import persian_fa from "react-date-object/locales/persian_fa";
 import { toast } from "react-toastify";
+import { useParams } from "react-router-dom";
 
 const PatientRecordsForm = () => {
   const [patient, setPatient] = useState(null);
   const [dropdownData, setDropdownData] = useState({});
   const [updatedFields, setUpdatedFields] = useState({});
-  const [startDateObj, setstartDateObj] = useState(null);
   const [isFormDisabled, setIsFormDisabled] = useState(true);
+  const { uid } = useParams();
 
   const patientUid = "ef5b7f1f-90b7-4b97-b684-f8670752fb8b";
   const patientApiUrl = `https://cancerreg.ir/api/v1/patient/patient-records/${patientUid}/`;
   const dropdownApis = {
     underlying_diseases:
-      "https://cancerreg.ir/api/v1/common/underlying-diseases/",
+      "https://cancerreg.ir/api/v1/common/underlying-disease/",
     num_children: "https://cancerreg.ir/api/v1/common/num-of-children/",
     major_field: "https://cancerreg.ir/api/v1/common/major-field/",
     education: "https://cancerreg.ir/api/v1/common/education/",
@@ -43,48 +41,17 @@ const PatientRecordsForm = () => {
     drugs_records: "سوابق دارویی",
     refer_reason: "دلیل مراجعه",
     description: "توضیحات",
-
-    // national_id:"کدملی",
-    // marital_status: "وضعیت تأهل",
-    // job: "شغل",
-    // residential_city: "شهر محل سکونت",
-    // birth_city: "شهر محل تولد",
-    // address: "آدرس",
-    // phone_number: "شماره تلفن همراه",
-    // tell_number: "شماره تلفن ثابت",
-    // major_field: "رشته تحصیلی",
-    // education: "تحصیلات",
-    // num_children: "تعداد فرزندان",
-    // referring_doctor: "پزشک معالج",
   };
 
   const classNameMapping = {
     gender: "w-100",
     height: "w-50",
     weight: "w-50",
-
-    // marital_status: "w-100",
-    // num_children: "w-100",
-    // education: "w-100 d-flex flex-clumn",
-    // major_field: "w-100 d-flex flex-clumn",
-    // job: "w-100",
-    // birth_city: "w-100",
-    // residential_city: "w-100",
   };
   const sortedDropdownKeys = Object.keys(dropdownLabels);
 
   const toggleForm = () => {
     setIsFormDisabled((prev) => !prev);
-  };
-
-  const handleDateChange = (date, field) => {
-    if (date) {
-      const gregorianDate = date.convert("gregorian").toDate();
-      const formattedDate = gregorianDate.toISOString().split("T")[0];
-
-      setPatient((prev) => ({ ...prev, [field]: formattedDate }));
-      setUpdatedFields((prev) => ({ ...prev, [field]: formattedDate }));
-    }
   };
 
   useEffect(() => {
@@ -130,16 +97,31 @@ const PatientRecordsForm = () => {
       },
       body: JSON.stringify({
         ...updatedFields,
-        national_id: patient.national_id,
+        patient_uid: uid,
       }),
-    }).then((res) => {
-      res.json();
-      toggleForm();
-      toast.success("ویرایش شما انجام شد");
-    });
+    })
+      .then(async (res) => {
+        const responseData = await res.json();
+
+        if (res.status >= 200 && res.status < 400) {
+          setPatient((prev) => ({
+            ...prev,
+            bmi: responseData?.data?.bmi ?? prev.bmi,
+            bmi: responseData?.data?.bsa ?? prev.bsa,
+          }));
+
+          toast.success("ویرایش شما انجام شد");
+          toggleForm();
+        } else {
+          toast.error("خطا در ویرایش اطلاعات");
+        }
+      })
+      .catch((error) => {
+        console.error("Request Failed:", error);
+        toast.error("مشکلی پیش آمد، لطفاً دوباره امتحان کنید.");
+      });
   };
 
-  console.log("sortedDropdownKeys", sortedDropdownKeys);
   if (!patient || Object.keys(dropdownData).some((key) => !dropdownData[key]))
     return <p>Loading...</p>;
 
@@ -167,64 +149,11 @@ const PatientRecordsForm = () => {
           />
         </div>
       )}
-      {/* <div className="p-field w-100 d-flex flex-column mb-4">
-        <label>کد ملی</label>
-        <InputText
-          value={patient.national_id}
-          onChange={(e) => handleChange(e, "first_name")}
-          disabled={isFormDisabled}
-        />
-      </div>
-
-      <div className="p-field w-100 d-flex gap-4 mb-4">
-        <div className="p-field d-flex flex-column w-50">
-          <label>نام</label>
-          <InputText
-            value={patient.first_name}
-            onChange={(e) => handleChange(e, "first_name")}
-            disabled={isFormDisabled}
-          />
-        </div>
-        <div className="p-field d-flex flex-column w-50">
-          <label>نام خانوادگی</label>
-          <InputText
-            value={patient.last_name}
-            onChange={(e) => handleChange(e, "last_name")}
-            disabled={isFormDisabled}
-          />
-        </div>
-      </div> */}
-
-      {/* <div className="d-flex w-100 flex-column my-3">
-        <label className="p-col-12 p-md-2" htmlFor="start_date">
-          تاریخ تولد:
-        </label>
-        <DatePicker
-          value={
-            patient.birth_date
-              ? new DateObject({
-                  date: patient?.birth_date,
-                  calendar: "gregorian",
-                })
-                  .convert(persian)
-                  .format("YYYY/MM/DD")
-              : startDateObj
-          }
-          onChange={(date) => handleDateChange(date, "birth_date")}
-          calendar={persian}
-          locale={persian_fa}
-          format="YYYY/MM/DD"
-          placeholder="تاریخ تولد را انتخاب کنید"
-          className="p-2 border rounded"
-          inputClass="w-full p-2 text-end w-100 border rounded"
-          position="bottom-right"
-          disabled={isFormDisabled}
-        />
-      </div> */}
 
       <div className="d-flex flex-wrap">
-        {sortedDropdownKeys.map((field) => (
+        {sortedDropdownKeys?.map((field, index) => (
           <div
+            key={index}
             className={`   ${
               dropdownLabels[field] === "قد" ||
               dropdownLabels[field] === "وزن" ||

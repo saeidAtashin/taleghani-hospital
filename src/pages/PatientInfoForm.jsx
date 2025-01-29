@@ -104,6 +104,23 @@ const PatientForm = () => {
     setUpdatedFields((prev) => ({ ...prev, [field]: value }));
   };
 
+  // const handleSubmit = () => {
+  //   fetch(patientApiUrl, {
+  //     method: "PUT",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({
+  //       ...updatedFields,
+  //       national_id: patient.national_id,
+  //     }),
+  //   }).then((res) => {
+  //     res.json();
+  //     toggleForm();
+  //     toast.success("ویرایش شما انجام شد");
+  //   });
+  // };
+
   const handleSubmit = () => {
     fetch(patientApiUrl, {
       method: "PUT",
@@ -112,15 +129,28 @@ const PatientForm = () => {
       },
       body: JSON.stringify({
         ...updatedFields,
-        national_id: patient.national_id,
+        patient_uid: uid,
       }),
-    }).then((res) => {
-      res.json();
-      toggleForm();
-      toast.success("ویرایش شما انجام شد");
-    });
+    })
+      .then(async (res) => {
+        const responseData = await res.json(); // Ensure JSON parsing
+        console.log("Response Status:", res.status);
+        console.log("Response Data:", responseData);
+  
+        if (res.status >= 200 && res.status < 400) {
+          toast.success("ویرایش شما انجام شد");
+          toggleForm();
+        } else {
+          toast.error("خطا در ویرایش اطلاعات");
+        }
+      })
+      .catch((error) => {
+        console.error("Request Failed:", error);
+        toast.error("مشکلی پیش آمد، لطفاً دوباره امتحان کنید.");
+      });
   };
-
+  
+  
   console.log("sortedDropdownKeys", sortedDropdownKeys);
   if (!patient || Object.keys(dropdownData).some((key) => !dropdownData[key]))
     return <p>Loading...</p>;
