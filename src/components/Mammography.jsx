@@ -180,4 +180,4 @@ const Mammography = ({ setShowAzmayeshPAge }) => {
   );
 };
 
-export default batchrecords_uid;
+export default Mammography;
