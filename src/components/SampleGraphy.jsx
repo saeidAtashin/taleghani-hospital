@@ -80,12 +80,12 @@ const SampleGraphy = ({ setShowAzmayeshPAge }) => {
         />
       </Form.Group>
       <Form.Group>
-        <Form.Label>عنوان</Form.Label>
+        <Form.Label className="mt-4">عنوان</Form.Label>
         <Form.Control
           type="text"
           name="title"
           value={formData.title}
-          onChange={(e) => handleInputChange(index, e)}
+          onChange={handleFieldChange}
         />
       </Form.Group>
 
