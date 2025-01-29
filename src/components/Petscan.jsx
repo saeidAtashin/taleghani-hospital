@@ -142,7 +142,7 @@ const Petscan = ({ setShowAzmayeshPAge }) => {
           type="text"
           name="suv_max"
           value={formData.suv_max}
-          onChange={(e) => handleInputChange(index, e)}
+          onChange={handleFieldChange}
           placeholder="مقدار SUV max را وارد نمایید"
         />
       </Form.Group>
