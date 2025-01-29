@@ -6,12 +6,15 @@ import "react-datepicker/dist/react-datepicker.css";
 import DatePicker, { DateObject } from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
+import { toast } from "react-toastify";
 
 const PatientForm = () => {
   const [patient, setPatient] = useState(null);
   const [dropdownData, setDropdownData] = useState({});
   const [updatedFields, setUpdatedFields] = useState({});
   const [startDateObj, setstartDateObj] = useState(null);
+  const [isFormDisabled, setIsFormDisabled] = useState(true);
+
   const patientUid = "ef5b7f1f-90b7-4b97-b684-f8670752fb8b";
   const patientApiUrl = `https://cancerreg.ir/api/v1/patient/patient-info/${patientUid}/`;
   const dropdownApis = {
@@ -51,6 +54,10 @@ const PatientForm = () => {
     residential_city: "w-100",
   };
   const sortedDropdownKeys = Object.keys(dropdownLabels);
+
+  const toggleForm = () => {
+    setIsFormDisabled((prev) => !prev);
+  };
 
   const handleDateChange = (date, field) => {
     if (date) {
@@ -107,7 +114,11 @@ const PatientForm = () => {
         ...updatedFields,
         national_id: patient.national_id,
       }),
-    }).then((res) => res.json());
+    }).then((res) => {
+      res.json();
+      toggleForm();
+      toast.success("ویرایش انجام شد");
+    });
   };
 
   console.log("sortedDropdownKeys", sortedDropdownKeys);
@@ -116,11 +127,34 @@ const PatientForm = () => {
 
   return (
     <div className="p-4 d-flex flex-wrap">
+      {isFormDisabled ? (
+        <Button
+          label={isFormDisabled ? "ویرایش" : "لغو"}
+          onClick={toggleForm}
+          className="button-outlined rounded mb-3"
+        />
+      ) : (
+        <div className="d-flex gap-3 mb-4">
+          <Button
+            label="ذخیره"
+            onClick={handleSubmit}
+            disabled={isFormDisabled}
+            className="rounded"
+          />
+          <Button
+            label="لغو"
+            onClick={toggleForm}
+            disabled={isFormDisabled}
+            className="rounded p-button-outlined"
+          />
+        </div>
+      )}
       <div className="p-field w-100 d-flex flex-column mb-4">
         <label>کد ملی</label>
         <InputText
           value={patient.national_id}
           onChange={(e) => handleChange(e, "first_name")}
+          disabled={isFormDisabled}
         />
       </div>
 
@@ -130,6 +164,7 @@ const PatientForm = () => {
           <InputText
             value={patient.first_name}
             onChange={(e) => handleChange(e, "first_name")}
+            disabled={isFormDisabled}
           />
         </div>
         <div className="p-field d-flex flex-column w-50">
@@ -137,6 +172,7 @@ const PatientForm = () => {
           <InputText
             value={patient.last_name}
             onChange={(e) => handleChange(e, "last_name")}
+            disabled={isFormDisabled}
           />
         </div>
       </div>
@@ -164,6 +200,7 @@ const PatientForm = () => {
           className="p-2 border rounded"
           inputClass="w-full p-2 text-end w-100 border rounded"
           position="bottom-right"
+          disabled={isFormDisabled}
         />
       </div>
 
@@ -201,6 +238,7 @@ const PatientForm = () => {
                   className={`custom-dropdown  ${
                     classNameMapping[field] || "w-100"
                   }`}
+                  disabled={isFormDisabled}
                 />
               ) : (
                 <InputText
@@ -208,12 +246,14 @@ const PatientForm = () => {
                   onChange={(e) => handleChange(e, field)}
                   placeholder={`لطفا ${dropdownLabels[field]} را وارد کنید`}
                   className="custom-input"
+                  disabled={isFormDisabled}
                 />
               )}
             </div>
           </div>
         ))}
       </div>
+
       <div className="d-flex w-100 flex-column my-3">
         <label className="p-col-12 p-md-2" htmlFor="start_date">
           تاریخ فوت:
@@ -237,9 +277,9 @@ const PatientForm = () => {
           className="p-2 border rounded"
           inputClass="w-full p-2 text-end w-100 border rounded"
           position="bottom-right"
+          disabled={isFormDisabled}
         />
       </div>
-      <Button label="Save" onClick={handleSubmit} />
     </div>
   );
 };
