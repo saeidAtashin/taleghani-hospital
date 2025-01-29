@@ -9,7 +9,6 @@ import persian_fa from "react-date-object/locales/persian_fa";
 
 const PatientForm = () => {
   const [patient, setPatient] = useState(null);
-  const [genders, setGenders] = useState([]);
   const [dropdownData, setDropdownData] = useState({});
   const [updatedFields, setUpdatedFields] = useState({});
   const [startDateObj, setstartDateObj] = useState(null);
@@ -30,33 +29,36 @@ const PatientForm = () => {
     gender: "جنسیت",
     marital_status: "وضعیت تأهل",
     job: "شغل",
-    num_children: "تعداد فرزندان",
-    major_field: "رشته تحصیلی",
-    education: "تحصیلات",
     residential_city: "شهر محل سکونت",
     birth_city: "شهر محل تولد",
+    address: "آدرس",
+    phone_number: "شماره تلفن همراه",
+    tell_number: "شماره تلفن ثابت",
+    major_field: "رشته تحصیلی",
+    education: "تحصیلات",
+    num_children: "تعداد فرزندان",
+    referring_doctor: "پزشک معالج",
   };
 
   const classNameMapping = {
     gender: "w-100",
     marital_status: "w-100",
     num_children: "w-100",
-    education: "w-25 d-flex flex-clumn",
-    major_field: "w-25 d-flex flex-clumn",
+    education: "w-100 d-flex flex-clumn",
+    major_field: "w-100 d-flex flex-clumn",
     job: "w-100",
     birth_city: "w-100",
     residential_city: "w-100",
   };
   const sortedDropdownKeys = Object.keys(dropdownLabels);
 
-  const handleStartDateChange = (date) => {
+  const handleDateChange = (date, field) => {
     if (date) {
       const gregorianDate = date.convert("gregorian").toDate();
       const formattedDate = gregorianDate.toISOString().split("T")[0];
 
-      setstartDateObj(date);
-      setPatient((prev) => ({ ...prev, birth_date: formattedDate }));
-      setUpdatedFields((prev) => ({ ...prev, birth_date: formattedDate }));
+      setPatient((prev) => ({ ...prev, [field]: formattedDate }));
+      setUpdatedFields((prev) => ({ ...prev, [field]: formattedDate }));
     }
   };
 
@@ -139,7 +141,7 @@ const PatientForm = () => {
         </div>
       </div>
 
-      <div className="d-flex flex-column my-3">
+      <div className="d-flex w-100 flex-column my-3">
         <label className="p-col-12 p-md-2" htmlFor="start_date">
           تاریخ تولد:
         </label>
@@ -154,7 +156,7 @@ const PatientForm = () => {
                   .format("YYYY/MM/DD")
               : startDateObj
           }
-          onChange={handleStartDateChange}
+          onChange={(date) => handleDateChange(date, "birth_date")}
           calendar={persian}
           locale={persian_fa}
           format="YYYY/MM/DD"
@@ -165,45 +167,78 @@ const PatientForm = () => {
         />
       </div>
 
-      {sortedDropdownKeys.map((field) => (
-        <div
-          className={`   ${
-            dropdownLabels[field] === "رشته تحصیلی" ? "w-50" : "w-100"
-          }`}
-        >
+      <div className="d-flex flex-wrap">
+        {sortedDropdownKeys.map((field) => (
           <div
-            className={`p-field d-flex flex-column mb-3 ${
-              dropdownLabels[field] === "رشته تحصیلی" ? "flex-row" : ""
+            className={`   ${
+              dropdownLabels[field] === "رشته تحصیلی" ||
+              dropdownLabels[field] === "شهر محل سکونت" ||
+              dropdownLabels[field] === "شهر محل تولد" ||
+              dropdownLabels[field] === "شماره تلفن همراه" ||
+              dropdownLabels[field] === "شماره تلفن ثابت" ||
+              dropdownLabels[field] === "تحصیلات"
+                ? "w-50"
+                : "w-100"
             }`}
-            key={field}
           >
-            <label>{dropdownLabels[field]}</label>
+            <div
+              className={`p-field d-flex flex-column mb-3 ${
+                dropdownLabels[field] === "رشته تحصیلی" ? "flex-row" : ""
+              }`}
+              key={field}
+            >
+              <label>{dropdownLabels[field]}</label>
 
-            {dropdownApis[field] ? (
-              <Dropdown
-                value={dropdownData?.[field]?.find(
-                  (item) => item.uid === patient[field]
-                )}
-                options={dropdownData[field]}
-                onChange={(e) => handleChange(e, field)}
-                optionLabel="name"
-                placeholder={`انتخاب ${dropdownLabels[field]}`}
-                className={`custom-dropdown  ${
-                  classNameMapping[field] || "w-50"
-                }`}
-              />
-            ) : (
-              <InputText
-                value={patient[field] || ""}
-                onChange={(e) => handleChange(e, field)}
-                placeholder={`لطفا ${dropdownLabels[field]} را وارد کنید`}
-                className="custom-input"
-              />
-            )}
+              {dropdownApis[field] ? (
+                <Dropdown
+                  value={dropdownData?.[field]?.find(
+                    (item) => item.uid === patient[field]
+                  )}
+                  options={dropdownData[field]}
+                  onChange={(e) => handleChange(e, field)}
+                  optionLabel="name"
+                  placeholder={`انتخاب ${dropdownLabels[field]}`}
+                  className={`custom-dropdown  ${
+                    classNameMapping[field] || "w-100"
+                  }`}
+                />
+              ) : (
+                <InputText
+                  value={patient[field] || ""}
+                  onChange={(e) => handleChange(e, field)}
+                  placeholder={`لطفا ${dropdownLabels[field]} را وارد کنید`}
+                  className="custom-input"
+                />
+              )}
+            </div>
           </div>
-        </div>
-      ))}
-
+        ))}
+      </div>
+      <div className="d-flex w-100 flex-column my-3">
+        <label className="p-col-12 p-md-2" htmlFor="start_date">
+          تاریخ فوت:
+        </label>
+        <DatePicker
+          value={
+            patient.death_date
+              ? new DateObject({
+                  date: patient?.death_date,
+                  calendar: "gregorian",
+                })
+                  .convert(persian)
+                  .format("YYYY/MM/DD")
+              : startDateObj
+          }
+          onChange={(date) => handleDateChange(date, "death_date")}
+          calendar={persian}
+          locale={persian_fa}
+          format="YYYY/MM/DD"
+          placeholder="تاریخ تولد را انتخاب کنید"
+          className="p-2 border rounded"
+          inputClass="w-full p-2 text-end w-100 border rounded"
+          position="bottom-right"
+        />
+      </div>
       <Button label="Save" onClick={handleSubmit} />
     </div>
   );
