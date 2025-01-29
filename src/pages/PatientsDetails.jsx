@@ -127,55 +127,55 @@ const PatientsDetails = () => {
         </div>
       ),
     },
-    // {
-    //   key: "اطلاعات بیماری",
-    //   label: "اطلاعات بیماری",
-    //   content: (
-    //     <div>
-    //       <ReusableForm
-    //         isEditable={true}
-    //         fields={formPatientsInformationFields}
-    //         formSchema={generateReusableSchema(formPatientsInformationFields)}
-    //         onSubmit={handleFormSubmit}
-    //         inputsPerRow={[1, 2, 3, 2, 2, 2, 2, 3, 2, 1]}
-    //         defaultValuesFromBackend={solidIdentityData} // Pass default values here
-    //       />
-    //     </div>
-    //     // in this code, I want that inputs, have value, set them when came from back, and set them as default value.
-    //   ),
-    // },
-    // {
-    //   key: "تصویربرداری",
-    //   label: "تصویربرداری",
-    //   content: <TasvirBardari />,
-    // },
-    // {
-    //   key: "آزمایشات",
-    //   label: "آزمایشات",
-    //   content: (
-    //     <>
-    //       <AzmayeshatTable />
-    //     </>
-    //   ),
-    // },
-    // {
-    //   key: "درمان",
-    //   label: "درمان",
-    //   content: (
-    //     <>
-    //       <TreatmentTable />
-    //     </>
-    //   ),
-    // },
-    // {
-    //   key: "follow up",
-    //   label: "follow up",
-    //   content: (
-    //     <div>
-    //       <FollwoUp />
-    //     </div>
-    //   ),
-    // },
+    {
+      key: "اطلاعات بیماری",
+      label: "اطلاعات بیماری",
+      content: (
+        <div>
+          {/* <ReusableForm
+            isEditable={true}
+            fields={formPatientsInformationFields}
+            formSchema={generateReusableSchema(formPatientsInformationFields)}
+            onSubmit={handleFormSubmit}
+            inputsPerRow={[1, 2, 3, 2, 2, 2, 2, 3, 2, 1]}
+            defaultValuesFromBackend={solidIdentityData} // Pass default values here
+          /> */}
+        </div>
+        // in this code, I want that inputs, have value, set them when came from back, and set them as default value.
+      ),
+    },
+    {
+      key: "تصویربرداری",
+      label: "تصویربرداری",
+      content: <TasvirBardari />,
+    },
+    {
+      key: "آزمایشات",
+      label: "آزمایشات",
+      content: (
+        <>
+          <AzmayeshatTable />
+        </>
+      ),
+    },
+    {
+      key: "درمان",
+      label: "درمان",
+      content: (
+        <>
+          <TreatmentTable />
+        </>
+      ),
+    },
+    {
+      key: "follow up",
+      label: "follow up",
+      content: (
+        <div>
+          <FollwoUp />
+        </div>
+      ),
+    },
   ];
 
   return (
@@ -186,7 +186,9 @@ const PatientsDetails = () => {
       </h2>
       <ReusableTabs
         tabs={tabs}
-        defaultActiveKey={defaultActiveKey ? defaultActiveKey : "سوابق بیمار"}
+        defaultActiveKey={
+          defaultActiveKey ? defaultActiveKey : "اطلاعات بیماری"
+        }
       />
     </div>
   );
