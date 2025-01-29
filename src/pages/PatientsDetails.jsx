@@ -112,18 +112,8 @@ const PatientsDetails = () => {
       label: "اطلاعات هویتی",
       content: (
         <div>
-          {/* <ReusableForm
-            isEditable={true}
-            fields={formFielsIdentity}
-            formSchema={generateReusableSchema(formFielsIdentity)}
-            onSubmit={handleFormSubmit}
-            inputsPerRow={[1, 2, 3, 2, 2, 2, 2, 3, 2, 1]}
-            defaultValuesFromBackend={userIdentityData} // Pass default values here
-          /> */}
-
           <PatientInfoForm />
         </div>
-        // in this code, I want that inputs, have value, set them when came from back, and set them as default value.
       ),
     },
     {
