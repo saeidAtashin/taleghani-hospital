@@ -16,7 +16,6 @@ const Mri = ({ setShowAzmayeshPAge }) => {
     sizes: [{ size: "", site: "", description: "" }], // Added description
     description: "",
     signal: "",
-    batch_uid: "c2b3c849-1ec5-441e-991d-c063065df409",
   });
 
   const [selectedDate, setSelectedDate] = useState(null);
