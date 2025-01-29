@@ -18,9 +18,9 @@ const PatientRecordsForm = () => {
   const dropdownApis = {
     underlying_diseases:
       "https://cancerreg.ir/api/v1/common/underlying-disease/",
-    num_children: "https://cancerreg.ir/api/v1/common/num-of-children/",
-    major_field: "https://cancerreg.ir/api/v1/common/major-field/",
-    education: "https://cancerreg.ir/api/v1/common/education/",
+    habits: "https://cancerreg.ir/api/v1/common/habit-disease/",
+    family_history: "https://cancerreg.ir/api/v1/common/family-history/",
+    surgeries: "https://cancerreg.ir/api/v1/common/surgery/",
     residential_city: "https://cancerreg.ir/api/v1/common/city/",
     birth_city: "https://cancerreg.ir/api/v1/common/city/",
     job: "https://cancerreg.ir/api/v1/common/job/",
