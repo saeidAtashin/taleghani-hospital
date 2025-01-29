@@ -111,7 +111,11 @@ const PatientsDetails = () => {
     {
       key: "اطلاعات هویتی",
       label: "اطلاعات هویتی",
-      content: <div>{/* <PatientInfoForm /> */}</div>,
+      content: (
+        <div>
+          <PatientInfoForm />
+        </div>
+      ),
     },
     {
       key: "سوابق بیمار",
@@ -119,14 +123,6 @@ const PatientsDetails = () => {
       content: (
         <div>
           {" "}
-          {/* <ReusableForm
-            isEditable={true}
-            fields={formPatientsFields}
-            formSchema={generateReusableSchema(formPatientsFields)}
-            onSubmit={handleFormSubmit}
-            inputsPerRow={[1, 2, 2, 2, 2, 1, 3, 2, 1]}
-            defaultValuesFromBackend={userRecords} // Pass default values here
-          /> */}
           <PatientRecordsForm />
         </div>
       ),

@@ -180,7 +180,7 @@ const PatientForm = () => {
           />
         </div>
       )}
-      {/* <div className="p-field w-100 d-flex flex-column mb-4">
+      <div className="p-field w-100 d-flex flex-column mb-4">
         <label>کد ملی</label>
         <InputText
           value={patient.national_id}
@@ -189,7 +189,7 @@ const PatientForm = () => {
         />
       </div>
 
-      <div className="p-field w-100 d-flex gap-4 mb-4">
+      <div className="p-field w-100 d-flex gap-2 mb-0">
         <div className="p-field d-flex flex-column w-50">
           <label>نام</label>
           <InputText
@@ -206,7 +206,7 @@ const PatientForm = () => {
             disabled={isFormDisabled}
           />
         </div>
-      </div> */}
+      </div>
 
       <div className="d-flex w-100 flex-column my-3">
         <label className="p-col-12 p-md-2" htmlFor="start_date">
