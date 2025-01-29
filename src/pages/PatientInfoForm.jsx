@@ -7,6 +7,7 @@ import DatePicker, { DateObject } from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import { toast } from "react-toastify";
+import { useParams } from "react-router-dom";
 
 const PatientForm = () => {
   const [patient, setPatient] = useState(null);
@@ -14,8 +15,9 @@ const PatientForm = () => {
   const [updatedFields, setUpdatedFields] = useState({});
   const [startDateObj, setstartDateObj] = useState(null);
   const [isFormDisabled, setIsFormDisabled] = useState(true);
+  const { uid } = useParams();
 
-  const patientUid = "ef5b7f1f-90b7-4b97-b684-f8670752fb8b";
+  const patientUid = uid;
   const patientApiUrl = `https://cancerreg.ir/api/v1/patient/patient-info/${patientUid}/`;
   const dropdownApis = {
     gender: "https://cancerreg.ir/api/v1/common/gender/",
@@ -136,7 +138,7 @@ const PatientForm = () => {
         const responseData = await res.json(); // Ensure JSON parsing
         console.log("Response Status:", res.status);
         console.log("Response Data:", responseData);
-  
+
         if (res.status >= 200 && res.status < 400) {
           toast.success("ویرایش شما انجام شد");
           toggleForm();
@@ -149,8 +151,7 @@ const PatientForm = () => {
         toast.error("مشکلی پیش آمد، لطفاً دوباره امتحان کنید.");
       });
   };
-  
-  
+
   console.log("sortedDropdownKeys", sortedDropdownKeys);
   if (!patient || Object.keys(dropdownData).some((key) => !dropdownData[key]))
     return <p>Loading...</p>;

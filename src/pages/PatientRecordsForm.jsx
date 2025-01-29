@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { InputText } from "primereact/inputtext";
-import { Dropdown } from "primereact/dropdown";
+import { MultiSelect } from "primereact/multiselect"; // Import MultiSelect
 import { Button } from "primereact/button";
 import "react-datepicker/dist/react-datepicker.css";
 import { toast } from "react-toastify";
@@ -13,7 +13,7 @@ const PatientRecordsForm = () => {
   const [isFormDisabled, setIsFormDisabled] = useState(true);
   const { uid } = useParams();
 
-  const patientUid = "ef5b7f1f-90b7-4b97-b684-f8670752fb8b";
+  const patientUid = uid;
   const patientApiUrl = `https://cancerreg.ir/api/v1/patient/patient-records/${patientUid}/`;
   const dropdownApis = {
     underlying_diseases:
@@ -33,7 +33,6 @@ const PatientRecordsForm = () => {
     bmi: "bmi",
     bsa: "bsa",
     treating_physician: "نام پزشک معالج",
-    bsa: "bsa",
     underlying_diseases: "بیماری‌های زمینه‌ای",
     habits: "عادات",
     family_history: "سوابق خانوادگی",
@@ -48,6 +47,7 @@ const PatientRecordsForm = () => {
     height: "w-50",
     weight: "w-50",
   };
+
   const sortedDropdownKeys = Object.keys(dropdownLabels);
 
   const toggleForm = () => {
@@ -57,7 +57,10 @@ const PatientRecordsForm = () => {
   useEffect(() => {
     fetch(patientApiUrl)
       .then((res) => res.json())
-      .then((data) => setPatient(data?.data));
+      .then((data) => {
+        console.log("data?.data data?.data", data?.data);
+        setPatient(data?.data);
+      });
 
     Object.keys(dropdownApis).forEach((key) => {
       fetch(dropdownApis[key])
@@ -72,11 +75,11 @@ const PatientRecordsForm = () => {
     if (patient) {
       Object.keys(dropdownData).forEach((key) => {
         if (dropdownData[key]) {
-          const selectedValue = dropdownData?.[key]?.find(
-            (item) => item.name === patient[key]
+          const selectedValues = patient[key]?.map((item) =>
+            dropdownData[key]?.find((option) => option.name === item)
           );
-          if (selectedValue) {
-            setPatient((prev) => ({ ...prev, [key]: selectedValue.uid }));
+          if (selectedValues) {
+            setPatient((prev) => ({ ...prev, [key]: selectedValues }));
           }
         }
       });
@@ -84,9 +87,21 @@ const PatientRecordsForm = () => {
   }, [patient, dropdownData]);
 
   const handleChange = (e, field) => {
-    const value = dropdownData[field] ? e.value.uid : e.target.value;
-    setPatient((prev) => ({ ...prev, [field]: value }));
-    setUpdatedFields((prev) => ({ ...prev, [field]: value }));
+    const selectedValues = e.value; // e.value will be an array of selected objects from MultiSelect
+
+    // Ensure you're updating both patient and updatedFields with the correct value
+    setUpdatedFields((prev) => ({ ...prev, [field]: selectedValues }));
+
+    if (dropdownApis[field]) {
+      // Update `patient` with full objects from selected items (not just `uid`)
+      setPatient((prev) => ({
+        ...prev,
+        [field]: selectedValues.map((selected) => selected.name), // Storing the names of selected options
+      }));
+    } else {
+      // If not a dropdown field, update the field directly with the new value
+      setPatient((prev) => ({ ...prev, [field]: e.target.value }));
+    }
   };
 
   const handleSubmit = () => {
@@ -104,12 +119,6 @@ const PatientRecordsForm = () => {
         const responseData = await res.json();
 
         if (res.status >= 200 && res.status < 400) {
-          setPatient((prev) => ({
-            ...prev,
-            bmi: responseData?.data?.bmi ?? prev.bmi,
-            bmi: responseData?.data?.bsa ?? prev.bsa,
-          }));
-
           toast.success("ویرایش شما انجام شد");
           toggleForm();
         } else {
@@ -154,7 +163,7 @@ const PatientRecordsForm = () => {
         {sortedDropdownKeys?.map((field, index) => (
           <div
             key={index}
-            className={`   ${
+            className={`${
               dropdownLabels[field] === "قد" ||
               dropdownLabels[field] === "وزن" ||
               dropdownLabels[field] === "bsa" ||
@@ -167,23 +176,21 @@ const PatientRecordsForm = () => {
               className={`p-field d-flex flex-column mb-3 ${
                 dropdownLabels[field] === "رشته تحصیلی" ? "flex-row" : ""
               }`}
-              key={field}
             >
               <label>{dropdownLabels[field]}</label>
 
               {dropdownApis[field] ? (
-                <Dropdown
-                  value={dropdownData?.[field]?.find(
-                    (item) => item.uid === patient[field]
-                  )}
+                <MultiSelect
+                  value={patient[field]?.map((item) => item?.uid)} // The selected values
                   options={dropdownData[field]}
                   onChange={(e) => handleChange(e, field)}
                   optionLabel="name"
                   placeholder={`انتخاب ${dropdownLabels[field]}`}
-                  className={`custom-dropdown  ${
+                  className={`custom-dropdown ${
                     classNameMapping[field] || "w-100"
                   }`}
                   disabled={isFormDisabled}
+                  filter
                 />
               ) : (
                 <InputText
