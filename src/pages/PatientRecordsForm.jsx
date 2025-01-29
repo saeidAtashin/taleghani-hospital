@@ -8,7 +8,7 @@ import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import { toast } from "react-toastify";
 
-const PatientForm = () => {
+const PatientRecordsForm = () => {
   const [patient, setPatient] = useState(null);
   const [dropdownData, setDropdownData] = useState({});
   const [updatedFields, setUpdatedFields] = useState({});
@@ -16,9 +16,10 @@ const PatientForm = () => {
   const [isFormDisabled, setIsFormDisabled] = useState(true);
 
   const patientUid = "ef5b7f1f-90b7-4b97-b684-f8670752fb8b";
-  const patientApiUrl = `https://cancerreg.ir/api/v1/patient/patient-info/${patientUid}/`;
+  const patientApiUrl = `https://cancerreg.ir/api/v1/patient/patient-records/${patientUid}/`;
   const dropdownApis = {
-    gender: "https://cancerreg.ir/api/v1/common/gender/",
+    underlying_diseases:
+      "https://cancerreg.ir/api/v1/common/underlying-diseases/",
     num_children: "https://cancerreg.ir/api/v1/common/num-of-children/",
     major_field: "https://cancerreg.ir/api/v1/common/major-field/",
     education: "https://cancerreg.ir/api/v1/common/education/",
@@ -29,29 +30,46 @@ const PatientForm = () => {
   };
 
   const dropdownLabels = {
-    gender: "جنسیت",
-    marital_status: "وضعیت تأهل",
-    job: "شغل",
-    residential_city: "شهر محل سکونت",
-    birth_city: "شهر محل تولد",
-    address: "آدرس",
-    phone_number: "شماره تلفن همراه",
-    tell_number: "شماره تلفن ثابت",
-    major_field: "رشته تحصیلی",
-    education: "تحصیلات",
-    num_children: "تعداد فرزندان",
-    referring_doctor: "پزشک معالج",
+    height: "قد",
+    weight: "وزن",
+    bmi: "bmi",
+    bsa: "bsa",
+    treating_physician: "نام پزشک معالج",
+    bsa: "bsa",
+    underlying_diseases: "بیماری‌های زمینه‌ای",
+    habits: "عادات",
+    family_history: "سوابق خانوادگی",
+    surgeries: "سوابق جراحی",
+    drugs_records: "سوابق دارویی",
+    refer_reason: "دلیل مراجعه",
+    description: "توضیحات",
+
+    // national_id:"کدملی",
+    // marital_status: "وضعیت تأهل",
+    // job: "شغل",
+    // residential_city: "شهر محل سکونت",
+    // birth_city: "شهر محل تولد",
+    // address: "آدرس",
+    // phone_number: "شماره تلفن همراه",
+    // tell_number: "شماره تلفن ثابت",
+    // major_field: "رشته تحصیلی",
+    // education: "تحصیلات",
+    // num_children: "تعداد فرزندان",
+    // referring_doctor: "پزشک معالج",
   };
 
   const classNameMapping = {
     gender: "w-100",
-    marital_status: "w-100",
-    num_children: "w-100",
-    education: "w-100 d-flex flex-clumn",
-    major_field: "w-100 d-flex flex-clumn",
-    job: "w-100",
-    birth_city: "w-100",
-    residential_city: "w-100",
+    height: "w-50",
+    weight: "w-50",
+
+    // marital_status: "w-100",
+    // num_children: "w-100",
+    // education: "w-100 d-flex flex-clumn",
+    // major_field: "w-100 d-flex flex-clumn",
+    // job: "w-100",
+    // birth_city: "w-100",
+    // residential_city: "w-100",
   };
   const sortedDropdownKeys = Object.keys(dropdownLabels);
 
@@ -177,7 +195,7 @@ const PatientForm = () => {
         </div>
       </div> */}
 
-      <div className="d-flex w-100 flex-column my-3">
+      {/* <div className="d-flex w-100 flex-column my-3">
         <label className="p-col-12 p-md-2" htmlFor="start_date">
           تاریخ تولد:
         </label>
@@ -202,18 +220,16 @@ const PatientForm = () => {
           position="bottom-right"
           disabled={isFormDisabled}
         />
-      </div>
+      </div> */}
 
       <div className="d-flex flex-wrap">
         {sortedDropdownKeys.map((field) => (
           <div
             className={`   ${
-              dropdownLabels[field] === "رشته تحصیلی" ||
-              dropdownLabels[field] === "شهر محل سکونت" ||
-              dropdownLabels[field] === "شهر محل تولد" ||
-              dropdownLabels[field] === "شماره تلفن همراه" ||
-              dropdownLabels[field] === "شماره تلفن ثابت" ||
-              dropdownLabels[field] === "تحصیلات"
+              dropdownLabels[field] === "قد" ||
+              dropdownLabels[field] === "وزن" ||
+              dropdownLabels[field] === "bsa" ||
+              dropdownLabels[field] === "bmi"
                 ? "w-50"
                 : "w-100"
             }`}
@@ -245,43 +261,26 @@ const PatientForm = () => {
                   value={patient[field] || ""}
                   onChange={(e) => handleChange(e, field)}
                   placeholder={`لطفا ${dropdownLabels[field]} را وارد کنید`}
-                  className="custom-input"
-                  disabled={isFormDisabled}
+                  className={
+                    dropdownLabels[field] === "bsa" ||
+                    dropdownLabels[field] === "bmi"
+                      ? "custom-disabled"
+                      : ""
+                  }
+                  disabled={
+                    dropdownLabels[field] === "bsa" ||
+                    dropdownLabels[field] === "bmi"
+                      ? true
+                      : isFormDisabled
+                  }
                 />
               )}
             </div>
           </div>
         ))}
       </div>
-
-      <div className="d-flex w-100 flex-column my-3">
-        <label className="p-col-12 p-md-2" htmlFor="start_date">
-          تاریخ فوت:
-        </label>
-        <DatePicker
-          value={
-            patient.death_date
-              ? new DateObject({
-                  date: patient?.death_date,
-                  calendar: "gregorian",
-                })
-                  .convert(persian)
-                  .format("YYYY/MM/DD")
-              : startDateObj
-          }
-          onChange={(date) => handleDateChange(date, "death_date")}
-          calendar={persian}
-          locale={persian_fa}
-          format="YYYY/MM/DD"
-          placeholder="تاریخ فوت را انتخاب کنید"
-          className="p-2 border rounded"
-          inputClass="w-full p-2 text-end w-100 border rounded"
-          position="bottom-right"
-          disabled={isFormDisabled}
-        />
-      </div>
     </div>
   );
 };
 
-export default PatientForm;
+export default PatientRecordsForm;

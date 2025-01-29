@@ -14,6 +14,7 @@ import TasvirBardari from "../components/TasvirBardari";
 import TreatmentTable from "../components/TreatmentTable";
 import FollwoUp from "../components/FollwoUp";
 import PatientInfoForm from "./PatientInfoForm";
+import PatientRecordsForm from "./PatientRecordsForm";
 
 const PatientsDetails = () => {
   const { uid } = useParams();
@@ -122,14 +123,15 @@ const PatientsDetails = () => {
       content: (
         <div>
           {" "}
-          <ReusableForm
+          {/* <ReusableForm
             isEditable={true}
             fields={formPatientsFields}
             formSchema={generateReusableSchema(formPatientsFields)}
             onSubmit={handleFormSubmit}
             inputsPerRow={[1, 2, 2, 2, 2, 1, 3, 2, 1]}
             defaultValuesFromBackend={userRecords} // Pass default values here
-          />
+          /> */}
+          <PatientRecordsForm />
         </div>
       ),
     },
@@ -192,7 +194,7 @@ const PatientsDetails = () => {
       </h2>
       <ReusableTabs
         tabs={tabs}
-        defaultActiveKey={defaultActiveKey ? defaultActiveKey : "اطلاعات هویتی"}
+        defaultActiveKey={defaultActiveKey ? defaultActiveKey : "سوابق بیمار"}
       />
     </div>
   );
