@@ -98,7 +98,6 @@ const Mammography = ({ setShowAzmayeshPAge }) => {
           value={formData.date}
           onChange={handleFieldChange}
         /> */}
-        15
         <div className="d-flex flex-column">
           <label className="label" htmlFor="date">
             تاریخ
@@ -181,4 +180,4 @@ const Mammography = ({ setShowAzmayeshPAge }) => {
   );
 };
 
-export default Mammography;
+export default batchrecords_uid;
