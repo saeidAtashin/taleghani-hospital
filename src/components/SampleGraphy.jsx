@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { useParams } from "react-router-dom";
@@ -8,15 +8,50 @@ import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import { toast } from "react-toastify";
 
-const SampleGraphy = ({ setShowAzmayeshPAge }) => {
+const SampleGraphy = ({ setShowAzmayeshPAge, uidScan }) => {
   const { uid } = useParams();
   const [formData, setFormData] = useState({
     patient_uid: uid,
     date: "",
     title: "",
+    order_description: "",
     description: "",
   });
   const [selectedDate, setSelectedDate] = useState(null);
+  const [put, setPut] = useState(false);
+
+  useEffect(() => {
+    // Fetch existing data when component mounts
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `https://cancerreg.ir/api/v1/records/other-graphy/${uidScan}/`
+        );
+        const { data } = response.data;
+        console.log("data", data);
+        if (data) {
+          const persianDate = new Date(data.date)
+            .toLocaleDateString("fa-IR")
+            .replace(/\//g, "-");
+
+          setFormData({
+            patient_uid: data.uid,
+            date: data.date,
+            title: data.title,
+            order_description: data.order_description,
+            description: data.description || "",
+          });
+          setPut(true); // Enable PUT updates only after successful submission
+          setSelectedDate(persianDate);
+        }
+      } catch (error) {
+        setPut(false); // Enable PUT updates only after successful submission
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [uidScan]);
 
   const handleDateChange = (date) => {
     if (date) {
@@ -30,13 +65,6 @@ const SampleGraphy = ({ setShowAzmayeshPAge }) => {
     }
   };
 
-  const handleInputChange = (index, event) => {
-    const { name, value } = event.target;
-    const sizes = [...formData.sizes];
-    sizes[index][name] = value;
-    setFormData({ ...formData, sizes });
-  };
-
   const handleFieldChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -44,22 +72,39 @@ const SampleGraphy = ({ setShowAzmayeshPAge }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formattedData = {
-      ...formData,
-      // size: formData.sizes.map((item) => parseFloat(item.size) || 0),
-      // site: formData.sizes.map((item) => item.site),
+    const { patient_uid, ...rest } = formData;
+
+    const formattedDataInPost = {
+      ...rest,
+      patient_uid,
     };
 
-    try {
-      const response = await axios.post(
-        "https://cancerreg.ir/api/v1/records/other-graphy/",
-        formattedData
-      );
-      toast.success("ثبت شد");
-      setShowAzmayeshPAge("home");
-    } catch (error) {
-      toast.warning("خطایی رخ داده است");
-      console.error(error);
+    const formattedDataInPut = {
+      ...rest,
+    };
+    if (put) {
+      try {
+        await axios.put(
+          `https://cancerreg.ir/api/v1/records/other-graphy/${uidScan}/`,
+          formattedDataInPut
+        );
+        toast.success("تغییرات ذخیره شد");
+      } catch (error) {
+        toast.warning("خطایی رخ داده است");
+        console.error(error);
+      }
+    } else {
+      try {
+        const response = await axios.post(
+          "https://cancerreg.ir/api/v1/records/other-graphy/",
+          formattedDataInPost
+        );
+        toast.success("ثبت شد");
+        setShowAzmayeshPAge("home");
+      } catch (error) {
+        toast.warning("خطایی رخ داده است");
+        console.error(error);
+      }
     }
   };
 
@@ -76,7 +121,7 @@ const SampleGraphy = ({ setShowAzmayeshPAge }) => {
           placeholder="تاریخ را انتخاب کنید"
           className=" p-2 border rounded "
           inputClass="w-full p-2 text-end w-100 border rounded"
-          position="bottom-right" // Change this to control the position
+          position="bottom-right"
         />
       </Form.Group>
       <Form.Group>
