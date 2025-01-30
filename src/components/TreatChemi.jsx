@@ -81,14 +81,10 @@ const TreatChemi = ({
   };
 
   const addCycle = (treatmentIndex) => {
-    console.log("treatmentIndex", treatmentIndex);
-    console.log("allDatas", allDatas);
-
     setisCycleVisible(true);
 
     const updatedTreatments = [...allDatas];
 
-    // Initialize `cycles` if it doesn't exist
     if (!Array.isArray(updatedTreatments[treatmentIndex]?.cycles)) {
       updatedTreatments[treatmentIndex].cycles = [];
     }
@@ -109,9 +105,6 @@ const TreatChemi = ({
     ];
 
     setAllDatas(updatedTreatments);
-
-    console.log("allDatas after update", allDatas);
-    console.log("updatedTreatments after update", updatedTreatments);
   };
 
   const handleCycleapi = async (cycle) => {
@@ -172,9 +165,6 @@ const TreatChemi = ({
       },
     ]);
   };
-
-  console.log("selectedTreatment", selectedTreatment);
-  console.log("selectedProtocol", selectedProtocol);
 
   return (
     <>

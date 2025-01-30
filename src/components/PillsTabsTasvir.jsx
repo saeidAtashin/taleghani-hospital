@@ -9,10 +9,6 @@ import Petscan from "./Petscan";
 import SampleGraphy from "./SampleGraphy";
 
 const PillsTabsTasvir = ({ dataOfTable, allrow, setShowAzmayeshPAge }) => {
-  console.log("allrow", allrow);
-  console.log("dataOfTable", dataOfTable?.uid);
-  console.log("setShowAzmayeshPAge", setShowAzmayeshPAge);
-
   const getTabBadgeColor = (tab) => {
     const matchingRow = allrow?.records?.find(
       (row) => row.record_type === tab.eventKey

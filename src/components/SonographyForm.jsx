@@ -32,7 +32,6 @@ const SonographyForm = ({ setShowAzmayeshPAge, badgeColor, uidScan }) => {
           `https://cancerreg.ir/api/v1/records/sonography/${uidScan}/`
         );
         const { data } = response.data;
-        console.log("data", data);
 
         if (data) {
           const persianDate = new Date(data.date)

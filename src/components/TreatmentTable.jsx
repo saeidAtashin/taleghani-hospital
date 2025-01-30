@@ -207,10 +207,6 @@ const TreatmentTable = () => {
         label: treatmentData.evaluation,
       });
 
-      console.log("selectedTreatment", selectedTreatment);
-      console.log("selectedProtocol", selectedProtocol);
-      console.log("treatmentData", treatmentData);
-
       // setSelectedProtocol(
       //   protocolOptions.find((item) => item.value === treatmentData.protocol) ||
       //     null

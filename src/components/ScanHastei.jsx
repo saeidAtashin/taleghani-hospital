@@ -30,7 +30,6 @@ const ScanHastei = ({ setShowAzmayeshPAge, uidScan }) => {
           `https://cancerreg.ir/api/v1/records/corescan/${uidScan}/`
         );
         const { data } = response.data;
-        console.log("data", data);
 
         if (data) {
           const persianDate = new Date(data.date)
@@ -59,9 +58,7 @@ const ScanHastei = ({ setShowAzmayeshPAge, uidScan }) => {
   }, [uidScan]);
 
   // Function to update API (debounced to avoid frequent calls)
-  const updateData = debounce(async (updatedData) => {
-    console.log("object");
-  }, 1000);
+  const updateData = debounce(async (updatedData) => {}, 1000);
 
   // Run PUT request only when 'put' is set to true
   useEffect(() => {

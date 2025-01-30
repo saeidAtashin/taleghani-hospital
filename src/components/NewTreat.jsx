@@ -302,9 +302,6 @@ const NewTreat = ({
     }
   };
 
-  console.log("selectedTreatment", selectedTreatment);
-  console.log("treatment", treatment);
-
   return (
     <>
       <Toast ref={toast} />

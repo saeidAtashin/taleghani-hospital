@@ -28,7 +28,6 @@ const SampleGraphy = ({ setShowAzmayeshPAge, uidScan }) => {
           `https://cancerreg.ir/api/v1/records/other-graphy/${uidScan}/`
         );
         const { data } = response.data;
-        console.log("data", data);
         if (data) {
           const persianDate = new Date(data.date)
             .toLocaleDateString("fa-IR")

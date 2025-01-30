@@ -28,7 +28,6 @@ const Petscan = ({ setShowAzmayeshPAge, uidScan }) => {
           `https://cancerreg.ir/api/v1/records/petscan/${uidScan}/`
         );
         const { data } = response.data;
-        console.log("test");
         if (data) {
           const persianDate = new Date(data.date)
             .toLocaleDateString("fa-IR")
@@ -87,7 +86,6 @@ const Petscan = ({ setShowAzmayeshPAge, uidScan }) => {
     });
   };
 
-  console.log("put", put);
   const handleSubmit = async (e) => {
     e.preventDefault();
     setloadingBtn(true);

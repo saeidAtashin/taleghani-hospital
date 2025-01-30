@@ -118,7 +118,6 @@ export default function TasvirBardari() {
         }));
         setProducts(fetchedData);
 
-        console.log("fetchedData tasvir", fetchedData);
         setSelectedOptions([]);
       })
       .catch((error) => {
