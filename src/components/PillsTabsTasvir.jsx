@@ -52,6 +52,7 @@ const PillsTabsTasvir = ({ dataOfTable, allrow, setShowAzmayeshPAge }) => {
       title: "MRI",
       content: (
         <Mri
+          uidScan={dataOfTable?.uid}
           setShowAzmayeshPAge={setShowAzmayeshPAge}
           badgeColor={getTabBadgeColor({ eventKey: "mri" })}
         />
