@@ -62,6 +62,7 @@ const PillsTabsTasvir = ({ dataOfTable, allrow, setShowAzmayeshPAge }) => {
       title: "CT-Scan",
       content: (
         <Ctscan
+          uidScan={dataOfTable?.uid}
           setShowAzmayeshPAge={setShowAzmayeshPAge}
           badgeColor={getTabBadgeColor({ eventKey: "ctscan" })}
         />

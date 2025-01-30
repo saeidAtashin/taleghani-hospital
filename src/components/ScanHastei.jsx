@@ -47,7 +47,7 @@ const ScanHastei = ({ setShowAzmayeshPAge, uidScan }) => {
           });
           setPut(true); // Enable PUT updates only after successful submission
           setSelectedDate(persianDate);
-          setIsLoaded(true);
+          // setIsLoaded(true);
         }
       } catch (error) {
         setPut(false); // Enable PUT updates only after successful submission

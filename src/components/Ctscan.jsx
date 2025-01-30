@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { useParams } from "react-router-dom";
@@ -8,7 +8,7 @@ import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import { toast } from "react-toastify";
 
-const Ctscan = ({ setShowAzmayeshPAge }) => {
+const Ctscan = ({ setShowAzmayeshPAge, uidScan }) => {
   const { uid } = useParams();
   const [formData, setFormData] = useState({
     patient_uid: uid,
@@ -16,13 +16,48 @@ const Ctscan = ({ setShowAzmayeshPAge }) => {
     sizes: [{ size: "", site: "" }],
     description: "",
     density: "",
-    // birads: "",
-    // echogenicity: "",
   });
 
   const [selectedDate, setSelectedDate] = useState(null);
   const [loadingBtn, setloadingBtn] = useState(false);
+  const [put, setPut] = useState(false);
 
+  useEffect(() => {
+    // Fetch existing data when component mounts
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `https://cancerreg.ir/api/v1/records/ctscan/${uidScan}/`
+        );
+        const { data } = response.data;
+        console.log("data", data);
+
+        if (data) {
+          const persianDate = new Date(data.date)
+            .toLocaleDateString("fa-IR")
+            .replace(/\//g, "-");
+
+          setFormData({
+            patient_uid: data.patient.uid,
+            date: data.date,
+            density: data.density,
+            sizes: data.involvements_list.length
+              ? data.involvements_list
+              : [{ size: "", site: "" }],
+            description: data.description || "",
+          });
+          setPut(true); // Enable PUT updates only after successful submission
+          setSelectedDate(persianDate);
+          // setIsLoaded(true);
+        }
+      } catch (error) {
+        setPut(false); // Enable PUT updates only after successful submission
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [uidScan]);
   const handleDateChange = (date) => {
     if (date) {
       const gregorianDate = date.convert("gregorian").toDate();
@@ -61,29 +96,45 @@ const Ctscan = ({ setShowAzmayeshPAge }) => {
     const involvements = formData.sizes.map((item) => ({
       site: item.site ? item.site : undefined,
       size: item.size ? item.size : undefined,
-      // You can include description if needed
-      // description: item.description,
     }));
 
-    const { sizes, ...rest } = formData;
+    const { sizes, patient_uid, ...rest } = formData;
 
-    const formattedData = {
+    const formattedDataInPost = {
       ...rest,
+      patient_uid,
       involvements,
     };
 
-    try {
-      const response = await axios.post(
-        "https://cancerreg.ir/api/v1/records/ctscan/",
-        formattedData
-      );
-      setloadingBtn(false);
-      toast.success("ثبت شد");
-      setShowAzmayeshPAge("home");
-    } catch (error) {
-      setloadingBtn(false);
-      toast.warning("خطایی رخ داده است.");
-      console.error(error);
+    const formattedDataInPut = {
+      ...rest,
+      involvements,
+    };
+    if (put) {
+      try {
+        await axios.put(
+          `https://cancerreg.ir/api/v1/records/corescan/${uidScan}/`,
+          formattedDataInPut
+        );
+        toast.success("تغییرات ذخیره شد");
+      } catch (error) {
+        toast.warning("خطایی رخ داده است");
+        console.error(error);
+      }
+    } else {
+      try {
+        const response = await axios.post(
+          "https://cancerreg.ir/api/v1/records/ctscan/",
+          formattedDataInPost
+        );
+        setloadingBtn(false);
+        toast.success("ثبت شد");
+        setShowAzmayeshPAge("home");
+      } catch (error) {
+        setloadingBtn(false);
+        toast.warning("خطایی رخ داده است.");
+        console.error(error);
+      }
     }
   };
 
