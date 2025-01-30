@@ -119,7 +119,7 @@ export default function TasvirBardari() {
   };
 
   useEffect(() => {
-    fetchData();
+    showAzmayeshPAge === "home" && fetchData();
   }, [uid, showAzmayeshPAge]);
 
   const handlePrint = () => {};

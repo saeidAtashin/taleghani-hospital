@@ -83,6 +83,7 @@ const PillsTabsTasvir = ({ dataOfTable, allrow, setShowAzmayeshPAge }) => {
       title: "PET-Scan",
       content: (
         <Petscan
+          uidScan={dataOfTable?.uid}
           setShowAzmayeshPAge={setShowAzmayeshPAge}
           badgeColor={getTabBadgeColor({ eventKey: "petscan" })}
         />

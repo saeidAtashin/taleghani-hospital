@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { useParams } from "react-router-dom";
@@ -8,7 +8,7 @@ import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import { toast } from "react-toastify";
 
-const Petscan = ({ setShowAzmayeshPAge }) => {
+const Petscan = ({ setShowAzmayeshPAge, uidScan }) => {
   const { uid } = useParams();
   const [formData, setFormData] = useState({
     patient_uid: uid,
@@ -19,6 +19,42 @@ const Petscan = ({ setShowAzmayeshPAge }) => {
   });
   const [selectedDate, setSelectedDate] = useState(null);
   const [loadingBtn, setloadingBtn] = useState(false);
+  const [put, setPut] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `https://cancerreg.ir/api/v1/records/petscan/${uidScan}/`
+        );
+        const { data } = response.data;
+        console.log("test");
+        if (data) {
+          const persianDate = new Date(data.date)
+            .toLocaleDateString("fa-IR")
+            .replace(/\//g, "-");
+
+          setFormData({
+            patient_uid: data.patient.uid,
+            date: data.date,
+            suv_max: data.suv_max,
+            sizes: data.involvements_list.length
+              ? data.involvements_list
+              : [{ size: "", site: "" }],
+            description: data.description || "",
+          });
+          setSelectedDate(persianDate);
+          setloadingBtn(true);
+          setPut(true); // Enable PUT updates only after successful submission
+        }
+      } catch (error) {
+        // setPut(false);
+
+        console.error("Error fetching data", error);
+      }
+    };
+    fetchData();
+  }, [uid]);
 
   const handleDateChange = (date) => {
     if (date) {
@@ -51,36 +87,48 @@ const Petscan = ({ setShowAzmayeshPAge }) => {
     });
   };
 
+  console.log("put", put);
   const handleSubmit = async (e) => {
     e.preventDefault();
     setloadingBtn(true);
 
-    const involvements = formData.sizes.map((item) => ({
+    const involvements = formData?.sizes?.map((item) => ({
       site: item.site ? item.site : undefined,
       size: item.size ? item.size : undefined,
-      // You can include description if needed
-      // description: item.description,
     }));
 
-    const { sizes, ...rest } = formData;
+    const { sizes, patient_uid, ...rest } = formData;
+    const formattedDataForPut = { ...rest, involvements };
+    const formattedDataForPost = { ...rest, patient_uid, involvements };
 
-    const formattedData = {
-      ...rest,
-      involvements,
-    };
-
-    try {
-      const response = await axios.post(
-        "https://cancerreg.ir/api/v1/records/petscan/",
-        formattedData
-      );
-      setloadingBtn(false);
-      toast.success("ثبت شد");
-      setShowAzmayeshPAge("home");
-    } catch (error) {
-      setloadingBtn(false);
-      toast.warning("خطایی رخ داده است");
-      console.error(error);
+    if (put) {
+      try {
+        const response = await axios.put(
+          `https://cancerreg.ir/api/v1/records/petscan/${uidScan}/`,
+          formattedDataForPut
+        );
+        setloadingBtn(false);
+        toast.success("اطلاعات به‌روزرسانی شد");
+        setShowAzmayeshPAge("home");
+      } catch (error) {
+        setloadingBtn(false);
+        toast.warning("خطایی رخ داده است");
+        console.error(error);
+      }
+    } else {
+      try {
+        const response = await axios.post(
+          `https://cancerreg.ir/api/v1/records/petscan/`,
+          formattedDataForPost
+        );
+        setloadingBtn(false);
+        toast.success("اطلاعات به‌روزرسانی شد");
+        setShowAzmayeshPAge("home");
+      } catch (error) {
+        setloadingBtn(false);
+        toast.warning("خطایی رخ داده است");
+        console.error(error);
+      }
     }
   };
 
@@ -95,13 +143,13 @@ const Petscan = ({ setShowAzmayeshPAge }) => {
           locale={persian_fa}
           format="YYYY/MM/DD"
           placeholder="تاریخ را انتخاب کنید"
-          className=" p-2 border rounded "
+          className="p-2 border rounded"
           inputClass="w-full p-2 text-end w-100 border rounded"
-          position="bottom-right" // Change this to control the position
+          position="bottom-right"
         />
       </Form.Group>
 
-      {formData.sizes.map((field, index) => (
+      {formData?.sizes?.map((field, index) => (
         <Row key={index} className="my-3">
           <Col>
             <Form.Group>
@@ -112,7 +160,7 @@ const Petscan = ({ setShowAzmayeshPAge }) => {
                 value={field.site}
                 className="text-right"
                 onChange={(e) => handleInputChange(index, e)}
-                placeholder="مکان را وارد کنید" // Optional: Add a placeholder
+                placeholder="مکان را وارد کنید"
               />
             </Form.Group>
           </Col>
@@ -125,7 +173,7 @@ const Petscan = ({ setShowAzmayeshPAge }) => {
                 value={field.size}
                 className="text-right"
                 onChange={(e) => handleInputChange(index, e)}
-                placeholder="اندازه را وارد کنید" // Optional: Add a placeholder
+                placeholder="اندازه را وارد کنید"
               />
             </Form.Group>
           </Col>
