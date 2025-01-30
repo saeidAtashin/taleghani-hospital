@@ -62,10 +62,20 @@ export default function TasvirBardari() {
     );
   };
 
-  const tasvirbardatiCellClick = (record, allrow) => {
-    settasvirDetailUid(record);
-    setallrow(allrow);
-    setShowAzmayeshPAge("orderRegister");
+  const tasvirbardatiCellClick = (rowData, allrow) => {
+    // Find the first record with "IN_PROGRESS" state
+    const inProgressRecord = rowData?.records?.find(
+      (record) => record?.state === "IN_PROGRESS"
+    );
+
+    // If there's an "IN_PROGRESS" record, open it; otherwise, open the first record
+    const recordToOpen = inProgressRecord || rowData?.records?.[0];
+
+    if (recordToOpen) {
+      settasvirDetailUid(recordToOpen);
+      setallrow(allrow);
+      setShowAzmayeshPAge("orderRegister");
+    }
   };
 
   const nameTemplate = (rowData) => {
