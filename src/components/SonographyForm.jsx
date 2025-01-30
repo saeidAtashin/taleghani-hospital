@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { useParams } from "react-router-dom";
@@ -7,16 +7,14 @@ import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import { toast } from "react-toastify";
 
-const SonographyForm = ({ setShowAzmayeshPAge, badgeColor }) => {
+const SonographyForm = ({ setShowAzmayeshPAge, badgeColor, uidScan }) => {
   const { uid } = useParams();
 
-  console.log("badgeColor in in", badgeColor);
   const initialFormData = {
     patient_uid: uid,
     date: "",
-    sizes: [{ size: 0, site: "", description: "" }],
+    sizes: [{ size: "", site: "", description: "" }],
     description: "",
-    batch_uid: undefined,
     birads: "",
     echogenicity: "",
   };
@@ -24,6 +22,45 @@ const SonographyForm = ({ setShowAzmayeshPAge, badgeColor }) => {
   const [formData, setFormData] = useState(initialFormData);
   const [selectedDate, setSelectedDate] = useState(null);
   const [loadingBtn, setloadingBtn] = useState(false);
+  const [put, setPut] = useState(false);
+
+  useEffect(() => {
+    // Fetch existing data when component mounts
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `https://cancerreg.ir/api/v1/records/sonography/${uidScan}/`
+        );
+        const { data } = response.data;
+        console.log("data", data);
+
+        if (data) {
+          const persianDate = new Date(data.date)
+            .toLocaleDateString("fa-IR")
+            .replace(/\//g, "-");
+
+          setFormData({
+            patient_uid: data.patient.uid,
+            date: data.date,
+            birads: data.birads,
+            echogenicity: data.echogenicity,
+            sizes: data.involvements_list.length
+              ? data.involvements_list
+              : [{ size: "", site: "" }],
+            description: data.description || "",
+          });
+          setPut(true); // Enable PUT updates only after successful submission
+          setSelectedDate(persianDate);
+          // setIsLoaded(true);
+        }
+      } catch (error) {
+        setPut(false); // Enable PUT updates only after successful submission
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [uidScan]);
 
   const handleDateChange = (date) => {
     if (date) {
@@ -52,7 +89,7 @@ const SonographyForm = ({ setShowAzmayeshPAge, badgeColor }) => {
   const addInputFields = () => {
     setFormData({
       ...formData,
-      sizes: [...formData.sizes, { size: 0, site: "", description: "" }],
+      sizes: [...formData.sizes, { size: "", site: "", description: "" }],
     });
   };
 
@@ -72,30 +109,49 @@ const SonographyForm = ({ setShowAzmayeshPAge, badgeColor }) => {
       patient_uid: formData.patient_uid,
       date: formData.date,
       description: formData.description,
-      batch_uid: formData.batch_uid,
       birads: formData.birads,
       echogenicity: formData.echogenicity,
       involvements,
     };
 
-    try {
-      const response = await axios.post(
-        "https://cancerreg.ir/api/v1/records/sonography/",
-        formattedData
-      );
-      toast.success("ثبت شد");
+    const formattedDataInPut = {
+      date: formData.date,
+      description: formData.description,
+      birads: formData.birads,
+      echogenicity: formData.echogenicity,
+      involvements,
+    };
+    if (put) {
+      try {
+        await axios.put(
+          `https://cancerreg.ir/api/v1/records/sonography/${uidScan}/`,
+          formattedDataInPut
+        );
+        toast.success("تغییرات ذخیره شد");
+      } catch (error) {
+        toast.warning("خطایی رخ داده است");
+        console.error(error);
+      }
+    } else {
+      try {
+        const response = await axios.post(
+          "https://cancerreg.ir/api/v1/records/sonography/",
+          formattedData
+        );
+        toast.success("ثبت شد");
 
-      // Reset form data and selected date
-      setloadingBtn(false);
+        // Reset form data and selected date
+        setloadingBtn(false);
 
-      setFormData(initialFormData);
-      setSelectedDate(null);
-      setShowAzmayeshPAge("home");
-    } catch (error) {
-      setloadingBtn(false);
+        setFormData(initialFormData);
+        setSelectedDate(null);
+        setShowAzmayeshPAge("home");
+      } catch (error) {
+        setloadingBtn(false);
 
-      toast.warning("خطایی رخ داده است.");
-      console.error(error);
+        toast.warning("خطایی رخ داده است.");
+        console.error(error);
+      }
     }
   };
 
