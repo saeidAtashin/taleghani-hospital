@@ -74,7 +74,7 @@ export default function TasvirBardari() {
         {rowData?.records?.map((record, index) => (
           <span
             key={index}
-            onClick={() => tasvirbardatiCellClick(record, rowData)}
+            // onClick={() => tasvirbardatiCellClick(record, rowData)}
             style={{
               cursor: "pointer",
               color: record?.state === "IN_PROGRESS" ? "#FF7518" : "green",
@@ -247,10 +247,11 @@ export default function TasvirBardari() {
                   type="button"
                   className="btn btn-outline-primary"
                   onClick={() =>
-                    window.open(
-                      `/dashboard/patients/batch-graphic-records/${rowData.uid}`,
-                      "_blank"
-                    )
+                    // window.open(
+                    //   `/dashboard/patients/batch-graphic-records/${rowData.uid}`,
+                    //   "_blank"
+                    // )
+                    tasvirbardatiCellClick(rowData, rowData)
                   }
                 >
                   مشاهده
