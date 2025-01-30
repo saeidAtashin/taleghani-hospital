@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { useParams } from "react-router-dom";
@@ -8,18 +8,54 @@ import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import { toast } from "react-toastify";
 
-const Mammography = ({ setShowAzmayeshPAge }) => {
+const Mammography = ({ setShowAzmayeshPAge, uidScan }) => {
   const { uid } = useParams();
   const [formData, setFormData] = useState({
     patient_uid: uid,
     date: "",
     sizes: [{ size: null, site: "", description: "" }],
     description: "",
-    batch_uid: undefined,
   });
 
   const [selectedDate, setSelectedDate] = useState(null);
   const [loadingBtn, setloadingBtn] = useState(false);
+  const [put, setPut] = useState(false);
+
+  useEffect(() => {
+    // Fetch existing data when component mounts
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `https://cancerreg.ir/api/v1/records/mammography/${uidScan}/`
+        );
+        const { data } = response.data;
+        console.log("data", data);
+
+        if (data) {
+          const persianDate = new Date(data.date)
+            .toLocaleDateString("fa-IR")
+            .replace(/\//g, "-");
+
+          setFormData({
+            patient_uid: data.patient.uid,
+            date: data.date,
+            sizes: data.involvements_list.length
+              ? data.involvements_list
+              : [{ size: "", site: "" }],
+            description: data.description || "",
+          });
+          setPut(true); // Enable PUT updates only after successful submission
+          setSelectedDate(persianDate);
+          // setIsLoaded(true);
+        }
+      } catch (error) {
+        setPut(false); // Enable PUT updates only after successful submission
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [uidScan]);
 
   const handleDateChange = (date) => {
     if (date) {
@@ -67,24 +103,41 @@ const Mammography = ({ setShowAzmayeshPAge }) => {
       patient_uid: formData.patient_uid,
       date: formData.date,
       description: formData.description,
-      batch_uid: formData.batch_uid,
       involvements,
     };
 
-    try {
-      const response = await axios.post(
-        "https://cancerreg.ir/api/v1/records/mammography/",
-        formattedData
-      );
-      setloadingBtn(false);
+    const formattedDataInPut = {
+      date: formData.date,
+      description: formData.description,
+      involvements,
+    };
+    if (put) {
+      try {
+        await axios.put(
+          `https://cancerreg.ir/api/v1/records/mammography/${uidScan}/`,
+          formattedDataInPut
+        );
+        toast.success("تغییرات ذخیره شد");
+      } catch (error) {
+        toast.warning("خطایی رخ داده است");
+        console.error(error);
+      }
+    } else {
+      try {
+        const response = await axios.post(
+          "https://cancerreg.ir/api/v1/records/mammography/",
+          formattedData
+        );
+        setloadingBtn(false);
 
-      toast.success("ثبت شد");
-      setShowAzmayeshPAge("home");
-    } catch (error) {
-      setloadingBtn(false);
+        toast.success("ثبت شد");
+        setShowAzmayeshPAge("home");
+      } catch (error) {
+        setloadingBtn(false);
 
-      toast.warning("خطایی رخ داده است");
-      console.error(error);
+        toast.warning("خطایی رخ داده است");
+        console.error(error);
+      }
     }
   };
 
@@ -150,16 +203,6 @@ const Mammography = ({ setShowAzmayeshPAge }) => {
       <Button variant="secondary" onClick={addInputFields}>
         اضافه کردن
       </Button>
-
-      {/* <Form.Group className="my-3">
-        <Form.Label>Batch UID</Form.Label>
-        <Form.Control
-          type="text"
-          name="batch_uid"
-          value={formData.batch_uid}
-          onChange={handleFieldChange}
-        />
-      </Form.Group> */}
 
       <Form.Group className="my-3">
         <Form.Label>توضیحات</Form.Label>

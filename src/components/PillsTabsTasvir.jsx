@@ -42,6 +42,7 @@ const PillsTabsTasvir = ({ dataOfTable, allrow, setShowAzmayeshPAge }) => {
       title: "ماموگرافی",
       content: (
         <Mammography
+          uidScan={dataOfTable?.uid}
           setShowAzmayeshPAge={setShowAzmayeshPAge}
           badgeColor={getTabBadgeColor({ eventKey: "mammography" })}
         />

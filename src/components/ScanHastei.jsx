@@ -109,7 +109,6 @@ const ScanHastei = ({ setShowAzmayeshPAge, uidScan }) => {
     });
   };
 
-  console.log("put", put);
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoadingBtn(true);
