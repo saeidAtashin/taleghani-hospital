@@ -83,7 +83,6 @@ const PatientRecordsForm = () => {
     fetch(patientApiUrl)
       .then((res) => res.json())
       .then((data) => {
-        console.log("data?.data data?.data", data?.data);
         setPatient(data?.data);
       });
 
@@ -91,8 +90,6 @@ const PatientRecordsForm = () => {
       fetch(dropdownApis[key])
         .then((res) => res.json())
         .then((data) => {
-          console.log("setDropdownData", data.data?.results);
-
           setDropdownData((prev) => ({ ...prev, [key]: data.data.results }));
         });
     });

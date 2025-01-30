@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { useParams } from "react-router-dom";
@@ -7,8 +7,9 @@ import DatePicker from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import { toast } from "react-toastify";
+import { debounce } from "lodash"; // Import debounce to prevent excessive API calls
 
-const ScanHastei = ({ setShowAzmayeshPAge }) => {
+const ScanHastei = ({ setShowAzmayeshPAge, uidScan }) => {
   const { uid } = useParams();
   const [formData, setFormData] = useState({
     patient_uid: uid,
@@ -17,7 +18,64 @@ const ScanHastei = ({ setShowAzmayeshPAge }) => {
     description: "",
   });
   const [selectedDate, setSelectedDate] = useState(null);
-  const [loadingBtn, setloadingBtn] = useState(false);
+  const [loadingBtn, setLoadingBtn] = useState(false);
+  const [put, setPut] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false); // To prevent auto-saving on initial load
+
+  useEffect(() => {
+    // Fetch existing data when component mounts
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `https://cancerreg.ir/api/v1/records/corescan/${uidScan}/`
+        );
+        const { data } = response.data;
+
+        if (data) {
+          const persianDate = new Date(data.date)
+            .toLocaleDateString("fa-IR")
+            .replace(/\//g, "-");
+
+          setFormData({
+            patient_uid: data.patient.uid,
+            date: data.date,
+            sizes: data.involvements_list.length
+              ? data.involvements_list
+              : [{ size: "", site: "" }],
+            description: data.description || "",
+          });
+          setPut(true); // Enable PUT updates only after successful submission
+          setSelectedDate(persianDate);
+          setIsLoaded(true);
+        }
+      } catch (error) {
+        setPut(false); // Enable PUT updates only after successful submission
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [uidScan]);
+
+  // Function to update API (debounced to avoid frequent calls)
+  const updateData = debounce(async (updatedData) => {
+    console.log("object");
+  }, 1000);
+
+  // Run PUT request only when 'put' is set to true
+  useEffect(() => {
+    if (isLoaded && put) {
+      const involvements = formData.sizes.map((item) => ({
+        site: item.site || undefined,
+        size: item.size || undefined,
+      }));
+
+      const { sizes, ...rest } = formData;
+      const formattedData = { ...rest, involvements };
+
+      updateData(formattedData);
+    }
+  }, [formData, put]); // Only runs when `put` is true
 
   const handleDateChange = (date) => {
     if (date) {
@@ -50,39 +108,53 @@ const ScanHastei = ({ setShowAzmayeshPAge }) => {
     });
   };
 
+  console.log("put", put);
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setloadingBtn(true);
+    setLoadingBtn(true);
 
     const involvements = formData.sizes.map((item) => ({
       site: item.site ? item.site : undefined,
       size: item.size ? item.size : undefined,
-      // You can include description if needed
-      // description: item.description,
     }));
 
-    const { sizes, ...rest } = formData;
+    const { sizes, patient_uid, ...rest } = formData;
 
-    const formattedData = {
+    const formattedDataInPost = {
       ...rest,
+      patient_uid,
       involvements,
     };
 
-    try {
-      const response = await axios.post(
-        "https://cancerreg.ir/api/v1/records/corescan/",
-        formattedData
-      );
-      toast.success("ثبت شد");
-      setloadingBtn(false);
-
-      setShowAzmayeshPAge("home");
-    } catch (error) {
-      toast.warning("خطایی رخ داده است");
-      setloadingBtn(false);
-
-      console.error(error);
-    }
+    const formattedDataInPut = {
+      ...rest,
+      involvements,
+    };
+    if (put) {
+      try {
+        await axios.put(
+          `https://cancerreg.ir/api/v1/records/corescan/${uidScan}/`,
+          formattedDataInPut
+        );
+        toast.success("تغییرات ذخیره شد");
+      } catch (error) {
+        toast.warning("خطایی رخ داده است");
+        console.error(error);
+      }
+    } else
+      try {
+        await axios.post(
+          "https://cancerreg.ir/api/v1/records/corescan/",
+          formattedDataInPost
+        );
+        toast.success("ثبت شد");
+        setLoadingBtn(false);
+        setShowAzmayeshPAge("home");
+      } catch (error) {
+        toast.warning("خطایی رخ داده است");
+        setLoadingBtn(false);
+        console.error(error);
+      }
   };
 
   return (
@@ -96,9 +168,9 @@ const ScanHastei = ({ setShowAzmayeshPAge }) => {
           locale={persian_fa}
           format="YYYY/MM/DD"
           placeholder="تاریخ را انتخاب کنید"
-          className=" p-2 border rounded "
+          className="p-2 border rounded"
           inputClass="w-full p-2 text-end w-100 border rounded"
-          position="bottom-right" // Change this to control the position
+          position="bottom-right"
         />
       </Form.Group>
 
@@ -113,7 +185,7 @@ const ScanHastei = ({ setShowAzmayeshPAge }) => {
                 value={field.site}
                 className="text-right"
                 onChange={(e) => handleInputChange(index, e)}
-                placeholder="مکان را وارد کنید" // Optional: Add a placeholder
+                placeholder="مکان را وارد کنید"
               />
             </Form.Group>
           </Col>
@@ -126,7 +198,7 @@ const ScanHastei = ({ setShowAzmayeshPAge }) => {
                 value={field.size}
                 className="text-right"
                 onChange={(e) => handleInputChange(index, e)}
-                placeholder="اندازه را وارد کنید" // Optional: Add a placeholder
+                placeholder="اندازه را وارد کنید"
               />
             </Form.Group>
           </Col>
@@ -142,7 +214,7 @@ const ScanHastei = ({ setShowAzmayeshPAge }) => {
           <Form.Group className="my-3">
             <Form.Label>توضیحات</Form.Label>
             <Form.Control
-              type="textarea"
+              as="textarea"
               rows={3}
               name="description"
               value={formData.description}
@@ -152,6 +224,7 @@ const ScanHastei = ({ setShowAzmayeshPAge }) => {
           </Form.Group>
         </Col>
       </Row>
+
       <Button type="submit" variant="primary" disabled={loadingBtn}>
         تایید و ثبت نتایج
       </Button>

@@ -316,7 +316,7 @@ export default function TasvirBardari() {
             </div>
             <SelectableIconItem
               icon="pi pi-check"
-              header="تومور مارکرها"
+              header=""
               options={options}
               type="bordered"
               selectedValues={selectedOptions}

@@ -136,8 +136,6 @@ const PatientForm = () => {
     })
       .then(async (res) => {
         const responseData = await res.json(); // Ensure JSON parsing
-        console.log("Response Status:", res.status);
-        console.log("Response Data:", responseData);
 
         if (res.status >= 200 && res.status < 400) {
           toast.success("ویرایش شما انجام شد");
@@ -152,7 +150,6 @@ const PatientForm = () => {
       });
   };
 
-  console.log("sortedDropdownKeys", sortedDropdownKeys);
   if (!patient || Object.keys(dropdownData).some((key) => !dropdownData[key]))
     return <p>Loading...</p>;
 
@@ -236,8 +233,9 @@ const PatientForm = () => {
       </div>
 
       <div className="d-flex flex-wrap">
-        {sortedDropdownKeys.map((field) => (
+        {sortedDropdownKeys.map((field, index) => (
           <div
+            key={index}
             className={`   ${
               dropdownLabels[field] === "رشته تحصیلی" ||
               dropdownLabels[field] === "شهر محل سکونت" ||
