@@ -205,6 +205,7 @@ const TreatChemi = ({
       {showedPart === "showCycle" && (
         <>
           <Accordion
+            className="shadow-lg mt-4 mb-3"
             multiple
             activeIndex={[
               ...Array(allDatas?.length > 0 ? allDatas?.length : 1).keys(),
@@ -212,7 +213,7 @@ const TreatChemi = ({
           >
             {allDatas?.map((treatment, index) => (
               <AccordionTab
-                className="my-3 rounded-3"
+                className="my-3 rounded-3 mb-3"
                 key={treatment.uid}
                 header={`خط درمان ${index + 1}`}
               >
@@ -278,6 +279,7 @@ const TreatChemi = ({
                         padding: "1rem",
                         marginBottom: "1rem",
                       }}
+                      className=""
                     >
                       <legend>سیکل ها</legend>
                       <Accordion multiple>
