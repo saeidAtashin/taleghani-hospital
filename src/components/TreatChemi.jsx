@@ -48,6 +48,7 @@ const TreatChemi = ({
   setDescription,
   description,
   hiddenButtons,
+  lineUid,
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [loadingtar, setLoadingtar] = useState(false);
@@ -117,9 +118,13 @@ const TreatChemi = ({
 
   const handleCycleapi = async (cycle) => {
     const cycleData = {
-      treatment_line_uid: uidForCycle,
+      treatment_line_uid: cycle?.uid
+        ? cycle?.uid
+        : lineUid
+        ? lineUid
+        : uidForCycle,
       date: cycle.date,
-      description: "cycle.description",
+      description: cycle.description,
     };
 
     try {
@@ -344,7 +349,12 @@ const TreatChemi = ({
                                 تاریخ:
                               </label>
                               <DatePicker
-                                value={cycle.date}
+                                onChange={handleTreatmentStartDateChange}
+                                value={
+                                  cycle.date
+                                    ? cycle.date
+                                    : treatmentStartDateObj
+                                }
                                 calendar={persian}
                                 locale={persian_fa}
                                 format="YYYY/MM/DD"
@@ -382,9 +392,9 @@ const TreatChemi = ({
                               </div>
                             </div>
                             <Button
-                              label="ذخیره تغییرات خط درمان"
+                              label="ثبت سیکل"
                               icon="pi pi-check"
-                              onClick={() => handleSubmitLine(treatment.uid)} // ✅ Pass treatment.uid
+                              onClick={() => handleCycleapi(treatment)} // ✅ Pass treatment.uid
                               loading={loading}
                               className="w-100 bg-white text-dark rounded-3"
                             />

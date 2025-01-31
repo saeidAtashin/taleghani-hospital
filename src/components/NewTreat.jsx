@@ -575,6 +575,7 @@ const NewTreat = ({
             </>
           ) : (
             <TreatChemi
+              lineUid={lineUid}
               handleSubmitModal2={handleSubmitModal2}
               hiddenButtons={hiddenButtons}
               description={description}
