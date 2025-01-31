@@ -9,7 +9,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import DatePicker, { DateObject } from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
-import { TabMenu } from "primereact/tabmenu";
 import TreatChemi from "./TreatChemi";
 
 const NewTreat = ({
@@ -288,7 +287,6 @@ const NewTreat = ({
           summary: "موفق",
           detail: "ذخیره شد",
         });
-        // addNewTreatment();
       }
     } catch (err) {
       if (err?.status >= 400) {
@@ -338,10 +336,6 @@ const NewTreat = ({
 
               resetFormFields();
               setTreatmentValue(e.value);
-              // setnewTreat(true);
-              // const isForm =
-              //   rowData?.category === "HORMONETHERAPY" ||
-              //   rowData?.category === "CHEMOTHERAPY";
 
               const isForm =
                 mainSelection === "HORMONETHERAPY" ||
@@ -350,7 +344,6 @@ const NewTreat = ({
               setShowStartTreatBtn(true);
               setShowedPart(isForm ? "showCycle" : "");
 
-              // setshowLine(isForm);
             }}
             style={{ minWidth: "14rem" }}
           />
@@ -385,7 +378,7 @@ const NewTreat = ({
                 <div className="p-col-12 p-md-10">
                   <Dropdown
                     id="evaluation_uid"
-                    value={selectedTreatment || null} // Use the full object here
+                    value={selectedTreatment || null} 
                     options={treatment}
                     onChange={(e) => setSelectedTreatment(e.value)}
                     placeholder="ارزیابی را انتخاب کنید"
@@ -446,7 +439,6 @@ const NewTreat = ({
               showStartTreatBtn={showStartTreatBtn}
               loading={loading}
               showedPart={showedPart}
-              // items={items}
               activeIndex={activeIndex}
               handleTabChange={handleTabChange}
               startDateObj={startDateObj}
