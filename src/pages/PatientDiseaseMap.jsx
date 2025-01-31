@@ -3,6 +3,8 @@ import { Accordion, AccordionTab } from "primereact/accordion";
 import { useParams } from "react-router-dom";
 import { Button } from "primereact/button";
 import Step3Form from "./Step3Form";
+import { DateObject } from "react-multi-date-picker";
+import persian from "react-date-object/calendars/persian";
 
 const PatientDiseaseMap = () => {
   const [data, setData] = useState([]);
@@ -40,7 +42,19 @@ const PatientDiseaseMap = () => {
       {data?.length > 0 ? (
         <Accordion>
           {data?.map((item) => (
-            <AccordionTab key={item.uid} header={`نوع بدخیمی: ${item.type}`}>
+            <AccordionTab
+              key={item.uid}
+              header={`نوع بدخیمی: ${item.type} - آخرین تغییرات: ${
+                item?.updated_at
+                  ? new DateObject({
+                      date: item?.updated_at,
+                      calendar: "gregorian",
+                    })
+                      .convert(persian)
+                      .format("YYYY/MM/DD")
+                  : ""
+              }`}
+            >
               <p>
                 <strong>تشخیص:</strong> {item.diagnosis}
               </p>
