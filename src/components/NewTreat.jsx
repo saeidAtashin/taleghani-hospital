@@ -10,6 +10,7 @@ import DatePicker, { DateObject } from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import TreatChemi from "./TreatChemi";
+import { Dialog } from "primereact/dialog";
 
 const NewTreat = ({
   responseUid,
@@ -57,6 +58,7 @@ const NewTreat = ({
 }) => {
   const [isCycleVisible, setisCycleVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [mainSelection, setMainSelection] = useState(null);
   const [subSelection, setSubSelection] = useState(null);
   const [uidForCycle, setuidForCycle] = useState(null);
@@ -174,6 +176,78 @@ const NewTreat = ({
     }
   };
 
+  const handleEndSubmit = async () => {
+    setLoading(true);
+    setShowModal(true);
+  };
+
+  console.log("selectedTreatment", selectedTreatment);
+  const handleSubmitModal = async () => {
+    console.log("object");
+    const payload = {
+      treatment_uid: allDatas?.uid,
+
+      // type: isTreatmentForm ? "TREATMENT" : "CHEMOTHERAPY",
+      // category: treatmentValue?.value,
+      // sub_category: isTreatmentForm ? treatmentValue?.label : undefined,
+      // patient_uid: uid,
+      // start_date: startDate ? startDate : treatmentStartDate,
+      end_date: endDate ? endDate : undefined,
+      description: description ? description : undefined,
+      evaluation_uid: selectedTreatment,
+      // protocol_uid: selectedProtocol,
+    };
+    if (!isTreatmentForm) {
+      payload.treatment_uid = allDatas?.uid;
+      payload.evaluation_uid = selectedTreatment
+        ? selectedTreatment
+        : undefined;
+      // payload.protocol_uid = selectedProtocol;
+      // payload.cycles = cycles.map((c) => ({
+      //   cycleNumber: c.cycleNumber,
+      //   date: c.date,
+      //   description: c.description,
+      // }));
+    }
+    // treatment_uid: responseUid,
+
+    try {
+      const response = await axios.put(
+        `https://cancerreg.ir/api/v1/teatment/end-treatment/${allDatas?.uid}/`,
+        payload
+      );
+      if (response?.status >= 200 && response?.status < 400) {
+        setLoading(false);
+        toast.current.show({
+          severity: "success",
+          summary: "موفق",
+          detail: "ذخیره شد",
+        });
+        setResponseUid(response?.data?.data?.uid);
+        setuidForCycle(response?.data?.data?.first_treatment_line_uid);
+        setShowStartTreatBtn(false);
+        setRefreshTreatTable(!refreshTreatTable);
+        if (isTreatmentForm) {
+          setnewTreat(false);
+          resetFormFields();
+        }
+        setShowedPart("showCycle");
+        setLoading(false);
+      }
+    } catch (err) {
+      if (err?.status >= 400) {
+        setShowStartTreatBtn(true);
+        console.error(err);
+        setLoading(false);
+        toast.current.show({
+          severity: "error",
+          summary: "خطا",
+          detail: err.response?.data?.message || "مشکلی پیش آمده است.",
+        });
+      }
+    } finally {
+    }
+  };
   useEffect(() => {
     if (Array.isArray(treatmentValue)) {
       setMainSelection(treatmentValue[0]?.value || null);
@@ -343,7 +417,6 @@ const NewTreat = ({
               setIsTreatmentForm(isForm ? true : false);
               setShowStartTreatBtn(true);
               setShowedPart(isForm ? "showCycle" : "");
-
             }}
             style={{ minWidth: "14rem" }}
           />
@@ -356,45 +429,11 @@ const NewTreat = ({
             <>
               <div className="d-flex flex-column my-3">
                 <label className="p-col-12 p-md-2" htmlFor="start_date">
-                  تاریخ شروع خط درمان:
+                  تاریخ شروع درمان:
                 </label>
                 <DatePicker
                   value={startDateObj}
                   onChange={handleStartDateChange}
-                  calendar={persian}
-                  locale={persian_fa}
-                  format="YYYY/MM/DD"
-                  placeholder="تاریخ را انتخاب کنید"
-                  className="p-2 border rounded"
-                  inputClass="w-full p-2 text-end w-100 border rounded"
-                  position="bottom-right"
-                />
-              </div>
-
-              <div className="d-flex flex-column my-3">
-                <label className="p-col-12 p-md-2" htmlFor="evaluation_uid">
-                  ارزیابی خط درمان:
-                </label>
-                <div className="p-col-12 p-md-10">
-                  <Dropdown
-                    id="evaluation_uid"
-                    value={selectedTreatment || null} 
-                    options={treatment}
-                    onChange={(e) => setSelectedTreatment(e.value)}
-                    placeholder="ارزیابی را انتخاب کنید"
-                    optionLabel="label"
-                    className="w-100"
-                  />
-                </div>
-              </div>
-
-              <div className="d-flex flex-column my-3">
-                <label className="p-col-12 p-md-2" htmlFor="end_date">
-                  تاریخ پایان درمان:
-                </label>
-                <DatePicker
-                  value={endDateObj}
-                  onChange={handleEndDateChange}
                   calendar={persian}
                   locale={persian_fa}
                   format="YYYY/MM/DD"
@@ -416,18 +455,28 @@ const NewTreat = ({
                     onChange={(e) => setDescription(e.target.value)}
                     rows={3}
                     className="w-100"
-                    placeholder="توضیحات مرتبط با خط درمان را وارد نمایید."
+                    placeholder="توضیحات مرتبط با درمان را وارد نمایید."
                   />
                 </div>
               </div>
 
-              <Button
-                label="تایید و ثبت نتایج"
-                icon="pi pi-check"
-                onClick={handleSubmit}
-                loading={loading}
-                className="w-100"
-              />
+              <div className="d-flex gap-4 ">
+                <Button
+                  label="تایید و ثبت نتایج"
+                  icon="pi pi-check"
+                  onClick={handleSubmit}
+                  // loading={loading}
+                  className="w-100 rounded p-button-outlined"
+                />
+
+                <Button
+                  label="پایان درمان"
+                  icon="pi pi-check"
+                  onClick={handleEndSubmit}
+                  // loading={loading}
+                  className="w-100 rounded"
+                />
+              </div>
             </>
           ) : (
             <TreatChemi
@@ -464,6 +513,63 @@ const NewTreat = ({
           )}
         </div>
       )}
+      <Dialog
+        visible={showModal}
+        className="w-50"
+        onHide={() => setShowModal(false)}
+        header="پایان خط درمان"
+        footer={
+          <div className="d-flex justify-content-end w-100">
+            <Button
+              label="بستن"
+              icon="pi pi-times"
+              onClick={() => setShowModal(false)}
+              className="p-button-text"
+            />
+            <Button
+              label="تایید"
+              icon="pi pi-check"
+              onClick={handleSubmitModal}
+              // loading={loading}
+              className="p-button-primary"
+            />
+          </div>
+        }
+      >
+        {/* Modal content */}
+        <div className="d-flex flex-column my-4 w-100">
+          <label className="p-col-12 p-md-2" htmlFor="evaluation_uid">
+            ارزیابی درمان:
+          </label>
+          <div className="p-col-12 p-md-10">
+            <Dropdown
+              id="evaluation_uid"
+              value={selectedTreatment}
+              options={treatment}
+              onChange={(e) => setSelectedTreatment(e.value)}
+              placeholder="ارزیابی را انتخاب کنید"
+              optionLabel="label"
+              className="w-100"
+            />
+          </div>
+        </div>
+        <div className="d-flex flex-column my-3">
+          <label className="p-col-12 p-md-2" htmlFor="end_date">
+            تاریخ پایان درمان:
+          </label>
+          <DatePicker
+            value={endDateObj}
+            onChange={handleEndDateChange}
+            calendar={persian}
+            locale={persian_fa}
+            format="YYYY/MM/DD"
+            placeholder="تاریخ را انتخاب کنید"
+            className="p-2 border rounded"
+            inputClass="w-full p-2 text-end w-100 border rounded"
+            position="bottom-right"
+          />
+        </div>{" "}
+      </Dialog>
     </>
   );
 };

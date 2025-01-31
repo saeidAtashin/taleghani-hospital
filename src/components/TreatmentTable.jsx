@@ -48,13 +48,13 @@ const TreatmentTable = () => {
 
   const stateTranslations = {
     IN_PROGRESS: "در حال انجام",
-    COMPLETED: "تکمیل شده",
+    DONE: "تکمیل شده",
     PENDING: "در انتظار",
   };
 
   const stateClasses = {
     IN_PROGRESS: "state-in_progress",
-    COMPLETED: "state-completed",
+    DONE: "state-completed",
     PENDING: "state-pending",
   };
 
@@ -172,6 +172,8 @@ const TreatmentTable = () => {
     try {
       const response = await fetch(getTreatment);
       const data = await response.json();
+      !isForm && setAllDatas(data?.data);
+
       setShowStartTreatBtn(false);
       setShowedPart("showCycle");
       const treatmentData = data?.data;
@@ -203,8 +205,8 @@ const TreatmentTable = () => {
       setEndDateObj(endDateJalali);
       // setSelectedTreatment(treatmentData.evaluation_uid);
       setSelectedTreatment({
-        value: treatmentData.evaluation_uid,
-        label: treatmentData.evaluation,
+        value: treatmentData?.evaluation_uid,
+        label: treatmentData?.evaluation,
       });
 
       // setSelectedProtocol(

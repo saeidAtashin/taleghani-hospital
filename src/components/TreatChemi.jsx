@@ -347,7 +347,7 @@ const TreatChemi = ({
         </>
       )}
       {!showStartTreatBtn && (
-        <div style={{ flex: 1 }}>
+        <div className="d-flex gap-4">
           <Button
             label="ذخیره"
             icon="pi pi-check"
@@ -360,7 +360,7 @@ const TreatChemi = ({
             icon="pi pi-check"
             onClick={() => setShowModal(true)}
             loading={loading}
-            className="w-100 bg-white text-dark rounded-3"
+            className="w-100 text-white rounded-3"
           />
         </div>
       )}
