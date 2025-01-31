@@ -11,6 +11,7 @@ import persian_fa from "react-date-object/locales/persian_fa";
 import { TabMenu } from "primereact/tabmenu";
 import { Dialog } from "primereact/dialog";
 import axios from "axios";
+import { Badge } from "primereact/badge";
 
 const TreatChemi = ({
   treatmentStartDateObj,
@@ -216,9 +217,24 @@ const TreatChemi = ({
           >
             {allDatas?.map((treatment, index) => (
               <AccordionTab
-                className="my-3 rounded-3 mb-3"
+                className={` rounded-3 `}
                 key={treatment.uid}
-                header={`خط درمان ${index + 1}`}
+                // header={`خط درمان ${index + 1}`}
+                header={
+                  <span className="flex align-items-center gap-4 w-full">
+                    <span className="font-bold white-space-nowrap">
+                      خط درمان {index + 1}
+                    </span>
+                    <Badge
+                      value={treatment?.state}
+                      className={`mx-4 ${
+                        treatment?.state === "DONE"
+                          ? "bg-success"
+                          : "bg-danger"
+                      }`}
+                    />
+                  </span>
+                }
               >
                 <div about="dropadd" className="">
                   <div className="d-flex flex-column">
