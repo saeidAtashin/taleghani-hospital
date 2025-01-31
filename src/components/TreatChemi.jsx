@@ -52,7 +52,15 @@ const TreatChemi = ({
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [loadingtar, setLoadingtar] = useState(false);
+  const [treatUidForCycle, setTreatUidForCycle] = useState(undefined);
   const [savedCycles, setSavedCycles] = useState([]); // Track saved cycles
+
+  const [cycleDates, setCycleDates] = useState([]);
+  const [cycleDescriptions, setCycleDescriptions] = useState([]);
+  //
+
+  const [selectedTreatmentNew, setSelectedTreatmentNew] = useState(null);
+
   const handleTreatmentStartDateChange = (date) => {
     if (date) {
       const gregorianDate = date.convert("gregorian").toDate();
@@ -68,23 +76,24 @@ const TreatChemi = ({
   };
 
   const handleCycleDateChange = (index, date) => {
-    const updatedCycles = [...cycles];
     if (date) {
       const gregorianDate = date.convert("gregorian").toDate();
       const formattedDate = gregorianDate.toISOString().split("T")[0];
-      updatedCycles[index].date = formattedDate;
-      updatedCycles[index].dateObj = date;
+
+      const updatedCycleDates = [...cycleDates];
+      updatedCycleDates[index] = formattedDate; // Store the formatted date
+      setCycleDates(updatedCycleDates); // Update the state
     } else {
-      updatedCycles[index].date = "";
-      updatedCycles[index].dateObj = null;
+      const updatedCycleDates = [...cycleDates];
+      updatedCycleDates[index] = ""; // Clear the date if it's null
+      setCycleDates(updatedCycleDates); // Update the state
     }
-    setCycles(updatedCycles);
   };
 
   const handleCycleDescriptionChange = (index, val) => {
-    const updatedCycles = [...cycles];
-    updatedCycles[index].description = val;
-    setCycles(updatedCycles);
+    const updatedCycleDescriptions = [...cycleDescriptions];
+    updatedCycleDescriptions[index] = val; // Store the updated description
+    setCycleDescriptions(updatedCycleDescriptions); // Update the state
   };
 
   const addCycle = (treatmentIndex) => {
@@ -116,25 +125,27 @@ const TreatChemi = ({
 
   console.log("allDatas in chemi", allDatas);
 
-  const handleCycleapi = async (cycle) => {
+  const handleCycleapi = async (cycle, index) => {
     const cycleData = {
       treatment_line_uid: cycle?.uid
         ? cycle?.uid
         : lineUid
         ? lineUid
+        : treatUidForCycle
+        ? treatUidForCycle
         : uidForCycle,
-      date: cycle.date,
-      description: cycle.description,
+      date: cycleDates[index] || "", // Use the date from the cycleDates state
+      description: cycleDescriptions[index] || "", // Use the description from the cycleDescriptions state
     };
 
     try {
-      setLoadingtar(true);
-
+      setLoadingtar(true); // Set loading state to true
       const response = await axios.post(
         "https://cancerreg.ir/api/v1/teatment/cycle/",
         cycleData
       );
 
+      console.log("Cycle saved successfully", response.data); // Optionally log success
       setSavedCycles((prevSavedCycles) => [
         ...prevSavedCycles,
         cycle.cycleNumber,
@@ -145,25 +156,19 @@ const TreatChemi = ({
         cycle.cycleNumber,
         ":",
         error
-      );
+      ); // Log errors
     } finally {
-      setLoadingtar(false);
+      setLoadingtar(false); // Reset loading state
     }
   };
-
-  // const handleSubmitAllCycles = () => {
-  //   cycles.forEach((cycle) => {
-  //     handleCycleapi(cycle);
-  //   });
-  // };
 
   const removeCycle = (index) => {
     const updatedCycles = cycles.filter((_, i) => i !== index);
     setCycles(updatedCycles);
   };
 
-  const handleSubmitModal3 = async () => {
-    await handleSubmitModal2(); // Call the function properly
+  const handleSubmitModal3 = async (uid) => {
+    await handleSubmitModal2(uid); // Call the function properly
     setShowModal(false); // Then close the modal
   };
 
@@ -177,6 +182,11 @@ const TreatChemi = ({
         description: "",
       },
     ]);
+  };
+
+  const handleTreatmentButtonClick = (treatment) => {
+    setShowModal(true); // Show the dialog
+    setSelectedTreatmentNew(treatment); // Set the selected treatment in state
   };
 
   return (
@@ -307,7 +317,10 @@ const TreatChemi = ({
                     className="p-button-text border rounded mb-4"
                     onClick={
                       treatment?.state !== "DONE"
-                        ? () => addCycle(index)
+                        ? () => {
+                            setTreatUidForCycle(treatment?.uid);
+                            addCycle(index);
+                          }
                         : console.log("object")
                     } // Pass the treatment line index
                     type="button"
@@ -328,8 +341,8 @@ const TreatChemi = ({
                         {treatment.cycles.map((cycle, cycleIndex) => (
                           <AccordionTab
                             key={cycle.uid}
-                            header={`\u00A0 سیکل ${cycleIndex + 1} `}
-                            className="bg-dark "
+                            header={`\u00A0 سیکل ${cycleIndex + 1}`}
+                            className="bg-dark"
                           >
                             <div className="d-flex justify-content-between align-items-center">
                               <h5>سیکل {cycleIndex + 1}</h5>
@@ -349,12 +362,10 @@ const TreatChemi = ({
                                 تاریخ:
                               </label>
                               <DatePicker
-                                onChange={handleTreatmentStartDateChange}
-                                value={
-                                  cycle.date
-                                    ? cycle.date
-                                    : treatmentStartDateObj
+                                onChange={(date) =>
+                                  handleCycleDateChange(cycleIndex, date)
                                 }
+                                value={cycleDates[cycleIndex] || ""} // Bind to cycleDates state
                                 calendar={persian}
                                 locale={persian_fa}
                                 format="YYYY/MM/DD"
@@ -375,15 +386,11 @@ const TreatChemi = ({
                               <div className="p-col-12 p-md-10">
                                 <InputTextarea
                                   id={`cycle_desc_${cycleIndex}`}
-                                  value={
-                                    cycle.description
-                                      ? cycle.description
-                                      : description
-                                  }
+                                  value={cycleDescriptions[cycleIndex] || ""} // Bind to cycleDescriptions state
                                   onChange={(e) =>
-                                    console.log(
-                                      "object,",
-                                      setDescription(e.target.value)
+                                    handleCycleDescriptionChange(
+                                      cycleIndex,
+                                      e.target.value
                                     )
                                   }
                                   rows={2}
@@ -391,22 +398,14 @@ const TreatChemi = ({
                                 />
                               </div>
                             </div>
+
                             <Button
                               label="ثبت سیکل"
                               icon="pi pi-check"
-                              onClick={() => handleCycleapi(treatment)} // ✅ Pass treatment.uid
+                              onClick={() => handleCycleapi(cycle, cycleIndex)} // Pass cycle and index to handleCycleapi
                               loading={loading}
                               className="w-100 bg-white text-dark rounded-3"
                             />
-                            {/* <div>
-                              <Button
-                                label={`\u00A0 ثبت سیکل`}
-                                icon="pi pi-plus"
-                                className="p-button-text border rounded mb-4"
-                                onClick={handleCycleapi}
-                                type="button"
-                              />
-                            </div> */}
                           </AccordionTab>
                         ))}
                       </Accordion>
@@ -414,20 +413,11 @@ const TreatChemi = ({
                   )}
                 </div>
 
-                {/* {!showStartTreatBtn && (
-                  <Button
-                    label="ذخیره تغییرات خط درمان"
-                    icon="pi pi-check"
-                    onClick={() => handleSubmitLine(treatment.uid)} // ✅ Pass treatment.uid
-                    loading={loading}
-                    className="w-100 bg-white text-dark rounded-3"
-                  />
-                )} */}
                 {treatment?.state !== "DONE" && (
                   <Button
                     label="پایان خط درمان"
                     icon="pi pi-check"
-                    onClick={() => setShowModal(true)}
+                    onClick={() => handleTreatmentButtonClick(treatment)} // Pass the treatment object to the handler
                     loading={loading}
                     className="w-100 text-white rounded-3 mb-4"
                   />
@@ -456,14 +446,6 @@ const TreatChemi = ({
       )}
       {!showStartTreatBtn && (
         <div className="d-flex gap-4">
-          {/* <Button
-            label="پایان درمان"
-            icon="pi pi-check"
-            // onClick={handleSubmitLine}
-            loading={loading}
-            className="w-100 bg-white text-dark rounded-3"
-          /> */}
-
           <Button
             label="پایان درمان"
             icon="pi pi-check"
@@ -484,13 +466,19 @@ const TreatChemi = ({
             <Button
               label="بستن"
               icon="pi pi-times"
-              onClick={() => setShowModal(false)}
+              onClick={() => {
+                console.log(
+                  "Selected Treatment UID:",
+                  selectedTreatmentNew?.uid
+                ); // Log the UID here
+                // setShowModal(false);
+              }}
               className="p-button-text"
             />
             <Button
               label="تایید"
               icon="pi pi-check"
-              onClick={handleSubmitModal3}
+              onClick={() => handleSubmitModal3(selectedTreatmentNew?.uid)}
               loading={loading}
               className="p-button-primary"
             />

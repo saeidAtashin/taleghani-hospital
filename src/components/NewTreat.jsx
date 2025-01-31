@@ -254,9 +254,12 @@ const NewTreat = ({
     }
   };
 
-  const handleSubmitModal2 = async () => {
+  const handleSubmitModal2 = async (uid) => {
+    console.log(" allDatas    allDatas ssdsdsdd", allDatas);
+    console.log(" uid", uid);
+
     const payload = {
-      treatment_uid: allDatas?.uid,
+      treatment_uid: uid ? uid : allDatas?.uid ? allDatas?.uid : responseUid,
 
       // type: isTreatmentForm ? "TREATMENT" : "CHEMOTHERAPY",
       // category: treatmentValue?.value,
@@ -269,7 +272,11 @@ const NewTreat = ({
       // protocol_uid: selectedProtocol,
     };
     if (!isTreatmentForm) {
-      payload.treatment_uid = allDatas?.uid;
+      payload.treatment_uid = uid
+        ? uid
+        : allDatas?.uid
+        ? allDatas?.uid
+        : responseUid;
       payload.evaluation_uid = selectedTreatment
         ? selectedTreatment
         : undefined;
@@ -287,7 +294,7 @@ const NewTreat = ({
     try {
       const response = await axios.put(
         `https://cancerreg.ir/api/v1/teatment/end-treatment-line/${
-          lineUid ? lineUid : allDatas?.uid
+          uid ? uid : allDatas?.uid ? allDatas?.uid : responseUid
         }/`,
         payload
       );
@@ -403,9 +410,6 @@ const NewTreat = ({
   }, [newTreat, selectedTreatment]);
 
   const handleSubmitLine = async (treatmentUid) => {
-    console.log("allDatas?.uid", allDatas);
-    console.log("responseUid", responseUid);
-    console.log("treatmentUid", treatmentUid);
     const payload = {
       treatment_uid: treatmentUid
         ? treatmentUid
