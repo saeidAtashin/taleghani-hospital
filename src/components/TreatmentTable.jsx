@@ -242,7 +242,7 @@ const TreatmentTable = () => {
           currentPageReportTemplate="نمایش {first} تا {last} از {totalRecords} اطلاعات"
           globalFilter={null}
           header={headerNew}
-          onRowClick={(e) => handleRowClick(e.data)}
+          // onRowClick={(e) => handleRowClick(e.data)}
         >
           <Column
             selectionMode="multiple"
@@ -273,12 +273,7 @@ const TreatmentTable = () => {
               <button
                 type="button"
                 className="btn btn-outline-primary"
-                onClick={() =>
-                  window.open(
-                    `/dashboard/patients-lists/${rowData.uid}`,
-                    "_blank"
-                  )
-                }
+                onClick={() => handleRowClick(rowData)} // ✅ Calling the function with rowData
               >
                 مشاهده
               </button>
