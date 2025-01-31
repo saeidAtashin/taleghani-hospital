@@ -15,6 +15,7 @@ import TreatmentTable from "../components/TreatmentTable";
 import FollwoUp from "../components/FollwoUp";
 import PatientInfoForm from "./PatientInfoForm";
 import PatientRecordsForm from "./PatientRecordsForm";
+import PatientDiseaseMap from "./PatientDiseaseMap";
 
 const PatientsDetails = () => {
   const { uid } = useParams();
@@ -132,6 +133,7 @@ const PatientsDetails = () => {
       label: "اطلاعات بیماری",
       content: (
         <div>
+          <PatientDiseaseMap />
           {/* <ReusableForm
             isEditable={true}
             fields={formPatientsInformationFields}
@@ -186,7 +188,9 @@ const PatientsDetails = () => {
       </h2>
       <ReusableTabs
         tabs={tabs}
-        defaultActiveKey={defaultActiveKey ? defaultActiveKey : "درمان"}
+        defaultActiveKey={
+          defaultActiveKey ? defaultActiveKey : "اطلاعات بیماری"
+        }
       />
     </div>
   );
