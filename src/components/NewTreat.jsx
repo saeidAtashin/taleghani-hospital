@@ -65,8 +65,9 @@ const NewTreat = ({
   const toast = useRef(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [treatment, setTreatment] = useState([]);
+  const [hiddenButtons, setHiddenButtons] = useState([]);
+  const [lineUid, setlineUid] = useState(undefined);
 
-  console.log("allDatas", allDatas?.state);
   const handleStartDateChange = (date) => {
     if (date) {
       const gregorianDate = date.convert("gregorian").toDate();
@@ -182,9 +183,7 @@ const NewTreat = ({
     setShowModal(true);
   };
 
-  console.log("selectedTreatment", selectedTreatment);
   const handleSubmitModal = async () => {
-    console.log("object");
     const payload = {
       treatment_uid: allDatas?.uid,
 
@@ -212,9 +211,83 @@ const NewTreat = ({
     }
     // treatment_uid: responseUid,
 
+    console.log("allDatas", allDatas);
+
     try {
       const response = await axios.put(
-        `https://cancerreg.ir/api/v1/teatment/end-treatment/${allDatas?.uid}/`,
+        `https://cancerreg.ir/api/v1/teatment/end-treatment/${
+          lineUid ? lineUid : allDatas?.uid
+        }/`,
+        payload
+      );
+      if (response?.status >= 200 && response?.status < 400) {
+        setLoading(false);
+        toast.current.show({
+          severity: "success",
+          summary: "موفق",
+          detail: "ذخیره شد",
+        });
+        setResponseUid(response?.data?.data?.uid);
+        setuidForCycle(response?.data?.data?.first_treatment_line_uid);
+        setShowStartTreatBtn(false);
+        setRefreshTreatTable(!refreshTreatTable);
+        if (isTreatmentForm) {
+          setnewTreat(false);
+          resetFormFields();
+        }
+        setShowedPart("showCycle");
+        setLoading(false);
+      }
+    } catch (err) {
+      if (err?.status >= 400) {
+        setShowStartTreatBtn(true);
+        console.error(err);
+        setLoading(false);
+        toast.current.show({
+          severity: "error",
+          summary: "خطا",
+          detail: err.response?.data?.message || "مشکلی پیش آمده است.",
+        });
+      }
+    } finally {
+    }
+  };
+
+  const handleSubmitModal2 = async () => {
+    const payload = {
+      treatment_uid: allDatas?.uid,
+
+      // type: isTreatmentForm ? "TREATMENT" : "CHEMOTHERAPY",
+      // category: treatmentValue?.value,
+      // sub_category: isTreatmentForm ? treatmentValue?.label : undefined,
+      // patient_uid: uid,
+      // start_date: startDate ? startDate : treatmentStartDate,
+      end_date: endDate ? endDate : undefined,
+      description: description ? description : undefined,
+      evaluation_uid: selectedTreatment,
+      // protocol_uid: selectedProtocol,
+    };
+    if (!isTreatmentForm) {
+      payload.treatment_uid = allDatas?.uid;
+      payload.evaluation_uid = selectedTreatment
+        ? selectedTreatment
+        : undefined;
+      // payload.protocol_uid = selectedProtocol;
+      // payload.cycles = cycles.map((c) => ({
+      //   cycleNumber: c.cycleNumber,
+      //   date: c.date,
+      //   description: c.description,
+      // }));
+    }
+    // treatment_uid: responseUid,
+
+    console.log("allDatas", allDatas);
+
+    try {
+      const response = await axios.put(
+        `https://cancerreg.ir/api/v1/teatment/end-treatment-line/${
+          lineUid ? lineUid : allDatas?.uid
+        }/`,
         payload
       );
       if (response?.status >= 200 && response?.status < 400) {
@@ -328,24 +401,32 @@ const NewTreat = ({
       });
   }, [newTreat, selectedTreatment]);
 
-  console.log("allDatas?.uid in in inja", allDatas);
-  console.log("responseUid in in inja", responseUid);
-
-  const handleSubmitLine = async () => {
+  const handleSubmitLine = async (treatmentUid) => {
+    console.log("allDatas?.uid", allDatas);
+    console.log("responseUid", responseUid);
+    console.log("treatmentUid", treatmentUid);
     const payload = {
-      treatment_uid: allDatas?.uid ? allDatas?.uid : responseUid,
+      treatment_uid: treatmentUid
+        ? treatmentUid
+        : allDatas?.uid
+        ? allDatas?.uid
+        : responseUid,
       start_date: treatmentStartDate ? treatmentStartDate : startDate,
       end_date: endDate ? endDate : undefined,
       description: description ? description : undefined,
-      evaluation_uid: selectedTreatment,
+      // evaluation_uid: selectedTreatment,
       protocol_uid: selectedProtocol,
     };
 
     if (!isTreatmentForm) {
-      payload.evaluation_uid = selectedTreatment
-        ? selectedTreatment
-        : undefined;
-      payload.treatment_uid = allDatas?.uid ? allDatas?.uid : responseUid;
+      // payload.evaluation_uid = selectedTreatment
+      //   ? selectedTreatment
+      //   : undefined;
+      payload.treatment_uid = treatmentUid
+        ? treatmentUid
+        : allDatas?.uid
+        ? allDatas?.uid
+        : responseUid;
       payload.protocol_uid = selectedProtocol;
       payload.cycles_list = cycles.map((c) => ({
         date: c.date,
@@ -360,6 +441,11 @@ const NewTreat = ({
       );
 
       if (response?.status >= 200 && response?.status < 400) {
+        setHiddenButtons((prev) => [...prev, treatmentUid]);
+
+        console.log("post treatment-line", response?.data?.data?.uid);
+        setlineUid(response?.data?.data?.uid);
+        // should uid ro bedim be end handleSubmitModal
         toast.current.show({
           severity: "success",
           summary: "موفق",
@@ -367,6 +453,8 @@ const NewTreat = ({
         });
       }
     } catch (err) {
+      // setShowSaveButton(true);
+
       if (err?.status >= 400) {
         console.error(err);
         toast.current.show({
@@ -486,6 +574,8 @@ const NewTreat = ({
             </>
           ) : (
             <TreatChemi
+              handleSubmitModal2={handleSubmitModal2}
+              hiddenButtons={hiddenButtons}
               description={description}
               setDescription={setDescription}
               allDatas={allDatas}

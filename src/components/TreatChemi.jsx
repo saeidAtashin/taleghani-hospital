@@ -18,6 +18,8 @@ const TreatChemi = ({
   setTreatmentStartDate,
   showStartTreatBtn,
   handleSubmit,
+  handleSubmitModal,
+  handleSubmitModal2,
   loading,
   showedPart,
   setCycles,
@@ -44,6 +46,7 @@ const TreatChemi = ({
   setShowStartTreatBtn,
   setDescription,
   description,
+  hiddenButtons,
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [loadingtar, setLoadingtar] = useState(false);
@@ -153,9 +156,9 @@ const TreatChemi = ({
     setCycles(updatedCycles);
   };
 
-  const handleSubmitModal = () => {
-    setShowModal(false);
-    handleSubmit();
+  const handleSubmitModal3 = async () => {
+    await handleSubmitModal2(); // Call the function properly
+    setShowModal(false); // Then close the modal
   };
 
   const addTreatmentLine = () => {
@@ -249,13 +252,17 @@ const TreatChemi = ({
                     </label>
                     <div className="p-col-12 p-md-10 mb-4">
                       <Dropdown
-                        value={selectedProtocol}
+                        value={
+                          treatment?.protocol
+                            ? treatment?.protocol_uid
+                            : selectedProtocol
+                        }
                         options={protocolOptions}
                         onChange={(e) => {
                           setSelectedProtocol(e.value);
-                          const updatedTreatments = [...allDatas];
-                          updatedTreatments[index].protocol = e.value;
-                          setAllDatas(updatedTreatments);
+                          // const updatedTreatments = [...allDatas];
+                          // updatedTreatments[index].protocol = e.value;
+                          // setAllDatas(updatedTreatments);
                         }}
                         placeholder="پروتکل را انتخاب نمایید"
                         optionLabel="label"
@@ -344,7 +351,14 @@ const TreatChemi = ({
                                 />
                               </div>
                             </div>
-                            <div>
+                            <Button
+                              label="ذخیره تغییرات خط درمان"
+                              icon="pi pi-check"
+                              onClick={() => handleSubmitLine(treatment.uid)} // ✅ Pass treatment.uid
+                              loading={loading}
+                              className="w-100 bg-white text-dark rounded-3"
+                            />
+                            {/* <div>
                               <Button
                                 label={`\u00A0 ثبت سیکل`}
                                 icon="pi pi-plus"
@@ -352,7 +366,7 @@ const TreatChemi = ({
                                 onClick={handleCycleapi}
                                 type="button"
                               />
-                            </div>
+                            </div> */}
                           </AccordionTab>
                         ))}
                       </Accordion>
@@ -360,18 +374,35 @@ const TreatChemi = ({
                   )}
                 </div>
 
-                {!showStartTreatBtn && (
+                {/* {!showStartTreatBtn && (
                   <Button
-                    label="ذخیره"
+                    label="ذخیره تغییرات خط درمان"
                     icon="pi pi-check"
-                    onClick={handleSubmitLine}
+                    onClick={() => handleSubmitLine(treatment.uid)} // ✅ Pass treatment.uid
                     loading={loading}
                     className="w-100 bg-white text-dark rounded-3"
                   />
-                )}
+                )} */}
+                <Button
+                  label="پایان خط درمان"
+                  icon="pi pi-check"
+                  onClick={() => setShowModal(true)}
+                  loading={loading}
+                  className="w-100 text-white rounded-3 mb-4"
+                />
               </AccordionTab>
             ))}
           </Accordion>
+          {/* {!showStartTreatBtn && (
+            <Button
+              label="پایان خط درمان"
+              icon="pi pi-check"
+              onClick={() => setShowModal(true)}
+              loading={loading}
+              className="w-100 text-white rounded-3 mb-4"
+            />
+          )} */}
+
           <Button
             label={`\u00A0 افزودن خط درمان`}
             icon="pi pi-plus"
@@ -383,19 +414,20 @@ const TreatChemi = ({
       )}
       {!showStartTreatBtn && (
         <div className="d-flex gap-4">
-          <Button
+          {/* <Button
             label="پایان درمان"
             icon="pi pi-check"
             // onClick={handleSubmitLine}
             loading={loading}
             className="w-100 bg-white text-dark rounded-3"
-          />
+          /> */}
+
           <Button
-            label="پایان خط درمان"
+            label="پایان درمان"
             icon="pi pi-check"
-            onClick={() => setShowModal(true)}
+            // onClick={handleSubmitLine}
             loading={loading}
-            className="w-100 text-white rounded-3"
+            className="w-100 bg-white text-dark rounded-3 mb-4"
           />
         </div>
       )}
@@ -416,7 +448,7 @@ const TreatChemi = ({
             <Button
               label="تایید"
               icon="pi pi-check"
-              onClick={handleSubmitModal}
+              onClick={handleSubmitModal3}
               loading={loading}
               className="p-button-primary"
             />
