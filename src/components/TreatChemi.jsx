@@ -228,9 +228,7 @@ const TreatChemi = ({
                     <Badge
                       value={treatment?.state}
                       className={`mx-4 ${
-                        treatment?.state === "DONE"
-                          ? "bg-success"
-                          : "bg-danger"
+                        treatment?.state === "DONE" ? "bg-success" : "bg-danger"
                       }`}
                     />
                   </span>
@@ -259,6 +257,7 @@ const TreatChemi = ({
                       className="p-2 border rounded"
                       inputClass="w-full p-2 text-end w-100 border rounded"
                       position="bottom-right"
+                      disabled={treatment?.state !== "DONE" ? false : true}
                     />
                   </div>
 
@@ -283,16 +282,31 @@ const TreatChemi = ({
                         placeholder="پروتکل را انتخاب نمایید"
                         optionLabel="label"
                         className="w-100"
+                        disabled={treatment?.state !== "DONE" ? false : true}
                       />
                     </div>
+                    {!treatment?.state && (
+                      <Button
+                        label="شروع خط درمان"
+                        icon="pi pi-check"
+                        onClick={() => handleSubmitLine(treatment.uid)} // ✅ Pass treatment.uid
+                        loading={loading}
+                        className="w-100 bg-white text-dark rounded-3 mb-4"
+                      />
+                    )}
                   </div>
 
                   <Button
                     label={`\u00A0 ثبت سیکل جدید`}
                     icon="pi pi-plus"
                     className="p-button-text border rounded mb-4"
-                    onClick={() => addCycle(index)} // Pass the treatment line index
+                    onClick={
+                      treatment?.state !== "DONE"
+                        ? () => addCycle(index)
+                        : console.log("object")
+                    } // Pass the treatment line index
                     type="button"
+                    disabled={treatment?.state !== "DONE" ? false : true}
                   />
 
                   {treatment?.cycles?.length > 0 && (
@@ -399,13 +413,15 @@ const TreatChemi = ({
                     className="w-100 bg-white text-dark rounded-3"
                   />
                 )} */}
-                <Button
-                  label="پایان خط درمان"
-                  icon="pi pi-check"
-                  onClick={() => setShowModal(true)}
-                  loading={loading}
-                  className="w-100 text-white rounded-3 mb-4"
-                />
+                {treatment?.state !== "DONE" && (
+                  <Button
+                    label="پایان خط درمان"
+                    icon="pi pi-check"
+                    onClick={() => setShowModal(true)}
+                    loading={loading}
+                    className="w-100 text-white rounded-3 mb-4"
+                  />
+                )}
               </AccordionTab>
             ))}
           </Accordion>
