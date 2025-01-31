@@ -5,7 +5,7 @@ import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
 import { Accordion, AccordionTab } from "primereact/accordion";
 import "react-datepicker/dist/react-datepicker.css";
-import DatePicker from "react-multi-date-picker";
+import DatePicker, { DateObject } from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import { TabMenu } from "primereact/tabmenu";
@@ -106,6 +106,8 @@ const TreatChemi = ({
 
     setAllDatas(updatedTreatments);
   };
+
+  console.log("allDatas in chemi", allDatas);
 
   const handleCycleapi = async (cycle) => {
     const cycleData = {
@@ -218,7 +220,16 @@ const TreatChemi = ({
                       تاریخ شروع خط درمان:
                     </label>
                     <DatePicker
-                      value={treatment.start_date}
+                      value={
+                        treatment.start_date
+                          ? new DateObject({
+                              date: treatment.start_date,
+                              calendar: "gregorian",
+                            })
+                              .convert(persian)
+                              .format("YYYY/MM/DD")
+                          : ""
+                      }
                       calendar={persian}
                       locale={persian_fa}
                       format="YYYY/MM/DD"

@@ -66,6 +66,7 @@ const NewTreat = ({
   const [activeIndex, setActiveIndex] = useState(0);
   const [treatment, setTreatment] = useState([]);
 
+  console.log("allDatas", allDatas?.state);
   const handleStartDateChange = (date) => {
     if (date) {
       const gregorianDate = date.convert("gregorian").toDate();
@@ -461,13 +462,15 @@ const NewTreat = ({
               </div>
 
               <div className="d-flex gap-4 ">
-                <Button
-                  label="تایید و ثبت نتایج"
-                  icon="pi pi-check"
-                  onClick={handleSubmit}
-                  // loading={loading}
-                  className="w-100 rounded p-button-outlined"
-                />
+                {allDatas?.state !== "DONE" && (
+                  <Button
+                    label="تایید و ثبت نتایج"
+                    icon="pi pi-check"
+                    onClick={handleSubmit}
+                    // loading={loading}
+                    className="w-100 rounded p-button-outlined"
+                  />
+                )}
 
                 <Button
                   label="پایان درمان"
