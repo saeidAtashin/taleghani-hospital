@@ -328,7 +328,7 @@ const NewTreat = ({
       });
   }, [newTreat, selectedTreatment]);
 
-  console.log("allDatas?.uid in in inja", allDatas?.uid);
+  console.log("allDatas?.uid in in inja", allDatas);
   console.log("responseUid in in inja", responseUid);
 
   const handleSubmitLine = async () => {
