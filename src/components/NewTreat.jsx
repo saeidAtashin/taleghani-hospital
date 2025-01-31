@@ -328,9 +328,12 @@ const NewTreat = ({
       });
   }, [newTreat, selectedTreatment]);
 
+  console.log("allDatas?.uid in in inja", allDatas?.uid);
+  console.log("responseUid in in inja", responseUid);
+
   const handleSubmitLine = async () => {
     const payload = {
-      treatment_uid: responseUid,
+      treatment_uid: allDatas?.uid ? allDatas?.uid : responseUid,
       start_date: treatmentStartDate ? treatmentStartDate : startDate,
       end_date: endDate ? endDate : undefined,
       description: description ? description : undefined,
@@ -342,7 +345,7 @@ const NewTreat = ({
       payload.evaluation_uid = selectedTreatment
         ? selectedTreatment
         : undefined;
-      payload.treatment_uid = responseUid;
+      payload.treatment_uid = allDatas?.uid ? allDatas?.uid : responseUid;
       payload.protocol_uid = selectedProtocol;
       payload.cycles_list = cycles.map((c) => ({
         date: c.date,
@@ -483,6 +486,7 @@ const NewTreat = ({
             </>
           ) : (
             <TreatChemi
+              setDescription={setDescription}
               allDatas={allDatas}
               setAllDatas={setAllDatas}
               setTreatmentStartDateObj={setTreatmentStartDateObj}

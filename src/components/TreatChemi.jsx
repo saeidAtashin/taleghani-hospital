@@ -42,6 +42,7 @@ const TreatChemi = ({
   uidForCycle,
   setAllDatas,
   setShowStartTreatBtn,
+  setDescription,
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [loadingtar, setLoadingtar] = useState(false);
@@ -325,6 +326,9 @@ const TreatChemi = ({
                                 <InputTextarea
                                   id={`cycle_desc_${cycleIndex}`}
                                   value={cycle.description}
+                                  onChange={(e) =>
+                                    setDescription(e.target.value)
+                                  }
                                   rows={2}
                                   className="w-100"
                                 />
@@ -345,6 +349,16 @@ const TreatChemi = ({
                     </fieldset>
                   )}
                 </div>
+
+                {!showStartTreatBtn && (
+                  <Button
+                    label="ذخیره"
+                    icon="pi pi-check"
+                    onClick={handleSubmitLine}
+                    loading={loading}
+                    className="w-100 bg-white text-dark rounded-3"
+                  />
+                )}
               </AccordionTab>
             ))}
           </Accordion>
@@ -360,9 +374,9 @@ const TreatChemi = ({
       {!showStartTreatBtn && (
         <div className="d-flex gap-4">
           <Button
-            label="ذخیره"
+            label="پایان درمان"
             icon="pi pi-check"
-            onClick={handleSubmitLine}
+            // onClick={handleSubmitLine}
             loading={loading}
             className="w-100 bg-white text-dark rounded-3"
           />
