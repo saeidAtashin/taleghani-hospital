@@ -159,7 +159,7 @@ const TreatmentTable = () => {
     setIsTreatmentForm(!isForm);
     setshowLine(isForm);
     if (isForm) {
-      // setIsTreatmentForm(!isTreatmentForm);
+      setIsTreatmentForm(!isTreatmentForm);
       try {
         const response = await fetch(getTreatmentLine);
         const data = await response.json();
@@ -180,6 +180,7 @@ const TreatmentTable = () => {
       setTreatmentValue(
         rowData?.sub_category ? rowData?.sub_category : rowData?.category || ""
       );
+
       const startDateGregorian = treatmentData.start_date || "";
       const endDateGregorian = treatmentData.end_date || "";
       const startDateJalali = startDateGregorian

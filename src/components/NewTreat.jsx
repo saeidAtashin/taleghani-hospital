@@ -349,7 +349,10 @@ const NewTreat = ({
     console.log("treatmentValue", treatmentValue);
     console.log("isTreatmentForm in new", isTreatmentForm);
     const isForm =
-      treatmentValue === "HORMONETHERAPY" || treatmentValue === "CHEMOTHERAPY";
+      treatmentValue === "HORMONETHERAPY" ||
+      mainSelection === "HORMONETHERAPY" ||
+      mainSelection === "CHEMOTHERAPY" ||
+      treatmentValue === "CHEMOTHERAPY";
     setIsTreatmentForm(!isForm);
     if (showLine) {
       setIsTreatmentForm(false);
