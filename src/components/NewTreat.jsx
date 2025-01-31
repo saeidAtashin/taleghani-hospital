@@ -106,6 +106,7 @@ const NewTreat = ({
     setCycles([]);
     setisCycleVisible(false);
     setShowedPart("");
+    setAllDatas(undefined);
   };
 
   const handleSubmit = async () => {
