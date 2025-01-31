@@ -330,6 +330,7 @@ const NewTreat = ({
     } finally {
     }
   };
+
   useEffect(() => {
     if (Array.isArray(treatmentValue)) {
       setMainSelection(treatmentValue[0]?.value || null);
@@ -344,8 +345,11 @@ const NewTreat = ({
       setSubSelection(null);
     }
 
+    console.log("mainSelection", mainSelection);
+    console.log("treatmentValue", treatmentValue);
+    console.log("isTreatmentForm in new", isTreatmentForm);
     const isForm =
-      mainSelection === "HORMONETHERAPY" || mainSelection === "CHEMOTHERAPY";
+      treatmentValue === "HORMONETHERAPY" || treatmentValue === "CHEMOTHERAPY";
     setIsTreatmentForm(!isForm);
     if (showLine) {
       setIsTreatmentForm(false);
