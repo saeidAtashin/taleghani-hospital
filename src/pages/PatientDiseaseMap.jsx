@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Accordion, AccordionTab } from "primereact/accordion";
 import { useParams } from "react-router-dom";
+import { Button } from "primereact/button";
+import Step3Form from "./Step3Form";
 
 const PatientDiseaseMap = () => {
   const [data, setData] = useState([]);
+  const [showAdd, setshowAdd] = useState(false);
+  const [refresh, setrefresh] = useState(false);
   const { uid } = useParams();
 
   useEffect(() => {
@@ -11,11 +15,28 @@ const PatientDiseaseMap = () => {
       .then((response) => response.json())
       .then((data) => setData(data?.results))
       .catch((error) => console.error("Error fetching data:", error));
-  }, []);
+  }, [refresh]);
 
-  console.log("data datadatadata ", data);
   return (
     <div className="p-4">
+      {!showAdd && (
+        <Button
+          label="افزودن"
+          className="rounded mb-3"
+          onClick={() => {
+            setshowAdd(true);
+          }}
+        />
+      )}
+      {showAdd && (
+        <Button
+          label="لغو"
+          className="rounded mb-3"
+          onClick={() => {
+            setshowAdd(false);
+          }}
+        />
+      )}
       {data?.length > 0 ? (
         <Accordion>
           {data?.map((item) => (
@@ -33,6 +54,17 @@ const PatientDiseaseMap = () => {
         <p>Loading...</p>
       )}
 
+      <div>
+        {showAdd && (
+          <Step3Form
+            patient_uid={uid}
+            onNext={() => {
+              setshowAdd(false);
+              setrefresh(!refresh);
+            }}
+          />
+        )}
+      </div>
       {/* Placeholder map, update lat/lng as needed */}
       <p>{/* <strong>Type:</strong> {item.type} */}</p>
     </div>
