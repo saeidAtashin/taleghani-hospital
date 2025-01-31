@@ -79,8 +79,6 @@ const PatientDiseaseMap = () => {
           />
         )}
       </div>
-      {/* Placeholder map, update lat/lng as needed */}
-      <p>{/* <strong>Type:</strong> {item.type} */}</p>
     </div>
   );
 };
