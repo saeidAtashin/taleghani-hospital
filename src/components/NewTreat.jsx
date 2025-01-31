@@ -486,6 +486,7 @@ const NewTreat = ({
             </>
           ) : (
             <TreatChemi
+              description={description}
               setDescription={setDescription}
               allDatas={allDatas}
               setAllDatas={setAllDatas}

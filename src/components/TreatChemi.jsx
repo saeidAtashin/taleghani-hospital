@@ -43,6 +43,7 @@ const TreatChemi = ({
   setAllDatas,
   setShowStartTreatBtn,
   setDescription,
+  description,
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [loadingtar, setLoadingtar] = useState(false);
@@ -325,9 +326,16 @@ const TreatChemi = ({
                               <div className="p-col-12 p-md-10">
                                 <InputTextarea
                                   id={`cycle_desc_${cycleIndex}`}
-                                  value={cycle.description}
+                                  value={
+                                    cycle.description
+                                      ? cycle.description
+                                      : description
+                                  }
                                   onChange={(e) =>
-                                    setDescription(e.target.value)
+                                    console.log(
+                                      "object,",
+                                      setDescription(e.target.value)
+                                    )
                                   }
                                   rows={2}
                                   className="w-100"
