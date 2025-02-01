@@ -15,6 +15,8 @@ const TabsComponents = ({
   setShowWhatGet,
   onSaveChangestitle,
   titles,
+  fields,
+  setFields,
 }) => {
   const [name, setName] = useState("");
   const [nameSub, setNameSub] = useState("");
@@ -320,7 +322,11 @@ const TabsComponents = ({
         </TabPanel>
         <TabPanel>
           <div className="panel-content">
-            <TestOptionForm selectedCategory={items?.[activeIndex]?.uid} />
+            <TestOptionForm
+              selectedCategory={items?.[activeIndex]?.uid}
+              fields={fields}
+              setFields={setFields}
+            />
           </div>
         </TabPanel>
       </Tabs>

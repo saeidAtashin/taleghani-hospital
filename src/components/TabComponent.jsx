@@ -31,6 +31,7 @@ export default function TabComponent() {
   const [titles, setTitles] = useState([]);
   const [filteredTitles, setFilteredTitles] = useState([]);
   const [fields, setFields] = useState({});
+  const [fieldsNew, setFieldsNew] = useState([]);
 
   useEffect(() => {
     const fetchCategoryList = async () => {
@@ -358,6 +359,8 @@ export default function TabComponent() {
         onTabChange={(e) => setActiveIndex(e.index)}
       />
       <TabsComponents
+        fields={fieldsNew}
+        setFields={setFieldsNew}
         onSaveChanges={handleSaveChanges}
         onSaveChangesSub={handleSaveChangesSub}
         categories={categories}
@@ -385,7 +388,16 @@ export default function TabComponent() {
           setRefreshSub={setRefreshSub}
         />
       ) : showWhatGet === "new" ? (
-        <></>
+        <>
+          {" "}
+          <DragAndDropOrdering
+            url="tests/mng-field"
+            sub={items[activeIndex]?.uid}
+            categories={fieldsNew}
+            refreshSub={refreshSub}
+            setRefreshSub={setRefreshSub}
+          />
+        </>
       ) : (
         <DragAndDropOrdering
           items={items}

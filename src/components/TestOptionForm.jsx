@@ -4,10 +4,10 @@ import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
 import axios from "axios";
 import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
-const TestOptionForm = ({ selectedCategory }) => {
-  const [fields, setFields] = useState([]);
-  const [selectedField, setSelectedField] = useState(null); // PrimeReact Dropdown uses objects
+const TestOptionForm = ({ selectedCategory, fields, setFields }) => {
+  const [selectedField, setSelectedField] = useState(null);
   const [inputValue, setInputValue] = useState("");
   const [ordering, setOrdering] = useState(0);
   const [fieldType, setFieldType] = useState("");
@@ -21,6 +21,7 @@ const TestOptionForm = ({ selectedCategory }) => {
 
         const fieldsData = response?.data?.data;
 
+        console.log("fieldsData", fieldsData);
         setFields(fieldsData);
       } catch (error) {
         console.error("Error fetching fields:", error);
@@ -42,13 +43,12 @@ const TestOptionForm = ({ selectedCategory }) => {
       ordering: ordering || 0,
     };
 
-    // Send the correct value based on the type
     if (fieldType === "FLOAT") {
       payload.float_value = parseFloat(inputValue);
     } else if (fieldType === "CHAR") {
       payload.char_value = inputValue;
     } else if (fieldType === "PERCENTAGE") {
-      payload.float_value = parseFloat(inputValue); // Percentage also uses float_value
+      payload.float_value = parseFloat(inputValue);
     } else {
       toast.warning("Invalid field type selected.");
       return;
@@ -62,7 +62,6 @@ const TestOptionForm = ({ selectedCategory }) => {
       toast.success("Data submitted successfully!");
       setInputValue("");
       setOrdering(0);
-      // setSelectedField(null);
     } catch (error) {
       console.error("Error submitting data:", error);
       toast.warning("Failed to submit data.");
@@ -71,7 +70,6 @@ const TestOptionForm = ({ selectedCategory }) => {
 
   const handleInputChange = (value) => {
     if (fieldType === "PERCENTAGE") {
-      // Validate input for PERCENTAGE
       const percentage = parseFloat(value);
       if (isNaN(percentage) || percentage < 0 || percentage > 100) {
         toast.info("لطفا یک عدد بین 1 تا 100 انتخاب نمایید.");
@@ -84,12 +82,39 @@ const TestOptionForm = ({ selectedCategory }) => {
   const handleFieldChange = (selected) => {
     setSelectedField(selected);
     setFieldType(selected?.type || "");
-    setInputValue(""); // Reset input value when field changes
+    setInputValue("");
+  };
+
+  console.log("fields", fields);
+
+  const handleDelete = async (uid) => {
+    Swal.fire({
+      title: "آیا از حذف این مورد مطمئن هستید؟",
+      text: "این عمل قابل بازگشت نیست!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "حذف",
+      cancelButtonText: "لغو",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await axios.delete(
+            `https://cancerreg.ir/api/v1/tests/mng-field/${uid}/`
+          );
+          Swal.fire("حذف شد", "آیتم مورد نظر با موفقیت حذف شد", "success");
+          // setRefreshSub(!refreshSub);
+        } catch (error) {
+          // Swal.fire("خطا", "حذف آیتم با خطا مواجه شد", "error");
+          console.error("Error deleting item:", error);
+        }
+      }
+    });
   };
 
   return (
     <div className="form-container">
-      {/* <h2>Submit Test Option</h2> */}
       <div className="d-flex gap-2 mb-4">
         <Button
           className="align-left rounded-3"
@@ -103,26 +128,18 @@ const TestOptionForm = ({ selectedCategory }) => {
       </div>
       <div className="d-flex w-100 gap-3">
         <div className="form-group w-100">
-          {/* <label htmlFor="field-select">Select Field</label> */}
           <Dropdown
             id="field-select"
             value={selectedField}
             options={fields}
             onChange={(e) => handleFieldChange(e.value)}
-            optionLabel="name" // Display name in the dropdown
+            optionLabel="name"
             placeholder="نام آزمایش مربوطه"
             className="w-100 mb-3"
           />
         </div>
 
         <div className="form-group w-100">
-          {/* <label htmlFor="input-value">
-          {fieldType === "FLOAT"
-            ? "Enter Float Value"
-            : fieldType === "PERCENTAGE"
-            ? "Enter Percentage (0-100)"
-            : "Enter Char Value"}
-        </label> */}
           <InputText
             id="input-value"
             value={inputValue}
@@ -139,7 +156,6 @@ const TestOptionForm = ({ selectedCategory }) => {
         </div>
 
         <div className="form-group w-100">
-          {/* <label htmlFor="ordering">Ordering</label> */}
           <InputText
             id="ordering"
             value={ordering}
@@ -150,7 +166,16 @@ const TestOptionForm = ({ selectedCategory }) => {
         </div>
       </div>
 
-      {/* <Button label="Submit" className="mt-3" onClick={handleSubmit} /> */}
+      {/* {fields &&
+        fields?.map((categoryData, idx) => (
+          <div key={idx} className="d-flex gap-4">
+            <div className="d-flex">
+              <div>نام: </div>
+              <div>{categoryData?.name}</div>
+            </div>
+            <div onClick={() => handleDelete(categoryData.uid)}>icon</div>
+          </div>
+        ))} */}
     </div>
   );
 };
