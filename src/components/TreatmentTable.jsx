@@ -38,6 +38,7 @@ const TreatmentTable = () => {
   const [isTreatmentForm, setIsTreatmentForm] = useState(false);
   const [showStartTreatBtn, setShowStartTreatBtn] = useState(true);
   const [showedPart, setShowedPart] = useState("");
+  const [dontCallForNow, setdontCallForNow] = useState(false);
 
   const [showLine, setshowLine] = useState(false);
 
@@ -302,6 +303,8 @@ const TreatmentTable = () => {
 
       {newTreat && (
         <NewTreat
+          dontCallForNow={dontCallForNow}
+          setdontCallForNow={setdontCallForNow}
           finaleState={finaleState}
           childState={childState}
           setChildState={setChildState}

@@ -59,6 +59,8 @@ const NewTreat = ({
   childState,
   setChildState,
   finaleState,
+  dontCallForNow,
+  setdontCallForNow,
 }) => {
   const [isCycleVisible, setisCycleVisible] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -113,6 +115,23 @@ const NewTreat = ({
     setAllDatas(undefined);
   };
 
+  const newResetFormFields = () => {
+    // setTreatmentValue(null);
+    setSelectedProtocol(undefined);
+    setSelectedTreatment(undefined);
+    // setStartDateObj(null);
+    // setTreatmentStartDateObj(null);
+    // setTreatmentStartDate("");
+    // setStartDate("");
+    setEndDateObj(null);
+    setEndDate("");
+    setDescription("");
+    setCycles([]);
+    setisCycleVisible(false);
+    setShowedPart("");
+    setAllDatas(undefined);
+  };
+
   const handleSubmit = async () => {
     setLoading(true);
 
@@ -154,15 +173,18 @@ const NewTreat = ({
           summary: "موفق",
           detail: "ذخیره شد",
         });
-
+        console.log("isTreatmentForm", isTreatmentForm);
         setResponseUid(response?.data?.data?.uid);
         setuidForCycle(response?.data?.data?.first_treatment_line_uid);
         setShowStartTreatBtn(false);
-
+        newResetFormFields();
+        setdontCallForNow(true);
+        // setuidForCycle this saved for first line uid to send as update maybe
         setRefreshTreatTable(!refreshTreatTable);
         if (isTreatmentForm) {
           setnewTreat(false);
           resetFormFields();
+          // setdontCallForNow(false);
         }
 
         setShowedPart("showCycle");
@@ -191,7 +213,7 @@ const NewTreat = ({
   const handleSubmitModal = async () => {
     const payload = {
       treatment_uid: allDatas?.uid,
-
+      start_date: startDate ? startDate : treatmentStartDate,
       end_date: endDate ? endDate : undefined,
       description: description ? description : undefined,
       evaluation_uid: selectedTreatment,
@@ -555,29 +577,44 @@ const NewTreat = ({
               </div>
 
               <div className="d-flex gap-4 ">
-                {allDatas?.state !== "DONE" && (
-                  <Button
-                    label="تایید و ثبت نتایج"
-                    icon="pi pi-check"
-                    onClick={handleSubmit}
-                    // loading={loading}
-                    className="w-100 rounded p-button-outlined"
-                  />
-                )}
+                {allDatas?.state !== "DONE" &&
+                  [
+                    treatmentUidInGet,
+                    lineUid,
+                    allDatas?.uid,
+                    responseUid,
+                  ].every((val) => val === undefined) && (
+                    <Button
+                      label="تایید و ثبت نتایج"
+                      icon="pi pi-check"
+                      onClick={handleSubmit}
+                      // loading={loading}
+                      className="w-100 rounded p-button-outlined"
+                    />
+                  )}
 
-                {finaleState !== "DONE" && (
-                  <Button
-                    label="پایان درمان"
-                    icon="pi pi-check"
-                    onClick={handleEndSubmit}
-                    // loading={loading}
-                    className="w-100 rounded"
-                  />
-                )}
+                {finaleState !== "DONE" &&
+                  (treatmentUidInGet ||
+                    lineUid ||
+                    // uid ||
+                    allDatas?.uid ||
+                    responseUid) && (
+                    <Button
+                      label="پایان درمان"
+                      icon="pi pi-check"
+                      onClick={handleEndSubmit}
+                      // loading={loading}
+                      className="w-100 rounded"
+                    />
+                  )}
               </div>
             </>
           ) : (
             <TreatChemi
+              setdontCallForNow={setdontCallForNow}
+              dontCallForNow={dontCallForNow}
+              setRefreshTreatTable={setRefreshTreatTable}
+              refreshTreatTable={refreshTreatTable}
               finaleState={finaleState}
               setChildState={setChildState}
               childState={childState}

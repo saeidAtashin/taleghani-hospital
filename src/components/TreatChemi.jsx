@@ -10,6 +10,8 @@ import persian_fa from "react-date-object/locales/persian_fa";
 import { Dialog } from "primereact/dialog";
 import axios from "axios";
 import { Badge } from "primereact/badge";
+import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 
 const TreatChemi = ({
   finaleState,
@@ -52,6 +54,8 @@ const TreatChemi = ({
   treatmentUidInGet,
   childState,
   setChildState,
+  setRefreshTreatTable,
+  refreshTreatTable,
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [loadingtar, setLoadingtar] = useState(false);
@@ -70,7 +74,7 @@ const TreatChemi = ({
       setTreatmentStartDateObj(date);
 
       setTreatmentStartDate(formattedDate);
-      setStartDate(formattedDate);
+      // setStartDate(formattedDate);
     } else {
       setTreatmentStartDateObj(null);
       setTreatmentStartDate("");
@@ -145,12 +149,16 @@ const TreatChemi = ({
         cycleData
       );
       setChildState(!childState);
+      toast.success("سیکل ذخیره شد");
+      setRefreshTreatTable(!refreshTreatTable);
 
       setSavedCycles((prevSavedCycles) => [
         ...prevSavedCycles,
         cycle.cycleNumber,
       ]);
     } catch (error) {
+      toast.warning("باید سیکل جدید ثبت نمایید");
+
       console.error(
         "Error in API call for cycle",
         cycle.cycleNumber,
