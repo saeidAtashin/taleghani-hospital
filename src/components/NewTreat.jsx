@@ -210,8 +210,8 @@ const NewTreat = ({
             ? treatmentUidInGet
             : lineUid
             ? lineUid
-            : uid
-            ? uid
+            // : uid
+            // ? uid
             : allDatas?.uid
             ? allDatas?.uid
             : responseUid
