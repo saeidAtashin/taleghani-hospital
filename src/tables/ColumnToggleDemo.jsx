@@ -5,9 +5,9 @@ import { IconField } from "primereact/iconfield";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import HeaderName from "../components/HeaderName";
-import apiRequest from "../api/apiService";
 import { Paginator } from "primereact/paginator";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function ColumnToggleDemo() {
   const columns = [
@@ -31,9 +31,10 @@ export default function ColumnToggleDemo() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await apiRequest(
-        "GET",
-        `/patient/patient-info/?page=${page + 1}&page_size=${rows}`
+      const response = await axios.get(
+        `https://cancerreg.ir/api/v1/patient/patient-info/?page=${
+          page + 1
+        }&page_size=${rows}`
       );
       const patients = response.data.data.results;
       setProducts(patients);
@@ -48,7 +49,7 @@ export default function ColumnToggleDemo() {
   useEffect(() => {
     fetchData();
     localStorage.removeItem("defaultActiveKey");
-  }, [page, rows]); // Ensure dependencies are correct
+  }, [page, rows]);
 
   const [selectedProducts, setSelectedProducts] = useState(null);
   const [globalFilter, setGlobalFilter] = useState("");
@@ -91,7 +92,6 @@ export default function ColumnToggleDemo() {
     </button>
   );
 
-  // Custom rendering function for date columns
   const dateTemplate = (rowData, field) => {
     const dateValue = field
       .split(".")
@@ -115,7 +115,7 @@ export default function ColumnToggleDemo() {
         severity="primary"
         onClick={() => navigate("/dashboard/register-patient")}
         className="rounded-3 w-25 mb-4"
-        // 
+        //
       />
       {loading ? (
         <div>در حال دریافت اطلاعات ... </div>
@@ -147,11 +147,10 @@ export default function ColumnToggleDemo() {
                   return dateTemplate(rowData, col.field);
                 }
 
-                // Handle nested properties safely
                 const fieldValue = col.field
                   .split(".")
                   .reduce((o, key) => (o ? o[key] : null), rowData);
-                return fieldValue ?? "-"; // Show "-" if value is null/undefined
+                return fieldValue ?? "-";
               }}
               style={{ textAlign: "right", direction: "rtl" }}
             />
