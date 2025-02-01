@@ -132,6 +132,7 @@ const PatientForm = () => {
       body: JSON.stringify({
         ...updatedFields,
         patient_uid: uid,
+        national_id: patient?.national_id,
       }),
     })
       .then(async (res) => {

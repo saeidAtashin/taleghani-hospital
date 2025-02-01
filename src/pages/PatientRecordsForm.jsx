@@ -290,14 +290,14 @@ const PatientRecordsForm = () => {
                     onChange={(e) => handleChange(e, field)}
                     placeholder={`لطفا ${dropdownLabels[field]} را وارد کنید`}
                     className={
-                      dropdownLabels[field] === "bsa" ||
-                      dropdownLabels[field] === "bmi"
+                      dropdownLabels[field] === "BSA" ||
+                      dropdownLabels[field] === "BMI"
                         ? "custom-disabled"
                         : ""
                     }
                     disabled={
-                      dropdownLabels[field] === "bsa" ||
-                      dropdownLabels[field] === "bmi"
+                      dropdownLabels[field] === "BSA" ||
+                      dropdownLabels[field] === "BMI"
                         ? true
                         : isFormDisabled
                     }
