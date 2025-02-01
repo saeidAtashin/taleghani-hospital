@@ -48,6 +48,9 @@ const TreatChemi = ({
   hiddenButtons,
   handleEndSubmit,
   lineUid,
+  treatmentUidInGet,
+  childState,
+  setChildState,
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [loadingtar, setLoadingtar] = useState(false);
@@ -140,6 +143,7 @@ const TreatChemi = ({
         "https://cancerreg.ir/api/v1/teatment/cycle/",
         cycleData
       );
+      setChildState(!childState);
 
       setSavedCycles((prevSavedCycles) => [
         ...prevSavedCycles,
@@ -296,7 +300,13 @@ const TreatChemi = ({
                       <Button
                         label="شروع خط درمان"
                         icon="pi pi-check"
-                        onClick={() => handleSubmitLine(treatment.uid)}
+                        onClick={() =>
+                          handleSubmitLine(
+                            treatmentUidInGet
+                              ? treatmentUidInGet
+                              : treatment.uid
+                          )
+                        }
                         loading={loading}
                         className="w-100 bg-white text-dark rounded-3 mb-4"
                       />

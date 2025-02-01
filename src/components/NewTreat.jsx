@@ -56,6 +56,8 @@ const NewTreat = ({
   setAllDatas,
   setshowLine,
   treatmentUidInGet,
+  childState,
+  setChildState,
 }) => {
   const [isCycleVisible, setisCycleVisible] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -145,7 +147,7 @@ const NewTreat = ({
 
       if (response?.status >= 200 && response?.status < 400) {
         setLoading(false);
-
+        setChildState(!childState);
         toast.current.show({
           severity: "success",
           summary: "موفق",
@@ -225,6 +227,8 @@ const NewTreat = ({
       if (response?.status >= 200 && response?.status < 400) {
         setLoading(false);
         setnewTreat(false);
+        resetFormFields();
+
         toast.current.show({
           severity: "success",
           summary: "موفق",
@@ -234,6 +238,8 @@ const NewTreat = ({
         setuidForCycle(response?.data?.data?.first_treatment_line_uid);
         setShowStartTreatBtn(false);
         setRefreshTreatTable(!refreshTreatTable);
+        setChildState(!childState);
+
         if (isTreatmentForm) {
           setnewTreat(false);
           resetFormFields();
@@ -286,6 +292,8 @@ const NewTreat = ({
         payload
       );
       if (response?.status >= 200 && response?.status < 400) {
+        setChildState(!childState);
+
         setLoading(false);
         toast.current.show({
           severity: "success",
@@ -401,8 +409,13 @@ const NewTreat = ({
   }, [newTreat, selectedTreatment]);
 
   const handleSubmitLine = async (treatmentUid) => {
+    console.log("treatmentUidInGet", treatmentUidInGet);
+    console.log("treatmentUid", treatmentUid);
+
     const payload = {
-      treatment_uid: treatmentUid
+      treatment_uid: treatmentUidInGet
+        ? treatmentUidInGet
+        : treatmentUid
         ? treatmentUid
         : allDatas?.uid
         ? allDatas?.uid
@@ -414,7 +427,9 @@ const NewTreat = ({
     };
 
     if (!isTreatmentForm) {
-      payload.treatment_uid = treatmentUid
+      payload.treatment_uid = treatmentUidInGet
+        ? treatmentUidInGet
+        : treatmentUid
         ? treatmentUid
         : allDatas?.uid
         ? allDatas?.uid
@@ -434,6 +449,7 @@ const NewTreat = ({
 
       if (response?.status >= 200 && response?.status < 400) {
         setHiddenButtons((prev) => [...prev, treatmentUid]);
+        setChildState(!childState);
 
         console.log("post treatment-line", response?.data?.data?.uid);
         setlineUid(response?.data?.data?.uid);
@@ -563,6 +579,9 @@ const NewTreat = ({
             </>
           ) : (
             <TreatChemi
+              setChildState={setChildState}
+              childState={childState}
+              treatmentUidInGet={treatmentUidInGet}
               lineUid={lineUid}
               handleSubmitModal2={handleSubmitModal2}
               hiddenButtons={hiddenButtons}

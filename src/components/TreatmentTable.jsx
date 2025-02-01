@@ -25,6 +25,9 @@ const TreatmentTable = () => {
   const [selectedProtocol, setSelectedProtocol] = useState(undefined);
   const [selectedTreatment, setSelectedTreatment] = useState(undefined);
   const [treatmentUidInGet, setTreatmentUidInGet] = useState(undefined);
+  const [rowData, setRowData] = useState(null);
+  const [childState, setChildState] = useState(null);
+
   const { uid } = useParams();
   const [products, setProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -171,6 +174,7 @@ const TreatmentTable = () => {
       setAllDatas(data?.results);
       console.log("setTreatmentUidInGet", rowData?.uid);
       setTreatmentUidInGet(rowData?.uid);
+      setRowData(rowData);
     } catch (error) {
       console.error("Error fetching treatment data:", error);
     }
@@ -233,6 +237,14 @@ const TreatmentTable = () => {
     }
   };
 
+  useEffect(() => {
+    if (rowData) {
+      tryyyy(rowData); // Call the original tryyyy function when rowData changes
+      newTryyy(rowData); // Call the newTryyy function when rowData changes
+    }
+  }, [rowData, childState]); // This dependency will trigger the effect whenever 'rowData' changes
+
+  // I want that when change a state in child, call again  newTryyy and tryyyy
   return (
     <>
       {!newTreat && (
@@ -290,6 +302,8 @@ const TreatmentTable = () => {
 
       {newTreat && (
         <NewTreat
+          childState={childState}
+          setChildState={setChildState}
           treatmentUidInGet={treatmentUidInGet}
           setAllDatas={setAllDatas}
           showedPart={showedPart}
