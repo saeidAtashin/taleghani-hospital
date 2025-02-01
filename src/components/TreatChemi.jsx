@@ -223,19 +223,23 @@ const TreatChemi = ({
       {showedPart === "showCycle" && (
         <>
           <Accordion
-            className="shadow-lg mt-4 mb-3"
+            className="shadow-lg mt-4 mb-3 "
             multiple
-            activeIndex={[
-              ...Array(allDatas?.length > 0 ? allDatas?.length : 1).keys(),
-            ]}
+            activeIndex={allDatas
+              ?.map((treatment, index) =>
+                treatment?.state !== "DONE" ? index : -1
+              )
+              .filter((index) => index !== -1)} // Exclude -1 values to ensure those tabs remain closed
           >
             {allDatas?.map((treatment, index) => (
               <AccordionTab
-                className={` rounded-3 `}
+                className={` rounded-3 ${
+                  treatment?.state === "DONE" ? "header-links-custome" : ""
+                }`}
                 key={treatment.uid}
-                // header={`خط درمان ${index + 1}`}
+                // in this code, I want that if treatment?.state is equal to DONE , make accordion closed as default
                 header={
-                  <span className="flex align-items-center gap-4 w-full">
+                  <span className="d-flex align-items-center justify-content-between gap-4 w-100">
                     <span className="font-bold white-space-nowrap">
                       خط درمان {index + 1}
                     </span>

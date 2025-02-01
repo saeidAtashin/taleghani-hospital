@@ -376,3 +376,8 @@ select,
 .p-inputswitch.p-inputswitch-checked .p-inputswitch-slider::before {
   left: calc(100% - 21px) !important;
 }
+
+.header-links-custome .p-accordion-header-link {
+  background-color: #8dce338a !important;
+  color: #000000 !important;
+}
