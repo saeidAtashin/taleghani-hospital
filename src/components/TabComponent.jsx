@@ -8,16 +8,14 @@ import Swal from "sweetalert2";
 import TabsComponents from "./TabsComponents";
 import { toast } from "react-toastify";
 import DragAndDropOrdering from "./DragAndDropOrdering";
-import TreeView from "./TreeView";
 
 export default function TabComponent() {
   const [activeIndex, setActiveIndex] = useState(1);
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   const [refresh, setRefresh] = useState(false);
   const [items, setItems] = useState([
     {
       label: "گروه جدید",
-      // icon: "pi pi-plus-circle",
       command: () => openModal(),
     },
   ]);
@@ -64,15 +62,12 @@ export default function TabComponent() {
         setItems([
           {
             label: "گروه جدید",
-            // icon: "pi pi-plus-circle",
             command: () => openModal(),
           },
           ...fetchedItems,
         ]);
       } catch (err) {
         console.error(err.message);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -146,7 +141,7 @@ export default function TabComponent() {
 
   const handleSaveChanges = async (name, ordering) => {
     try {
-      const categoryUid = items[activeIndex]?.uid; // Adjust based on TabMenu index offset
+      const categoryUid = items[activeIndex]?.uid;
 
       if (!categoryUid) {
         toast.error("مجددا گروه مورد نظر را انتخاب نمایید.");
@@ -170,11 +165,7 @@ export default function TabComponent() {
 
   const handleSaveChangesSub = async (name, ordering, selectedCategory) => {
     try {
-      // if (!selectedCategory) {
-      //   toast.error("لطفاً یک زیرگروه انتخاب کنید.");
-      //   return;
-      // }
-      const categoryUid = items[activeIndex]?.uid; // Adjust based on TabMenu index offset
+      const categoryUid = items[activeIndex]?.uid;
 
       if (!categoryUid) {
         toast.error("مجددا گروه مورد نظر را انتخاب نمایید.");
@@ -208,7 +199,6 @@ export default function TabComponent() {
 
         const results = response.data.data.result;
 
-        // Group by category_uid
         const grouped = results?.reduce((acc, item) => {
           const categoryUid = item?.category?.uid;
           if (!acc[categoryUid]) {
@@ -230,17 +220,6 @@ export default function TabComponent() {
     fetchData();
   }, [refreshSub]);
 
-  // const handleDragEnd = (result) => {
-  //   if (!result.destination) return;
-  //   const { source, destination } = result;
-  //   const updatedCategories = { ...categories };
-  //   const sourceCategory = updatedCategories[source.droppableId];
-  //   const destinationCategory = updatedCategories[destination.droppableId];
-  //   const [movedItem] = sourceCategory.items.splice(source.index, 1);
-  //   destinationCategory.items.splice(destination.index, 0, movedItem);
-  //   setCategories(updatedCategories);
-  // };
-
   useEffect(() => {
     const fetchFields = async () => {
       try {
@@ -248,8 +227,6 @@ export default function TabComponent() {
           "https://cancerreg.ir/api/v1/tests/mng-field/"
         );
         const results = response?.data?.data?.result;
-        //   "multipule_value": false, this added to api send
-        // Group by category_uid
         const grouped = results?.reduce((acc, item) => {
           const categoryUid = item?.title?.sub_category?.category?.uid;
           if (!acc[categoryUid]) {
@@ -303,7 +280,6 @@ export default function TabComponent() {
     return filteredTitles?.reduce((acc, title) => {
       const categoryUid = title?.sub_category?.category?.uid;
 
-      // If the category UID doesn't exist, initialize it
       if (!acc[categoryUid]) {
         acc[categoryUid] = {
           categoryName: title?.sub_category?.category?.name,
@@ -311,7 +287,6 @@ export default function TabComponent() {
         };
       }
 
-      // Push the title into the appropriate category's items array
       acc[categoryUid].items.push({
         name: title.name,
         uid: title.uid,
@@ -345,9 +320,8 @@ export default function TabComponent() {
         other: hide,
       };
 
-      const categoryUid = items[activeIndex]?.uid; // Adjust based on TabMenu index offset
+      const categoryUid = items[activeIndex]?.uid;
 
-      // Determine which key to include in the payload
       if (selectedTitle) {
         payload.title_uid = selectedTitle;
       } else if (selectedSubCategory) {
@@ -378,7 +352,6 @@ export default function TabComponent() {
         scrollable
         model={items?.map((item) => ({
           label: item?.template || item?.label,
-          // icon: item.icon,
           command: item.command,
         }))}
         activeIndex={activeIndex === 0 ? 1 : activeIndex}
@@ -398,8 +371,7 @@ export default function TabComponent() {
       {showWhatGet === "showSub" ? (
         <DragAndDropOrdering
           sub={items[activeIndex]?.uid}
-          categories={convertFilteredTitlesToCategories(filteredTitles)} // Pass the filteredTitles
-          // handleDragEnd={handleDragEnd}
+          categories={convertFilteredTitlesToCategories(filteredTitles)}
           refreshSub={refreshTitle}
           setRefreshSub={setRefreshTitle}
           url="tests/mng-title"
@@ -409,12 +381,11 @@ export default function TabComponent() {
           url="tests/mng-field"
           sub={items[activeIndex]?.uid}
           categories={fields}
-          // handleDragEnd={handleDragEnd}
           refreshSub={refreshSub}
           setRefreshSub={setRefreshSub}
         />
       ) : showWhatGet === "new" ? (
-        <>{/* <TreeView /> */}</>
+        <></>
       ) : (
         <DragAndDropOrdering
           items={items}
@@ -422,7 +393,6 @@ export default function TabComponent() {
           url="tests/mng-sub-category"
           sub={items[activeIndex]?.uid}
           categories={categories}
-          // handleDragEnd={handleDragEnd}
           refreshSub={refreshSub}
           setRefreshSub={setRefreshSub}
         />
