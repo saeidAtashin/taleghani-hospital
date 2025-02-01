@@ -6,7 +6,9 @@ const BasicTestDefinitions = () => {
   return (
     <div className="d-flex flex-column w-100">
       <TabComponent />
-      <PillsTabs />
+      <div className="m-5">
+        <PillsTabs />
+      </div>
     </div>
   );
 };
