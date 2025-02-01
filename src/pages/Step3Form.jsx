@@ -72,10 +72,12 @@ const Step3Form = ({ patient_uid, onNext }) => {
         ? {
             lymph_nodes: formData.lymph_nodes.filter(
               (node) =>
-                node.site.trim() || node.size.trim() || node.description.trim()
+                node.site.trim() ||
+                Number(node?.size?.trim()) ||
+                node.description.trim()
             ),
-            spleen: formData.spleen.trim() || undefined,
-            b_symptoms: formData.b_symptoms.trim() || undefined,
+            // spleen: formData.spleen.trim() || undefined,
+            // b_symptoms: formData.b_symptoms.trim() || undefined,
           }
         : {
             primary_tumors:
@@ -122,6 +124,8 @@ const Step3Form = ({ patient_uid, onNext }) => {
       type: formType,
       diagnosis_uid: selectedDiagnosis,
       patient_uid,
+      spleen: Number(formData.spleen.trim()) || undefined,
+      b_symptoms: formData.b_symptoms.trim() || undefined,
       stage: formData.stage.trim() || undefined,
       ...(Object.keys(cleanedDiseaseData).length > 0 && {
         disease_data: cleanedDiseaseData,
@@ -141,13 +145,13 @@ const Step3Form = ({ patient_uid, onNext }) => {
   };
 
   const renderArrayField = (fieldName, label) => (
-    <div>
+    <div className="my-1">
       {formData[fieldName].map((item, index) => (
         <div key={index} className="p-fluid grid">
           {formData[fieldName].length > 0 && (
-            <label className="mt-4 border-top w-100">{`${label} `}</label>
+            <label className="mt-4  w-100">{`${label} `}</label>
           )}
-          <div className="d-flex align-items-center justify-content-center gap-4">
+          <div className="d-flex align-items-center mt-2 justify-content-center gap-4">
             <div className="w-100">
               <InputText
                 value={item.site}
