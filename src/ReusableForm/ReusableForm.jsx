@@ -160,6 +160,9 @@ const ReusableForm = ({
                           <input
                             {...controllerField}
                             type="text"
+                            maxLength={
+                              field.label === "کد ملی" ? 10 : undefined
+                            } // Limit to 10 if "کد ملی"
                             className={`form-control ${controllerField.name} ${
                               errors[field.name] ? "is-invalid" : ""
                             }`}
@@ -167,6 +170,14 @@ const ReusableForm = ({
                             placeholder={field.placeholder || ""}
                             style={{ textAlign: "right" }} // Align placeholder and value to the right
                             disabled={!editable || field?.readOnly}
+                            onInput={(e) => {
+                              if (field.label === "کد ملی") {
+                                e.target.value = e.target.value
+                                  .replace(/\D/g, "")
+                                  .slice(0, 10);
+                              }
+                              controllerField.onChange(e); // Ensure React Hook Form still works
+                            }}
                           />
                           {field.append && (
                             <span className="input-group-text">
