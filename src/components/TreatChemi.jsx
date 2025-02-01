@@ -58,6 +58,7 @@ const TreatChemi = ({
   refreshTreatTable,
 }) => {
   const [showModal, setShowModal] = useState(false);
+  const [showModal2, setShowModal2] = useState(false);
   const [loadingtar, setLoadingtar] = useState(false);
   const [treatUidForCycle, setTreatUidForCycle] = useState(undefined);
   const [savedCycles, setSavedCycles] = useState([]);
@@ -360,12 +361,15 @@ const TreatChemi = ({
                           >
                             <div className="d-flex justify-content-between align-items-center">
                               <h5>سیکل {cycleIndex + 1}</h5>
-                              <Button
-                                icon="pi pi-trash"
-                                className="p-button-rounded p-button-danger"
-                                onClick={() => removeCycle(cycleIndex)}
-                                tooltip="حذف سیکل"
-                              />
+
+                              {!cycle.uid && (
+                                <Button
+                                  icon="pi pi-trash"
+                                  className="p-button-rounded p-button-danger"
+                                  onClick={() => removeCycle(cycleIndex)}
+                                  tooltip="حذف سیکل"
+                                />
+                              )}
                             </div>
 
                             <div className="d-flex flex-column my-3">
@@ -413,13 +417,17 @@ const TreatChemi = ({
                               </div>
                             </div>
 
-                            <Button
-                              label="ثبت سیکل"
-                              icon="pi pi-check"
-                              onClick={() => handleCycleapi(cycle, cycleIndex)}
-                              loading={loading}
-                              className="w-100 bg-white text-dark rounded-3"
-                            />
+                            {!cycle.uid && (
+                              <Button
+                                label="ثبت سیکل"
+                                icon="pi pi-check"
+                                onClick={() =>
+                                  handleCycleapi(cycle, cycleIndex)
+                                }
+                                loading={loading}
+                                className="w-100 bg-white text-dark rounded-3"
+                              />
+                            )}
                           </AccordionTab>
                         ))}
                       </Accordion>
@@ -504,6 +512,62 @@ const TreatChemi = ({
         <div className="d-flex flex-column my-3">
           <label className="p-col-12 p-md-2" htmlFor="end_date">
             تاریخ پایان خط درمان:
+          </label>
+          <DatePicker
+            value={endDateObj}
+            onChange={handleEndDateChange}
+            calendar={persian}
+            locale={persian_fa}
+            format="YYYY/MM/DD"
+            placeholder="تاریخ را انتخاب کنید"
+            className="p-2 border rounded"
+            inputClass="w-full p-2 text-end w-100 border rounded"
+            position="bottom-right"
+          />
+        </div>{" "}
+      </Dialog>
+      <Dialog
+        visible={showModal2}
+        className="w-50"
+        onHide={() => setShowModal2(false)}
+        header="پایان درمان"
+        footer={
+          <div className="d-flex justify-content-end w-100">
+            <Button
+              label="بستن"
+              icon="pi pi-times"
+              onClick={() => {}}
+              className="p-button-text"
+            />
+            <Button
+              label="تایید"
+              icon="pi pi-check"
+              onClick={() => handleSubmitModal3(selectedTreatmentNew?.uid)}
+              loading={loading}
+              className="p-button-primary"
+            />
+          </div>
+        }
+      >
+        <div className="d-flex flex-column my-4 w-100">
+          <label className="p-col-12 p-md-2" htmlFor="evaluation_uid">
+            ارزیابی درمان:
+          </label>
+          <div className="p-col-12 p-md-10">
+            <Dropdown
+              id="evaluation_uid"
+              value={selectedTreatment}
+              options={treatment}
+              onChange={(e) => setSelectedTreatment(e.value)}
+              placeholder="ارزیابی را انتخاب کنید"
+              optionLabel="label"
+              className="w-100"
+            />
+          </div>
+        </div>
+        <div className="d-flex flex-column my-3">
+          <label className="p-col-12 p-md-2" htmlFor="end_date">
+            تاریخ پایان درمان:
           </label>
           <DatePicker
             value={endDateObj}

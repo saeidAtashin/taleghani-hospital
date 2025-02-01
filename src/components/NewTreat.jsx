@@ -61,9 +61,12 @@ const NewTreat = ({
   finaleState,
   dontCallForNow,
   setdontCallForNow,
+  makeitof,
+  setmakeitof,
 }) => {
   const [isCycleVisible, setisCycleVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showModal2, setShowModal2] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [mainSelection, setMainSelection] = useState(null);
   const [subSelection, setSubSelection] = useState(null);
@@ -113,6 +116,7 @@ const NewTreat = ({
     setisCycleVisible(false);
     setShowedPart("");
     setAllDatas(undefined);
+    setmakeitof(false);
   };
 
   const newResetFormFields = () => {
@@ -179,7 +183,6 @@ const NewTreat = ({
         setShowStartTreatBtn(false);
         newResetFormFields();
         setdontCallForNow(true);
-        // setuidForCycle this saved for first line uid to send as update maybe
         setRefreshTreatTable(!refreshTreatTable);
         if (isTreatmentForm) {
           setnewTreat(false);
@@ -206,8 +209,8 @@ const NewTreat = ({
   };
 
   const handleEndSubmit = async () => {
-    setLoading(true);
-    setShowModal(true);
+    // setLoading(true);
+    setShowModal2(true);
   };
 
   const handleSubmitModal = async () => {
@@ -447,7 +450,9 @@ const NewTreat = ({
     };
 
     if (!isTreatmentForm) {
-      payload.treatment_uid = treatmentUidInGet
+      payload.treatment_uid = uidForCycle
+        ? uidForCycle
+        : treatmentUidInGet
         ? treatmentUidInGet
         : treatmentUid
         ? treatmentUid
@@ -461,42 +466,112 @@ const NewTreat = ({
       }));
     }
 
-    try {
-      const response = await axios.post(
-        "https://cancerreg.ir/api/v1/teatment/treatment-line/",
-        payload
-      );
+    if (uidForCycle) {
+      const payload = {
+        // treatment_uid: treatmentUidInGet
+        //   ? treatmentUidInGet
+        //   : treatmentUid
+        //   ? treatmentUid
+        //   : allDatas?.uid
+        //   ? allDatas?.uid
+        //   : responseUid,
+        start_date: treatmentStartDate ? treatmentStartDate : startDate,
+        end_date: endDate ? endDate : undefined,
+        description: description ? description : undefined,
+        protocol_uid: selectedProtocol,
+      };
 
-      if (response?.status >= 200 && response?.status < 400) {
-        setHiddenButtons((prev) => [...prev, treatmentUid]);
-        setChildState(!childState);
+      if (!isTreatmentForm) {
+        // payload.treatment_uid = uidForCycle
+        //   ? uidForCycle
+        //   : treatmentUidInGet
+        //   ? treatmentUidInGet
+        //   : treatmentUid
+        //   ? treatmentUid
+        //   : allDatas?.uid
+        //   ? allDatas?.uid
+        //   : responseUid;
+        payload.description = description ? description : undefined;
 
-        setlineUid(response?.data?.data?.uid);
-        toast.current.show({
-          severity: "success",
-          summary: "موفق",
-          detail: "ذخیره شد",
-        });
+        payload.protocol_uid = selectedProtocol;
+        // payload.cycles_list = cycles.map((c) => ({
+        //   date: c.date,
+        //   description: c.description,
+        // }));
       }
-    } catch (err) {
-      if (err?.status >= 400) {
-        console.error(err);
-        toast.current.show({
-          severity: "error",
-          summary: "خطا",
-          detail: err.response?.data?.message || "مشکلی پیش آمده است.",
-        });
+      try {
+        const response = await axios.put(
+          `https://cancerreg.ir/api/v1/teatment/treatment-line-update/${uidForCycle}/`,
+          payload
+        );
+
+        if (response?.status >= 200 && response?.status < 400) {
+          setHiddenButtons((prev) => [...prev, treatmentUid]);
+          setChildState(!childState);
+          console.log("uidForCycle ", uidForCycle);
+          // here
+          setRefreshTreatTable(!refreshTreatTable);
+
+          setlineUid(response?.data?.data?.uid);
+          toast.current.show({
+            severity: "success",
+            summary: "موفق",
+            detail: "ذخیره شد",
+          });
+        }
+      } catch (err) {
+        if (err?.status >= 400) {
+          console.error(err);
+          toast.current.show({
+            severity: "error",
+            summary: "خطا",
+            detail: err.response?.data?.message || "مشکلی پیش آمده است.",
+          });
+        }
+      }
+    } else {
+      try {
+        const response = await axios.post(
+          "https://cancerreg.ir/api/v1/teatment/treatment-line/",
+          payload
+        );
+
+        if (response?.status >= 200 && response?.status < 400) {
+          setHiddenButtons((prev) => [...prev, treatmentUid]);
+          setChildState(!childState);
+          setRefreshTreatTable(!refreshTreatTable);
+
+          setlineUid(response?.data?.data?.uid);
+          toast.current.show({
+            severity: "success",
+            summary: "موفق",
+            detail: "ذخیره شد",
+          });
+        }
+      } catch (err) {
+        if (err?.status >= 400) {
+          console.error(err);
+          toast.current.show({
+            severity: "error",
+            summary: "خطا",
+            detail: err.response?.data?.message || "مشکلی پیش آمده است.",
+          });
+        }
       }
     }
   };
 
   return (
-    <>
+    <div className="mx-4">
       <Toast ref={toast} />
 
       <div className="container mt-5">
         <div className="d-flex justify-content-between align-items-center">
-          <h2 className="m-2 pb-3">ایجاد درمان جدید</h2>
+          {makeitof ? (
+            <h2>{treatmentValue}</h2>
+          ) : (
+            <h2 className="m-2 pb-3">ایجاد درمان جدید</h2>
+          )}{" "}
           <span
             className="text-danger cursor-pointer"
             style={{ fontSize: "32px" }}
@@ -509,7 +584,7 @@ const NewTreat = ({
           </span>
         </div>
       </div>
-      <div className="p-field p-grid">
+      <div className="p-field p-grid ">
         <label className="p-col-12 p-md-2" htmlFor="treatment">
           انتخاب درمان:
         </label>
@@ -714,7 +789,63 @@ const NewTreat = ({
           />
         </div>{" "}
       </Dialog>
-    </>
+      <Dialog
+        visible={showModal2}
+        className="w-50"
+        onHide={() => setShowModal2(false)}
+        header="پایان درمان"
+        footer={
+          <div className="d-flex justify-content-end w-100">
+            <Button
+              label="بستن"
+              icon="pi pi-times"
+              onClick={() => setShowModal2(false)}
+              className="p-button-text"
+            />
+            <Button
+              label="تایید"
+              icon="pi pi-check"
+              onClick={handleSubmitModal}
+              // loading={loading}
+              className="p-button-primary"
+            />
+          </div>
+        }
+      >
+        <div className="d-flex flex-column my-4 w-100">
+          <label className="p-col-12 p-md-2" htmlFor="evaluation_uid">
+            ارزیابی درمان:
+          </label>
+          <div className="p-col-12 p-md-10">
+            <Dropdown
+              id="evaluation_uid"
+              value={selectedTreatment}
+              options={treatment}
+              onChange={(e) => setSelectedTreatment(e.value)}
+              placeholder="ارزیابی را انتخاب کنید"
+              optionLabel="label"
+              className="w-100"
+            />
+          </div>
+        </div>
+        <div className="d-flex flex-column my-3">
+          <label className="p-col-12 p-md-2" htmlFor="end_date">
+            تاریخ پایان درمان:
+          </label>
+          <DatePicker
+            value={endDateObj}
+            onChange={handleEndDateChange}
+            calendar={persian}
+            locale={persian_fa}
+            format="YYYY/MM/DD"
+            placeholder="تاریخ را انتخاب کنید"
+            className="p-2 border rounded"
+            inputClass="w-full p-2 text-end w-100 border rounded"
+            position="bottom-right"
+          />
+        </div>{" "}
+      </Dialog>
+    </div>
   );
 };
 

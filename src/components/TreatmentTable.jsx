@@ -39,6 +39,7 @@ const TreatmentTable = () => {
   const [showStartTreatBtn, setShowStartTreatBtn] = useState(true);
   const [showedPart, setShowedPart] = useState("");
   const [dontCallForNow, setdontCallForNow] = useState(false);
+  const [makeitof, setmakeitof] = useState(false);
 
   const [showLine, setshowLine] = useState(false);
 
@@ -173,6 +174,7 @@ const TreatmentTable = () => {
       const response = await fetch(getTreatmentLine);
       const data = await response.json();
       setAllDatas(data?.results);
+      setmakeitof(true);
       setTreatmentUidInGet(rowData?.uid);
       setRowData(rowData);
     } catch (error) {
@@ -240,11 +242,11 @@ const TreatmentTable = () => {
   };
 
   useEffect(() => {
-    if (rowData) {
+    if (rowData && !dontCallForNow) {
       tryyyy(rowData);
       newTryyy(rowData);
     }
-  }, [rowData, childState]);
+  }, [rowData, childState, refreshTreatTable]);
 
   return (
     <>
@@ -303,6 +305,8 @@ const TreatmentTable = () => {
 
       {newTreat && (
         <NewTreat
+          makeitof={makeitof}
+          setmakeitof={setmakeitof}
           dontCallForNow={dontCallForNow}
           setdontCallForNow={setdontCallForNow}
           finaleState={finaleState}
