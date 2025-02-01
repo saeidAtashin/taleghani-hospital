@@ -184,10 +184,11 @@ export default function AzmayeshatTable() {
                   type="button"
                   className="btn btn-outline-primary"
                   onClick={() =>
-                    window.open(
-                      `/dashboard/patients-lists/${rowData.date}`, // Adjust the URL based on your routing
-                      "_blank"
-                    )
+                    // window.open(
+                    //   `/dashboard/patients-lists/${rowData.date}`, // Adjust the URL based on your routing
+                    //   "_blank"
+                    // )
+                    console.log("rowData", rowData?.names)
                   }
                 >
                   مشاهده
