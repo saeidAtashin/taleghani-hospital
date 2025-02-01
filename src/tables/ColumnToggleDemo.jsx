@@ -22,17 +22,18 @@ export default function ColumnToggleDemo() {
 
   const [products, setProducts] = useState([]);
   const [visibleColumns, setVisibleColumns] = useState(columns);
-  const [loading, setLoading] = useState(false); // Fixed incorrect initial state
-  const [page, setPage] = useState(0); // Fixed to 0-based index for consistency
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(0);
   const [rows, setRows] = useState(10);
   const [count, setCount] = useState(0);
   const [first, setFirst] = useState(0);
+  const [globalFilter, setGlobalFilter] = useState("");
 
   const fetchData = async () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `https://cancerreg.ir/api/v1/patient/patient-info/?page=${
+        `https://cancerreg.ir/api/v1/patient/patient-info/?search_query=${globalFilter}&page=${
           page + 1
         }&page_size=${rows}`
       );
@@ -51,47 +52,6 @@ export default function ColumnToggleDemo() {
     localStorage.removeItem("defaultActiveKey");
   }, [page, rows]);
 
-  const [selectedProducts, setSelectedProducts] = useState(null);
-  const [globalFilter, setGlobalFilter] = useState("");
-
-  const dt = useRef(null);
-  const navigate = useNavigate();
-
-  const headerNew = (
-    <div
-      className="d-flex flex-wrap gap-2 align-items-center justify-content-start"
-      style={{ direction: "rtl" }}
-    >
-      <Button
-        label="جستجو"
-        icon="pi pi-search"
-        severity="primary"
-        onClick={() => console.log("Search button clicked")}
-      />
-      <IconField iconPosition="left">
-        <InputText
-          type="search"
-          value={globalFilter}
-          onChange={(e) => setGlobalFilter(e.target.value)}
-          placeholder="جستجوی کد ملی"
-          style={{ textAlign: "right" }}
-        />
-      </IconField>
-    </div>
-  );
-
-  const detailsTemplate = (rowData) => (
-    <button
-      type="button"
-      className="btn btn-outline-primary"
-      onClick={() =>
-        window.open(`/dashboard/patients-lists/${rowData.uid}`, "_blank")
-      }
-    >
-      مشاهده
-    </button>
-  );
-
   const dateTemplate = (rowData, field) => {
     const dateValue = field
       .split(".")
@@ -105,17 +65,57 @@ export default function ColumnToggleDemo() {
       : "-";
   };
 
+  const detailsTemplate = (rowData) => (
+    <button
+      type="button"
+      className="btn btn-outline-primary"
+      onClick={() =>
+        window.open(`/dashboard/patients-lists/${rowData.uid}`, "_blank")
+      }
+    >
+      مشاهده
+    </button>
+  );
+
+  const dt = useRef(null);
+  const navigate = useNavigate();
+
+  const handleSearch = () => {
+    fetchData();
+  };
+
+  const headerNew = (
+    <div
+      className="d-flex flex-wrap gap-2 align-items-center justify-content-start"
+      style={{ direction: "rtl" }}
+    >
+      <Button
+        label="جستجو"
+        icon="pi pi-search"
+        severity="primary"
+        onClick={handleSearch}
+      />
+      <IconField iconPosition="left">
+        <InputText
+          type="search"
+          value={globalFilter}
+          onChange={(e) => setGlobalFilter(e.target.value)}
+          placeholder="جستجوی کد ملی"
+          style={{ textAlign: "right" }}
+        />
+      </IconField>
+    </div>
+  );
+
   return (
     <div className="card screen-width p-5" style={{ direction: "rtl" }}>
       <HeaderName HeaderName="لیست بیماران" />
-      <div></div>
       <Button
         label="افزودن بیمار جدید"
         icon="pi pi-plus"
         severity="primary"
         onClick={() => navigate("/dashboard/register-patient")}
         className="rounded-3 w-25 mb-4"
-        //
       />
       {loading ? (
         <div>در حال دریافت اطلاعات ... </div>
@@ -125,11 +125,8 @@ export default function ColumnToggleDemo() {
           dir="rtl"
           ref={dt}
           value={products}
-          selection={selectedProducts}
-          onSelectionChange={(e) => setSelectedProducts(e.value)}
           dataKey="uid"
           rows={rows}
-          globalFilter={globalFilter}
           header={headerNew}
         >
           {visibleColumns.map((col, index) => (
@@ -158,7 +155,6 @@ export default function ColumnToggleDemo() {
           <Column header="جزئیات" body={detailsTemplate} />
         </DataTable>
       )}
-
       <Paginator
         dir="ltr"
         first={first}
