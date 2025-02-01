@@ -29,8 +29,8 @@ const PatientRecordsForm = () => {
   const dropdownLabels = {
     height: "قد",
     weight: "وزن",
-    bmi: "bmi",
-    bsa: "bsa",
+    bmi: "BMI",
+    bsa: "BSA",
     treating_physician: "نام پزشک معالج",
     underlying_diseases: "بیماری‌های زمینه‌ای",
     habits: "عادات",
@@ -211,8 +211,8 @@ const PatientRecordsForm = () => {
             className={`${
               dropdownLabels[field] === "قد" ||
               dropdownLabels[field] === "وزن" ||
-              dropdownLabels[field] === "bsa" ||
-              dropdownLabels[field] === "bmi"
+              dropdownLabels[field] === "BSA" ||
+              dropdownLabels[field] === "BMI"
                 ? "w-50"
                 : "w-100"
             }`}
