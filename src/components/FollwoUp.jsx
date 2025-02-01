@@ -153,7 +153,7 @@ export default function FollwoUp() {
       field: "medical_tests",
       header: "آزمایش‌ها",
       body: medical_testsTemplate,
-      width: "250px",
+      width: "280px",
     },
     {
       field: "graphic_records",
