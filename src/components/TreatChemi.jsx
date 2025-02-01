@@ -46,6 +46,7 @@ const TreatChemi = ({
   setDescription,
   description,
   hiddenButtons,
+  handleEndSubmit,
   lineUid,
 }) => {
   const [showModal, setShowModal] = useState(false);
@@ -431,6 +432,7 @@ const TreatChemi = ({
           <Button
             label="پایان درمان"
             icon="pi pi-check"
+            onClick={handleEndSubmit}
             loading={loading}
             className="w-100 bg-white text-dark rounded-3 mb-4"
           />
@@ -448,10 +450,10 @@ const TreatChemi = ({
               label="بستن"
               icon="pi pi-times"
               onClick={() => {
-                console.log(
-                  "Selected Treatment UID:",
-                  selectedTreatmentNew?.uid
-                );
+                // console.log(
+                //   "Selected Treatment UID:",
+                //   selectedTreatmentNew?.uid
+                // );
               }}
               className="p-button-text"
             />

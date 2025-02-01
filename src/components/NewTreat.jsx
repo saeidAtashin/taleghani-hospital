@@ -55,6 +55,7 @@ const NewTreat = ({
   setShowedPart,
   setAllDatas,
   setshowLine,
+  treatmentUidInGet,
 }) => {
   const [isCycleVisible, setisCycleVisible] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -180,6 +181,7 @@ const NewTreat = ({
   };
 
   const handleEndSubmit = async () => {
+    // await handleSubmitModal2()
     setLoading(true);
     setShowModal(true);
   };
@@ -199,10 +201,24 @@ const NewTreat = ({
         : undefined;
     }
 
+    console.log("lineUid", lineUid);
+    console.log("uid", uid);
+    console.log("allDatas", allDatas);
+    console.log("responseUid", responseUid);
+    console.log("treatmentUidInGet", treatmentUidInGet);
+
     try {
       const response = await axios.put(
         `https://cancerreg.ir/api/v1/teatment/end-treatment/${
-          lineUid ? lineUid : allDatas?.uid
+          treatmentUidInGet
+            ? treatmentUidInGet
+            : lineUid
+            ? lineUid
+            : uid
+            ? uid
+            : allDatas?.uid
+            ? allDatas?.uid
+            : responseUid
         }/`,
         payload
       );
@@ -580,6 +596,7 @@ const NewTreat = ({
               uidForCycle={uidForCycle}
               setStartDate={setStartDate}
               setShowStartTreatBtn={setShowStartTreatBtn}
+              handleEndSubmit={handleEndSubmit}
             />
           )}
         </div>

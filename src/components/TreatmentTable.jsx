@@ -24,6 +24,7 @@ const TreatmentTable = () => {
   const [cycles, setCycles] = useState([]);
   const [selectedProtocol, setSelectedProtocol] = useState(undefined);
   const [selectedTreatment, setSelectedTreatment] = useState(undefined);
+  const [treatmentUidInGet, setTreatmentUidInGet] = useState(undefined);
   const { uid } = useParams();
   const [products, setProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -148,7 +149,6 @@ const TreatmentTable = () => {
   );
 
   const handleRowClick = async (rowData) => {
-    // const uid = rowData.uid;
     setIsTreatmentForm(!isTreatmentForm);
     const isForm =
       rowData?.category === "HORMONETHERAPY" ||
@@ -159,56 +159,6 @@ const TreatmentTable = () => {
       setIsTreatmentForm(!isTreatmentForm);
       await tryyyy(rowData);
     }
-    // try {
-    //   const response = await fetch(getTreatment);
-    //   const data = await response.json();
-    //   !isForm && setAllDatas(data?.data);
-
-    //   setShowStartTreatBtn(false);
-    //   setShowedPart("showCycle");
-    //   const treatmentData = data?.data;
-    //   setTreatmentValue(
-    //     rowData?.sub_category ? rowData?.sub_category : rowData?.category || ""
-    //   );
-
-    //   const startDateGregorian = treatmentData.start_date || "";
-    //   const endDateGregorian = treatmentData.end_date || "";
-    //   const startDateJalali = startDateGregorian
-    //     ? new DateObject({
-    //         date: startDateGregorian,
-    //         calendar: "gregorian",
-    //       })
-    //         .convert(persian)
-    //         .format("YYYY/MM/DD")
-    //     : "";
-
-    //   const endDateJalali = endDateGregorian
-    //     ? new DateObject({
-    //         date: endDateGregorian,
-    //         calendar: "gregorian",
-    //       })
-    //         .convert(persian)
-    //         .format("YYYY/MM/DD")
-    //     : "";
-    //   setStartDateObj(startDateJalali);
-    //   setTreatmentStartDateObj(startDateJalali);
-
-    //   setEndDateObj(endDateJalali);
-    //   setSelectedTreatment({
-    //     value: treatmentData?.evaluation_uid,
-    //     label: treatmentData?.evaluation,
-    //   });
-
-    //   setSelectedProtocol({
-    //     value: treatmentData.protocol_uid,
-    //     label: treatmentData.protocol,
-    //   });
-
-    //   setDescription(treatmentData.description || "");
-    //   setnewTreat(true);
-    // } catch (error) {
-    //   console.error("Error fetching treatment data:", error);
-    // }
     await newTryyy(rowData);
   };
 
@@ -219,6 +169,8 @@ const TreatmentTable = () => {
       const response = await fetch(getTreatmentLine);
       const data = await response.json();
       setAllDatas(data?.results);
+      console.log("setTreatmentUidInGet", rowData?.uid);
+      setTreatmentUidInGet(rowData?.uid);
     } catch (error) {
       console.error("Error fetching treatment data:", error);
     }
@@ -338,6 +290,7 @@ const TreatmentTable = () => {
 
       {newTreat && (
         <NewTreat
+          treatmentUidInGet={treatmentUidInGet}
           setAllDatas={setAllDatas}
           showedPart={showedPart}
           setShowedPart={setShowedPart}
