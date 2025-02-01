@@ -377,7 +377,7 @@ select,
   left: calc(100% - 21px) !important;
 }
 
-.header-links-custome .p-accordion-header-link {
-  background-color: #8dce338a !important;
+.header-links-custome > .p-accordion-header-link {
+  background-color: #8dce333d !important;
   color: #000000 !important;
 }

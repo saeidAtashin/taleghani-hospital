@@ -223,7 +223,7 @@ const TreatChemi = ({
       {showedPart === "showCycle" && (
         <>
           <Accordion
-            className="shadow-lg mt-4 mb-3 "
+            className="shadow-lg mt-4 mb-3 d-flex flex-column gap-2 "
             multiple
             activeIndex={allDatas
               ?.map((treatment, index) =>
