@@ -135,17 +135,23 @@ const PatientRecordsForm = () => {
   };
 
   const handleChange = (e, field) => {
+    const value = dropdownData[field] ? e.value.uid : e.target.value;
+    setPatient((prev) => ({ ...prev, [field]: value }));
+    setUpdatedFields((prev) => ({ ...prev, [field]: value }));
+
     const selectedValues = e.value;
-    setUpdatedFields((prev) => ({ ...prev, [field]: selectedValues }));
+    // setUpdatedFields((prev) => ({ ...prev, [field]: selectedValues }));
 
     if (dropdownApis[field]) {
       setPatient((prev) => ({
         ...prev,
         [field]: selectedValues.map((selected) => selected?.name),
       }));
-    } else {
-      setPatient((prev) => ({ ...prev, [field]: e.target.value }));
     }
+
+    //  else {
+    //   setPatient((prev) => ({ ...prev, [field]: e.target.value }));
+    // }
   };
 
   const handleSubmit = () => {
