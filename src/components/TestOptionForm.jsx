@@ -106,7 +106,7 @@ const TestOptionForm = ({ selectedCategory, fields, setFields }) => {
           Swal.fire("حذف شد", "آیتم مورد نظر با موفقیت حذف شد", "success");
           // setRefreshSub(!refreshSub);
         } catch (error) {
-          // Swal.fire("خطا", "حذف آیتم با خطا مواجه شد", "error");
+          Swal.fire("خطا", "حذف آیتم با خطا مواجه شد", "error");
           console.error("Error deleting item:", error);
         }
       }

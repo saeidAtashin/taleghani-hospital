@@ -209,7 +209,7 @@ const TabsComponents = ({
                   label="لغو"
                 />
               </div>
-              <div className="p-field d-flex align-items-end gap-2 mb-4 w-100">
+              <div className="p-field d-flex flex-wrap align-items-start gap-4 my-4 w-100">
                 <InputText
                   className="rounded-2 w-50 "
                   placeholder="نام آزمایش"
@@ -219,7 +219,6 @@ const TabsComponents = ({
                   onChange={(e) => setNametitle(e.target.value)}
                 />
                 <div className="p-field d-flex flex-column w-50">
-                  {/* <label htmlFor="typeSelect">نوع فیلد آزمایش</label> */}
                   <select
                     id="typeSelect"
                     className="form-select rounded-2"
@@ -233,7 +232,6 @@ const TabsComponents = ({
                   </select>
                 </div>
                 <div className="p-field d-flex flex-column w-50">
-                  {/* <label htmlFor="categorySelect">انتخاب عنوان</label> */}
                   <select
                     id="categorySelect"
                     className="form-select rounded-2"
@@ -259,7 +257,6 @@ const TabsComponents = ({
                   </select>
                 </div>
                 <div className="p-field d-flex flex-column w-50">
-                  {/* <label htmlFor="categorySelect">انتخاب دسته‌بندی</label> */}
                   <select
                     id="categorySelect"
                     className="form-select rounded-2"
@@ -274,33 +271,32 @@ const TabsComponents = ({
                           <React.Fragment key={uid}>
                             {category?.items?.map((item, index) => (
                               <option
-                                key={item?.uid || index} // Use a unique identifier for items
-                                value={item?.uid} // Assuming item.uid uniquely identifies the item
+                                key={item?.uid || index}
+                                value={item?.uid}
                               >
                                 {item?.name}
-                                {/* (Subcategory) */}
                               </option>
                             ))}
                           </React.Fragment>
                         );
                       }
-                      return null; // Don't render categories that don't match the active index
+                      return null;
                     })}
                   </select>
                 </div>
                 <div className="">
-                  {/* <label htmlFor="orderingtitle">ترتیب</label> */}
                   <InputText
                     id="orderingtitle"
                     placeholder="ترتیب"
                     className="rounded-2"
-                    // value={orderingtitle}
                     onChange={(e) => setOrderingtitle(e.target.value)}
                   />
                 </div>
                 <div className="">
-                  <label htmlFor="orderingtitle">تایتل</label>
+                  <label htmlFor="title">تایتل</label>
                   <InputSwitch
+                    className="custom-switch"
+                    id="title"
                     checked={checked}
                     onChange={(e) => {
                       setChecked(e.value);
@@ -308,8 +304,9 @@ const TabsComponents = ({
                   />
                 </div>
                 <div className="">
-                  <label htmlFor="orderingtitle">مخفی</label>
+                  <label htmlFor="hidetitle">مخفی</label>
                   <InputSwitch
+                    id="hidetitle"
                     checked={hide}
                     onChange={(e) => {
                       sethide(e.value);
