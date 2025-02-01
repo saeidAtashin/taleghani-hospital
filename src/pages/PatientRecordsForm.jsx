@@ -141,28 +141,49 @@ const PatientRecordsForm = () => {
   };
 
   const handleChange = (e, field) => {
+    console.log("e in e", e);
+    console.log("field in e", field);
     if (dropdownApis[field]) {
-      // For MultiSelect fields
-      setPatient((prev) => ({
-        ...prev,
-        [field]: e.value.map((selected) => selected?.label), // Store only labels
-      }));
+      setPatient((prev) => {
+        const newValues = e.value.map((selected) => selected?.label);
 
-      setUpdatedFields((prev) => ({
-        ...prev,
-        [field]: e.value.map((selected) => selected?.value), // Store only values for API submission
-      }));
+        // Prevent unnecessary re-renders
+        if (JSON.stringify(prev[field]) === JSON.stringify(newValues)) {
+          return prev;
+        }
+
+        return {
+          ...prev,
+          [field]: newValues, // Store labels for UI
+        };
+      });
+
+      setUpdatedFields((prev) => {
+        const newValues = e.value.map((selected) => selected?.value);
+
+        if (JSON.stringify(prev[field]) === JSON.stringify(newValues)) {
+          return prev;
+        }
+
+        return {
+          ...prev,
+          [field]: newValues, // Store values for API submission
+        };
+      });
     } else {
-      // For normal input fields
-      setPatient((prev) => ({
-        ...prev,
-        [field]: e.target.value,
-      }));
+      setPatient((prev) => {
+        if (prev[field] === e.target.value) {
+          return prev;
+        }
+        return { ...prev, [field]: e.target.value };
+      });
 
-      setUpdatedFields((prev) => ({
-        ...prev,
-        [field]: e.target.value,
-      }));
+      setUpdatedFields((prev) => {
+        if (prev[field] === e.target.value) {
+          return prev;
+        }
+        return { ...prev, [field]: e.target.value };
+      });
     }
   };
 
@@ -281,7 +302,7 @@ const PatientRecordsForm = () => {
               >
                 <label>{dropdownLabels[field]}</label>
 
-                {dropdownApis[field] ? (
+                {dropdownApis[field]  ? (
                   <MultiSelect
                     value={
                       dropdownData.underlying_diseases?.filter((option) =>
@@ -289,8 +310,13 @@ const PatientRecordsForm = () => {
                       ) || []
                     }
                     options={dropdownData.underlying_diseases || []}
-                    onChange={(e) => handleChange(e, "underlying_diseases")}
+                    onChange={(e) => {
+                      console.log("e", e);
+                      handleChange(e, field);
+                    }}
+                    multiple
                     optionLabel="label"
+                    maxSelectedLabels={10}
                     placeholder={`انتخاب ${dropdownLabels[field]}`}
                     className={`custom-dropdown ${
                       classNameMapping[field] || "w-100"
