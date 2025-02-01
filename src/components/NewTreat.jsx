@@ -201,11 +201,11 @@ const NewTreat = ({
         : undefined;
     }
 
-    console.log("lineUid", lineUid);
-    console.log("uid", uid);
-    console.log("allDatas", allDatas);
-    console.log("responseUid", responseUid);
-    console.log("treatmentUidInGet", treatmentUidInGet);
+    // console.log("lineUid", lineUid);
+    // console.log("uid", uid);
+    // console.log("allDatas", allDatas);
+    // console.log("responseUid", responseUid);
+    // console.log("treatmentUidInGet", treatmentUidInGet);
 
     try {
       const response = await axios.put(
@@ -224,6 +224,7 @@ const NewTreat = ({
       );
       if (response?.status >= 200 && response?.status < 400) {
         setLoading(false);
+        setnewTreat(false);
         toast.current.show({
           severity: "success",
           summary: "موفق",
