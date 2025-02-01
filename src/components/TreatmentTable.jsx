@@ -34,6 +34,7 @@ const TreatmentTable = () => {
   const [endDateObj, setEndDateObj] = useState(null);
   const [endDate, setEndDate] = useState("");
   const [allDatas, setAllDatas] = useState(undefined);
+  const [finaleState, setFinaleState] = useState(undefined);
   const [isTreatmentForm, setIsTreatmentForm] = useState(false);
   const [showStartTreatBtn, setShowStartTreatBtn] = useState(true);
   const [showedPart, setShowedPart] = useState("");
@@ -188,6 +189,8 @@ const TreatmentTable = () => {
       const data = await response.json();
       !isForm && setAllDatas(data?.data);
 
+      console.log("res", data?.data?.state);
+      setFinaleState(data?.data?.state);
       setShowStartTreatBtn(false);
       setShowedPart("showCycle");
       const treatmentData = data?.data;
@@ -300,6 +303,7 @@ const TreatmentTable = () => {
 
       {newTreat && (
         <NewTreat
+          finaleState={finaleState}
           childState={childState}
           setChildState={setChildState}
           treatmentUidInGet={treatmentUidInGet}

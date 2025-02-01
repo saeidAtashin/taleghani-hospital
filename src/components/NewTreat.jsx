@@ -58,6 +58,7 @@ const NewTreat = ({
   treatmentUidInGet,
   childState,
   setChildState,
+  finaleState,
 }) => {
   const [isCycleVisible, setisCycleVisible] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -210,9 +211,9 @@ const NewTreat = ({
             ? treatmentUidInGet
             : lineUid
             ? lineUid
-            // : uid
+            : // : uid
             // ? uid
-            : allDatas?.uid
+            allDatas?.uid
             ? allDatas?.uid
             : responseUid
         }/`,
@@ -278,7 +279,15 @@ const NewTreat = ({
     try {
       const response = await axios.put(
         `https://cancerreg.ir/api/v1/teatment/end-treatment-line/${
-          uid ? uid : allDatas?.uid ? allDatas?.uid : responseUid
+          uid
+            ? uid
+            : lineUid
+            ? lineUid
+            : // : uid
+            // ? uid
+            allDatas?.uid
+            ? allDatas?.uid
+            : responseUid
         }/`,
         payload
       );
@@ -555,17 +564,20 @@ const NewTreat = ({
                   />
                 )}
 
-                <Button
-                  label="پایان درمان"
-                  icon="pi pi-check"
-                  onClick={handleEndSubmit}
-                  // loading={loading}
-                  className="w-100 rounded"
-                />
+                {finaleState !== "DONE" && (
+                  <Button
+                    label="پایان درمان"
+                    icon="pi pi-check"
+                    onClick={handleEndSubmit}
+                    // loading={loading}
+                    className="w-100 rounded"
+                  />
+                )}
               </div>
             </>
           ) : (
             <TreatChemi
+              finaleState={finaleState}
               setChildState={setChildState}
               childState={childState}
               treatmentUidInGet={treatmentUidInGet}

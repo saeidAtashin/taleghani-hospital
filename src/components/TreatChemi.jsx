@@ -12,6 +12,7 @@ import axios from "axios";
 import { Badge } from "primereact/badge";
 
 const TreatChemi = ({
+  finaleState,
   treatmentStartDateObj,
   setTreatmentStartDateObj,
   setTreatmentStartDate,
@@ -441,7 +442,9 @@ const TreatChemi = ({
           />
         </>
       )}
-      {!showStartTreatBtn && (
+      {!showStartTreatBtn && 
+      // finaleState !== "DONE" && 
+      (
         <div className="d-flex gap-4">
           <Button
             label="پایان درمان"
