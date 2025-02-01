@@ -230,7 +230,7 @@ const TreatChemi = ({
               ?.map((treatment, index) =>
                 treatment?.state !== "DONE" ? index : -1
               )
-              .filter((index) => index !== -1)} // Exclude -1 values to ensure those tabs remain closed
+              .filter((index) => index !== -1)}
           >
             {allDatas?.map((treatment, index) => (
               <AccordionTab
@@ -238,7 +238,6 @@ const TreatChemi = ({
                   treatment?.state === "DONE" ? "header-links-custome" : ""
                 }`}
                 key={treatment.uid}
-                // in this code, I want that if treatment?.state is equal to DONE , make accordion closed as default
                 header={
                   <span className="d-flex align-items-center justify-content-between gap-4 w-100">
                     <span className="font-bold white-space-nowrap">
@@ -442,9 +441,8 @@ const TreatChemi = ({
           />
         </>
       )}
-      {!showStartTreatBtn && 
-      // finaleState !== "DONE" && 
-      (
+      {!showStartTreatBtn && (
+        // finaleState !== "DONE" &&
         <div className="d-flex gap-4">
           <Button
             label="پایان درمان"
@@ -466,12 +464,7 @@ const TreatChemi = ({
             <Button
               label="بستن"
               icon="pi pi-times"
-              onClick={() => {
-                // console.log(
-                //   "Selected Treatment UID:",
-                //   selectedTreatmentNew?.uid
-                // );
-              }}
+              onClick={() => {}}
               className="p-button-text"
             />
             <Button

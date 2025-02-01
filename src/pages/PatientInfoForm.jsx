@@ -106,23 +106,6 @@ const PatientForm = () => {
     setUpdatedFields((prev) => ({ ...prev, [field]: value }));
   };
 
-  // const handleSubmit = () => {
-  //   fetch(patientApiUrl, {
-  //     method: "PUT",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({
-  //       ...updatedFields,
-  //       national_id: patient.national_id,
-  //     }),
-  //   }).then((res) => {
-  //     res.json();
-  //     toggleForm();
-  //     toast.success("ویرایش شما انجام شد");
-  //   });
-  // };
-
   const handleSubmit = () => {
     fetch(patientApiUrl, {
       method: "PUT",
@@ -136,7 +119,7 @@ const PatientForm = () => {
       }),
     })
       .then(async (res) => {
-        const responseData = await res.json(); // Ensure JSON parsing
+        const responseData = await res.json();
 
         if (res.status >= 200 && res.status < 400) {
           toast.success("ویرایش شما انجام شد");

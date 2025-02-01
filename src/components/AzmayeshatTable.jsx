@@ -129,7 +129,7 @@ export default function AzmayeshatTable() {
             value={groupedData}
             selection={selectedGroups}
             onSelectionChange={(e) => setSelectedGroups(e.value)}
-            dataKey="date" // Assuming date is unique for each group
+            dataKey="date"
             paginator
             rows={10}
             rowsPerPageOptions={[5, 10, 25]}
@@ -137,7 +137,6 @@ export default function AzmayeshatTable() {
             currentPageReportTemplate="نمایش {first} تا {last} از {totalRecords} اطلاعات"
             globalFilter={null}
             header={headerNew}
-            // No need for row grouping since data is already grouped
           >
             <Column
               selectionMode="multiple"
@@ -183,13 +182,7 @@ export default function AzmayeshatTable() {
                 <button
                   type="button"
                   className="btn btn-outline-primary"
-                  onClick={() =>
-                    // window.open(
-                    //   `/dashboard/patients-lists/${rowData.date}`, // Adjust the URL based on your routing
-                    //   "_blank"
-                    // )
-                    console.log("rowData", rowData?.names)
-                  }
+                  onClick={() => console.log("rowData", rowData?.names)}
                 >
                   مشاهده
                 </button>

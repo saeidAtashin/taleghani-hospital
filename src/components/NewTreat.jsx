@@ -184,7 +184,6 @@ const NewTreat = ({
   };
 
   const handleEndSubmit = async () => {
-    // await handleSubmitModal2()
     setLoading(true);
     setShowModal(true);
   };

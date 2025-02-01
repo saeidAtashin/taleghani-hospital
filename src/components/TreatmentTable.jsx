@@ -240,12 +240,11 @@ const TreatmentTable = () => {
 
   useEffect(() => {
     if (rowData) {
-      tryyyy(rowData); // Call the original tryyyy function when rowData changes
-      newTryyy(rowData); // Call the newTryyy function when rowData changes
+      tryyyy(rowData);
+      newTryyy(rowData);
     }
-  }, [rowData, childState]); // This dependency will trigger the effect whenever 'rowData' changes
+  }, [rowData, childState]);
 
-  // I want that when change a state in child, call again  newTryyy and tryyyy
   return (
     <>
       {!newTreat && (
