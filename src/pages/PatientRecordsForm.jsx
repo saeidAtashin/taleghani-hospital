@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { InputText } from "primereact/inputtext";
-import { MultiSelect } from "primereact/multiselect"; // Import MultiSelect
+import { MultiSelect } from "primereact/multiselect";
 import { Button } from "primereact/button";
 import "react-datepicker/dist/react-datepicker.css";
 import { toast } from "react-toastify";
@@ -58,7 +58,7 @@ const PatientRecordsForm = () => {
         ...prev,
         drugs_records: updatedDrugsRecords,
       }));
-      setDrugName(""); // Clear input fields after adding
+      setDrugName("");
       setDrugDose("");
     }
   };
@@ -86,12 +86,21 @@ const PatientRecordsForm = () => {
         setPatient(data?.data);
       });
 
-    Object.keys(dropdownApis).forEach((key) => {
-      fetch(dropdownApis[key])
+    Object.entries(dropdownApis).forEach(([key, url]) => {
+      fetch(url)
         .then((res) => res.json())
         .then((data) => {
-          setDropdownData((prev) => ({ ...prev, [key]: data.data.results }));
-        });
+          const fetchedOptions = data?.data?.results?.map((item) => ({
+            value: item.id,
+            label: item.name,
+          }));
+
+          setDropdownData((prevOptions) => ({
+            ...prevOptions,
+            [key]: fetchedOptions, // Correcting fieldName.name issue
+          }));
+        })
+        .catch((error) => console.error(`Error fetching ${key}:`, error));
     });
   }, []);
 
@@ -106,7 +115,6 @@ const PatientRecordsForm = () => {
             dropdownData[key]?.find((option) => option?.name === item)
           );
 
-          // Only update if values are different
           if (
             selectedValues &&
             !areArraysEqual(updatedPatient[key], selectedValues)
@@ -117,14 +125,12 @@ const PatientRecordsForm = () => {
         }
       });
 
-      // Only set patient state if there are actual changes
       if (hasChanges) {
         setPatient(updatedPatient);
       }
     }
   }, [patient, dropdownData]);
 
-  // Helper function to compare arrays
   const areArraysEqual = (arr1, arr2) => {
     if (!arr1 || !arr2) return false;
     if (arr1.length !== arr2.length) return false;
@@ -135,23 +141,29 @@ const PatientRecordsForm = () => {
   };
 
   const handleChange = (e, field) => {
-    const value = dropdownData[field] ? e.value.uid : e.target.value;
-    setPatient((prev) => ({ ...prev, [field]: value }));
-    setUpdatedFields((prev) => ({ ...prev, [field]: value }));
-
-    const selectedValues = e.value;
-    // setUpdatedFields((prev) => ({ ...prev, [field]: selectedValues }));
-
     if (dropdownApis[field]) {
+      // For MultiSelect fields
       setPatient((prev) => ({
         ...prev,
-        [field]: selectedValues.map((selected) => selected?.name),
+        [field]: e.value.map((selected) => selected?.label), // Store only labels
+      }));
+
+      setUpdatedFields((prev) => ({
+        ...prev,
+        [field]: e.value.map((selected) => selected?.value), // Store only values for API submission
+      }));
+    } else {
+      // For normal input fields
+      setPatient((prev) => ({
+        ...prev,
+        [field]: e.target.value,
+      }));
+
+      setUpdatedFields((prev) => ({
+        ...prev,
+        [field]: e.target.value,
       }));
     }
-
-    //  else {
-    //   setPatient((prev) => ({ ...prev, [field]: e.target.value }));
-    // }
   };
 
   const handleSubmit = () => {
@@ -272,17 +284,13 @@ const PatientRecordsForm = () => {
                 {dropdownApis[field] ? (
                   <MultiSelect
                     value={
-                      patient[field]
-                        ? patient[field].map((item) => {
-                            return dropdownData[field]?.find(
-                              (option) => option.name === item
-                            );
-                          })
-                        : []
+                      dropdownData.underlying_diseases?.filter((option) =>
+                        patient.underlying_diseases?.includes(option.label)
+                      ) || []
                     }
-                    options={dropdownData[field]}
-                    onChange={(e) => handleChange(e, field)}
-                    optionLabel="name"
+                    options={dropdownData.underlying_diseases || []}
+                    onChange={(e) => handleChange(e, "underlying_diseases")}
+                    optionLabel="label"
                     placeholder={`انتخاب ${dropdownLabels[field]}`}
                     className={`custom-dropdown ${
                       classNameMapping[field] || "w-100"
