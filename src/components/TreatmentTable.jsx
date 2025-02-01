@@ -166,13 +166,11 @@ const TreatmentTable = () => {
   };
 
   const tryyyy = async (rowData) => {
-    console.log("rowData", rowData);
     const getTreatmentLine = `https://cancerreg.ir/api/v1/teatment/treatment-line/${rowData?.uid}/`;
     try {
       const response = await fetch(getTreatmentLine);
       const data = await response.json();
       setAllDatas(data?.results);
-      console.log("setTreatmentUidInGet", rowData?.uid);
       setTreatmentUidInGet(rowData?.uid);
       setRowData(rowData);
     } catch (error) {

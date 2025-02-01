@@ -203,12 +203,6 @@ const NewTreat = ({
         : undefined;
     }
 
-    // console.log("lineUid", lineUid);
-    // console.log("uid", uid);
-    // console.log("allDatas", allDatas);
-    // console.log("responseUid", responseUid);
-    // console.log("treatmentUidInGet", treatmentUidInGet);
-
     try {
       const response = await axios.put(
         `https://cancerreg.ir/api/v1/teatment/end-treatment/${
@@ -263,9 +257,6 @@ const NewTreat = ({
   };
 
   const handleSubmitModal2 = async (uid) => {
-    console.log(" allDatas    allDatas ssdsdsdd", allDatas);
-    console.log(" uid", uid);
-
     const payload = {
       treatment_uid: uid ? uid : allDatas?.uid ? allDatas?.uid : responseUid,
 
@@ -409,9 +400,6 @@ const NewTreat = ({
   }, [newTreat, selectedTreatment]);
 
   const handleSubmitLine = async (treatmentUid) => {
-    console.log("treatmentUidInGet", treatmentUidInGet);
-    console.log("treatmentUid", treatmentUid);
-
     const payload = {
       treatment_uid: treatmentUidInGet
         ? treatmentUidInGet
@@ -451,7 +439,6 @@ const NewTreat = ({
         setHiddenButtons((prev) => [...prev, treatmentUid]);
         setChildState(!childState);
 
-        console.log("post treatment-line", response?.data?.data?.uid);
         setlineUid(response?.data?.data?.uid);
         toast.current.show({
           severity: "success",
