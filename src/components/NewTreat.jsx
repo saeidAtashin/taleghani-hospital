@@ -221,8 +221,8 @@ const NewTreat = ({
       );
       if (response?.status >= 200 && response?.status < 400) {
         setLoading(false);
-        setnewTreat(false);
         resetFormFields();
+        setnewTreat(false);
 
         toast.current.show({
           severity: "success",
@@ -293,6 +293,8 @@ const NewTreat = ({
       );
       if (response?.status >= 200 && response?.status < 400) {
         setChildState(!childState);
+        setnewTreat(false);
+        resetFormFields();
 
         setLoading(false);
         toast.current.show({
