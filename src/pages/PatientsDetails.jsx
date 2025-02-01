@@ -96,7 +96,7 @@ const PatientsDetails = () => {
   ];
 
   return (
-    <div className="container mt-5">
+    <div className="mx-4 max-w-100 mt-5">
       <h2 className="mb-5">
         بیمار {userIdentityData?.first_name} {userIdentityData?.last_name} -{" "}
         {userIdentityData?.phone_number}

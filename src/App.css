@@ -365,3 +365,7 @@ select,
   background-color: #8dce333d !important;
   color: #000000 !important;
 }
+
+.p-selectable-row{
+  height: auto !important;
+}
