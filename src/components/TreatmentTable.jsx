@@ -148,9 +148,7 @@ const TreatmentTable = () => {
   );
 
   const handleRowClick = async (rowData) => {
-    const uid = rowData.uid;
-    const getTreatment = `https://cancerreg.ir/api/v1/teatment/treatment/${uid}/`;
-    const getTreatmentLine = `https://cancerreg.ir/api/v1/teatment/treatment-line/${uid}/`;
+    // const uid = rowData.uid;
     setIsTreatmentForm(!isTreatmentForm);
     const isForm =
       rowData?.category === "HORMONETHERAPY" ||
@@ -159,14 +157,78 @@ const TreatmentTable = () => {
     setshowLine(isForm);
     if (isForm) {
       setIsTreatmentForm(!isTreatmentForm);
-      try {
-        const response = await fetch(getTreatmentLine);
-        const data = await response.json();
-        setAllDatas(data?.results);
-      } catch (error) {
-        console.error("Error fetching treatment data:", error);
-      }
+      await tryyyy(rowData);
     }
+    // try {
+    //   const response = await fetch(getTreatment);
+    //   const data = await response.json();
+    //   !isForm && setAllDatas(data?.data);
+
+    //   setShowStartTreatBtn(false);
+    //   setShowedPart("showCycle");
+    //   const treatmentData = data?.data;
+    //   setTreatmentValue(
+    //     rowData?.sub_category ? rowData?.sub_category : rowData?.category || ""
+    //   );
+
+    //   const startDateGregorian = treatmentData.start_date || "";
+    //   const endDateGregorian = treatmentData.end_date || "";
+    //   const startDateJalali = startDateGregorian
+    //     ? new DateObject({
+    //         date: startDateGregorian,
+    //         calendar: "gregorian",
+    //       })
+    //         .convert(persian)
+    //         .format("YYYY/MM/DD")
+    //     : "";
+
+    //   const endDateJalali = endDateGregorian
+    //     ? new DateObject({
+    //         date: endDateGregorian,
+    //         calendar: "gregorian",
+    //       })
+    //         .convert(persian)
+    //         .format("YYYY/MM/DD")
+    //     : "";
+    //   setStartDateObj(startDateJalali);
+    //   setTreatmentStartDateObj(startDateJalali);
+
+    //   setEndDateObj(endDateJalali);
+    //   setSelectedTreatment({
+    //     value: treatmentData?.evaluation_uid,
+    //     label: treatmentData?.evaluation,
+    //   });
+
+    //   setSelectedProtocol({
+    //     value: treatmentData.protocol_uid,
+    //     label: treatmentData.protocol,
+    //   });
+
+    //   setDescription(treatmentData.description || "");
+    //   setnewTreat(true);
+    // } catch (error) {
+    //   console.error("Error fetching treatment data:", error);
+    // }
+    await newTryyy(rowData);
+  };
+
+  const tryyyy = async (rowData) => {
+    console.log("rowData", rowData);
+    const getTreatmentLine = `https://cancerreg.ir/api/v1/teatment/treatment-line/${rowData?.uid}/`;
+    try {
+      const response = await fetch(getTreatmentLine);
+      const data = await response.json();
+      setAllDatas(data?.results);
+    } catch (error) {
+      console.error("Error fetching treatment data:", error);
+    }
+  };
+
+  const newTryyy = async (rowData) => {
+    const isForm =
+      rowData?.category === "HORMONETHERAPY" ||
+      rowData?.category === "CHEMOTHERAPY";
+    const getTreatment = `https://cancerreg.ir/api/v1/teatment/treatment/${rowData?.uid}/`;
     try {
       const response = await fetch(getTreatment);
       const data = await response.json();
