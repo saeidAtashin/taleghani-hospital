@@ -6,7 +6,7 @@ import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
 import axios from "axios";
 import "react-datepicker/dist/react-datepicker.css";
-import DatePicker, { DateObject } from "react-multi-date-picker";
+import DatePicker from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import TreatChemi from "./TreatChemi";
@@ -188,31 +188,16 @@ const NewTreat = ({
     const payload = {
       treatment_uid: allDatas?.uid,
 
-      // type: isTreatmentForm ? "TREATMENT" : "CHEMOTHERAPY",
-      // category: treatmentValue?.value,
-      // sub_category: isTreatmentForm ? treatmentValue?.label : undefined,
-      // patient_uid: uid,
-      // start_date: startDate ? startDate : treatmentStartDate,
       end_date: endDate ? endDate : undefined,
       description: description ? description : undefined,
       evaluation_uid: selectedTreatment,
-      // protocol_uid: selectedProtocol,
     };
     if (!isTreatmentForm) {
       payload.treatment_uid = allDatas?.uid;
       payload.evaluation_uid = selectedTreatment
         ? selectedTreatment
         : undefined;
-      // payload.protocol_uid = selectedProtocol;
-      // payload.cycles = cycles.map((c) => ({
-      //   cycleNumber: c.cycleNumber,
-      //   date: c.date,
-      //   description: c.description,
-      // }));
     }
-    // treatment_uid: responseUid,
-
-    console.log("allDatas", allDatas);
 
     try {
       const response = await axios.put(
@@ -261,15 +246,9 @@ const NewTreat = ({
     const payload = {
       treatment_uid: uid ? uid : allDatas?.uid ? allDatas?.uid : responseUid,
 
-      // type: isTreatmentForm ? "TREATMENT" : "CHEMOTHERAPY",
-      // category: treatmentValue?.value,
-      // sub_category: isTreatmentForm ? treatmentValue?.label : undefined,
-      // patient_uid: uid,
-      // start_date: startDate ? startDate : treatmentStartDate,
       end_date: endDate ? endDate : undefined,
       description: description ? description : undefined,
       evaluation_uid: selectedTreatment,
-      // protocol_uid: selectedProtocol,
     };
     if (!isTreatmentForm) {
       payload.treatment_uid = uid
@@ -280,16 +259,7 @@ const NewTreat = ({
       payload.evaluation_uid = selectedTreatment
         ? selectedTreatment
         : undefined;
-      // payload.protocol_uid = selectedProtocol;
-      // payload.cycles = cycles.map((c) => ({
-      //   cycleNumber: c.cycleNumber,
-      //   date: c.date,
-      //   description: c.description,
-      // }));
     }
-    // treatment_uid: responseUid,
-
-    console.log("allDatas", allDatas);
 
     try {
       const response = await axios.put(
@@ -345,9 +315,6 @@ const NewTreat = ({
       setSubSelection(null);
     }
 
-    console.log("mainSelection", mainSelection);
-    console.log("treatmentValue", treatmentValue);
-    console.log("isTreatmentForm in new", isTreatmentForm);
     const isForm =
       treatmentValue === "HORMONETHERAPY" ||
       mainSelection === "HORMONETHERAPY" ||
@@ -426,14 +393,10 @@ const NewTreat = ({
       start_date: treatmentStartDate ? treatmentStartDate : startDate,
       end_date: endDate ? endDate : undefined,
       description: description ? description : undefined,
-      // evaluation_uid: selectedTreatment,
       protocol_uid: selectedProtocol,
     };
 
     if (!isTreatmentForm) {
-      // payload.evaluation_uid = selectedTreatment
-      //   ? selectedTreatment
-      //   : undefined;
       payload.treatment_uid = treatmentUid
         ? treatmentUid
         : allDatas?.uid
@@ -457,7 +420,6 @@ const NewTreat = ({
 
         console.log("post treatment-line", response?.data?.data?.uid);
         setlineUid(response?.data?.data?.uid);
-        // should uid ro bedim be end handleSubmitModal
         toast.current.show({
           severity: "success",
           summary: "موفق",
@@ -465,8 +427,6 @@ const NewTreat = ({
         });
       }
     } catch (err) {
-      // setShowSaveButton(true);
-
       if (err?.status >= 400) {
         console.error(err);
         toast.current.show({
@@ -647,7 +607,6 @@ const NewTreat = ({
           </div>
         }
       >
-        {/* Modal content */}
         <div className="d-flex flex-column my-4 w-100">
           <label className="p-col-12 p-md-2" htmlFor="evaluation_uid">
             ارزیابی درمان:

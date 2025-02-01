@@ -2,13 +2,11 @@ import React, { useState } from "react";
 import { Dropdown } from "primereact/dropdown";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Button } from "primereact/button";
-import { Toast } from "primereact/toast";
 import { Accordion, AccordionTab } from "primereact/accordion";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker, { DateObject } from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
-import { TabMenu } from "primereact/tabmenu";
 import { Dialog } from "primereact/dialog";
 import axios from "axios";
 import { Badge } from "primereact/badge";
@@ -53,11 +51,10 @@ const TreatChemi = ({
   const [showModal, setShowModal] = useState(false);
   const [loadingtar, setLoadingtar] = useState(false);
   const [treatUidForCycle, setTreatUidForCycle] = useState(undefined);
-  const [savedCycles, setSavedCycles] = useState([]); // Track saved cycles
+  const [savedCycles, setSavedCycles] = useState([]);
 
   const [cycleDates, setCycleDates] = useState([]);
   const [cycleDescriptions, setCycleDescriptions] = useState([]);
-  //
 
   const [selectedTreatmentNew, setSelectedTreatmentNew] = useState(null);
 
@@ -81,19 +78,19 @@ const TreatChemi = ({
       const formattedDate = gregorianDate.toISOString().split("T")[0];
 
       const updatedCycleDates = [...cycleDates];
-      updatedCycleDates[index] = formattedDate; // Store the formatted date
-      setCycleDates(updatedCycleDates); // Update the state
+      updatedCycleDates[index] = formattedDate;
+      setCycleDates(updatedCycleDates);
     } else {
       const updatedCycleDates = [...cycleDates];
-      updatedCycleDates[index] = ""; // Clear the date if it's null
-      setCycleDates(updatedCycleDates); // Update the state
+      updatedCycleDates[index] = "";
+      setCycleDates(updatedCycleDates);
     }
   };
 
   const handleCycleDescriptionChange = (index, val) => {
     const updatedCycleDescriptions = [...cycleDescriptions];
-    updatedCycleDescriptions[index] = val; // Store the updated description
-    setCycleDescriptions(updatedCycleDescriptions); // Update the state
+    updatedCycleDescriptions[index] = val;
+    setCycleDescriptions(updatedCycleDescriptions);
   };
 
   const addCycle = (treatmentIndex) => {
@@ -107,10 +104,10 @@ const TreatChemi = ({
 
     const newCycleNumber = updatedTreatments[treatmentIndex].cycles.length + 1;
 
-    const currentProtocol = updatedTreatments[treatmentIndex]?.protocol; // Get the protocol for the specific treatment
+    const currentProtocol = updatedTreatments[treatmentIndex]?.protocol;
 
     updatedTreatments[treatmentIndex].cycles = [
-      ...updatedTreatments[treatmentIndex].cycles, // Spread existing cycles
+      ...updatedTreatments[treatmentIndex].cycles,
       {
         cycleNumber: newCycleNumber,
         date: "",
@@ -123,8 +120,6 @@ const TreatChemi = ({
     setAllDatas(updatedTreatments);
   };
 
-  console.log("allDatas in chemi", allDatas);
-
   const handleCycleapi = async (cycle, index) => {
     const cycleData = {
       treatment_line_uid: cycle?.uid
@@ -134,18 +129,17 @@ const TreatChemi = ({
         : treatUidForCycle
         ? treatUidForCycle
         : uidForCycle,
-      date: cycleDates[index] || "", // Use the date from the cycleDates state
-      description: cycleDescriptions[index] || "", // Use the description from the cycleDescriptions state
+      date: cycleDates[index] || "",
+      description: cycleDescriptions[index] || "",
     };
 
     try {
-      setLoadingtar(true); // Set loading state to true
+      setLoadingtar(true);
       const response = await axios.post(
         "https://cancerreg.ir/api/v1/teatment/cycle/",
         cycleData
       );
 
-      console.log("Cycle saved successfully", response.data); // Optionally log success
       setSavedCycles((prevSavedCycles) => [
         ...prevSavedCycles,
         cycle.cycleNumber,
@@ -156,9 +150,9 @@ const TreatChemi = ({
         cycle.cycleNumber,
         ":",
         error
-      ); // Log errors
+      );
     } finally {
-      setLoadingtar(false); // Reset loading state
+      setLoadingtar(false);
     }
   };
 
@@ -168,15 +162,15 @@ const TreatChemi = ({
   };
 
   const handleSubmitModal3 = async (uid) => {
-    await handleSubmitModal2(uid); // Call the function properly
-    setShowModal(false); // Then close the modal
+    await handleSubmitModal2(uid);
+    setShowModal(false);
   };
 
   const addTreatmentLine = () => {
     setAllDatas((prev = []) => [
       ...prev,
       {
-        id: prev?.length + 1, // Unique ID based on length
+        id: prev?.length + 1,
         startDate: "",
         protocol: null,
         description: "",
@@ -185,8 +179,8 @@ const TreatChemi = ({
   };
 
   const handleTreatmentButtonClick = (treatment) => {
-    setShowModal(true); // Show the dialog
-    setSelectedTreatmentNew(treatment); // Set the selected treatment in state
+    setShowModal(true);
+    setSelectedTreatmentNew(treatment);
   };
 
   return (
@@ -290,9 +284,6 @@ const TreatChemi = ({
                         options={protocolOptions}
                         onChange={(e) => {
                           setSelectedProtocol(e.value);
-                          // const updatedTreatments = [...allDatas];
-                          // updatedTreatments[index].protocol = e.value;
-                          // setAllDatas(updatedTreatments);
                         }}
                         placeholder="پروتکل را انتخاب نمایید"
                         optionLabel="label"
@@ -304,7 +295,7 @@ const TreatChemi = ({
                       <Button
                         label="شروع خط درمان"
                         icon="pi pi-check"
-                        onClick={() => handleSubmitLine(treatment.uid)} // ✅ Pass treatment.uid
+                        onClick={() => handleSubmitLine(treatment.uid)}
                         loading={loading}
                         className="w-100 bg-white text-dark rounded-3 mb-4"
                       />
@@ -322,7 +313,7 @@ const TreatChemi = ({
                             addCycle(index);
                           }
                         : console.log("object")
-                    } // Pass the treatment line index
+                    }
                     type="button"
                     disabled={treatment?.state !== "DONE" ? false : true}
                   />
@@ -365,7 +356,7 @@ const TreatChemi = ({
                                 onChange={(date) =>
                                   handleCycleDateChange(cycleIndex, date)
                                 }
-                                value={cycleDates[cycleIndex] || ""} // Bind to cycleDates state
+                                value={cycleDates[cycleIndex] || ""}
                                 calendar={persian}
                                 locale={persian_fa}
                                 format="YYYY/MM/DD"
@@ -386,7 +377,7 @@ const TreatChemi = ({
                               <div className="p-col-12 p-md-10">
                                 <InputTextarea
                                   id={`cycle_desc_${cycleIndex}`}
-                                  value={cycleDescriptions[cycleIndex] || ""} // Bind to cycleDescriptions state
+                                  value={cycleDescriptions[cycleIndex] || ""}
                                   onChange={(e) =>
                                     handleCycleDescriptionChange(
                                       cycleIndex,
@@ -402,7 +393,7 @@ const TreatChemi = ({
                             <Button
                               label="ثبت سیکل"
                               icon="pi pi-check"
-                              onClick={() => handleCycleapi(cycle, cycleIndex)} // Pass cycle and index to handleCycleapi
+                              onClick={() => handleCycleapi(cycle, cycleIndex)}
                               loading={loading}
                               className="w-100 bg-white text-dark rounded-3"
                             />
@@ -417,7 +408,7 @@ const TreatChemi = ({
                   <Button
                     label="پایان خط درمان"
                     icon="pi pi-check"
-                    onClick={() => handleTreatmentButtonClick(treatment)} // Pass the treatment object to the handler
+                    onClick={() => handleTreatmentButtonClick(treatment)}
                     loading={loading}
                     className="w-100 text-white rounded-3 mb-4"
                   />
@@ -425,15 +416,6 @@ const TreatChemi = ({
               </AccordionTab>
             ))}
           </Accordion>
-          {/* {!showStartTreatBtn && (
-            <Button
-              label="پایان خط درمان"
-              icon="pi pi-check"
-              onClick={() => setShowModal(true)}
-              loading={loading}
-              className="w-100 text-white rounded-3 mb-4"
-            />
-          )} */}
 
           <Button
             label={`\u00A0 افزودن خط درمان`}
@@ -449,7 +431,6 @@ const TreatChemi = ({
           <Button
             label="پایان درمان"
             icon="pi pi-check"
-            // onClick={handleSubmitLine}
             loading={loading}
             className="w-100 bg-white text-dark rounded-3 mb-4"
           />
@@ -470,8 +451,7 @@ const TreatChemi = ({
                 console.log(
                   "Selected Treatment UID:",
                   selectedTreatmentNew?.uid
-                ); // Log the UID here
-                // setShowModal(false);
+                );
               }}
               className="p-button-text"
             />
@@ -485,7 +465,6 @@ const TreatChemi = ({
           </div>
         }
       >
-        {/* Modal content */}
         <div className="d-flex flex-column my-4 w-100">
           <label className="p-col-12 p-md-2" htmlFor="evaluation_uid">
             ارزیابی خط درمان:

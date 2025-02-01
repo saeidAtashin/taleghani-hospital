@@ -104,8 +104,6 @@ export default function RoutesWithAnimation() {
                   }
                 />
 
-                {/*  */}
-
                 <Route
                   path="/dashboard/basic-test-definitions"
                   index
@@ -133,8 +131,6 @@ export default function RoutesWithAnimation() {
                   }
                 />
               </Route>
-
-              {/* Patients */}
             </Routes>
           </QueryClientProvider>
         </UserContextProvider>

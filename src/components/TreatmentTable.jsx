@@ -9,7 +9,6 @@ import moment from "jalali-moment";
 import NewTreat from "./NewTreat";
 import { DateObject } from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
-// import persian_fa from "react-date-object/locales/persian_fa";
 
 const TreatmentTable = () => {
   const [treatmentValue, setTreatmentValue] = useState(null);
@@ -164,7 +163,6 @@ const TreatmentTable = () => {
         const response = await fetch(getTreatmentLine);
         const data = await response.json();
         setAllDatas(data?.results);
-        // setCycles()
       } catch (error) {
         console.error("Error fetching treatment data:", error);
       }
@@ -204,16 +202,10 @@ const TreatmentTable = () => {
       setTreatmentStartDateObj(startDateJalali);
 
       setEndDateObj(endDateJalali);
-      // setSelectedTreatment(treatmentData.evaluation_uid);
       setSelectedTreatment({
         value: treatmentData?.evaluation_uid,
         label: treatmentData?.evaluation,
       });
-
-      // setSelectedProtocol(
-      //   protocolOptions.find((item) => item.value === treatmentData.protocol) ||
-      //     null
-      // );
 
       setSelectedProtocol({
         value: treatmentData.protocol_uid,
@@ -243,7 +235,6 @@ const TreatmentTable = () => {
           currentPageReportTemplate="نمایش {first} تا {last} از {totalRecords} اطلاعات"
           globalFilter={null}
           header={headerNew}
-          // onRowClick={(e) => handleRowClick(e.data)}
         >
           <Column
             selectionMode="multiple"
@@ -274,7 +265,7 @@ const TreatmentTable = () => {
               <button
                 type="button"
                 className="btn btn-outline-primary"
-                onClick={() => handleRowClick(rowData)} // ✅ Calling the function with rowData
+                onClick={() => handleRowClick(rowData)}
               >
                 مشاهده
               </button>
