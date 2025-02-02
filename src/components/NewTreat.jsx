@@ -179,7 +179,6 @@ const NewTreat = ({
           summary: "موفق",
           detail: "ذخیره شد",
         });
-        console.log("isTreatmentForm", isTreatmentForm);
         setResponseUid(response?.data?.data?.uid);
         setuidForCycle(response?.data?.data?.first_treatment_line_uid);
         setShowStartTreatBtn(false);
@@ -510,8 +509,6 @@ const NewTreat = ({
         if (response?.status >= 200 && response?.status < 400) {
           setHiddenButtons((prev) => [...prev, treatmentUid]);
           setChildState(!childState);
-          console.log("uidForCycle ", uidForCycle);
-          // here
           setRefreshTreatTable(!refreshTreatTable);
 
           setlineUid(response?.data?.data?.uid);
@@ -523,7 +520,6 @@ const NewTreat = ({
         }
       } catch (err) {
         if (err?.status >= 400) {
-          // console.error(err);
           toast.current.show({
             severity: "error",
             summary: "خطا",

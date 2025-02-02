@@ -153,7 +153,6 @@ const TreatmentTable = ({ rowDataTransfer, setrowDataTransfer }) => {
       />
     </div>
   );
-  // console.log("rowData inside rowData", rowData);
 
   const handleRowClick = async (rowData) => {
     setIsTreatmentForm(!isTreatmentForm);
@@ -170,15 +169,10 @@ const TreatmentTable = ({ rowDataTransfer, setrowDataTransfer }) => {
   };
 
   useEffect(() => {
-    console.log("rowDataTransfer", rowDataTransfer);
-    console.log("products", products);
     if (rowDataTransfer?.uid && products.length > 0) {
       const matchingRow = products.find(
         (item) => item.uid === rowDataTransfer?.uid
       );
-      console.log("rowDataTransfer in in in in in ", rowDataTransfer);
-      console.log("products in in in in in ", products);
-      console.log("matchingRow in in in in in ", matchingRow);
 
       if (matchingRow) {
         handleRowClick(matchingRow);
@@ -210,7 +204,6 @@ const TreatmentTable = ({ rowDataTransfer, setrowDataTransfer }) => {
       const data = await response.json();
       !isForm && setAllDatas(data?.data);
 
-      console.log("res", data?.data?.state);
       setFinaleState(data?.data?.state);
       setShowStartTreatBtn(false);
       setShowedPart("showCycle");
