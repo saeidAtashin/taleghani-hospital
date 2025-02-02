@@ -187,7 +187,7 @@ const NewPillsTabs = () => {
       <h4 className="my-4 mx-2">ثبت {activeTab} جدید</h4>
 
       <div className="p-4">
-        <h1>Dynamic Form</h1>
+        {/* <h1>Dynamic Form</h1> */}
         {Object.keys(groupedFields).length > 0 ? (
           Object.entries(groupedFields)
             .sort(([orderA], [orderB]) => orderA - orderB)

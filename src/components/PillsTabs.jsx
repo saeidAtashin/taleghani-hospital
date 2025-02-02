@@ -84,6 +84,8 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
         const response = await axios.get(
           `https://cancerreg.ir/api/v1/tests/category-details/${activeTab}/`
         );
+        console.log("response", response?.data?.data);
+        console.log("activeTab", activeTab);
 
         setGetHideInput(true);
 
@@ -304,7 +306,7 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="p-4 mb-5 container shadow-lg">
-          <h1>Dynamic Form</h1>
+          {/* <h1>Dynamic Form</h1> */}
           <div className="my-3 d-flex gap-2 ">
             {subCategory?.length > 0 &&
               subCategory.map((subs, index) => (
