@@ -3,16 +3,13 @@ import { Tabs, Tab } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const ReusableTabs = ({ tabs, activeTabForce, setActiveTabForce }) => {
-  const [activeKey, setActiveKey] = useState(tabs[0]?.key || "درمان");
+  const [activeKey, setActiveKey] = useState(tabs[0]?.key || "اطلاعات هویتی");
 
   useEffect(() => {
     if (activeTabForce) {
       setActiveKey(activeTabForce);
     }
   }, [activeTabForce]);
-
-  console.log("activeTabForce", activeTabForce);
-  console.log("activeKey", activeKey);
 
   return (
     <Tabs

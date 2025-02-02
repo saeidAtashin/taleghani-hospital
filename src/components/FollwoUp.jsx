@@ -29,14 +29,9 @@ export default function FollwoUp({ activeTabForce, setActiveTabForce }) {
   };
 
   const tasvirbardatiCellClick = (record, allrow, type) => {
-    console.log("record", record);
-    console.log("allrow", allrow);
-    console.log("type", type);
-
     switch (type) {
       case "tests":
         setActiveTabForce("آزمایشات");
-        // localStorage.setItem("defaultActiveKey", "آزمایشات");
         break;
 
       case "graphic":
@@ -51,8 +46,6 @@ export default function FollwoUp({ activeTabForce, setActiveTabForce }) {
       default:
         setActiveTabForce(4);
     }
-
-    // console.log("act", activeTabForce);
   };
 
   const medical_testsTemplate = (rowData) => {
