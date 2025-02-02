@@ -83,7 +83,7 @@ const ReusableForm = ({
         [fieldName.name]: false,
       }));
     } catch (error) {
-      console.error(`Error fetching options for ${fieldName.name}:`, error);
+      // console.error(`Error fetching options for ${fieldName.name}:`, error);
       setErrorFields((prevErrors) => ({
         ...prevErrors,
         [fieldName.name]: true,

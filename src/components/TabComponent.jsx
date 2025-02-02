@@ -68,7 +68,7 @@ export default function TabComponent() {
           ...fetchedItems,
         ]);
       } catch (err) {
-        console.error(err.message);
+        // console.error(err.message);
       }
     };
 
@@ -111,7 +111,7 @@ export default function TabComponent() {
       closeModal();
       setRefresh(!refresh);
     } catch (error) {
-      console.error("Error submitting data:", error);
+      // console.error("Error submitting data:", error);
     }
   };
 
@@ -133,7 +133,7 @@ export default function TabComponent() {
           Swal.fire("حذف شد", "این مورد با موفقیت حذف شد", "success");
           setRefresh(!refresh);
         } catch (error) {
-          console.error("Error deleting item:", error);
+          // console.error("Error deleting item:", error);
           Swal.fire("Error!", "Failed to delete the item.", "error");
         }
       }
@@ -160,7 +160,7 @@ export default function TabComponent() {
 
       setRefreshSub(!refreshSub);
     } catch (error) {
-      console.error("Error submitting data:", error);
+      // console.error("Error submitting data:", error);
     }
   };
 
@@ -214,7 +214,7 @@ export default function TabComponent() {
 
         setCategories(grouped);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        // console.error("Error fetching data:", error);
       }
     };
 
@@ -242,7 +242,7 @@ export default function TabComponent() {
 
         setFields(grouped);
       } catch (error) {
-        console.error("Error fetching fields:", error);
+        // console.error("Error fetching fields:", error);
       }
     };
 
@@ -259,7 +259,7 @@ export default function TabComponent() {
 
         setTitles(results);
       } catch (error) {
-        console.error("Error fetching titles:", error);
+        // console.error("Error fetching titles:", error);
       }
     };
 

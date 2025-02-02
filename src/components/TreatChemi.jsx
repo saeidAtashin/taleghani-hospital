@@ -160,12 +160,12 @@ const TreatChemi = ({
     } catch (error) {
       toast.warning("باید سیکل جدید ثبت نمایید");
 
-      console.error(
-        "Error in API call for cycle",
-        cycle.cycleNumber,
-        ":",
-        error
-      );
+      // console.error(
+      //   "Error in API call for cycle",
+      //   cycle.cycleNumber,
+      //   ":",
+      //   error
+      // );
     } finally {
       setLoadingtar(false);
     }

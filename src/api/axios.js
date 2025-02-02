@@ -54,7 +54,7 @@ const handleError = (error) => {
   } else if (error.code === "ERR_NETWORK") {
     toast.error("لطفا اتصال به اینترنت خود را بررسی نمایید.");
   } else {
-    console.error("Global Error Handler:", error);
+    // console.error("Global Error Handler:", error);
   }
 };
 

@@ -19,7 +19,7 @@ const PatientDiseaseMap = () => {
       .then((data) => {
         setData(data?.results || []);
       })
-      .catch((error) => console.error("Error fetching data:", error));
+      .catch();
   }, [refresh, uid]);
 
   useEffect(() => {

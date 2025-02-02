@@ -87,7 +87,7 @@ export default function AzmayeshatTable() {
 
         setGroupedData(groupedArray);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        // console.error("Error fetching data:", error);
       }
     };
 

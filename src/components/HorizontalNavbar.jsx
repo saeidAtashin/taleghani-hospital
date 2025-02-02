@@ -41,7 +41,7 @@ const HorizontalNavbar = () => {
       }
       setData(response.data.data.results);
     } catch (error) {
-      console.error(`Error fetching data for ${item.name}:`, error);
+      // console.error(`Error fetching data for ${item.name}:`, error);
     }
     setLoading(false);
   };
@@ -71,7 +71,7 @@ const HorizontalNavbar = () => {
         setData(response.data.data.results);
         setNewItem(""); // Clear the input
       } catch (error) {
-        console.error(`Error adding new item for ${selectedItem.name}:`, error);
+        // console.error(`Error adding new item for ${selectedItem.name}:`, error);
       }
       setLoading(false);
     }
@@ -90,7 +90,7 @@ const HorizontalNavbar = () => {
         timer: 2000,
       });
     } catch (error) {
-      console.error(`Error deleting data for ${selectedItem.name}:`, error);
+      // console.error(`Error deleting data for ${selectedItem.name}:`, error);
     }
     setLoading(false);
   };

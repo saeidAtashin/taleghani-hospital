@@ -100,7 +100,7 @@ const PatientRecordsForm = () => {
             [key]: fetchedOptions, // Correcting fieldName.name issue
           }));
         })
-        .catch((error) => console.error(`Error fetching ${key}:`, error));
+        .catch();
     });
   }, []);
 
@@ -302,7 +302,7 @@ const PatientRecordsForm = () => {
               >
                 <label>{dropdownLabels[field]}</label>
 
-                {dropdownApis[field]  ? (
+                {dropdownApis[field] ? (
                   <MultiSelect
                     value={
                       dropdownData.underlying_diseases?.filter((option) =>

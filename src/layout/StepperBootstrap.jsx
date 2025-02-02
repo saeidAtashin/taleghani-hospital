@@ -58,7 +58,7 @@ const StepperBootstrap = () => {
         } catch (error) {
           // Handle errors from the API call
           setLoadingBtn(false);
-          console.error("Error submitting data:", error);
+          // console.error("Error submitting data:", error);
           setIsLoading(false);
           if (error.response && error.response.status === 400) {
             const errorDetails = error.response.data?.errors;
@@ -103,7 +103,7 @@ const StepperBootstrap = () => {
           }
         } catch (error) {
           setLoadingBtn(false);
-          console.error("Error submitting data:", error);
+          // console.error("Error submitting data:", error);
           setIsLoading(false);
         }
       }
@@ -111,7 +111,7 @@ const StepperBootstrap = () => {
       // Handle validation errors
       setIsLoading(false);
       setLoadingBtn(false);
-      console.error("Validation error:", error);
+      // console.error("Validation error:", error);
     }
   };
 

@@ -33,7 +33,7 @@ const Step3Form = ({ patient_uid, onNext }) => {
         }));
         setDiagnosisOptions(options);
       } catch (error) {
-        console.error("Error fetching diagnosis options:", error);
+        // console.error("Error fetching diagnosis options:", error);
       }
     };
 
@@ -136,7 +136,7 @@ const Step3Form = ({ patient_uid, onNext }) => {
 
       onNext();
     } catch (error) {
-      console.error("Submission Error:", error);
+      // console.error("Submission Error:", error);
     }
   };
 

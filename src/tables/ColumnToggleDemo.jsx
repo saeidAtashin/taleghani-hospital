@@ -41,7 +41,7 @@ export default function ColumnToggleDemo() {
       setProducts(patients);
       setCount(response.data?.data?.count || 0);
     } catch (error) {
-      console.error("Error fetching patient data:", error);
+      // console.error("Error fetching patient data:", error);
     } finally {
       setLoading(false);
     }

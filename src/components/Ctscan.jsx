@@ -51,7 +51,7 @@ const Ctscan = ({ setShowAzmayeshPAge, uidScan }) => {
         }
       } catch (error) {
         setPut(false); // Enable PUT updates only after successful submission
-        console.error("Error fetching data:", error);
+        // console.error("Error fetching data:", error);
       }
     };
 
@@ -118,7 +118,7 @@ const Ctscan = ({ setShowAzmayeshPAge, uidScan }) => {
         toast.success("تغییرات ذخیره شد");
       } catch (error) {
         toast.warning("خطایی رخ داده است");
-        console.error(error);
+        // console.error(error);
       }
     } else {
       try {
@@ -132,7 +132,7 @@ const Ctscan = ({ setShowAzmayeshPAge, uidScan }) => {
       } catch (error) {
         setloadingBtn(false);
         toast.warning("خطایی رخ داده است.");
-        console.error(error);
+        // console.error(error);
       }
     }
   };

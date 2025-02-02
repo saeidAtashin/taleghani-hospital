@@ -129,7 +129,7 @@ const PatientForm = () => {
         }
       })
       .catch((error) => {
-        console.error("Request Failed:", error);
+        // console.error("Request Failed:", error);
         toast.error("مشکلی پیش آمد، لطفاً دوباره امتحان کنید.");
       });
   };

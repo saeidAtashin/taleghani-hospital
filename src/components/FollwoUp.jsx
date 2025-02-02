@@ -7,7 +7,12 @@ import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Badge } from "primereact/badge";
 
-export default function FollwoUp({ activeTabForce, setActiveTabForce }) {
+export default function FollwoUp({
+  activeTabForce,
+  setActiveTabForce,
+  rowDataTransfer,
+  setrowDataTransfer,
+}) {
   const [products, setProducts] = useState([]);
   const [allrow, setallrow] = useState([]);
   const [tasvirDetailUid, settasvirDetailUid] = useState(undefined);
@@ -30,14 +35,15 @@ export default function FollwoUp({ activeTabForce, setActiveTabForce }) {
   };
 
   const tasvirbardatiCellClick = (record, allrow, type) => {
-    console.log("record", record);
+    console.log("record", record?.data?.uid);
     switch (type) {
       case "tests":
         setActiveTabForce("آزمایشات");
         break;
 
       case "graphic":
-        // setActiveTabForce("تصویربرداری");
+        setActiveTabForce("تصویربرداری");
+        setrowDataTransfer(record);
 
         break;
 
@@ -210,7 +216,7 @@ export default function FollwoUp({ activeTabForce, setActiveTabForce }) {
         setProducts(fetchedData);
       })
       .catch((error) => {
-        console.error("Error fetching data:", error);
+        // console.error("Error fetching data:", error);
         toast.error("خطا در بارگذاری داده‌ها");
       })
       .finally(() => setLoading(false));

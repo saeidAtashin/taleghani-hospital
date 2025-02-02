@@ -9,7 +9,7 @@ import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import PillsTabsTasvir from "./PillsTabsTasvir";
 
-export default function TasvirBardari() {
+export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
   const [products, setProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [allrow, setallrow] = useState([]);
@@ -25,15 +25,12 @@ export default function TasvirBardari() {
   };
 
   const persianDateTemplate = (rowData) => {
-    // Check if rowData or rowData.date is missing
     if (!rowData || !rowData.date) {
       const fallbackDate = rowData.created_at
         ? rowData.created_at.split("T")[0]
         : null;
 
-      // Check if fallbackDate is valid, otherwise return an error message
       if (fallbackDate) {
-        // Convert fallback date (created_at) to Jalali format
         return (
           <span>
             {moment(fallbackDate, "YYYY-MM-DD")
@@ -46,15 +43,10 @@ export default function TasvirBardari() {
       }
     }
 
-    // Extract the date part (YYYY-MM-DD) from rowData.date and check if it's a valid date
-    const date = rowData.date.split("T")[0]; // Get date part (YYYY-MM-DD)
-
-    // If rowData.date is invalid, use rowData.created_at as fallback
+    const date = rowData.date.split("T")[0];
     if (!moment(date, "YYYY-MM-DD", true).isValid()) {
-      // Fallback to rowData.created_at if rowData.date is invalid
     }
 
-    // If rowData.date is valid, convert it to Jalali format
     return (
       <span>
         {moment(date, "YYYY-MM-DD").locale("fa").format("jYYYY/jMM/jDD")}
@@ -67,6 +59,8 @@ export default function TasvirBardari() {
     const inProgressRecord = rowData?.records?.find(
       (record) => record?.state === "IN_PROGRESS"
     );
+    console.log("rowData", rowData);
+    console.log("allrow", allrow);
 
     // If there's an "IN_PROGRESS" record, open it; otherwise, open the first record
     const recordToOpen = inProgressRecord || rowData?.records?.[0];
@@ -77,6 +71,20 @@ export default function TasvirBardari() {
       setShowAzmayeshPAge("orderRegister");
     }
   };
+
+  useEffect(() => {
+    if (rowDataTransfer) {
+      console.log("rowDataTransfer", rowDataTransfer);
+      // tasvirbardatiCellClick(rowData, allrow);
+    }
+    // const recordToOpen =  rowDataTransfer?.records?.[0];
+
+    // if (recordToOpen) {
+    //   settasvirDetailUid(recordToOpen);
+    //   setallrow(allrow);
+    //   setShowAzmayeshPAge("orderRegister");
+    // }
+  }, [rowDataTransfer]); // Runs when rowDataTransfer changes
 
   const nameTemplate = (rowData) => {
     return (
@@ -121,7 +129,7 @@ export default function TasvirBardari() {
         setSelectedOptions([]);
       })
       .catch((error) => {
-        console.error("Error fetching data:", error);
+        // // console.error("Error fetching data:", error);
         toast.error("خطا در بارگذاری داده‌ها");
       })
       .finally(() => setLoading(false));
@@ -186,7 +194,7 @@ export default function TasvirBardari() {
   ];
 
   const handleRefresh = () => {
-    fetchData(); // Refetch data on button click
+    fetchData();
   };
 
   const handleSubmit = () => {
@@ -208,7 +216,7 @@ export default function TasvirBardari() {
       .catch((error) => {
         setbtnLoading(false);
 
-        console.error("Error submitting data:", error);
+        // // console.error("Error submitting data:", error);
         // Handle error
         toast.warning("مشکلی پیش آمده است.");
       });

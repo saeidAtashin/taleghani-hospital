@@ -196,7 +196,7 @@ const NewTreat = ({
     } catch (err) {
       if (err?.status >= 400) {
         setShowStartTreatBtn(true);
-        console.error(err);
+        // console.error(err);
         setLoading(false);
         toast.current.show({
           severity: "error",
@@ -269,7 +269,7 @@ const NewTreat = ({
     } catch (err) {
       if (err?.status >= 400) {
         setShowStartTreatBtn(true);
-        console.error(err);
+        // console.error(err);
         setLoading(false);
         toast.current.show({
           severity: "error",
@@ -340,7 +340,7 @@ const NewTreat = ({
     } catch (err) {
       if (err?.status >= 400) {
         setShowStartTreatBtn(true);
-        console.error(err);
+        // console.error(err);
         setLoading(false);
         toast.current.show({
           severity: "error",
@@ -430,7 +430,7 @@ const NewTreat = ({
         setTreatment(formatted);
       })
       .catch((err) => {
-        console.error(err);
+        // console.error(err);
       });
   }, [newTreat, selectedTreatment]);
 
@@ -521,7 +521,7 @@ const NewTreat = ({
         }
       } catch (err) {
         if (err?.status >= 400) {
-          console.error(err);
+          // console.error(err);
           toast.current.show({
             severity: "error",
             summary: "خطا",
@@ -550,7 +550,7 @@ const NewTreat = ({
         }
       } catch (err) {
         if (err?.status >= 400) {
-          console.error(err);
+          // console.error(err);
           toast.current.show({
             severity: "error",
             summary: "خطا",

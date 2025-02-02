@@ -48,8 +48,7 @@ const Petscan = ({ setShowAzmayeshPAge, uidScan }) => {
         }
       } catch (error) {
         // setPut(false);
-
-        console.error("Error fetching data", error);
+        // console.error("Error fetching data", error);
       }
     };
     fetchData();
@@ -111,7 +110,7 @@ const Petscan = ({ setShowAzmayeshPAge, uidScan }) => {
       } catch (error) {
         setloadingBtn(false);
         toast.warning("خطایی رخ داده است");
-        console.error(error);
+        // console.error(error);
       }
     } else {
       try {
@@ -125,7 +124,7 @@ const Petscan = ({ setShowAzmayeshPAge, uidScan }) => {
       } catch (error) {
         setloadingBtn(false);
         toast.warning("خطایی رخ داده است");
-        console.error(error);
+        // console.error(error);
       }
     }
   };

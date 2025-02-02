@@ -76,7 +76,7 @@ const TreatmentTable = () => {
         setProtocolOptions(formatted);
       })
       .catch((err) => {
-        console.error(err);
+        // console.error(err);
       });
   }, []);
 
@@ -135,7 +135,7 @@ const TreatmentTable = () => {
 
         setProducts(results);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        // console.error("Error fetching data:", error);
       }
     };
 
@@ -178,7 +178,7 @@ const TreatmentTable = () => {
       setTreatmentUidInGet(rowData?.uid);
       setRowData(rowData);
     } catch (error) {
-      console.error("Error fetching treatment data:", error);
+      // console.error("Error fetching treatment data:", error);
     }
   };
 
@@ -237,7 +237,7 @@ const TreatmentTable = () => {
       setDescription(treatmentData.description || "");
       setnewTreat(true);
     } catch (error) {
-      console.error("Error fetching treatment data:", error);
+      // console.error("Error fetching treatment data:", error);
     }
   };
 

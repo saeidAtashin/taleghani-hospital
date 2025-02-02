@@ -16,6 +16,7 @@ const PatientsDetails = () => {
 
   const [userIdentityData, setUserIdentityData] = useState([]);
   const [activeTabForce, setActiveTabForce] = useState(0);
+  const [rowDataTransfer, setrowDataTransfer] = useState(undefined);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,7 +28,7 @@ const PatientsDetails = () => {
         const identityData = response.data.data;
         setUserIdentityData(identityData);
       } catch (error) {
-        console.error("Error fetching patient data:", error);
+        // console.error("Error fetching patient data:", error);
       }
     };
     fetchData();
@@ -65,7 +66,12 @@ const PatientsDetails = () => {
     {
       key: "تصویربرداری",
       label: "تصویربرداری",
-      content: <TasvirBardari />,
+      content: (
+        <TasvirBardari
+          rowDataTransfer={rowDataTransfer}
+          setrowDataTransfer={setrowDataTransfer}
+        />
+      ),
     },
     {
       key: "آزمایشات",
@@ -93,6 +99,8 @@ const PatientsDetails = () => {
           <FollwoUp
             activeTabForce={activeTabForce}
             setActiveTabForce={setActiveTabForce}
+            rowDataTransfer={rowDataTransfer}
+            setrowDataTransfer={setrowDataTransfer}
           />
         </div>
       ),

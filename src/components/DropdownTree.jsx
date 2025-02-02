@@ -71,7 +71,7 @@ const DropdownTree = () => {
         const transformedData = transformResponseToTree(results);
         setTreeData(transformedData);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        // console.error("Error fetching data:", error);
       }
     };
 

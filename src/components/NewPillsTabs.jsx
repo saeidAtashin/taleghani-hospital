@@ -96,7 +96,7 @@ const NewPillsTabs = () => {
         settabsNew(list);
         setApiResponse(transformResponse(list));
       } catch (error) {
-        console.error("Error fetching data:", error);
+        // console.error("Error fetching data:", error);
       }
     };
     fetchDataCategory();
@@ -112,7 +112,7 @@ const NewPillsTabs = () => {
         settitleDirectToCateg(transformResponse(response?.data?.data?.title));
         settabsNewTitle(response?.data?.data?.title);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        // console.error("Error fetching data:", error);
       }
     };
     fetchDataCategoryUId();

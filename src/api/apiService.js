@@ -17,7 +17,7 @@ const apiRequest = async (
     });
     return response;
   } catch (error) {
-    console.error(`Error in API call to ${endpoint}:`, error);
+    // console.error(`Error in API call to ${endpoint}:`, error);
     // Swal.fire({
     //   title: "مشکلی پیش آمده است.",
     //   icon: "error",

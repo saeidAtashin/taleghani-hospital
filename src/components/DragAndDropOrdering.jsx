@@ -31,7 +31,7 @@ const DragAndDropOrdering = ({
           setRefreshSub(!refreshSub);
         } catch (error) {
           // Swal.fire("خطا", "حذف آیتم با خطا مواجه شد", "error");
-          console.error("Error deleting item:", error);
+          // console.error("Error deleting item:", error);
         }
       }
     });

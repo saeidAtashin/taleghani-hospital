@@ -41,7 +41,7 @@ const LoginPage = () => {
       navigate("/dashboard");
     } catch (error) {
       toast.warn(error?.response?.data?.errors[0]?.message);
-      console.error(
+      // console.error(
         "Error submitting data:",
         error?.response?.data?.errors[0]?.message
       );

@@ -74,7 +74,7 @@ const TreeView = () => {
           y: 100, // Adjust the vertical position here
         });
       } catch (error) {
-        console.error("Error fetching data:", error);
+        // console.error("Error fetching data:", error);
       }
     };
 

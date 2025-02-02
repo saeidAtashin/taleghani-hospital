@@ -24,7 +24,7 @@ const TestOptionForm = ({ selectedCategory, fields, setFields }) => {
         console.log("fieldsData", fieldsData);
         setFields(fieldsData);
       } catch (error) {
-        console.error("Error fetching fields:", error);
+        // console.error("Error fetching fields:", error);
         toast.error("Failed to load fields.");
       }
     };
@@ -63,7 +63,7 @@ const TestOptionForm = ({ selectedCategory, fields, setFields }) => {
       setInputValue("");
       setOrdering(0);
     } catch (error) {
-      console.error("Error submitting data:", error);
+      // console.error("Error submitting data:", error);
       toast.warning("Failed to submit data.");
     }
   };
@@ -107,7 +107,7 @@ const TestOptionForm = ({ selectedCategory, fields, setFields }) => {
           // setRefreshSub(!refreshSub);
         } catch (error) {
           Swal.fire("خطا", "حذف آیتم با خطا مواجه شد", "error");
-          console.error("Error deleting item:", error);
+          // console.error("Error deleting item:", error);
         }
       }
     });

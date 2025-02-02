@@ -72,7 +72,7 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
       } catch (error) {
         setisLoadingAll(false);
 
-        console.error("Error fetching data:", error);
+        // console.error("Error fetching data:", error);
       }
     };
     fetchDataCategory();
@@ -124,7 +124,7 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
 
         setisLoadingAll(false);
 
-        console.error("Error fetching data:", error);
+        // console.error("Error fetching data:", error);
       }
     };
     activeTab && gettedCategory && fetchDataCategoryUId();
@@ -145,7 +145,7 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
           setHiddenInputs(response?.data?.data);
         }
       } catch (error) {
-        console.error("Error fetching data:", error);
+        // console.error("Error fetching data:", error);
       }
     };
     getHideInput && activeTab && gettedCategory && fetchDataCategoryHidden();
@@ -231,7 +231,7 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
           : "نشد "
       );
 
-      console.error(error?.response?.data?.errors?.[0]?.message);
+      // console.error(error?.response?.data?.errors?.[0]?.message);
     }
   };
 
