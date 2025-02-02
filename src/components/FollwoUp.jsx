@@ -142,18 +142,18 @@ export default function FollwoUp() {
   };
 
   const columns = [
-    { field: "number", header: "ردیف", body: numberTemplate, width: "150px" },
+    { field: "number", header: "ردیف", body: numberTemplate, width: "250px" },
     {
       field: "persianDate",
       header: "تاریخ مراجعه",
       body: persianDateTemplate,
-      width: "200px",
+      width: "350px",
     },
     {
       field: "medical_tests",
       header: "آزمایش‌ها",
       body: medical_testsTemplate,
-      width: "280px",
+      width: "350px",
     },
     {
       field: "graphic_records",
