@@ -103,7 +103,7 @@ const PatientsDetails = () => {
       </h2>
       <ReusableTabs
         tabs={tabs}
-        defaultActiveKey={defaultActiveKey ? defaultActiveKey : "درمان"}
+        defaultActiveKey={defaultActiveKey ? defaultActiveKey : "follow up"}
       />
     </div>
   );
