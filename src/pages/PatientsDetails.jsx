@@ -15,6 +15,7 @@ const PatientsDetails = () => {
   const defaultActiveKey = localStorage.getItem("defaultActiveKey");
 
   const [userIdentityData, setUserIdentityData] = useState([]);
+  const [activeTabForce, setActiveTabForce] = useState(undefined);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -89,7 +90,10 @@ const PatientsDetails = () => {
       label: "follow up",
       content: (
         <div>
-          <FollwoUp />
+          <FollwoUp
+            activeTabForce={activeTabForce}
+            setActiveTabForce={setActiveTabForce}
+          />
         </div>
       ),
     },
@@ -103,7 +107,13 @@ const PatientsDetails = () => {
       </h2>
       <ReusableTabs
         tabs={tabs}
-        defaultActiveKey={defaultActiveKey ? defaultActiveKey : "follow up"}
+        defaultActiveKey={
+          activeTabForce
+            ? activeTabForce
+            : defaultActiveKey
+            ? defaultActiveKey
+            : "follow up"
+        }
       />
     </div>
   );

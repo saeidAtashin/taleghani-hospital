@@ -6,10 +6,9 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
-export default function FollwoUp() {
+export default function FollwoUp({ activeTabForce, setActiveTabForce }) {
   const [products, setProducts] = useState([]);
   const [allrow, setallrow] = useState([]);
-  const [showAzmayeshPAge, setShowAzmayeshPAge] = useState("home");
   const [tasvirDetailUid, settasvirDetailUid] = useState(undefined);
   const dt = useRef(null);
   const { uid } = useParams();
@@ -29,12 +28,31 @@ export default function FollwoUp() {
     );
   };
 
-  const tasvirbardatiCellClick = (record, allrow) => {
+  const tasvirbardatiCellClick = (record, allrow, type) => {
     console.log("record", record);
     console.log("allrow", allrow);
-    settasvirDetailUid(record);
-    setallrow(allrow);
-    setShowAzmayeshPAge("orderRegister");
+    console.log("type", type);
+
+    switch (type) {
+      case "tests":
+        setActiveTabForce("آزمایشات");
+        localStorage.setItem("defaultActiveKey", "آزمایشات");
+        break;
+
+      case "graphic":
+        setActiveTabForce("تصویربرداری");
+
+        break;
+
+      case "treatments":
+        setActiveTabForce("درمان");
+        break;
+
+      default:
+        setActiveTabForce("follow up");
+    }
+
+    console.log("act", activeTabForce);
   };
 
   const medical_testsTemplate = (rowData) => {
@@ -44,7 +62,7 @@ export default function FollwoUp() {
           rowData?.medical_tests.map((record, index) => (
             <span
               key={index}
-              onClick={() => tasvirbardatiCellClick(record, rowData)}
+              onClick={() => tasvirbardatiCellClick(record, rowData, "tests")}
               style={{
                 cursor: "pointer",
                 color:
@@ -80,7 +98,7 @@ export default function FollwoUp() {
           rowData?.graphic_records.map((record, index) => (
             <span
               key={index}
-              onClick={() => tasvirbardatiCellClick(record, rowData)}
+              onClick={() => tasvirbardatiCellClick(record, rowData, "graphic")}
               style={{
                 cursor: "pointer",
                 color:
@@ -114,7 +132,9 @@ export default function FollwoUp() {
           rowData?.treatments.map((record, index) => (
             <span
               key={index}
-              onClick={() => tasvirbardatiCellClick(record, rowData)}
+              onClick={() =>
+                tasvirbardatiCellClick(record, rowData, "treatments")
+              }
               style={{
                 cursor: "pointer",
                 color:
@@ -183,7 +203,7 @@ export default function FollwoUp() {
 
   useEffect(() => {
     fetchData();
-  }, [uid, showAzmayeshPAge]);
+  }, [uid]);
 
   const headerNew = (
     <div className="d-flex flex-wrap gap-2 align-items-center justify-content-start"></div>
