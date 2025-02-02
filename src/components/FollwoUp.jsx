@@ -1,24 +1,19 @@
 import React, { useState, useEffect, useRef } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { Button } from "primereact/button";
 import moment from "jalali-moment";
-import SelectableIconItem from "./BadgeIcon";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import PillsTabsTasvir from "./PillsTabsTasvir";
 
 export default function FollwoUp() {
   const [products, setProducts] = useState([]);
-  const [selectedProducts, setSelectedProducts] = useState([]);
   const [allrow, setallrow] = useState([]);
   const [showAzmayeshPAge, setShowAzmayeshPAge] = useState("home");
   const [tasvirDetailUid, settasvirDetailUid] = useState(undefined);
   const dt = useRef(null);
   const { uid } = useParams();
   const [loading, setLoading] = useState(false);
-  const [btnLoading, setbtnLoading] = useState(false);
 
   const numberTemplate = (rowData, { rowIndex }) => {
     return <span>{rowIndex + 1}</span>;
@@ -35,6 +30,8 @@ export default function FollwoUp() {
   };
 
   const tasvirbardatiCellClick = (record, allrow) => {
+    console.log("record", record);
+    console.log("allrow", allrow);
     settasvirDetailUid(record);
     setallrow(allrow);
     setShowAzmayeshPAge("orderRegister");
@@ -75,9 +72,8 @@ export default function FollwoUp() {
         style={{
           textAlign: "right",
           direction: "ltr",
-          // maxWidth: "120px",
-          whiteSpace: "normal", // Allow text wrapping
-          wordBreak: "break-word", // Break the text at space or word boundaries
+          whiteSpace: "normal",
+          wordBreak: "break-word",
         }}
       >
         {rowData?.graphic_records?.length > 0 ? (
@@ -112,9 +108,6 @@ export default function FollwoUp() {
         style={{
           textAlign: "right",
           direction: "rtl",
-          // width: "250px",
-          // whiteSpace: "normal", // Allow text wrapping
-          // wordBreak: "break-word", // Break the text at space or word boundaries
         }}
       >
         {rowData?.treatments?.length > 0 &&
@@ -180,7 +173,6 @@ export default function FollwoUp() {
           created_at: moment().format("YYYY-MM-DD"),
         }));
         setProducts(fetchedData);
-        setSelectedOptions([]);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -193,65 +185,9 @@ export default function FollwoUp() {
     fetchData();
   }, [uid, showAzmayeshPAge]);
 
-  const handlePrint = () => {};
-
   const headerNew = (
     <div className="d-flex flex-wrap gap-2 align-items-center justify-content-start"></div>
   );
-
-  const handleDelete = () => {
-    setProducts(
-      products?.filter((product) => !selectedProducts.includes(product))
-    );
-    setSelectedProducts([]);
-  };
-
-  const [selectedOptions, setSelectedOptions] = useState([]);
-
-  const handleSelectionChange = (selected) => {
-    setSelectedOptions(selected);
-  };
-
-  const [description, setDescreption] = useState("");
-
-  const options = [
-    { value: "sonography", label: "سونوگرافی" },
-    { value: "petscan", label: "PET-Scan" },
-    { value: "mri", label: "MRI" },
-    { value: "corescan", label: "اسکن هسته ای" },
-    { value: "ctscan", label: "CT-Scan" },
-    { value: "mammography", label: "ماموگرافی" },
-    { value: "othergraphy", label: "گرافی ساده" },
-  ];
-
-  const handleRefresh = () => {
-    fetchData(); // Refetch data on button click
-  };
-
-  const handleSubmit = () => {
-    setbtnLoading(true);
-
-    const payload = {
-      patient_uid: uid,
-      description: description,
-      content_types: selectedOptions,
-    };
-
-    axios
-      .post(`https://cancerreg.ir/api/v1/records/records-order/`, payload)
-      .then((response) => {
-        setbtnLoading(false);
-        setShowAzmayeshPAge("home");
-        handleRefresh();
-      })
-      .catch((error) => {
-        setbtnLoading(false);
-
-        console.error("Error submitting data:", error);
-        // Handle error
-        toast.warning("مشکلی پیش آمده است.");
-      });
-  };
 
   return (
     <>
@@ -260,8 +196,8 @@ export default function FollwoUp() {
           dir="rtl"
           ref={dt}
           value={products}
-          selection={selectedProducts}
-          onSelectionChange={(e) => setSelectedProducts(e.value)}
+          // selection={selectedProducts}
+          // onSelectionChange={(e) => setSelectedProducts(e.value)}
           dataKey="uid"
           paginator
           rows={10}
@@ -271,10 +207,6 @@ export default function FollwoUp() {
           globalFilter={null}
           header={headerNew}
         >
-          <Column
-            selectionMode="multiple"
-            headerStyle={{ width: "3em", borderBottom: "2px solid black" }}
-          ></Column>
           {columns?.map((col, index) => (
             <Column
               sortable
@@ -286,35 +218,18 @@ export default function FollwoUp() {
                 textAlign: "right",
                 direction: "rtl",
                 width: col.width,
-                whiteSpace: "normal", // Allow text wrapping
-                wordBreak: "break-word", // Break the text at space or word boundaries
+                whiteSpace: "normal",
+                wordBreak: "break-word",
               }}
               headerStyle={{
                 borderBottom: "2px solid black",
                 width: col.width,
-                whiteSpace: "normal", // Allow text wrapping
-                wordBreak: "break-word", // Break the text at space or word boundaries
+                whiteSpace: "normal",
+                wordBreak: "break-word",
               }}
             />
           ))}
         </DataTable>
-
-        {selectedProducts.length > 0 && (
-          <div className="mt-3 d-flex justify-content-end gap-2">
-            <Button
-              label="چاپ"
-              icon="pi pi-print"
-              onClick={handlePrint}
-              className="p-button-success"
-            />
-            <Button
-              label="حذف"
-              icon="pi pi-trash"
-              onClick={handleDelete}
-              className="p-button-danger"
-            />
-          </div>
-        )}
       </div>
     </>
   );
