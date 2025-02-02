@@ -55,15 +55,19 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
   };
 
   const tasvirbardatiCellClick = (rowData, allrow) => {
-    // Find the first record with "IN_PROGRESS" state
+    console.log("rowData", rowData);
+    console.log("allrow", allrow);
+    console.log("rowDataTransfer", rowDataTransfer?.data?.uid);
+    const transferredRecord = rowData?.records?.find(
+      (record) => record?.uid === rowDataTransfer?.data?.uid
+    );
+
     const inProgressRecord = rowData?.records?.find(
       (record) => record?.state === "IN_PROGRESS"
     );
-    console.log("rowData", rowData);
-    console.log("allrow", allrow);
 
-    // If there's an "IN_PROGRESS" record, open it; otherwise, open the first record
-    const recordToOpen = inProgressRecord || rowData?.records?.[0];
+    const recordToOpen =
+      transferredRecord || inProgressRecord || rowData?.records?.[0];
 
     if (recordToOpen) {
       settasvirDetailUid(recordToOpen);
@@ -73,18 +77,16 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
   };
 
   useEffect(() => {
-    if (rowDataTransfer) {
-      console.log("rowDataTransfer", rowDataTransfer);
-      // tasvirbardatiCellClick(rowData, allrow);
-    }
-    // const recordToOpen =  rowDataTransfer?.records?.[0];
+    if (rowDataTransfer && products.length > 0) {
+      const matchingRow = products.find((row) =>
+        row.records.some((record) => record.uid === rowDataTransfer?.data?.uid)
+      );
 
-    // if (recordToOpen) {
-    //   settasvirDetailUid(recordToOpen);
-    //   setallrow(allrow);
-    //   setShowAzmayeshPAge("orderRegister");
-    // }
-  }, [rowDataTransfer]); // Runs when rowDataTransfer changes
+      if (matchingRow) {
+        tasvirbardatiCellClick(matchingRow, products);
+      }
+    }
+  }, [rowDataTransfer, products]);
 
   const nameTemplate = (rowData) => {
     return (
@@ -150,6 +152,7 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
         onClick={() => {
           setSelectedOptions([]);
           setShowAzmayeshPAge("orderRegister");
+          setrowDataTransfer(undefined);
           settasvirDetailUid(undefined);
           setallrow([]);
         }}
@@ -162,6 +165,7 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
         onClick={() => {
           setSelectedOptions([]);
           setShowAzmayeshPAge("orderRegisterOrder");
+          setrowDataTransfer(undefined);
         }}
         className="rounded-3"
       />
@@ -211,6 +215,7 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
       .then((response) => {
         setbtnLoading(false);
         setShowAzmayeshPAge("home");
+        setrowDataTransfer(undefined);
         handleRefresh();
       })
       .catch((error) => {
@@ -263,13 +268,7 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
                 <button
                   type="button"
                   className="btn btn-outline-primary"
-                  onClick={() =>
-                    // window.open(
-                    //   `/dashboard/patients/batch-graphic-records/${rowData.uid}`,
-                    //   "_blank"
-                    // )
-                    tasvirbardatiCellClick(rowData, rowData)
-                  }
+                  onClick={() => tasvirbardatiCellClick(rowData, rowData)}
                 >
                   مشاهده
                 </button>
@@ -304,6 +303,7 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
               onClick={() => {
                 setSelectedOptions([]);
                 setShowAzmayeshPAge("home");
+                setrowDataTransfer(undefined);
               }}
             >
               x
@@ -311,7 +311,6 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
           </div>
           <PillsTabsTasvir
             setShowAzmayeshPAge={setShowAzmayeshPAge}
-            // tabs={tabsInnerImage}
             dataOfTable={tasvirDetailUid}
             allrow={allrow}
           />
@@ -327,6 +326,7 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
                 onClick={() => {
                   setSelectedOptions([]);
                   setShowAzmayeshPAge("home");
+                  setrowDataTransfer(undefined);
                 }}
               >
                 x

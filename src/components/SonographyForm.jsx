@@ -9,7 +9,6 @@ import { toast } from "react-toastify";
 
 const SonographyForm = ({ setShowAzmayeshPAge, badgeColor, uidScan }) => {
   const { uid } = useParams();
-
   const initialFormData = {
     patient_uid: uid,
     date: "",

@@ -35,7 +35,7 @@ export default function FollwoUp({
   };
 
   const tasvirbardatiCellClick = (record, allrow, type) => {
-    console.log("record", record?.data?.uid);
+    // console.log("record", record?.data?.uid);
     switch (type) {
       case "tests":
         setActiveTabForce("آزمایشات");
