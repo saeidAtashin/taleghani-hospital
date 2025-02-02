@@ -10,7 +10,7 @@ import NewTreat from "./NewTreat";
 import { DateObject } from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 
-const TreatmentTable = () => {
+const TreatmentTable = ({ rowDataTransfer, setrowDataTransfer }) => {
   const [treatmentValue, setTreatmentValue] = useState(null);
   const [protocolOptions, setProtocolOptions] = useState([]);
   const [description, setDescription] = useState("");

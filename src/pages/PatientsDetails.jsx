@@ -87,7 +87,10 @@ const PatientsDetails = () => {
       label: "درمان",
       content: (
         <>
-          <TreatmentTable />
+          <TreatmentTable
+            rowDataTransfer={rowDataTransfer}
+            setrowDataTransfer={setrowDataTransfer}
+          />
         </>
       ),
     },
