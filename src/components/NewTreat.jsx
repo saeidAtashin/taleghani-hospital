@@ -63,6 +63,7 @@ const NewTreat = ({
   setdontCallForNow,
   makeitof,
   setmakeitof,
+  setrowDataTransfer,
 }) => {
   const [isCycleVisible, setisCycleVisible] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -117,6 +118,7 @@ const NewTreat = ({
     setShowedPart("");
     setAllDatas(undefined);
     setmakeitof(false);
+    setrowDataTransfer(undefined);
   };
 
   const newResetFormFields = () => {

@@ -35,7 +35,6 @@ export default function FollwoUp({
   };
 
   const tasvirbardatiCellClick = (record, allrow, type) => {
-    // console.log("record", record?.data?.uid);
     switch (type) {
       case "tests":
         setActiveTabForce("آزمایشات");
@@ -49,6 +48,8 @@ export default function FollwoUp({
 
       case "treatments":
         setActiveTabForce("درمان");
+        setrowDataTransfer(record);
+
         break;
 
       default:
@@ -144,33 +145,56 @@ export default function FollwoUp({
   const treatmentsTemplate = (rowData) => {
     return (
       <div
+        className=""
         style={{
-          textAlign: "right",
           direction: "rtl",
+          textAlign: "right",
+          whiteSpace: "normal",
+          wordBreak: "break-word",
         }}
       >
-        {rowData?.treatments?.length > 0 &&
-          rowData?.treatments.map((record, index) => (
-            <span
-              key={index}
-              onClick={() =>
-                tasvirbardatiCellClick(record, rowData, "treatments")
-              }
-              style={{
-                cursor: "pointer",
-                color:
-                  record?.state === "IN_PROGRESS"
-                    ? "#FF7518"
-                    : record?.state === "DONE"
-                    ? "green"
-                    : "blue",
-                marginRight: "8px",
-              }}
-            >
-              {record.category}
-              {record?.sub_category && ` (${record.sub_category})`}
-            </span>
-          ))}
+        <div className="d-flex flex-wrap align-items-end">
+          {rowData?.treatments?.length > 0 &&
+            rowData?.treatments.map((record, index) => (
+              <span
+                className="p-1"
+                key={index}
+                onClick={() =>
+                  tasvirbardatiCellClick(record, rowData, "treatments")
+                }
+                style={{
+                  cursor: "pointer",
+                  color:
+                    record?.state === "IN_PROGRESS"
+                      ? "#FF7518"
+                      : record?.state === "DONE"
+                      ? "green"
+                      : "blue",
+                  marginRight: "8px",
+                }}
+              >
+                {/* {record.category}
+                {record?.sub_category && ` (${record.sub_category})`} */}
+                <Badge
+                  severity="warning"
+                  value={`${record.category}${
+                    record?.sub_category ? ` (${record.sub_category})` : ""
+                  }`}
+                  className=" bg-white shadow"
+                  style={{
+                    cursor: "pointer",
+                    color:
+                      record?.state === "IN_PROGRESS"
+                        ? "#FF7518"
+                        : record?.state === "DONE"
+                        ? "green"
+                        : "blue",
+                    marginRight: "8px",
+                  }}
+                />
+              </span>
+            ))}
+        </div>
       </div>
     );
   };
