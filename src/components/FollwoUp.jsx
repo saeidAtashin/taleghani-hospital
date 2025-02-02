@@ -5,6 +5,7 @@ import moment from "jalali-moment";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import { Badge } from "primereact/badge";
 
 export default function FollwoUp({ activeTabForce, setActiveTabForce }) {
   const [products, setProducts] = useState([]);
@@ -29,13 +30,14 @@ export default function FollwoUp({ activeTabForce, setActiveTabForce }) {
   };
 
   const tasvirbardatiCellClick = (record, allrow, type) => {
+    console.log("record", record);
     switch (type) {
       case "tests":
         setActiveTabForce("آزمایشات");
         break;
 
       case "graphic":
-        setActiveTabForce("تصویربرداری");
+        // setActiveTabForce("تصویربرداری");
 
         break;
 
@@ -80,35 +82,55 @@ export default function FollwoUp({ activeTabForce, setActiveTabForce }) {
   const graphic_recordsTemplate = (rowData) => {
     return (
       <div
+        className=""
         style={{
+          direction: "rtl",
           textAlign: "right",
-          direction: "ltr",
           whiteSpace: "normal",
           wordBreak: "break-word",
         }}
       >
-        {rowData?.graphic_records?.length > 0 ? (
-          rowData?.graphic_records.map((record, index) => (
-            <span
-              key={index}
-              onClick={() => tasvirbardatiCellClick(record, rowData, "graphic")}
-              style={{
-                cursor: "pointer",
-                color:
-                  record?.state === "IN_PROGRESS"
-                    ? "#FF7518"
-                    : record?.state === "DONE"
-                    ? "green"
-                    : "blue",
-                marginRight: "8px",
-              }}
-            >
-              {record.name}
-            </span>
-          ))
-        ) : (
-          <>--</>
-        )}
+        <div className="d-flex flex-wrap align-items-end">
+          {rowData?.graphic_records?.length > 0 ? (
+            rowData?.graphic_records.map((record, index) => (
+              <span
+                key={index}
+                className="p-1"
+                onClick={() =>
+                  tasvirbardatiCellClick(record, rowData, "graphic")
+                }
+                style={{
+                  cursor: "pointer",
+                  color:
+                    record?.state === "IN_PROGRESS"
+                      ? "#FF7518"
+                      : record?.state === "DONE"
+                      ? "green"
+                      : "blue",
+                  marginRight: "8px",
+                }}
+              >
+                <Badge
+                  severity="warning"
+                  value={record.name}
+                  className=" bg-white shadow"
+                  style={{
+                    cursor: "pointer",
+                    color:
+                      record?.state === "IN_PROGRESS"
+                        ? "#FF7518"
+                        : record?.state === "DONE"
+                        ? "green"
+                        : "blue",
+                    marginRight: "8px",
+                  }}
+                />
+              </span>
+            ))
+          ) : (
+            <>--</>
+          )}
+        </div>
       </div>
     );
   };
