@@ -1,11 +1,28 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Tabs, Tab } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const ReusableTabs = ({ tabs, defaultActiveKey }) => {
+const ReusableTabs = ({ tabs, activeTabForce, setActiveTabForce }) => {
+  const [activeKey, setActiveKey] = useState(tabs[0]?.key || "درمان");
+
+  useEffect(() => {
+    if (activeTabForce) {
+      setActiveKey(activeTabForce);
+    }
+  }, [activeTabForce]);
+
+  console.log("activeTabForce", activeTabForce);
+  console.log("activeKey", activeKey);
+
   return (
     <Tabs
-      defaultActiveKey={defaultActiveKey || tabs[0]?.key}
+      activeKey={activeKey} // Dynamically control the active tab
+      onSelect={(key) => {
+        setActiveKey(key);
+        if (setActiveTabForce) {
+          setActiveTabForce(key); // Ensure state updates properly
+        }
+      }}
       id="reusable-tabs"
     >
       {tabs.map((tab, index) => (

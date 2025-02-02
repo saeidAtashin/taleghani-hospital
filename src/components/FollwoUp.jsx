@@ -36,7 +36,7 @@ export default function FollwoUp({ activeTabForce, setActiveTabForce }) {
     switch (type) {
       case "tests":
         setActiveTabForce("آزمایشات");
-        localStorage.setItem("defaultActiveKey", "آزمایشات");
+        // localStorage.setItem("defaultActiveKey", "آزمایشات");
         break;
 
       case "graphic":
@@ -49,10 +49,10 @@ export default function FollwoUp({ activeTabForce, setActiveTabForce }) {
         break;
 
       default:
-        setActiveTabForce("follow up");
+        setActiveTabForce(4);
     }
 
-    console.log("act", activeTabForce);
+    // console.log("act", activeTabForce);
   };
 
   const medical_testsTemplate = (rowData) => {
