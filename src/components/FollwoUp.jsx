@@ -119,6 +119,7 @@ export default function FollwoUp({
               >
                 <Badge
                   severity="warning"
+                  size={"large"}
                   value={record.name}
                   className=" bg-white shadow"
                   style={{
@@ -177,6 +178,7 @@ export default function FollwoUp({
                 {record?.sub_category && ` (${record.sub_category})`} */}
                 <Badge
                   severity="warning"
+                  size={"large"}
                   value={`${record.category}${
                     record?.sub_category ? ` (${record.sub_category})` : ""
                   }`}
@@ -211,7 +213,7 @@ export default function FollwoUp({
       field: "medical_tests",
       header: "آزمایش‌ها",
       body: medical_testsTemplate,
-      width: "350px",
+      width: "550px",
     },
     {
       field: "graphic_records",
