@@ -369,3 +369,43 @@ select,
 .p-selectable-row{
   height: auto !important;
 }
+
+.p-cascadeselect-panel .p-cascadeselect-items {
+  padding-left: 10px;
+  padding-right: 10px;
+  box-shadow: none !important;
+}
+
+ .p-connected-overlay-enter-done{
+background-color: transparent;
+}
+
+.p-cascadeselect-panel .p-cascadeselect-items .p-cascadeselect-sublist {
+  box-shadow: #016afc !important;
+  background-color: #fff;
+  border: 1px solid #bfbebe !important;
+  border-radius: 4px;
+  position: absolute;
+  right: 200%;
+
+
+}
+
+.p-cascadeselect-item-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Push text left, icon right */
+}
+
+.p-cascadeselect-item-text {
+  flex-grow: 1; /* Allows the text to take up remaining space */
+}
+
+.p-cascadeselect-item-content svg{
+  transform: rotate(180deg);
+  display: block;
+}
+
+.p-cascadeselect-item-content span{
+  display: block;
+}
