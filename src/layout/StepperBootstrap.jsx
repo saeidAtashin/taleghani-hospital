@@ -196,7 +196,7 @@ const StepperBootstrap = () => {
             fields={formPatientsFields}
             formSchema={generateReusableSchema(formPatientsFields)}
             onSubmit={handleFormSubmit}
-            inputsPerRow={[1, 2, 2, 3, 1]}
+            inputsPerRow={[1, 2, 2, 3, 1, 1, 2]}
             loadingBtn={loadingBtn}
           />
         )}

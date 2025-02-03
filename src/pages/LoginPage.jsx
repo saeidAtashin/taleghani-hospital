@@ -42,9 +42,9 @@ const LoginPage = () => {
     } catch (error) {
       toast.warn(error?.response?.data?.errors[0]?.message);
       // console.error(
-        "Error submitting data:",
-        error?.response?.data?.errors[0]?.message
-      );
+        // "Error submitting data:",
+      //   error?.response?.data?.errors[0]?.message
+      // );
     } finally {
       setLoading(false);
     }
