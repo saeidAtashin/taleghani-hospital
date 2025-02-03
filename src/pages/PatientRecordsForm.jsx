@@ -258,7 +258,9 @@ const PatientRecordsForm = () => {
           >
             {dropdownLabels[field] === "سوابق دارویی" ? (
               <div className="p-field mb-4">
-                <label>سوابق دارویی</label>
+                {patient?.drugs_records?.length > 0 && (
+                  <label>سوابق دارویی</label>
+                )}
                 {!isFormDisabled && (
                   <div className="d-flex gap-2 w-100">
                     <InputText

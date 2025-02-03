@@ -182,7 +182,7 @@ export default function AzmayeshatTable() {
                 <button
                   type="button"
                   className="btn btn-outline-primary"
-                  onClick={() => console.log("rowData", rowData?.names)}
+                  onClick={() => console.log("rowData", rowData)}
                 >
                   مشاهده
                 </button>
