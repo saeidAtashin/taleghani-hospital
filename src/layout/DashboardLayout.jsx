@@ -78,16 +78,16 @@ function DashboardLayout() {
               <li className="sidebar-item minheight d-flex">
                 <a
                   href="/dashboard/patients-lists"
-                  className="sidebar-link w-100"
+                  className="sidebar-link w-100  d-flex w-100 gap-3"
                 >
                   <img className="" src="/images/users.svg" alt="users" />
                   <span>لیست بیماران</span>
                 </a>
               </li>
-              <li className="sidebar-item d-flex">
+              <li className="sidebar-item minheight d-flex">
                 <a
                   href="/dashboard/register-patient"
-                  className="sidebar-link w-100"
+                  className="sidebar-link w-100  d-flex w-100 gap-3"
                 >
                   <img src="/images/plus.svg" alt="users" />
                   <span>افزودن بیمار جدید</span>{" "}
@@ -112,12 +112,13 @@ function DashboardLayout() {
               </i>
             </a>
             <ul
-              className={`sidebar-dropdown list-unstyled ${
-                activeSubmenu === "reports" ? "show" : "d-none"
-              }`}
+              className={`  ${activeSubmenu === "reports" ? "show" : "d-none"}`}
             >
-              <li className="sidebar-item d-flex">
-                <a href="/dashboard/reports" className="sidebar-link w-100">
+              <li className="sidebar-item minheight d-flex">
+                <a
+                  href="/dashboard/reports"
+                  className="sidebar-link w-100 d-flex w-100 gap-3"
+                >
                   <img src="/images/users.svg" alt="report" />
                   <span> مشاهده گزارشات</span>
                 </a>
@@ -145,10 +146,10 @@ function DashboardLayout() {
                 activeSubmenu === "users" ? "show" : "d-none"
               }`}
             >
-              <li className="sidebar-item d-flex">
+              <li className="sidebar-item minheight d-flex">
                 <a
                   href="/dashboard/user-management"
-                  className="sidebar-link w-100"
+                  className="sidebar-link w-100  d-flex w-100 gap-3"
                 >
                   <img src="/images/users.svg" alt="user" />
                   <span>مدیریت کاربران</span>{" "}
@@ -179,10 +180,10 @@ function DashboardLayout() {
                 activeSubmenu === "definitions" ? "show" : "d-none"
               }`}
             >
-              <li className="sidebar-item d-flex">
+              <li className="sidebar-item minheight d-flex">
                 <a
                   href="/dashboard/basic-patient-definitions"
-                  className="sidebar-link w-100"
+                  className="sidebar-link w-100  d-flex w-100 gap-3"
                 >
                   <img src="/images/users.svg" alt="definitions" />
                   <span>اطلاعات ثبت نام بیمار</span>
@@ -194,10 +195,10 @@ function DashboardLayout() {
                 activeSubmenu === "definitions" ? "show" : "d-none"
               }`}
             >
-              <li className="sidebar-item d-flex">
+              <li className="sidebar-item minheight d-flex">
                 <a
                   href="/dashboard/basic-test-definitions"
-                  className="sidebar-link w-100"
+                  className="sidebar-link w-100  d-flex w-100 gap-3"
                 >
                   <img src="/images/test.svg" alt="definitions" />
                   <span>اطلاعات آزمایشات</span>
