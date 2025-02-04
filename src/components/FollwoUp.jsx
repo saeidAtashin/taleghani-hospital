@@ -8,14 +8,14 @@ import { toast } from "react-toastify";
 import { Badge } from "primereact/badge";
 
 export default function FollwoUp({
-  activeTabForce,
+  // activeTabForce,
   setActiveTabForce,
-  rowDataTransfer,
+  // rowDataTransfer,
   setrowDataTransfer,
 }) {
   const [products, setProducts] = useState([]);
-  const [allrow, setallrow] = useState([]);
-  const [tasvirDetailUid, settasvirDetailUid] = useState(undefined);
+  // const [allrow, setallrow] = useState([]);
+  // const [tasvirDetailUid, settasvirDetailUid] = useState(undefined);
   const dt = useRef(null);
   const { uid } = useParams();
   const [loading, setLoading] = useState(false);
@@ -207,7 +207,7 @@ export default function FollwoUp({
       field: "persianDate",
       header: "تاریخ مراجعه",
       body: persianDateTemplate,
-      width: "350px",
+      width: "550px",
     },
     {
       field: "medical_tests",
@@ -258,46 +258,50 @@ export default function FollwoUp({
 
   return (
     <>
-      <div className="" style={{ direction: "rtl" }}>
-        <DataTable
-          dir="rtl"
-          ref={dt}
-          value={products}
-          // selection={selectedProducts}
-          // onSelectionChange={(e) => setSelectedProducts(e.value)}
-          dataKey="uid"
-          paginator
-          rows={10}
-          rowsPerPageOptions={[5, 10, 25]}
-          paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-          currentPageReportTemplate="نمایش {first} تا {last} از {totalRecords} اطلاعات"
-          globalFilter={null}
-          header={headerNew}
-        >
-          {columns?.map((col, index) => (
-            <Column
-              sortable
-              key={index}
-              field={col.field}
-              header={col.header}
-              body={col.body}
-              style={{
-                textAlign: "right",
-                direction: "rtl",
-                width: col.width,
-                whiteSpace: "normal",
-                wordBreak: "break-word",
-              }}
-              headerStyle={{
-                borderBottom: "2px solid black",
-                width: col.width,
-                whiteSpace: "normal",
-                wordBreak: "break-word",
-              }}
-            />
-          ))}
-        </DataTable>
-      </div>
+      {loading ? (
+        <>درحال دریافت اطلاعات</>
+      ) : (
+        <div className="" style={{ direction: "rtl" }}>
+          <DataTable
+            dir="rtl"
+            ref={dt}
+            value={products}
+            // selection={selectedProducts}
+            // onSelectionChange={(e) => setSelectedProducts(e.value)}
+            dataKey="uid"
+            paginator
+            rows={10}
+            rowsPerPageOptions={[5, 10, 25]}
+            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+            currentPageReportTemplate="نمایش {first} تا {last} از {totalRecords} اطلاعات"
+            globalFilter={null}
+            header={headerNew}
+          >
+            {columns?.map((col, index) => (
+              <Column
+                sortable
+                key={index}
+                field={col.field}
+                header={col.header}
+                body={col.body}
+                style={{
+                  textAlign: "right",
+                  direction: "rtl",
+                  width: col.width,
+                  whiteSpace: "normal",
+                  wordBreak: "break-word",
+                }}
+                headerStyle={{
+                  borderBottom: "2px solid black",
+                  width: col.width,
+                  whiteSpace: "normal",
+                  wordBreak: "break-word",
+                }}
+              />
+            ))}
+          </DataTable>
+        </div>
+      )}
     </>
   );
 }
