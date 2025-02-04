@@ -6,6 +6,7 @@ import moment from "jalali-moment";
 import PillsTabs from "./PillsTabs";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import RegisterTests from "./RegisterTests";
 
 export default function AzmayeshatTable() {
   const [groupedData, setGroupedData] = useState([]);
@@ -241,6 +242,7 @@ export default function AzmayeshatTable() {
                   x
                 </span>
               </div>
+              <RegisterTests />
             </div>
           </>
         )

@@ -125,9 +125,9 @@ const PatientRecordsForm = () => {
         }
       });
 
-      if (hasChanges) {
-        setPatient(updatedPatient);
-      }
+      // if (hasChanges) {
+      //   setPatient(updatedPatient);
+      // }
     }
   }, [patient, dropdownData]);
 
