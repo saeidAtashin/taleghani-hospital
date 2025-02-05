@@ -43,7 +43,7 @@ const SelectableList = () => {
       {data.map((category) => (
         <div key={category.uid} className="mb-4 border rounded p-2">
           <div className="d-flex mb-2 my-auto">
-            <label className="ml-4 d-flex ">
+            <label className="ml-4 d-flex h2">
               <input
                 name={category.name}
                 className="mx-2 h-auto my-auto"
@@ -89,6 +89,43 @@ const SelectableList = () => {
                 </label>
               </div>
             ))}
+
+            <div className={true ? "d-flex flex-column" : ""}>
+              {category?.title?.map((tit) => (
+                <div key={tit?.name} className="ml-4 my-3 d-flex">
+                  {/* <span className="h3 w-25 my-auto">{tit.name} :</span> */}
+                  <label className="ml-2 d-flex my-auto h-auto w-25">
+                    <input
+                      name={tit.name}
+                      className="mx-2 h-auto my-auto "
+                      type="checkbox"
+                      checked={!!selected[tit.name]}
+                      onChange={() => toggleSelect(tit.name)}
+                    />
+                    {tit.name} :
+                  </label>
+                  <div className="mr-3 d-flex my-3 w-100 ">
+                    <span className="border  px-4 pt-3 mb-3 rounded d-flex my-auto flex-wrap w-100">
+                      {tit?.field?.length > 0 &&
+                        tit?.field?.map((t) => (
+                          <div className="mb-3 d-flex my-auto h-auto mx-4">
+                            <label className="ml-2 d-flex my-auto h-auto">
+                              <input
+                                name={t.name}
+                                className="mx-2 h-auto my-auto"
+                                type="checkbox"
+                                checked={!!selected[t.uid]}
+                                onChange={() => toggleSelect(t.uid)}
+                              />
+                              {t.name}
+                            </label>
+                          </div>
+                        ))}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       ))}
