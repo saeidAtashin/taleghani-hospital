@@ -1,9 +1,12 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
-const SelectableList = () => {
+const SelectableList = ({ showAzmayeshPAge, setShowAzmayeshPAge }) => {
   const [selected, setSelected] = useState({});
   const [data, setData] = useState([]);
+  const patient_uid = useParams(); // Static for now
 
   useEffect(() => {
     const fetchData = async () => {
@@ -11,15 +14,11 @@ const SelectableList = () => {
         const response = await axios.get(
           `https://cancerreg.ir/api/v1/tests/category-details/`
         );
-
         setData(response?.data?.data?.result);
-        console.log(
-          "response?.data?.data?.result",
-          response?.data?.data?.result
-        );
-      } catch (error) {}
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     };
-
     fetchData();
   }, []);
 
@@ -27,6 +26,7 @@ const SelectableList = () => {
     setSelected((prev) => {
       const newSelected = { ...prev };
       const isSelected = !!newSelected[uid];
+
       if (isSelected) {
         delete newSelected[uid];
         items.forEach((item) => delete newSelected[item.uid]);
@@ -34,8 +34,51 @@ const SelectableList = () => {
         newSelected[uid] = true;
         items.forEach((item) => (newSelected[item.uid] = true));
       }
+
       return newSelected;
     });
+  };
+
+  const handleSubmit = async () => {
+    const selectedCategories = data
+      .filter((category) => selected[category.uid])
+      .map((category) => ({
+        uid: category.uid,
+        sub_categories: category.sub_category
+          .filter((sub) => selected[sub.uid])
+          .map((sub) => sub.uid),
+        fields: [
+          ...category.field
+            .filter((field) => selected[field.uid])
+            .map((field) => field.uid),
+          ...category.title
+            .filter((tit) => selected[tit.name])
+            .flatMap((tit) =>
+              tit.field.filter((t) => selected[t.uid]).map((t) => t.uid)
+            ),
+        ],
+      }));
+
+    const payload = {
+      patient_uid: patient_uid?.uid,
+      description: "description",
+      categories: selectedCategories,
+    };
+
+    try {
+      const response = await axios.post(
+        "https://cancerreg.ir/api/v1/tests/order-test/",
+        payload,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      console.log("API Response:", response.data);
+      toast.success("ثبت شد");
+      setShowAzmayeshPAge("home");
+    } catch (error) {
+      toast.warning("مشکلی پیش آمده است.");
+    }
   };
 
   return (
@@ -82,7 +125,7 @@ const SelectableList = () => {
                 </label>
 
                 <div className="mr-3 d-flex my-3 w-100 ">
-                  <span className="border  px-4 pt-3 mb-3 rounded d-flex my-auto flex-wrap w-100">
+                  <span className="border px-4 pt-3 mb-3 rounded d-flex my-auto flex-wrap w-100">
                     {sub?.field?.length > 0 &&
                       sub?.field?.map((t) => (
                         <div className="mb-3 d-flex my-auto h-auto mx-4">
@@ -131,7 +174,7 @@ const SelectableList = () => {
                     {tit.name} :
                   </label>
                   <div className="mr-3 d-flex my-3 w-100 ">
-                    <span className="border  px-4 pt-3 mb-3 rounded d-flex my-auto flex-wrap w-100">
+                    <span className="border px-4 pt-3 mb-3 rounded d-flex my-auto flex-wrap w-100">
                       {tit?.field?.length > 0 &&
                         tit?.field?.map((t) => (
                           <div className="mb-3 d-flex my-auto h-auto mx-4">
@@ -155,6 +198,12 @@ const SelectableList = () => {
           </div>
         </div>
       ))}
+      <button
+        className="mt-4 p-2 text-dark rounded w-100"
+        onClick={handleSubmit}
+      >
+        تایید و ثبت دستور تصویربرداری ها
+      </button>
     </div>
   );
 };
