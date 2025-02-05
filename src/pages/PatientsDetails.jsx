@@ -119,7 +119,7 @@ const PatientsDetails = () => {
       <ReusableTabs
         tabs={tabs}
         activeTabForce={activeTabForce}
-        setActiveTabForce={setActiveTabForce} // Ensure it updates dynamically
+        setActiveTabForce={setActiveTabForce}
       />
     </div>
   );
