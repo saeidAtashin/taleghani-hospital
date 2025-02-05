@@ -242,7 +242,6 @@ export default function FollwoUp({
         setProducts(fetchedData);
       })
       .catch((error) => {
-        // console.error("Error fetching data:", error);
         toast.error("خطا در بارگذاری داده‌ها");
       })
       .finally(() => setLoading(false));
