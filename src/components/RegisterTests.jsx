@@ -41,7 +41,7 @@ const SelectableList = () => {
   return (
     <div className="p-4">
       {data.map((category) => (
-        <div key={category.uid} className="mb-4 border rounded p-2">
+        <div key={category.uid} className="mb-4 border rounded p-4 shadow">
           <div className="d-flex mb-2 my-auto">
             <label className="ml-4 d-flex h2">
               <input
@@ -70,16 +70,36 @@ const SelectableList = () => {
           <div className="border rounded p-4">
             {category?.sub_category.map((sub) => (
               <div key={sub.uid} className="ml-4 my-3 d-flex">
-                <label className="ml-2 d-flex ">
+                <label className="ml-2 d-flex my-auto h-auto w-25 h4">
                   <input
                     name={sub.name}
-                    className="mx-2 h-auto my-auto"
+                    className="mx-2 h-auto my-auto "
                     type="checkbox"
                     checked={!!selected[sub.uid]}
                     onChange={() => toggleSelect(sub.uid, [...sub.field])}
                   />
-                  {sub.name}
+                  {sub.name} : 
                 </label>
+
+                <div className="mr-3 d-flex my-3 w-100 ">
+                  <span className="border  px-4 pt-3 mb-3 rounded d-flex my-auto flex-wrap w-100">
+                    {sub?.field?.length > 0 &&
+                      sub?.field?.map((t) => (
+                        <div className="mb-3 d-flex my-auto h-auto mx-4">
+                          <label className="ml-2 d-flex my-auto h-auto">
+                            <input
+                              name={t.name}
+                              className="mx-2 h-auto my-auto"
+                              type="checkbox"
+                              checked={!!selected[t.uid]}
+                              onChange={() => toggleSelect(t.uid)}
+                            />
+                            {t.name}
+                          </label>
+                        </div>
+                      ))}
+                  </span>
+                </div>
               </div>
             ))}
             {category.field.map((field) => (
