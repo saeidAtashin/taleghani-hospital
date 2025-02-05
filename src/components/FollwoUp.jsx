@@ -234,7 +234,8 @@ export default function FollwoUp({
     axios
       .get(`https://cancerreg.ir/api/v1/reports/follow-up/${uid}/`)
       .then((response) => {
-        const fetchedData = response.data.results.map((item) => ({
+        const fetchedData = response.data.results.map((item, index) => ({
+          id: item?.data?.uid || index, // Ensure uniqueness
           ...item,
           records: item.records,
           created_at: moment().format("YYYY-MM-DD"),
@@ -267,7 +268,7 @@ export default function FollwoUp({
             value={products}
             // selection={selectedProducts}
             // onSelectionChange={(e) => setSelectedProducts(e.value)}
-            dataKey="uid"
+            dataKey="id"
             paginator
             rows={10}
             rowsPerPageOptions={[5, 10, 25]}
