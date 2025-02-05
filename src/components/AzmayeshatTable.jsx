@@ -242,10 +242,7 @@ export default function AzmayeshatTable() {
                   x
                 </span>
               </div>
-              <RegisterTests
-                showAzmayeshPAge={showAzmayeshPAge}
-                setShowAzmayeshPAge={setShowAzmayeshPAge}
-              />
+              <RegisterTests setShowAzmayeshPAge={setShowAzmayeshPAge} />
             </div>
           </>
         )

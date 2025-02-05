@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
-const SelectableList = ({ showAzmayeshPAge, setShowAzmayeshPAge }) => {
+const SelectableList = ({ setShowAzmayeshPAge }) => {
   const [selected, setSelected] = useState({});
   const [data, setData] = useState([]);
   const patient_uid = useParams(); // Static for now
@@ -73,7 +73,6 @@ const SelectableList = ({ showAzmayeshPAge, setShowAzmayeshPAge }) => {
           headers: { "Content-Type": "application/json" },
         }
       );
-      console.log("API Response:", response.data);
       toast.success("ثبت شد");
       setShowAzmayeshPAge("home");
     } catch (error) {
