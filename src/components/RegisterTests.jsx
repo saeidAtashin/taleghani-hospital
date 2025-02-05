@@ -51,9 +51,16 @@ const SelectableList = () => {
                 checked={!!selected[category.uid]}
                 onChange={() =>
                   toggleSelect(category.uid, [
-                    ...category.field,
-                    ...category.sub_category,
-                    ...category.title,
+                    ...category?.field,
+                    ...category?.title,
+                    ...category?.sub_category?.flatMap((sub) => [
+                      sub,
+                      ...sub.field,
+                    ]),
+                    ...category?.title?.flatMap((title) => [
+                      title,
+                      ...title.field,
+                    ]),
                   ])
                 }
               />
@@ -93,8 +100,7 @@ const SelectableList = () => {
             <div className={true ? "d-flex flex-column" : ""}>
               {category?.title?.map((tit) => (
                 <div key={tit?.name} className="ml-4 my-3 d-flex">
-                  {/* <span className="h3 w-25 my-auto">{tit.name} :</span> */}
-                  <label className="ml-2 d-flex my-auto h-auto w-25">
+                  <label className="ml-2 d-flex my-auto h-auto w-25 h4">
                     <input
                       name={tit.name}
                       className="mx-2 h-auto my-auto "
