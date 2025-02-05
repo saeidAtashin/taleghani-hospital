@@ -78,7 +78,7 @@ const SelectableList = () => {
                     checked={!!selected[sub.uid]}
                     onChange={() => toggleSelect(sub.uid, [...sub.field])}
                   />
-                  {sub.name} : 
+                  {sub.name} :
                 </label>
 
                 <div className="mr-3 d-flex my-3 w-100 ">
@@ -126,7 +126,7 @@ const SelectableList = () => {
                       className="mx-2 h-auto my-auto "
                       type="checkbox"
                       checked={!!selected[tit.name]}
-                      onChange={() => toggleSelect(tit.name)}
+                      onChange={() => toggleSelect(tit.name, [...tit.field])}
                     />
                     {tit.name} :
                   </label>
