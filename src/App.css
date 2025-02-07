@@ -409,3 +409,9 @@ background-color: transparent;
 .p-cascadeselect-item-content span{
   display: block;
 }
+
+.p-force-width span{
+
+  width: 400px !important;
+
+}

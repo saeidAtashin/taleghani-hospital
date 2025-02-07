@@ -197,7 +197,6 @@ const TreatChemi = ({
     setShowModal(true);
     setSelectedTreatmentNew(treatment);
   };
-
   return (
     <>
       <div className="d-flex flex-column my-3">

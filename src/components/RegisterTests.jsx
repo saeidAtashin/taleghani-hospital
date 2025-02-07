@@ -81,7 +81,7 @@ const SelectableList = ({ setShowAzmayeshPAge }) => {
   };
 
   return (
-    <div className="p-4">
+    <div className="p-4 pb-5 position-relative" style={{ minHeight: "100vh" }}>
       {data.map((category) => (
         <div key={category.uid} className="mb-4 border rounded p-4 shadow">
           <div className="d-flex mb-2 my-auto">
@@ -197,12 +197,17 @@ const SelectableList = ({ setShowAzmayeshPAge }) => {
           </div>
         </div>
       ))}
-      <button
-        className="mt-4 p-2 text-dark rounded w-100"
-        onClick={handleSubmit}
+      <div
+        className="position-fixed bottom-0 start-0 w-100 p-3 bg-white d-flex justify-content-center"
+        style={{ zIndex: 1000 }}
       >
-        تایید و ثبت دستور تصویربرداری ها
-      </button>
+        <button
+          className="p-2 text-white rounded bg-primary w-25"
+          onClick={handleSubmit}
+        >
+          تایید و ثبت دستور تصویربرداری ها
+        </button>
+      </div>
     </div>
   );
 };
