@@ -56,6 +56,7 @@ const TreatChemi = ({
   setChildState,
   setRefreshTreatTable,
   refreshTreatTable,
+  handleSubmitLineUpdate,
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [showModal2, setShowModal2] = useState(false);
@@ -63,10 +64,17 @@ const TreatChemi = ({
   const [treatUidForCycle, setTreatUidForCycle] = useState(undefined);
   const [savedCycles, setSavedCycles] = useState([]);
 
-  const [cycleDates, setCycleDates] = useState([]);
-  const [cycleDescriptions, setCycleDescriptions] = useState([]);
+  const [cycleDates, setCycleDates] = useState({});
+  const [cycleDescriptions, setCycleDescriptions] = useState({});
 
   const [selectedTreatmentNew, setSelectedTreatmentNew] = useState(null);
+
+  // State for treatment line dates
+  const [treatmentLineDates, setTreatmentLineDates] = useState({});
+  const [treatmentLineStartDates, setTreatmentLineStartDates] = useState({});
+  const [treatmentLineEndDates, setTreatmentLineEndDates] = useState({});
+
+  const [activeCycleIndices, setActiveCycleIndices] = useState({});
 
   const handleTreatmentStartDateChange = (date) => {
     if (date) {
@@ -82,25 +90,40 @@ const TreatChemi = ({
     }
   };
 
-  const handleCycleDateChange = (index, date) => {
+  const handleCycleDateChange = (treatmentId, cycleIndex, date) => {
     if (date) {
       const gregorianDate = date.convert("gregorian").toDate();
       const formattedDate = gregorianDate.toISOString().split("T")[0];
-
-      const updatedCycleDates = [...cycleDates];
-      updatedCycleDates[index] = formattedDate;
-      setCycleDates(updatedCycleDates);
+      
+      setCycleDates(prev => ({
+        ...prev,
+        [treatmentId]: {
+          ...prev[treatmentId],
+          [cycleIndex]: {
+            display: date,
+            value: formattedDate
+          }
+        }
+      }));
     } else {
-      const updatedCycleDates = [...cycleDates];
-      updatedCycleDates[index] = "";
-      setCycleDates(updatedCycleDates);
+      setCycleDates(prev => {
+        const newDates = { ...prev };
+        if (newDates[treatmentId]) {
+          delete newDates[treatmentId][cycleIndex];
+        }
+        return newDates;
+      });
     }
   };
 
-  const handleCycleDescriptionChange = (index, val) => {
-    const updatedCycleDescriptions = [...cycleDescriptions];
-    updatedCycleDescriptions[index] = val;
-    setCycleDescriptions(updatedCycleDescriptions);
+  const handleCycleDescriptionChange = (treatmentId, cycleIndex, value) => {
+    setCycleDescriptions(prev => ({
+      ...prev,
+      [treatmentId]: {
+        ...prev[treatmentId],
+        [cycleIndex]: value
+      }
+    }));
   };
 
   const addCycle = (treatmentIndex) => {
@@ -113,7 +136,6 @@ const TreatChemi = ({
     }
 
     const newCycleNumber = updatedTreatments[treatmentIndex].cycles.length + 1;
-
     const currentProtocol = updatedTreatments[treatmentIndex]?.protocol;
 
     updatedTreatments[treatmentIndex].cycles = [
@@ -127,20 +149,21 @@ const TreatChemi = ({
       },
     ];
 
+    // Set the new cycle's accordion to be open
+    const treatmentId = updatedTreatments[treatmentIndex].uid;
+    setActiveCycleIndices(prev => ({
+      ...prev,
+      [treatmentId]: [...(prev[treatmentId] || []), newCycleNumber - 1]
+    }));
+
     setAllDatas(updatedTreatments);
   };
 
-  const handleCycleapi = async (cycle, index) => {
+  const handleCycleapi = async (treatmentId, cycle, cycleIndex) => {
     const cycleData = {
-      treatment_line_uid: cycle?.uid
-        ? cycle?.uid
-        : lineUid
-        ? lineUid
-        : treatUidForCycle
-        ? treatUidForCycle
-        : uidForCycle,
-      date: cycleDates[index] || "",
-      description: cycleDescriptions[index] || "",
+      treatment_line_uid: treatmentId,
+      date: cycleDates[treatmentId]?.[cycleIndex]?.value || "",
+      description: cycleDescriptions[treatmentId]?.[cycleIndex] || "",
     };
 
     try {
@@ -153,19 +176,25 @@ const TreatChemi = ({
       toast.success("سیکل ذخیره شد");
       setRefreshTreatTable(!refreshTreatTable);
 
-      setSavedCycles((prevSavedCycles) => [
-        ...prevSavedCycles,
-        cycle.cycleNumber,
-      ]);
+      // Update the cycle data in allDatas
+      setAllDatas(prevData => {
+        return prevData.map(treatment => {
+          if (treatment.uid === treatmentId) {
+            return {
+              ...treatment,
+              cycles: treatment.cycles.map((c, idx) => 
+                idx === cycleIndex ? 
+                  { ...c, ...response.data.data } : 
+                  c
+              )
+            };
+          }
+          return treatment;
+        });
+      });
+
     } catch (error) {
       toast.warning("باید سیکل جدید ثبت نمایید");
-
-      // console.error(
-      //   "Error in API call for cycle",
-      //   cycle.cycleNumber,
-      //   ":",
-      //   error
-      // );
     } finally {
       setLoadingtar(false);
     }
@@ -197,6 +226,53 @@ const TreatChemi = ({
     setShowModal(true);
     setSelectedTreatmentNew(treatment);
   };
+
+  // Handle treatment line start date
+  const handleTreatmentLineStartDate = (date, treatmentId) => {
+    if (date) {
+      const gregorianDate = date.convert("gregorian").toDate();
+      const formattedDate = gregorianDate.toISOString().split("T")[0];
+
+      setTreatmentLineStartDates((prev) => ({
+        ...prev,
+        [treatmentId]: {
+          display: date,
+          value: formattedDate,
+        },
+      }));
+    } else {
+      setTreatmentLineStartDates((prev) => {
+        const newDates = { ...prev };
+        delete newDates[treatmentId];
+        return newDates;
+      });
+    }
+  };
+
+  // Handle treatment line end date
+  const handleTreatmentLineEndDate = (date, treatmentId) => {
+    if (date) {
+      const gregorianDate = date.convert("gregorian").toDate();
+      const formattedDate = gregorianDate.toISOString().split("T")[0];
+
+      setTreatmentLineEndDates((prev) => ({
+        ...prev,
+        [treatmentId]: {
+          display: date,
+          value: formattedDate,
+        },
+      }));
+    } else {
+      setTreatmentLineEndDates((prev) => {
+        const newDates = { ...prev };
+        delete newDates[treatmentId];
+        return newDates;
+      });
+    }
+  };
+
+  console.log("allDatas", allDatas);
+
   return (
     <>
       <div className="d-flex flex-column my-3">
@@ -267,14 +343,18 @@ const TreatChemi = ({
                     </label>
                     <DatePicker
                       value={
-                        treatment.start_date
+                        treatmentLineStartDates[treatment.uid]?.display ||
+                        (treatment.start_date
                           ? new DateObject({
                               date: treatment.start_date,
                               calendar: "gregorian",
                             })
                               .convert(persian)
                               .format("YYYY/MM/DD")
-                          : ""
+                          : "")
+                      }
+                      onChange={(date) =>
+                        handleTreatmentLineStartDate(date, treatment.uid)
                       }
                       calendar={persian}
                       locale={persian_fa}
@@ -283,7 +363,7 @@ const TreatChemi = ({
                       className="p-2 border rounded"
                       inputClass="w-full p-2 text-end w-100 border rounded"
                       position="bottom-right"
-                      disabled={treatment?.state !== "DONE" ? false : true}
+                      disabled={treatment?.state === "DONE"}
                     />
                   </div>
 
@@ -308,16 +388,27 @@ const TreatChemi = ({
                         disabled={treatment?.state !== "DONE" ? false : true}
                       />
                     </div>
-                    {!treatment?.state && (
+                    {treatment?.state !== "DONE" && (
                       <Button
                         label="شروع خط درمان"
                         icon="pi pi-check"
-                        onClick={() =>
-                          handleSubmitLine(
-                            treatmentUidInGet
-                              ? treatmentUidInGet
-                              : treatment.uid
-                          )
+                        onClick={
+                          treatment?.state !== "IN_PROGRESS"
+                            ? () => {
+                                console.log(
+                                  "treatment?.state",
+                                  treatment?.state
+                                );
+
+                                handleSubmitLine(
+                                  treatmentUidInGet
+                                    ? treatmentUidInGet
+                                    : treatment.uid
+                                );
+                              }
+                            : () => handleSubmitLineUpdate(treatment.uid)
+
+                          //
                         }
                         loading={loading}
                         className="w-100 bg-white text-dark rounded-3 mb-4"
@@ -351,38 +442,37 @@ const TreatChemi = ({
                       className=""
                     >
                       <legend>سیکل ها</legend>
-                      <Accordion multiple>
+                      <Accordion 
+                        multiple 
+                        activeIndex={activeCycleIndices[treatment.uid] || []}
+                        onTabChange={(e) => {
+                          setActiveCycleIndices(prev => ({
+                            ...prev,
+                            [treatment.uid]: e.index
+                          }));
+                        }}
+                      >
                         {treatment.cycles.map((cycle, cycleIndex) => (
                           <AccordionTab
-                            key={cycle.uid}
+                            key={cycle.uid || cycleIndex}
                             header={`\u00A0 سیکل ${cycleIndex + 1}`}
                             className="bg-dark"
                           >
-                            <div className="d-flex justify-content-between align-items-center">
-                              <h5>سیکل {cycleIndex + 1}</h5>
-
-                              {!cycle.uid && (
-                                <Button
-                                  icon="pi pi-trash"
-                                  className="p-button-rounded p-button-danger"
-                                  onClick={() => removeCycle(cycleIndex)}
-                                  tooltip="حذف سیکل"
-                                />
-                              )}
-                            </div>
-
                             <div className="d-flex flex-column my-3">
-                              <label
-                                className="p-col-12 p-md-2"
-                                htmlFor={`cycle_date_${cycleIndex}`}
-                              >
+                              <label className="p-col-12 p-md-2">
                                 تاریخ:
                               </label>
                               <DatePicker
-                                onChange={(date) =>
-                                  handleCycleDateChange(cycleIndex, date)
+                                value={
+                                  cycleDates[treatment.uid]?.[cycleIndex]?.display || 
+                                  (cycle.date ? 
+                                    new DateObject({
+                                      date: cycle.date,
+                                      calendar: "gregorian",
+                                    }).convert(persian).format("YYYY/MM/DD")
+                                    : "")
                                 }
-                                value={cycleDates[cycleIndex] || ""}
+                                onChange={(date) => handleCycleDateChange(treatment.uid, cycleIndex, date)}
                                 calendar={persian}
                                 locale={persian_fa}
                                 format="YYYY/MM/DD"
@@ -394,22 +484,13 @@ const TreatChemi = ({
                             </div>
 
                             <div className="p-field p-grid">
-                              <label
-                                className="p-col-12 p-md-2"
-                                htmlFor={`cycle_desc_${cycleIndex}`}
-                              >
+                              <label className="p-col-12 p-md-2">
                                 توضیحات:
                               </label>
                               <div className="p-col-12 p-md-10">
                                 <InputTextarea
-                                  id={`cycle_desc_${cycleIndex}`}
-                                  value={cycleDescriptions[cycleIndex] || ""}
-                                  onChange={(e) =>
-                                    handleCycleDescriptionChange(
-                                      cycleIndex,
-                                      e.target.value
-                                    )
-                                  }
+                                  value={cycleDescriptions[treatment.uid]?.[cycleIndex] || cycle.description || ""}
+                                  onChange={(e) => handleCycleDescriptionChange(treatment.uid, cycleIndex, e.target.value)}
                                   rows={2}
                                   className="w-100"
                                 />
@@ -420,9 +501,7 @@ const TreatChemi = ({
                               <Button
                                 label="ثبت سیکل"
                                 icon="pi pi-check"
-                                onClick={() =>
-                                  handleCycleapi(cycle, cycleIndex)
-                                }
+                                onClick={() => handleCycleapi(treatment.uid, cycle, cycleIndex)}
                                 loading={loading}
                                 className="w-100 bg-white text-dark rounded-3"
                               />

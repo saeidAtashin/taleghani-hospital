@@ -189,6 +189,7 @@ const TreatmentTable = ({ rowDataTransfer, setrowDataTransfer }) => {
       setmakeitof(true);
       setTreatmentUidInGet(rowData?.uid);
       setRowData(rowData);
+
     } catch (error) {
       // console.error("Error fetching treatment data:", error);
     }
@@ -316,6 +317,7 @@ const TreatmentTable = ({ rowDataTransfer, setrowDataTransfer }) => {
 
       {newTreat && (
         <NewTreat
+          setTreatmentUidInGet={setTreatmentUidInGet}
           setrowDataTransfer={setrowDataTransfer}
           makeitof={makeitof}
           setmakeitof={setmakeitof}

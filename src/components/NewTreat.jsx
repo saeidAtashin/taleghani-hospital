@@ -64,10 +64,12 @@ const NewTreat = ({
   makeitof,
   setmakeitof,
   setrowDataTransfer,
+  setTreatmentUidInGet,
 }) => {
   const [isCycleVisible, setisCycleVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showModal2, setShowModal2] = useState(false);
+  const [showBtnFinal, setshowBtnFinal] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [mainSelection, setMainSelection] = useState(null);
   const [subSelection, setSubSelection] = useState(null);
@@ -77,6 +79,9 @@ const NewTreat = ({
   const [treatment, setTreatment] = useState([]);
   const [hiddenButtons, setHiddenButtons] = useState([]);
   const [lineUid, setlineUid] = useState(undefined);
+  const [treatmentLineDates, setTreatmentLineDates] = useState({});
+  const [treatmentLineStartDates, setTreatmentLineStartDates] = useState({});
+  const [treatmentLineEndDates, setTreatmentLineEndDates] = useState({});
 
   const handleStartDateChange = (date) => {
     if (date) {
@@ -103,6 +108,7 @@ const NewTreat = ({
   };
 
   const resetFormFields = () => {
+    setTreatmentUidInGet(undefined);
     setTreatmentValue(null);
     setSelectedProtocol(undefined);
     setSelectedTreatment(undefined);
@@ -115,10 +121,11 @@ const NewTreat = ({
     setDescription("");
     setCycles([]);
     setisCycleVisible(false);
-    setShowedPart("");
+    // setShowedPart("home");
     setAllDatas(undefined);
     setmakeitof(false);
     setrowDataTransfer(undefined);
+    setResponseUid(undefined);
   };
 
   const newResetFormFields = () => {
@@ -153,18 +160,6 @@ const NewTreat = ({
       protocol_uid: selectedProtocol,
     };
 
-    if (!isTreatmentForm) {
-      payload.evaluation_uid = selectedTreatment
-        ? selectedTreatment
-        : undefined;
-      payload.protocol_uid = selectedProtocol;
-      payload.cycles = cycles.map((c) => ({
-        cycleNumber: c.cycleNumber,
-        date: c.date,
-        description: c.description,
-      }));
-    }
-
     try {
       const response = await axios.post(
         "https://cancerreg.ir/api/v1/teatment/treatment/",
@@ -172,6 +167,7 @@ const NewTreat = ({
       );
 
       if (response?.status >= 200 && response?.status < 400) {
+        setshowBtnFinal(true);
         setLoading(false);
         setChildState(!childState);
         toast.current.show({
@@ -179,20 +175,22 @@ const NewTreat = ({
           summary: "موفق",
           detail: "ذخیره شد",
         });
-        setResponseUid(response?.data?.data?.uid);
+
+        // Get the new treatment's data
+        const newTreatmentUid = response?.data?.data?.uid;
+        setResponseUid(newTreatmentUid);
         setuidForCycle(response?.data?.data?.first_treatment_line_uid);
         setShowStartTreatBtn(false);
+
+        // Simulate clicking on the new treatment
+        setrowDataTransfer({ uid: newTreatmentUid });
+        setTreatmentUidInGet(newTreatmentUid);
+        setRefreshTreatTable(!refreshTreatTable);
+
+        // Don't reset everything - just what's needed
         newResetFormFields();
         setdontCallForNow(true);
-        setRefreshTreatTable(!refreshTreatTable);
-        if (isTreatmentForm) {
-          setnewTreat(false);
-          resetFormFields();
-          // setdontCallForNow(false);
-        }
-
         setShowedPart("showCycle");
-        setLoading(false);
       }
     } catch (err) {
       if (err?.status >= 400) {
@@ -208,6 +206,8 @@ const NewTreat = ({
     } finally {
     }
   };
+
+  console.log("allllll", allDatas);
 
   const handleEndSubmit = async () => {
     // setLoading(true);
@@ -437,6 +437,51 @@ const NewTreat = ({
 
   const handleSubmitLine = async (treatmentUid) => {
     const payload = {
+      treatment_uid: treatmentUidInGet || treatmentUid || allDatas?.uid || responseUid,
+      start_date: treatmentLineStartDates[treatmentUid]?.value || treatmentStartDate || startDate,
+      end_date: treatmentLineEndDates[treatmentUid]?.value || endDate,
+      description: description,
+      protocol_uid: selectedProtocol,
+    };
+
+    try {
+      let response;
+      const url = uidForCycle ? 
+        `https://cancerreg.ir/api/v1/teatment/treatment-line-update/${uidForCycle}/` :
+        "https://cancerreg.ir/api/v1/teatment/treatment-line/";
+
+      if (uidForCycle) {
+        response = await axios.put(url, payload);
+      } else {
+        response = await axios.post(url, payload);
+      }
+
+      if (response?.status >= 200 && response?.status < 400) {
+        setHiddenButtons((prev) => [...prev, treatmentUid]);
+        setChildState(!childState);
+        setRefreshTreatTable(!refreshTreatTable);
+        setlineUid(response?.data?.data?.uid);
+
+        toast.current.show({
+          severity: "success",
+          summary: "موفق",
+          detail: "ذخیره شد",
+        });
+      }
+    } catch (err) {
+      if (err?.status >= 400) {
+        toast.current.show({
+          severity: "error",
+          summary: "خطا",
+          detail: err.response?.data?.message || "مشکلی پیش آمده است.",
+        });
+      }
+    }
+  };
+
+  const handleSubmitLineUpdate = async (treatmentUid) => {
+    console.log("treatmentUid", treatmentUid);
+    const payload = {
       treatment_uid: treatmentUidInGet
         ? treatmentUidInGet
         : treatmentUid
@@ -467,94 +512,31 @@ const NewTreat = ({
       }));
     }
 
-    if (uidForCycle) {
-      const payload = {
-        // treatment_uid: treatmentUidInGet
-        //   ? treatmentUidInGet
-        //   : treatmentUid
-        //   ? treatmentUid
-        //   : allDatas?.uid
-        //   ? allDatas?.uid
-        //   : responseUid,
-        start_date: treatmentStartDate ? treatmentStartDate : startDate,
-        end_date: endDate ? endDate : undefined,
-        description: description ? description : undefined,
-        protocol_uid: selectedProtocol,
-      };
+    try {
+      const response = await axios.put(
+        `https://cancerreg.ir/api/v1/teatment/treatment-line-update/${treatmentUid}/`,
+        payload
+      );
 
-      if (!isTreatmentForm) {
-        // payload.treatment_uid = uidForCycle
-        //   ? uidForCycle
-        //   : treatmentUidInGet
-        //   ? treatmentUidInGet
-        //   : treatmentUid
-        //   ? treatmentUid
-        //   : allDatas?.uid
-        //   ? allDatas?.uid
-        //   : responseUid;
-        payload.description = description ? description : undefined;
+      if (response?.status >= 200 && response?.status < 400) {
+        setHiddenButtons((prev) => [...prev, treatmentUid]);
+        setChildState(!childState);
+        setRefreshTreatTable(!refreshTreatTable);
 
-        payload.protocol_uid = selectedProtocol;
-        // payload.cycles_list = cycles.map((c) => ({
-        //   date: c.date,
-        //   description: c.description,
-        // }));
+        setlineUid(response?.data?.data?.uid);
+        toast.current.show({
+          severity: "success",
+          summary: "موفق",
+          detail: "ذخیره شد",
+        });
       }
-      try {
-        const response = await axios.put(
-          `https://cancerreg.ir/api/v1/teatment/treatment-line-update/${uidForCycle}/`,
-          payload
-        );
-
-        if (response?.status >= 200 && response?.status < 400) {
-          setHiddenButtons((prev) => [...prev, treatmentUid]);
-          setChildState(!childState);
-          setRefreshTreatTable(!refreshTreatTable);
-
-          setlineUid(response?.data?.data?.uid);
-          toast.current.show({
-            severity: "success",
-            summary: "موفق",
-            detail: "ذخیره شد",
-          });
-        }
-      } catch (err) {
-        if (err?.status >= 400) {
-          toast.current.show({
-            severity: "error",
-            summary: "خطا",
-            detail: err.response?.data?.message || "مشکلی پیش آمده است.",
-          });
-        }
-      }
-    } else {
-      try {
-        const response = await axios.post(
-          "https://cancerreg.ir/api/v1/teatment/treatment-line/",
-          payload
-        );
-
-        if (response?.status >= 200 && response?.status < 400) {
-          setHiddenButtons((prev) => [...prev, treatmentUid]);
-          setChildState(!childState);
-          setRefreshTreatTable(!refreshTreatTable);
-
-          setlineUid(response?.data?.data?.uid);
-          toast.current.show({
-            severity: "success",
-            summary: "موفق",
-            detail: "ذخیره شد",
-          });
-        }
-      } catch (err) {
-        if (err?.status >= 400) {
-          // console.error(err);
-          toast.current.show({
-            severity: "error",
-            summary: "خطا",
-            detail: err.response?.data?.message || "مشکلی پیش آمده است.",
-          });
-        }
+    } catch (err) {
+      if (err?.status >= 400) {
+        toast.current.show({
+          severity: "error",
+          summary: "خطا",
+          detail: err.response?.data?.message || "مشکلی پیش آمده است.",
+        });
       }
     }
   };
@@ -566,10 +548,14 @@ const NewTreat = ({
       <div className="container mt-5">
         <div className="d-flex justify-content-between align-items-center">
           {makeitof ? (
-            <h2>{treatmentValue}</h2>
+            <h2>
+              {typeof treatmentValue === "object"
+                ? treatmentValue.label
+                : treatmentValue}
+            </h2>
           ) : (
             <h2 className="m-2 pb-3">ایجاد درمان جدید</h2>
-          )}{" "}
+          )}
           <span
             className="text-danger cursor-pointer"
             style={{ fontSize: "32px" }}
@@ -671,6 +657,7 @@ const NewTreat = ({
                     lineUid ||
                     // uid ||
                     allDatas?.uid ||
+                    showBtnFinal ||
                     responseUid) && (
                     <Button
                       label="پایان درمان"
@@ -684,6 +671,7 @@ const NewTreat = ({
             </>
           ) : (
             <TreatChemi
+              handleSubmitLineUpdate={handleSubmitLineUpdate}
               setdontCallForNow={setdontCallForNow}
               dontCallForNow={dontCallForNow}
               setRefreshTreatTable={setRefreshTreatTable}
