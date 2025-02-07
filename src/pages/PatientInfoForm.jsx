@@ -9,7 +9,7 @@ import persian_fa from "react-date-object/locales/persian_fa";
 import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 
-const PatientForm = () => {
+const PatientForm = ({ setrefresh, refresh }) => {
   const [patient, setPatient] = useState(null);
   const [dropdownData, setDropdownData] = useState({});
   const [updatedFields, setUpdatedFields] = useState({});
@@ -122,6 +122,7 @@ const PatientForm = () => {
         const responseData = await res.json();
 
         if (res.status >= 200 && res.status < 400) {
+          setrefresh(!refresh);
           toast.success("ویرایش شما انجام شد");
           toggleForm();
         } else {

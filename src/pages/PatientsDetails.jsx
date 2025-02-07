@@ -17,6 +17,7 @@ const PatientsDetails = () => {
   const [userIdentityData, setUserIdentityData] = useState([]);
   const [activeTabForce, setActiveTabForce] = useState(0);
   const [rowDataTransfer, setrowDataTransfer] = useState(undefined);
+  const [refresh, setrefresh] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,7 +33,7 @@ const PatientsDetails = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [refresh]);
 
   const tabs = [
     {
@@ -40,7 +41,7 @@ const PatientsDetails = () => {
       label: "اطلاعات هویتی",
       content: (
         <div>
-          <PatientInfoForm />
+          <PatientInfoForm setrefresh={setrefresh} refresh={refresh} />
         </div>
       ),
     },
@@ -113,8 +114,11 @@ const PatientsDetails = () => {
   return (
     <div className="container mt-5">
       <h2 className="mb-5">
-        بیمار {userIdentityData?.first_name} {userIdentityData?.last_name} -{" "}
-        {userIdentityData?.phone_number}
+        بیمار {userIdentityData?.first_name} {userIdentityData?.last_name}{" "}
+        {userIdentityData?.phone_number
+          ? `- 
+        ${userIdentityData?.phone_number}`
+          : ""}
       </h2>
       <ReusableTabs
         tabs={tabs}

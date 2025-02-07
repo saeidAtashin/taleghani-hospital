@@ -106,17 +106,23 @@ const Ctscan = ({ setShowAzmayeshPAge, uidScan }) => {
     };
 
     const formattedDataInPut = {
+      patient_uid,
       ...rest,
       involvements,
     };
     if (put) {
       try {
         await axios.put(
-          `https://cancerreg.ir/api/v1/records/corescan/${uidScan}/`,
+          `https://cancerreg.ir/api/v1/records/ctscan/${uidScan}/`,
           formattedDataInPut
         );
         toast.success("تغییرات ذخیره شد");
+        setloadingBtn(false);
+
+        setShowAzmayeshPAge("home");
       } catch (error) {
+        setloadingBtn(false);
+
         toast.warning("خطایی رخ داده است");
         // console.error(error);
       }

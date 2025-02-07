@@ -109,6 +109,7 @@ const Mri = ({ setShowAzmayeshPAge, uidScan }) => {
     };
 
     const formattedDataInPut = {
+      patient_uid: formData.patient_uid,
       date: formData.date,
       description: formData.description,
       batch_uid: formData.batch_uid,
@@ -122,8 +123,13 @@ const Mri = ({ setShowAzmayeshPAge, uidScan }) => {
           `https://cancerreg.ir/api/v1/records/mri/${uidScan}/`,
           formattedDataInPut
         );
+        setloadingBtn(false);
+
         toast.success("تغییرات ذخیره شد");
+        setShowAzmayeshPAge("home");
       } catch (error) {
+        setloadingBtn(false);
+
         toast.warning("خطایی رخ داده است");
         // console.error(error);
       }

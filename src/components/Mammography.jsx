@@ -106,6 +106,7 @@ const Mammography = ({ setShowAzmayeshPAge, uidScan }) => {
     };
 
     const formattedDataInPut = {
+      patient_uid: formData.patient_uid,
       date: formData.date,
       description: formData.description,
       involvements,
@@ -117,7 +118,12 @@ const Mammography = ({ setShowAzmayeshPAge, uidScan }) => {
           formattedDataInPut
         );
         toast.success("تغییرات ذخیره شد");
+        setloadingBtn(false);
+
+        setShowAzmayeshPAge("home");
       } catch (error) {
+        setloadingBtn(false);
+
         toast.warning("خطایی رخ داده است");
         // console.error(error);
       }

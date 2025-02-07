@@ -95,7 +95,7 @@ const Petscan = ({ setShowAzmayeshPAge, uidScan }) => {
     }));
 
     const { sizes, patient_uid, ...rest } = formData;
-    const formattedDataForPut = { ...rest, involvements };
+    const formattedDataForPut = { ...rest, patient_uid, involvements };
     const formattedDataForPost = { ...rest, patient_uid, involvements };
 
     if (put) {

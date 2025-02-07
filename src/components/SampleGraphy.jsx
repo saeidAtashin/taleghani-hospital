@@ -71,7 +71,8 @@ const SampleGraphy = ({ setShowAzmayeshPAge, uidScan }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { patient_uid, ...rest } = formData;
+    const { patient_uid, order_description, ...rest } = formData;
+    //
 
     const formattedDataInPost = {
       ...rest,
@@ -79,6 +80,7 @@ const SampleGraphy = ({ setShowAzmayeshPAge, uidScan }) => {
     };
 
     const formattedDataInPut = {
+      patient_uid,
       ...rest,
     };
     if (put) {
@@ -98,9 +100,13 @@ const SampleGraphy = ({ setShowAzmayeshPAge, uidScan }) => {
           "https://cancerreg.ir/api/v1/records/other-graphy/",
           formattedDataInPost
         );
+        setloadingBtn(false);
+
         toast.success("ثبت شد");
         setShowAzmayeshPAge("home");
       } catch (error) {
+        setloadingBtn(false);
+
         toast.warning("خطایی رخ داده است");
         // console.error(error);
       }

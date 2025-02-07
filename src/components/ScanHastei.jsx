@@ -124,6 +124,7 @@ const ScanHastei = ({ setShowAzmayeshPAge, uidScan }) => {
     };
 
     const formattedDataInPut = {
+      patient_uid,
       ...rest,
       involvements,
     };
@@ -133,8 +134,13 @@ const ScanHastei = ({ setShowAzmayeshPAge, uidScan }) => {
           `https://cancerreg.ir/api/v1/records/corescan/${uidScan}/`,
           formattedDataInPut
         );
+        setloadingBtn(false);
+
         toast.success("تغییرات ذخیره شد");
+        setShowAzmayeshPAge("home");
       } catch (error) {
+        setloadingBtn(false);
+
         toast.warning("خطایی رخ داده است");
         // console.error(error);
       }
@@ -148,8 +154,8 @@ const ScanHastei = ({ setShowAzmayeshPAge, uidScan }) => {
         setLoadingBtn(false);
         setShowAzmayeshPAge("home");
       } catch (error) {
-        toast.warning("خطایی رخ داده است");
         setLoadingBtn(false);
+        toast.warning("خطایی رخ داده است");
         // console.error(error);
       }
   };
