@@ -83,7 +83,7 @@ const PatientForm = ({ setrefresh, refresh }) => {
           setDropdownData((prev) => ({ ...prev, [key]: data.data.results }));
         });
     });
-  }, []);
+  }, [refresh]);
 
   useEffect(() => {
     if (patient) {
