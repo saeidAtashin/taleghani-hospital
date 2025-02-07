@@ -215,9 +215,6 @@ const PatientRecordsForm = () => {
       });
   };
 
-  if (!patient || Object.keys(dropdownData).some((key) => !dropdownData[key]))
-    return <p>Loading...</p>;
-
   return (
     <div className="p-4 d-flex flex-wrap">
       {isFormDisabled ? (
@@ -248,15 +245,15 @@ const PatientRecordsForm = () => {
           <div
             key={index}
             className={`${
-              dropdownLabels[field] === "قد" ||
-              dropdownLabels[field] === "وزن" ||
-              dropdownLabels[field] === "BSA" ||
-              dropdownLabels[field] === "BMI"
+              dropdownLabels?.[field] === "قد" ||
+              dropdownLabels?.[field] === "وزن" ||
+              dropdownLabels?.[field] === "BSA" ||
+              dropdownLabels?.[field] === "BMI"
                 ? "w-50"
                 : "w-100"
             }`}
           >
-            {dropdownLabels[field] === "سوابق دارویی" ? (
+            {dropdownLabels?.[field] === "سوابق دارویی" ? (
               <div className="p-field mb-4">
                 {patient?.drugs_records?.length > 0 && (
                   <label>سوابق دارویی</label>
@@ -299,19 +296,19 @@ const PatientRecordsForm = () => {
             ) : (
               <div
                 className={`p-field d-flex flex-column mb-3 ${
-                  dropdownLabels[field] === "رشته تحصیلی" ? "flex-row" : ""
+                  dropdownLabels?.[field] === "رشته تحصیلی" ? "flex-row" : ""
                 }`}
               >
-                <label>{dropdownLabels[field]}</label>
+                <label>{dropdownLabels?.[field]}</label>
 
-                {dropdownApis[field] ? (
+                {dropdownApis?.[field] ? (
                   <MultiSelect
                     value={
-                      dropdownData.underlying_diseases?.filter((option) =>
-                        patient.underlying_diseases?.includes(option.label)
+                      dropdownData?.underlying_diseases?.filter((option) =>
+                        patient?.underlying_diseases?.includes(option.label)
                       ) || []
                     }
-                    options={dropdownData.underlying_diseases || []}
+                    options={dropdownData?.underlying_diseases || []}
                     onChange={(e) => {
                       console.log("e", e);
                       handleChange(e, field);
@@ -319,7 +316,7 @@ const PatientRecordsForm = () => {
                     multiple
                     optionLabel="label"
                     maxSelectedLabels={10}
-                    placeholder={`انتخاب ${dropdownLabels[field]}`}
+                    placeholder={`انتخاب ${dropdownLabels?.[field]}`}
                     className={`custom-dropdown ${
                       classNameMapping[field] || "w-100"
                     }`}
@@ -328,18 +325,18 @@ const PatientRecordsForm = () => {
                   />
                 ) : (
                   <InputText
-                    value={patient[field] || ""}
+                    value={patient?.[field] || ""}
                     onChange={(e) => handleChange(e, field)}
-                    placeholder={`لطفا ${dropdownLabels[field]} را وارد کنید`}
+                    placeholder={`لطفا ${dropdownLabels?.[field]} را وارد کنید`}
                     className={
-                      dropdownLabels[field] === "BSA" ||
-                      dropdownLabels[field] === "BMI"
+                      dropdownLabels?.[field] === "BSA" ||
+                      dropdownLabels?.[field] === "BMI"
                         ? "custom-disabled"
                         : ""
                     }
                     disabled={
-                      dropdownLabels[field] === "BSA" ||
-                      dropdownLabels[field] === "BMI"
+                      dropdownLabels?.[field] === "BSA" ||
+                      dropdownLabels?.[field] === "BMI"
                         ? true
                         : isFormDisabled
                     }
