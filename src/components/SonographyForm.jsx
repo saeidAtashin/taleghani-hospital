@@ -113,6 +113,7 @@ const SonographyForm = ({ setShowAzmayeshPAge, badgeColor, uidScan }) => {
     };
 
     const formattedDataInPut = {
+      patient_uid: formData.patient_uid,
       date: formData.date,
       description: formData.description,
       birads: formData.birads,
