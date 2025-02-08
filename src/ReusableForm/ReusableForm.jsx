@@ -25,6 +25,8 @@ const ReusableForm = ({
     handleSubmit,
     formState: { errors },
     reset,
+    watch,
+    setValue,
   } = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: defaultValuesFromBackend,
@@ -104,6 +106,31 @@ const ReusableForm = ({
   useEffect(() => {
     reset(defaultValuesFromBackend || {});
   }, [defaultValuesFromBackend, reset]);
+
+  // Watch height and weight fields
+  const height = watch("height");
+  const weight = watch("weight");
+
+  // Calculate BSA and BMI when height or weight changes
+  useEffect(() => {
+    if (height && weight) {
+      // Convert height to meters and weight to kg
+      const heightInM = parseFloat(height) / 100;
+      const weightInKg = parseFloat(weight);
+
+      // Calculate BMI = weight(kg) / height(m)²
+      const bmi = (weightInKg / (heightInM * heightInM)).toFixed(2);
+      setValue("BMI", bmi);
+
+      // Calculate BSA using Mosteller formula: BSA (m²) = √((height(cm) × weight(kg))/3600)
+      const bsa = Math.sqrt((parseFloat(height) * weightInKg) / 3600).toFixed(2);
+      setValue("BSA", bsa);
+    } else {
+      // Clear BSA and BMI if height or weight is missing
+      setValue("BSA", "");
+      setValue("BMI", "");
+    }
+  }, [height, weight, setValue]);
 
   return (
     <div className="container mt-5">
