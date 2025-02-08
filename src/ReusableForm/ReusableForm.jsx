@@ -113,20 +113,34 @@ const ReusableForm = ({
 
   // Calculate BSA and BMI when height or weight changes
   useEffect(() => {
-    if (height && weight) {
-      // Convert height to meters and weight to kg
-      const heightInM = parseFloat(height) / 100;
-      const weightInKg = parseFloat(weight);
+    // Convert string inputs to numbers and validate
+    const heightValue = parseFloat(height);
+    const weightValue = parseFloat(weight);
+
+    if (!isNaN(heightValue) && !isNaN(weightValue) && heightValue > 0 && weightValue > 0) {
+      // Height is already in cm, weight is already in kg
+      const heightInM = heightValue / 100; // Convert cm to meters for BMI calculation
 
       // Calculate BMI = weight(kg) / height(m)²
-      const bmi = (weightInKg / (heightInM * heightInM)).toFixed(2);
-      setValue("BMI", bmi);
-
+      const bmi = (weightValue / (heightInM * heightInM)).toFixed(1);
+      
       // Calculate BSA using Mosteller formula: BSA (m²) = √((height(cm) × weight(kg))/3600)
-      const bsa = Math.sqrt((parseFloat(height) * weightInKg) / 3600).toFixed(2);
-      setValue("BSA", bsa);
+      const bsa = Math.sqrt((heightValue * weightValue) / 3600).toFixed(2);
+
+      // Only set values if they're in a reasonable range
+      if (bmi >= 10 && bmi <= 100) {
+        setValue("BMI", bmi);
+      } else {
+        setValue("BMI", "Invalid BMI");
+      }
+
+      if (bsa >= 0.5 && bsa <= 3.0) {
+        setValue("BSA", bsa);
+      } else {
+        setValue("BSA", "Invalid BSA");
+      }
     } else {
-      // Clear BSA and BMI if height or weight is missing
+      // Clear BSA and BMI if height or weight is invalid
       setValue("BSA", "");
       setValue("BMI", "");
     }
