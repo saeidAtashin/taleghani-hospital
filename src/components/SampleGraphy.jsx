@@ -21,7 +21,6 @@ const SampleGraphy = ({ setShowAzmayeshPAge, uidScan }) => {
   const [put, setPut] = useState(false);
 
   useEffect(() => {
-    // Fetch existing data when component mounts
     const fetchData = async () => {
       try {
         const response = await axios.get(
@@ -29,23 +28,29 @@ const SampleGraphy = ({ setShowAzmayeshPAge, uidScan }) => {
         );
         const { data } = response.data;
         if (data) {
-          const persianDate = new Date(data.date)
-            .toLocaleDateString("fa-IR")
-            .replace(/\//g, "-");
+          let persianDate = null;
+          if (data.date) {
+            try {
+              persianDate = new Date(data.date)
+                .toLocaleDateString("fa-IR")
+                .replace(/\//g, "-");
+            } catch (error) {
+              persianDate = null;
+            }
+          }
 
           setFormData({
             patient_uid: data.uid,
-            date: data.date,
+            date: data.date || "",
             title: data.title,
             order_description: data.order_description,
             description: data.description || "",
           });
-          setPut(true); // Enable PUT updates only after successful submission
+          setPut(true);
           setSelectedDate(persianDate);
         }
       } catch (error) {
-        setPut(false); // Enable PUT updates only after successful submission
-        // console.error("Error fetching data:", error);
+        setPut(false);
       }
     };
 
@@ -54,10 +59,15 @@ const SampleGraphy = ({ setShowAzmayeshPAge, uidScan }) => {
 
   const handleDateChange = (date) => {
     if (date) {
-      const gregorianDate = date.convert("gregorian").toDate();
-      const formattedDate = gregorianDate.toISOString().split("T")[0];
-      setSelectedDate(date);
-      setFormData({ ...formData, date: formattedDate });
+      try {
+        const gregorianDate = date.convert("gregorian").toDate();
+        const formattedDate = gregorianDate.toISOString().split("T")[0];
+        setSelectedDate(date);
+        setFormData({ ...formData, date: formattedDate });
+      } catch (error) {
+        setSelectedDate(null);
+        setFormData({ ...formData, date: "" });
+      }
     } else {
       setSelectedDate(null);
       setFormData({ ...formData, date: "" });

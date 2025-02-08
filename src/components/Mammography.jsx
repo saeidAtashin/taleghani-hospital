@@ -22,7 +22,6 @@ const Mammography = ({ setShowAzmayeshPAge, uidScan }) => {
   const [put, setPut] = useState(false);
 
   useEffect(() => {
-    // Fetch existing data when component mounts
     const fetchData = async () => {
       try {
         const response = await axios.get(
@@ -31,25 +30,30 @@ const Mammography = ({ setShowAzmayeshPAge, uidScan }) => {
         const { data } = response.data;
 
         if (data) {
-          const persianDate = new Date(data.date)
-            .toLocaleDateString("fa-IR")
-            .replace(/\//g, "-");
+          let persianDate = null;
+          if (data.date) {
+            try {
+              persianDate = new Date(data.date)
+                .toLocaleDateString("fa-IR")
+                .replace(/\//g, "-");
+            } catch (error) {
+              persianDate = null;
+            }
+          }
 
           setFormData({
             patient_uid: data.patient.uid,
-            date: data.date,
-            sizes: data.involvements_list.length
+            date: data.date || "",
+            sizes: data.involvements_list?.length
               ? data.involvements_list
-              : [{ size: "", site: "" }],
+              : [{ size: null, site: "", description: "" }],
             description: data.description || "",
           });
-          setPut(true); // Enable PUT updates only after successful submission
+          setPut(true);
           setSelectedDate(persianDate);
-          // setIsLoaded(true);
         }
       } catch (error) {
-        setPut(false); // Enable PUT updates only after successful submission
-        // console.error("Error fetching data:", error);
+        setPut(false);
       }
     };
 
@@ -58,10 +62,15 @@ const Mammography = ({ setShowAzmayeshPAge, uidScan }) => {
 
   const handleDateChange = (date) => {
     if (date) {
-      const gregorianDate = date.convert("gregorian").toDate();
-      const formattedDate = gregorianDate.toISOString().split("T")[0];
-      setSelectedDate(date);
-      setFormData({ ...formData, date: formattedDate });
+      try {
+        const gregorianDate = date.convert("gregorian").toDate();
+        const formattedDate = gregorianDate.toISOString().split("T")[0];
+        setSelectedDate(date);
+        setFormData({ ...formData, date: formattedDate });
+      } catch (error) {
+        setSelectedDate(null);
+        setFormData({ ...formData, date: "" });
+      }
     } else {
       setSelectedDate(null);
       setFormData({ ...formData, date: "" });

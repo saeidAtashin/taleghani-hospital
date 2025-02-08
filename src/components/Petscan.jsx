@@ -28,38 +28,50 @@ const Petscan = ({ setShowAzmayeshPAge, uidScan }) => {
           `https://cancerreg.ir/api/v1/records/petscan/${uidScan}/`
         );
         const { data } = response.data;
+        
         if (data) {
-          const persianDate = new Date(data.date)
-            .toLocaleDateString("fa-IR")
-            .replace(/\//g, "-");
+          let persianDate = null;
+          if (data.date) {
+            try {
+              persianDate = new Date(data.date)
+                .toLocaleDateString("fa-IR")
+                .replace(/\//g, "-");
+            } catch (error) {
+              persianDate = null;
+            }
+          }
 
           setFormData({
             patient_uid: data.patient.uid,
-            date: data.date,
+            date: data.date || "",
             suv_max: data.suv_max,
-            sizes: data.involvements_list.length
+            sizes: data.involvements_list?.length
               ? data.involvements_list
               : [{ size: "", site: "" }],
             description: data.description || "",
           });
           setSelectedDate(persianDate);
           setloadingBtn(true);
-          setPut(true); // Enable PUT updates only after successful submission
+          setPut(true);
         }
       } catch (error) {
         // setPut(false);
-        // console.error("Error fetching data", error);
       }
     };
     fetchData();
-  }, [uid]);
+  }, [uidScan]);
 
   const handleDateChange = (date) => {
     if (date) {
-      const gregorianDate = date.convert("gregorian").toDate();
-      const formattedDate = gregorianDate.toISOString().split("T")[0];
-      setSelectedDate(date);
-      setFormData({ ...formData, date: formattedDate });
+      try {
+        const gregorianDate = date.convert("gregorian").toDate();
+        const formattedDate = gregorianDate.toISOString().split("T")[0];
+        setSelectedDate(date);
+        setFormData({ ...formData, date: formattedDate });
+      } catch (error) {
+        setSelectedDate(null);
+        setFormData({ ...formData, date: "" });
+      }
     } else {
       setSelectedDate(null);
       setFormData({ ...formData, date: "" });

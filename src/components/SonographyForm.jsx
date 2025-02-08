@@ -24,7 +24,6 @@ const SonographyForm = ({ setShowAzmayeshPAge, badgeColor, uidScan }) => {
   const [put, setPut] = useState(false);
 
   useEffect(() => {
-    // Fetch existing data when component mounts
     const fetchData = async () => {
       try {
         const response = await axios.get(
@@ -33,27 +32,32 @@ const SonographyForm = ({ setShowAzmayeshPAge, badgeColor, uidScan }) => {
         const { data } = response.data;
 
         if (data) {
-          const persianDate = new Date(data.date)
-            .toLocaleDateString("fa-IR")
-            .replace(/\//g, "-");
+          let persianDate = null;
+          if (data.date) {
+            try {
+              persianDate = new Date(data.date)
+                .toLocaleDateString("fa-IR")
+                .replace(/\//g, "-");
+            } catch (error) {
+              persianDate = null;
+            }
+          }
 
           setFormData({
             patient_uid: data.patient.uid,
-            date: data.date,
+            date: data.date || "",
             birads: data.birads,
             echogenicity: data.echogenicity,
-            sizes: data.involvements_list.length
+            sizes: data.involvements_list?.length
               ? data.involvements_list
               : [{ size: "", site: "" }],
             description: data.description || "",
           });
-          setPut(true); // Enable PUT updates only after successful submission
+          setPut(true);
           setSelectedDate(persianDate);
-          // setIsLoaded(true);
         }
       } catch (error) {
-        setPut(false); // Enable PUT updates only after successful submission
-        // console.error("Error fetching data:", error);
+        setPut(false);
       }
     };
 
