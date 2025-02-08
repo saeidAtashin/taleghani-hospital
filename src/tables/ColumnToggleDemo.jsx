@@ -32,8 +32,9 @@ export default function ColumnToggleDemo() {
   const fetchData = async () => {
     setLoading(true);
     try {
+      const searchParam = globalFilter ? `search_query=${globalFilter}&` : "";
       const response = await axios.get(
-        `https://cancerreg.ir/api/v1/patient/patient-info/?search_query=${globalFilter}&page=${
+        `https://cancerreg.ir/api/v1/patient/patient-info/?${searchParam}page=${
           page + 1
         }&page_size=${rows}`
       );
@@ -80,7 +81,10 @@ export default function ColumnToggleDemo() {
   const dt = useRef(null);
   const navigate = useNavigate();
 
-  const handleSearch = () => {
+  const handleSearch = (e) => {
+    if (e && e.preventDefault) {
+      e.preventDefault();
+    }
     fetchData();
   };
 
@@ -89,21 +93,45 @@ export default function ColumnToggleDemo() {
       className="d-flex flex-wrap gap-2 align-items-center justify-content-start"
       style={{ direction: "rtl" }}
     >
-      <Button
-        label="جستجو"
-        icon="pi pi-search"
-        severity="primary"
-        onClick={handleSearch}
-      />
-      <IconField iconPosition="left">
-        <InputText
-          type="search"
-          value={globalFilter}
-          onChange={(e) => setGlobalFilter(e.target.value)}
-          placeholder="جستجوی کد ملی"
-          style={{ textAlign: "right" }}
+      <form onSubmit={handleSearch} className="d-flex gap-2">
+        <Button
+          label="جستجو"
+          icon="pi pi-search"
+          severity="primary"
+          type="submit"
         />
-      </IconField>
+        <IconField iconPosition="left">
+          <InputText
+            type="search"
+            value={globalFilter}
+            onChange={(e) => {
+              const newValue = e.target.value;
+              if (newValue === "") {
+                setGlobalFilter("");
+                const searchParam = "";
+                setLoading(true);
+                axios.get(
+                  `https://cancerreg.ir/api/v1/patient/patient-info/?${searchParam}page=${
+                    page + 1
+                  }&page_size=${rows}`
+                )
+                  .then(response => {
+                    const patients = response.data.data.results;
+                    setProducts(patients);
+                    setCount(response.data?.data?.count || 0);
+                  })
+                  .finally(() => {
+                    setLoading(false);
+                  });
+              } else {
+                setGlobalFilter(newValue);
+              }
+            }}
+            placeholder="جستجوی کد ملی"
+            style={{ textAlign: "right" }}
+          />
+        </IconField>
+      </form>
     </div>
   );
 
@@ -177,7 +205,7 @@ export default function ColumnToggleDemo() {
             scrollable
             scrollHeight="flex"
             breakpoint="960px"
-            tableStyle={{ minWidth: '50rem' }}
+            tableStyle={{ minWidth: "50rem" }}
           >
             {visibleColumns.map((col, index) => (
               <Column
@@ -203,9 +231,9 @@ export default function ColumnToggleDemo() {
                 className="p-2"
               />
             ))}
-            <Column 
-              header="جزئیات" 
-              body={detailsTemplate} 
+            <Column
+              header="جزئیات"
+              body={detailsTemplate}
               className="p-2 sticky-column"
               style={{ width: "100px" }}
             />
