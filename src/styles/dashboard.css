@@ -5,14 +5,40 @@
 
 #sidebar {
   background: white;
-  min-width: 60px;
-  max-width: 60px;
+  min-width: 150px;
+  max-width: 150px;
   transition: all 0.3s ease-in-out;
+}
+
+#sidebar:not(.expand) .sidebar-nav a,
+#sidebar:not(.expand) .sidebar-nav i {
+  justify-content: center;
+  text-align: center;
+}
+
+#sidebar:not(.expand) .sidebar-link span,
+#sidebar:not(.expand) .sidebar-link img {
+  display: none;
+}
+
+#sidebar:not(.expand) .sidebar-logo {
+  text-align: center;
+}
+
+#sidebar:not(.expand) .sidebar-dropdown {
+  display: none;
 }
 
 #sidebar.expand {
   min-width: 240px;
   max-width: 240px;
+}
+
+/* Adjust toggle button position */
+#sidebar:not(.expand) .toggle-btn {
+  position: absolute;
+  right: 0;
+  top: 0;
 }
 
 .main-content {
@@ -41,4 +67,15 @@
     margin-right: 0 !important;
     width: 100% !important;
   }
+}
+
+#sidebar:not(.expand) .sidebar-header {
+  padding: 0.5rem !important; /* Smaller padding when collapsed */
+  text-align: center;
+  width: 100%;
+  display: block;
+}
+
+#sidebar.expand .sidebar-header {
+  padding: 1rem !important; /* Normal padding when expanded */
 } 

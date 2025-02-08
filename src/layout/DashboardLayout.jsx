@@ -52,13 +52,19 @@ function DashboardLayout() {
         id="sidebar"
         className={isExpanded ? "expand shadow-sm h-full" : "shadow-sm"}
       >
-        <div className="d-flex align-items-center justify-content-center">
+        <div className="d-flex align-items-center justify-content-center position-relative">
           <div className="sidebar-logo p-3">
-            <h5 className="text-primary">پزشک</h5>
-            <h5 className="text-dark text-nowrap">دکتر حمید رضوانی</h5>
+            {isExpanded ? (
+              <>
+                <h5 className="text-primary">پزشک</h5>
+                <h5 className="text-dark text-nowrap">دکتر حمید رضوانی</h5>
+              </>
+            ) : (
+              <h5 className="text-primary">دکتر رضوانی</h5>
+            )}
           </div>
           <button
-            className="toggle-btn p-3 ehgith"
+            className="toggle-btn p-3"
             type="button"
             onClick={handleToggle}
           >
@@ -67,7 +73,7 @@ function DashboardLayout() {
         </div>
         <ul className="sidebar-nav">
           <a
-            className="sidebar-header p-4 cursor-pointer"
+            className="sidebar-header cursor-pointer"
             style={{ cursor: "pointer" }}
             href="/dashboard"
           >
@@ -82,7 +88,7 @@ function DashboardLayout() {
               onClick={() => toggleSubmenu("patients")}
               aria-expanded={activeSubmenu === "patients"}
             >
-              <i className="fst-normal d-flex align-items-center justify-content-between p-2">
+              <i className="fst-normal d-flex align-items-center justify-content-between ">
                 بیماران
                 <span>
                   <img src="/images/dropdown.svg" alt="dd" />
@@ -124,7 +130,7 @@ function DashboardLayout() {
               onClick={() => toggleSubmenu("reports")}
               aria-expanded={activeSubmenu === "reports"}
             >
-              <i className="fst-normal d-flex align-items-center p-2 justify-content-between">
+              <i className="fst-normal d-flex align-items-center justify-content-between">
                 <> گزارش</>
                 <span>
                   <img src="/images/dropdown.svg" alt="dd" />
@@ -154,7 +160,7 @@ function DashboardLayout() {
               onClick={() => toggleSubmenu("users")}
               aria-expanded={activeSubmenu === "users"}
             >
-              <i className="fst-normal d-flex align-items-center justify-content-between p-2">
+              <i className="fst-normal d-flex align-items-center justify-content-between">
                 کاربران <span className="">و دسترسی‌ها</span>
                 <span>
                   <img src="/images/dropdown.svg" alt="dd" />
@@ -169,7 +175,7 @@ function DashboardLayout() {
               <li className="sidebar-item minheight d-flex">
                 <a
                   href="/dashboard/user-management"
-                  className="sidebar-link w-100  d-flex w-100 gap-3"
+                  className="sidebar-link w-100 d-flex w-100 gap-3"
                 >
                   <img src="/images/users.svg" alt="user" />
                   <span>مدیریت کاربران</span>{" "}
@@ -186,7 +192,7 @@ function DashboardLayout() {
               onClick={() => toggleSubmenu("definitions")}
               aria-expanded={activeSubmenu === "definitions"}
             >
-              <i className="fst-normal d-flex align-items-center justify-content-between p-2">
+              <i className="fst-normal d-flex align-items-center justify-content-between">
                 <div>
                   تعاریف <span>پایه</span>
                 </div>
