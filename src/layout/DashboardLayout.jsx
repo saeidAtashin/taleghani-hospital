@@ -5,16 +5,36 @@ import { useLocalStorage } from "../hooks/useLocalStorage";
 
 function DashboardLayout() {
   const { getItem, setItem } = useLocalStorage("isExpanded");
+  const [isMobileView, setIsMobileView] = useState(window.innerWidth < 768);
   const [isExpanded, setIsExpanded] = useState(
-    getItem() !== undefined ? getItem() : true
+    window.innerWidth < 768 ? false : getItem() !== undefined ? getItem() : true
   );
 
+  // Separate resize handler from localStorage effect
   useEffect(() => {
-    setItem(isExpanded);
-  }, [isExpanded]);
+    const handleResize = () => {
+      const isMobile = window.innerWidth < 768;
+      setIsMobileView(isMobile);
+      if (isMobile) {
+        setIsExpanded(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize();
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []); // Remove getItem dependency
+
+  // Separate localStorage effect for desktop only
+  useEffect(() => {
+    if (!isMobileView && isExpanded !== undefined) {
+      setItem(isExpanded);
+    }
+  }, [isExpanded, isMobileView, setItem]);
 
   const handleToggle = () => {
-    setIsExpanded(!isExpanded);
+    setIsExpanded(prev => !prev);
   };
 
   // State to track which submenu is active

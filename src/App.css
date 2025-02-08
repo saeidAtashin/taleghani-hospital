@@ -366,7 +366,7 @@ select,
   color: #000000 !important;
 }
 
-.p-selectable-row{
+.p-selectable-row {
   height: auto !important;
 }
 
@@ -376,8 +376,8 @@ select,
   box-shadow: none !important;
 }
 
- .p-connected-overlay-enter-done{
-background-color: transparent;
+.p-connected-overlay-enter-done {
+  background-color: transparent;
 }
 
 .p-cascadeselect-panel .p-cascadeselect-items .p-cascadeselect-sublist {
@@ -387,8 +387,6 @@ background-color: transparent;
   border-radius: 4px;
   position: absolute;
   right: 200%;
-
-
 }
 
 .p-cascadeselect-item-content {
@@ -401,17 +399,15 @@ background-color: transparent;
   flex-grow: 1; /* Allows the text to take up remaining space */
 }
 
-.p-cascadeselect-item-content svg{
+.p-cascadeselect-item-content svg {
   transform: rotate(180deg);
   display: block;
 }
 
-.p-cascadeselect-item-content span{
+.p-cascadeselect-item-content span {
   display: block;
 }
 
-.p-force-width span{
-
+.p-force-width span {
   width: 400px !important;
-
 }
