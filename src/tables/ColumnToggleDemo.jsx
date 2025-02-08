@@ -107,66 +107,126 @@ export default function ColumnToggleDemo() {
     </div>
   );
 
+  useEffect(() => {
+    const styleSheet = document.createElement("style");
+    styleSheet.innerText = `
+      .table-responsive {
+        position: relative;
+        overflow-x: auto;
+      }
+      
+      .p-datatable-wrapper {
+        overflow-x: auto !important;
+      }
+
+      .sticky-column {
+        position: sticky !important;
+        right: 0 !important;
+        z-index: 1 !important;
+      }
+
+      .sticky-column > * {
+        position: sticky !important;
+        right: 0 !important;
+      }
+
+      .p-datatable-thead .sticky-column {
+        z-index: 2 !important;
+      }
+
+      .sticky-column::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: -1px;
+        height: 100%;
+        width: 1px;
+        background: #dee2e6;
+      }
+    `;
+    document.head.appendChild(styleSheet);
+    return () => {
+      document.head.removeChild(styleSheet);
+    };
+  }, []);
+
   return (
-    <div className="card screen-width p-5" style={{ direction: "rtl" }}>
+    <div className="card screen-width p-3 p-md-5" style={{ direction: "rtl" }}>
       <HeaderName HeaderName="لیست بیماران" />
       <Button
         label="افزودن بیمار جدید"
         icon="pi pi-plus"
         severity="primary"
         onClick={() => navigate("/dashboard/register-patient")}
-        className="rounded-3 w-25 mb-4"
+        className="rounded-3 w-100 w-md-25 mb-4"
       />
       {loading ? (
         <div>در حال دریافت اطلاعات ... </div>
       ) : (
-        <DataTable
-          stripedRows
-          dir="rtl"
-          ref={dt}
-          value={products}
-          dataKey="uid"
-          rows={rows}
-          header={headerNew}
-        >
-          {visibleColumns.map((col, index) => (
-            <Column
-              key={index}
-              field={col.field}
-              header={col.header}
-              sortable
-              body={(rowData) => {
-                if (
-                  col.field === "disease.last_reference" ||
-                  col.field === "disease.first_reference" ||
-                  col.field === "created_at"
-                ) {
-                  return dateTemplate(rowData, col.field);
-                }
+        <div className="table-responsive">
+          <DataTable
+            stripedRows
+            dir="rtl"
+            ref={dt}
+            value={products}
+            dataKey="uid"
+            rows={rows}
+            header={headerNew}
+            resizableColumns
+            showGridlines
+            scrollable
+            scrollHeight="flex"
+            breakpoint="960px"
+            tableStyle={{ minWidth: '50rem' }}
+          >
+            {visibleColumns.map((col, index) => (
+              <Column
+                key={index}
+                field={col.field}
+                header={col.header}
+                sortable
+                body={(rowData) => {
+                  if (
+                    col.field === "disease.last_reference" ||
+                    col.field === "disease.first_reference" ||
+                    col.field === "created_at"
+                  ) {
+                    return dateTemplate(rowData, col.field);
+                  }
 
-                const fieldValue = col.field
-                  .split(".")
-                  .reduce((o, key) => (o ? o[key] : null), rowData);
-                return fieldValue ?? "-";
-              }}
-              style={{ textAlign: "right", direction: "rtl" }}
+                  const fieldValue = col.field
+                    .split(".")
+                    .reduce((o, key) => (o ? o[key] : null), rowData);
+                  return fieldValue ?? "-";
+                }}
+                style={{ textAlign: "right", direction: "rtl" }}
+                className="p-2"
+              />
+            ))}
+            <Column 
+              header="جزئیات" 
+              body={detailsTemplate} 
+              className="p-2 sticky-column"
+              style={{ width: "100px" }}
             />
-          ))}
-          <Column header="جزئیات" body={detailsTemplate} />
-        </DataTable>
+          </DataTable>
+        </div>
       )}
-      <Paginator
-        dir="ltr"
-        first={first}
-        rows={rows}
-        totalRecords={count}
-        rowsPerPageOptions={[10, 20, 30]}
-        onPageChange={(event) => {
-          setFirst(event.first);
-          setPage(event.page);
-          setRows(event.rows);
-        }}
-      />
+      <div className="overflow-auto">
+        <Paginator
+          dir="ltr"
+          first={first}
+          rows={rows}
+          totalRecords={count}
+          rowsPerPageOptions={[10, 20, 30]}
+          onPageChange={(event) => {
+            setFirst(event.first);
+            setPage(event.page);
+            setRows(event.rows);
+          }}
+          className="mt-3"
+        />
+      </div>
     </div>
   );
 }
