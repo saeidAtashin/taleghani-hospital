@@ -134,7 +134,7 @@ const PatientDiseaseMap = () => {
           ))}
         </Accordion>
       ) : (
-        <p>Loading...</p>
+        <p>اطلاعاتی ثبت نشده است.</p>
       )}
 
       {showAdd && (
