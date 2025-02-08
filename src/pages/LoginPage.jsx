@@ -1,145 +1,173 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
-import "primereact/resources/themes/saga-blue/theme.css"; // Theme CSS
-import "primereact/resources/primereact.min.css"; // PrimeReact CSS
-import "primeicons/primeicons.css"; // PrimeIcons CSS
 import axios from "axios";
 import { toast } from "react-toastify";
 
+// CSS imports moved to a separate style file or main entry point
+import "./LoginPage.css";
+
 const LoginPage = () => {
   const navigate = useNavigate();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState({ username: "", password: "" });
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({ username: false, password: false });
 
+  // Memoized validation function
+  const validateForm = useMemo(() => {
+    return {
+      username: !formData.username.trim(),
+      password: !formData.password.trim(),
+    };
+  }, [formData.username, formData.password]);
+
+  // Memoized change handlers
+  const handleInputChange = useCallback((e) => {
+    const { id, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+    setErrors((prev) => ({
+      ...prev,
+      [id]: false,
+    }));
+  }, []);
+
+  const togglePasswordVisibility = useCallback(() => {
+    setPasswordVisible((prev) => !prev);
+  }, []);
+
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-    const validationErrors = {
-      username: !username.trim(),
-      password: !password.trim(),
-    };
+    const validationErrors = validateForm;
     setErrors(validationErrors);
 
-    // Prevent submission if any field is empty
     if (Object.values(validationErrors).some((error) => error)) {
       return;
     }
 
     setLoading(true);
     try {
-      const response = await axios.post(
+      await axios.post(
         "https://cancerreg.ir/api/v1/user/auth/login/",
-        {
-          username,
-          password,
-        }
+        formData
       );
       navigate("/dashboard");
     } catch (error) {
       toast.warn(error?.response?.data?.errors[0]?.message);
-      // console.error(
-        // "Error submitting data:",
-      //   error?.response?.data?.errors[0]?.message
-      // );
     } finally {
       setLoading(false);
     }
   };
 
+  // Memoized form content
+  const formContent = useMemo(
+    () => (
+      <form onSubmit={handleFormSubmit} className="login-form">
+        <div className="p-field mb-3">
+          <label htmlFor="username" className="form-label">
+            نام کاربری
+          </label>
+          <InputText
+            id="username"
+            value={formData.username}
+            onChange={handleInputChange}
+            placeholder="نام کاربری"
+            className={`w-100 ${errors.username ? "p-invalid" : ""}`}
+            aria-label="نام کاربری"
+            disabled={loading}
+          />
+          {errors.username && (
+            <small className="p-error">نام کاربری نمی‌تواند خالی باشد</small>
+          )}
+        </div>
+        <div className="p-field mb-4">
+          <label htmlFor="password" className="form-label">
+            رمز عبور
+          </label>
+          <div className="p-inputgroup">
+            <InputText
+              id="password"
+              type={passwordVisible ? "text" : "password"}
+              value={formData.password}
+              onChange={handleInputChange}
+              placeholder="رمز عبور"
+              className={`w-100 ${errors.password ? "p-invalid" : ""}`}
+              aria-label="رمز عبور"
+              disabled={loading}
+            />
+            <Button
+              type="button"
+              icon={`pi ${passwordVisible ? "pi-eye-slash" : "pi-eye"}`}
+              className="p-button-secondary"
+              onClick={togglePasswordVisibility}
+              aria-label={
+                passwordVisible ? "پنهان کردن رمز عبور" : "نمایش رمز عبور"
+              }
+              disabled={loading}
+            />
+          </div>
+          {errors.password && (
+            <small className="p-error">رمز عبور نمی‌تواند خالی باشد</small>
+          )}
+        </div>
+        <Button
+          label="ورود"
+          icon="pi pi-sign-in"
+          type="submit"
+          className="w-100"
+          loading={loading}
+          disabled={loading}
+        />
+      </form>
+    ),
+    [
+      formData,
+      errors,
+      passwordVisible,
+      loading,
+      handleInputChange,
+      togglePasswordVisibility,
+    ]
+  );
+
   return (
-    <>
-      <section className="vh-100 vw-100 bg-image overflow-hidden">
-        <div className="container-fluid h-custom w-100">
-          <div className="row d-flex justify-content-between align-items-center h-100 w-100">
-            <div className="col-md-6 col-lg-6 col-xl-6">
-              <div className="mt-4 w-50 mx-auto">
-                <h3 className="fw-bold fs-20">ورود به پنل</h3>
-              </div>
-              <div className="w-50 mx-auto">
-                <form onSubmit={handleFormSubmit}>
-                  <div className="p-field mb-3">
-                    <label htmlFor="username" className="form-label">
-                      نام کاربری
-                    </label>
-                    <InputText
-                      id="username"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      placeholder="نام کاربری"
-                      className={`w-100 ${errors.username ? "p-invalid" : ""}`}
-                    />
-                    {errors.username && (
-                      <small className="p-error">
-                        نام کاربری نمی‌تواند خالی باشد
-                      </small>
-                    )}
-                  </div>
-                  <div className="p-field mb-4">
-                    <label htmlFor="password" className="form-label">
-                      رمز عبور
-                    </label>
-                    <div className="p-inputgroup">
-                      <InputText
-                        id="password"
-                        type={passwordVisible ? "text" : "password"}
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="رمز عبور"
-                        className={`w-100 ${
-                          errors.password ? "p-invalid" : ""
-                        }`}
-                      />
-                      <Button
-                        type="button"
-                        icon={`pi ${
-                          passwordVisible ? "pi-eye-slash" : "pi-eye"
-                        }`}
-                        className="p-button-secondary"
-                        onClick={() => setPasswordVisible(!passwordVisible)}
-                      />
-                    </div>
-                    {errors.password && (
-                      <small className="p-error">
-                        رمز عبور نمی‌تواند خالی باشد
-                      </small>
-                    )}
-                  </div>
-                  <Button
-                    label="ورود"
-                    icon="pi pi-sign-in"
-                    type="submit"
-                    className="w-100"
-                    loading={loading}
-                  />
-                </form>
+    <div className="login-container">
+      <section className="login-section">
+        <div className="container-fluid">
+          <div className="row h-100">
+            <div className="col-12 col-md-6 login-form-container">
+              <div className="login-form-wrapper">
+                <h3 className="login-title">ورود به پنل</h3>
+                {formContent}
               </div>
             </div>
-            <div className="col-md-6 col-lg-6 col-xl-5 position-relative">
+            <div className="col-12 col-md-6 login-image-container d-none d-md-block">
               <img
                 src="./images/login.png"
-                className="w-100 d-none d-md-block"
-                alt="Sample"
+                className="login-image"
+                alt="تصویر ورود"
+                loading="lazy"
               />
-              <div className="d-flex flex-column align-items-center position-absolute top-50 start-50 translate-middle primary-300 p-5 rounded d-none d-md-block">
-                <div className="bg-light p-5 mb-4 rounded-circle" />
-                <h1 className="text-light text-nowrap">بیمارستان طالقانی</h1>
-                <h5 className="text-light text-nowrap">بخش خون و آنکولوژی</h5>
+              <div className="hospital-info">
+                <div className="hospital-logo" />
+                <h1>بیمارستان طالقانی</h1>
+                <h5>بخش خون و آنکولوژی</h5>
               </div>
             </div>
           </div>
         </div>
-        <div className="responsive-bottom d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 bg-primary">
-          <div className="text-white mb-0">
-            Copyright © 2020. All rights reserved.
+        <footer className="login-footer">
+          <div className="copyright">
+            Copyright © {new Date().getFullYear()}. All rights reserved.
           </div>
-        </div>
+        </footer>
       </section>
-    </>
+    </div>
   );
 };
 
-export default LoginPage;
+export default React.memo(LoginPage);
