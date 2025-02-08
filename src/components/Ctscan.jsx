@@ -23,25 +23,30 @@ const Ctscan = ({ setShowAzmayeshPAge, uidScan }) => {
   const [put, setPut] = useState(false);
 
   useEffect(() => {
-    // Fetch existing data when component mounts
     const fetchData = async () => {
       try {
         const response = await axios.get(
           `https://cancerreg.ir/api/v1/records/ctscan/${uidScan}/`
         );
         const { data } = response.data;
-        if (!date) return "-"; // or return null, or any default value
 
         if (data) {
-          const persianDate = new Date(data.date)
-            .toLocaleDateString("fa-IR")
-            .replace(/\//g, "-");
+          let persianDate = null;
+          if (data.date) {
+            try {
+              persianDate = new Date(data.date)
+                .toLocaleDateString("fa-IR")
+                .replace(/\//g, "-");
+            } catch (error) {
+              persianDate = null;
+            }
+          }
 
           setFormData({
             patient_uid: data.patient.uid,
-            date: data.date,
+            date: data.date || "",
             density: data.density,
-            sizes: data.involvements_list.length
+            sizes: data.involvements_list?.length
               ? data.involvements_list
               : [{ size: "", site: "" }],
             description: data.description || "",
