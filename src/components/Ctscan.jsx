@@ -30,6 +30,7 @@ const Ctscan = ({ setShowAzmayeshPAge, uidScan }) => {
           `https://cancerreg.ir/api/v1/records/ctscan/${uidScan}/`
         );
         const { data } = response.data;
+        if (!date) return "-"; // or return null, or any default value
 
         if (data) {
           const persianDate = new Date(data.date)
