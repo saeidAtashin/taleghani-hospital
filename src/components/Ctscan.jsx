@@ -56,6 +56,7 @@ const Ctscan = ({ setShowAzmayeshPAge, uidScan }) => {
 
     fetchData();
   }, [uidScan]);
+
   const handleDateChange = (date) => {
     if (date) {
       const gregorianDate = date.convert("gregorian").toDate();
@@ -109,7 +110,7 @@ const Ctscan = ({ setShowAzmayeshPAge, uidScan }) => {
       ...rest,
       involvements,
     };
-    if (put) {
+    if (uidScan) {
       try {
         await axios.put(
           `https://cancerreg.ir/api/v1/records/ctscan/${uidScan}/`,
