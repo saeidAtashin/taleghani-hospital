@@ -55,9 +55,6 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
   };
 
   const tasvirbardatiCellClick = (rowData, allrow) => {
-    console.log("rowData", rowData);
-    console.log("allrow", allrow);
-    console.log("rowDataTransfer", rowDataTransfer?.data?.uid);
     const transferredRecord = rowData?.records?.find(
       (record) => record?.uid === rowDataTransfer?.data?.uid
     );

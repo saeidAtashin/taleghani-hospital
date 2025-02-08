@@ -45,13 +45,11 @@ const Ctscan = ({ setShowAzmayeshPAge, uidScan }) => {
               : [{ size: "", site: "" }],
             description: data.description || "",
           });
-          setPut(true); // Enable PUT updates only after successful submission
+          setPut(true);
           setSelectedDate(persianDate);
-          // setIsLoaded(true);
         }
       } catch (error) {
-        setPut(false); // Enable PUT updates only after successful submission
-        // console.error("Error fetching data:", error);
+        setPut(false);
       }
     };
 
@@ -124,7 +122,6 @@ const Ctscan = ({ setShowAzmayeshPAge, uidScan }) => {
         setloadingBtn(false);
 
         toast.warning("خطایی رخ داده است");
-        // console.error(error);
       }
     } else {
       try {
@@ -138,7 +135,6 @@ const Ctscan = ({ setShowAzmayeshPAge, uidScan }) => {
       } catch (error) {
         setloadingBtn(false);
         toast.warning("خطایی رخ داده است.");
-        // console.error(error);
       }
     }
   };
@@ -159,7 +155,7 @@ const Ctscan = ({ setShowAzmayeshPAge, uidScan }) => {
             placeholder="تاریخ را انتخاب کنید"
             className=" p-2 border rounded "
             inputClass="w-full p-2 text-end w-100 border rounded"
-            position="bottom-right" // Change this to control the position
+            position="bottom-right"
           />
         </div>
       </Form.Group>
