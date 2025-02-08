@@ -121,8 +121,8 @@ const StepperBootstrap = () => {
       <div className="steps-container">
         <div className="steps">
           {[...Array(3)].map((_, i) => (
-            <div 
-              className={`step-item mt-4 ${activeIndex === i ? 'active' : ''}`}
+            <div
+              className={`step-item mt-4 ${activeIndex === i ? "active" : ""}`}
               key={i}
             >
               <button
@@ -152,35 +152,32 @@ const StepperBootstrap = () => {
         </div>
       </div>
       <div className="steps-navigation d-md-none">
-        <button 
-          className="nav-btn" 
-          onClick={() => setActiveIndex(prev => Math.max(0, prev - 1))}
+        <button
+          className="nav-btn"
+          onClick={() => setActiveIndex((prev) => Math.max(0, prev - 1))}
           disabled={activeIndex === 0}
         >
-          <img 
-            src="/images/dropdown.svg" 
-            alt="previous" 
+          <img
+            src="/images/dropdown.svg"
+            alt="previous"
             className="rotate-180"
           />
         </button>
         <div className="step-indicators">
           {[...Array(3)].map((_, i) => (
-            <div 
+            <div
               key={i}
-              className={`step-dot ${activeIndex === i ? 'active' : ''}`}
+              className={`step-dot ${activeIndex === i ? "active" : ""}`}
               onClick={() => setActiveIndex(i)}
             />
           ))}
         </div>
-        <button 
-          className="nav-btn" 
-          onClick={() => setActiveIndex(prev => Math.min(2, prev + 1))}
+        <button
+          className="nav-btn"
+          onClick={() => setActiveIndex((prev) => Math.min(2, prev + 1))}
           disabled={activeIndex === 2}
         >
-          <img 
-            src="/images/dropdown.svg" 
-            alt="next"
-          />
+          <img src="/images/dropdown.svg" alt="next" />
         </button>
       </div>
       <div className="accordion shadow p-2 pb-5 mb-5" id="accordionExample">
