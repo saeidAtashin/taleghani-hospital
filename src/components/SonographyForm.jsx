@@ -131,8 +131,12 @@ const SonographyForm = ({ setShowAzmayeshPAge, badgeColor, uidScan }) => {
           formattedDataInPut
         );
         toast.success("تغییرات ذخیره شد");
+        setloadingBtn(false);
+        setShowAzmayeshPAge("home");
       } catch (error) {
         toast.warning("خطایی رخ داده است");
+        setloadingBtn(false);
+
         // console.error(error);
       }
     } else {
