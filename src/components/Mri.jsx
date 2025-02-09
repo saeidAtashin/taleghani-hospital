@@ -48,7 +48,7 @@ const Mri = ({ setShowAzmayeshPAge, uidScan }) => {
             signal: data.signal,
             sizes: data.involvements_list?.length
               ? data.involvements_list
-              : [{ size: "", site: "" }],
+              : [{ size: undefined, site: undefined }],
             description: data.description || "",
           });
           setPut(true);
@@ -102,11 +102,14 @@ const Mri = ({ setShowAzmayeshPAge, uidScan }) => {
     e.preventDefault();
     setloadingBtn(true);
 
-    const involvements = formData.sizes.map((item) => ({
-      site: item.site,
-      size: item.size,
-      description: item.description,
-    }));
+    // Filter out empty involvements
+    const validInvolvements = formData.sizes
+      .filter((item) => item.site && item.size) // Only include if both site and size exist
+      .map((item) => ({
+        site: item.site,
+        size: item.size,
+        description: item.description,
+      }));
 
     const formattedData = {
       patient_uid: formData.patient_uid,
@@ -114,7 +117,7 @@ const Mri = ({ setShowAzmayeshPAge, uidScan }) => {
       description: formData.description,
       batch_uid: formData.batch_uid,
       signal: formData.signal,
-      involvements,
+      involvements: validInvolvements, // Always send array, even if empty
     };
 
     const formattedDataInPut = {
@@ -123,7 +126,7 @@ const Mri = ({ setShowAzmayeshPAge, uidScan }) => {
       description: formData.description,
       batch_uid: formData.batch_uid,
       signal: formData.signal,
-      involvements,
+      involvements: validInvolvements, // Always send array, even if empty
     };
 
     if (put) {
@@ -132,15 +135,12 @@ const Mri = ({ setShowAzmayeshPAge, uidScan }) => {
           `https://cancerreg.ir/api/v1/records/mri/${uidScan}/`,
           formattedDataInPut
         );
-        setloadingBtn(false);
-
         toast.success("تغییرات ذخیره شد");
+        setloadingBtn(false);
         setShowAzmayeshPAge("home");
       } catch (error) {
         setloadingBtn(false);
-
         toast.warning("خطایی رخ داده است");
-        // console.error(error);
       }
     } else {
       try {
@@ -154,7 +154,6 @@ const Mri = ({ setShowAzmayeshPAge, uidScan }) => {
       } catch (error) {
         setloadingBtn(false);
         toast.warning("خطایی رخ داده است.");
-        // console.error(error);
       }
     }
   };

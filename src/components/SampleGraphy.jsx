@@ -19,6 +19,7 @@ const SampleGraphy = ({ setShowAzmayeshPAge, uidScan }) => {
   });
   const [selectedDate, setSelectedDate] = useState(null);
   const [put, setPut] = useState(false);
+  const [loadingBtn, setloadingBtn] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -81,8 +82,8 @@ const SampleGraphy = ({ setShowAzmayeshPAge, uidScan }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setloadingBtn(true);
     const { patient_uid, order_description, ...rest } = formData;
-    //
 
     const formattedDataInPost = {
       ...rest,
@@ -93,16 +94,34 @@ const SampleGraphy = ({ setShowAzmayeshPAge, uidScan }) => {
       patient_uid,
       ...rest,
     };
+
     if (put) {
       try {
-        await axios.put(
+        const response = await axios.put(
           `https://cancerreg.ir/api/v1/records/other-graphy/${uidScan}/`,
           formattedDataInPut
         );
-        toast.success("تغییرات ذخیره شد");
+
+        if (response.status >= 200 || response.status < 400) {
+          toast.success("تغییرات ذخیره شد");
+          setShowAzmayeshPAge("home");
+        } else {
+          toast.warning("خطا در ذخیره تغییرات");
+        }
       } catch (error) {
-        toast.warning("خطایی رخ داده است");
-        // console.error(error);
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          toast.error(`خطا: ${error.response.status}`);
+        } else if (error.request) {
+          // The request was made but no response was received
+          toast.error("خطا در برقراری ارتباط با سرور");
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          toast.warning("خطایی رخ داده است");
+        }
+      } finally {
+        setloadingBtn(false);
       }
     } else {
       try {
@@ -110,15 +129,27 @@ const SampleGraphy = ({ setShowAzmayeshPAge, uidScan }) => {
           "https://cancerreg.ir/api/v1/records/other-graphy/",
           formattedDataInPost
         );
-        setloadingBtn(false);
 
-        toast.success("ثبت شد");
-        setShowAzmayeshPAge("home");
+        if (response.status === 201) {
+          toast.success("ثبت شد");
+          setShowAzmayeshPAge("home");
+        } else {
+          toast.warning("خطا در ثبت اطلاعات");
+        }
       } catch (error) {
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          toast.error(`خطا: ${error.response.status}`);
+        } else if (error.request) {
+          // The request was made but no response was received
+          toast.error("خطا در برقراری ارتباط با سرور");
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          toast.warning("خطایی رخ داده است");
+        }
+      } finally {
         setloadingBtn(false);
-
-        toast.warning("خطایی رخ داده است");
-        // console.error(error);
       }
     }
   };
@@ -164,7 +195,7 @@ const SampleGraphy = ({ setShowAzmayeshPAge, uidScan }) => {
           </Form.Group>
         </Col>
       </Row>
-      <Button type="submit" variant="primary">
+      <Button type="submit" variant="primary" disabled={loadingBtn}>
         تایید و ثبت نتایج
       </Button>
     </Form>
