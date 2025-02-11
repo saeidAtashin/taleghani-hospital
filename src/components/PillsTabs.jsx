@@ -14,6 +14,8 @@ import persian_fa from "react-date-object/locales/persian_fa";
 import { useParams } from "react-router-dom";
 import HiddenInputsModal from "./HiddenInputsModal";
 import { Accordion, AccordionTab } from "primereact/accordion";
+import { ConfirmDialog } from "primereact/confirmdialog";
+import { Button } from "primereact/button";
 
 const PillsTabs = ({
   setShowAzmayeshPAge,
@@ -51,6 +53,9 @@ const PillsTabs = ({
   const [isHiddenInputsLoaded, setIsHiddenInputsLoaded] = useState(false);
 
   const [isTestDetailsLoading, setIsTestDetailsLoading] = useState(false);
+
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [testToDelete, setTestToDelete] = useState(null);
 
   useEffect(() => {
     setvalueinja(Number(kValue) / Number(landaValue));
@@ -466,6 +471,34 @@ const PillsTabs = ({
     return viewTestData.groupedTests[tabName]?.length || 0;
   };
 
+  const handleDeleteTest = async (uid) => {
+    try {
+      const response = await axios.delete(
+        `https://cancerreg.ir/api/v1/tests/test/${uid}/`
+      );
+      if (response.status >= 200 && response.status < 400) {
+        toast.success("آزمایش با موفقیت حذف شد");
+        if (viewTestData) {
+          const activeTabData = tabsNew?.find((tab) => tab.uid === activeTab);
+          if (activeTabData?.name) {
+            const updatedTests = viewTestData.groupedTests[
+              activeTabData.name
+            ].filter((test) => test.uid !== uid);
+            setViewTestData((prev) => ({
+              ...prev,
+              groupedTests: {
+                ...prev.groupedTests,
+                [activeTabData.name]: updatedTests,
+              },
+            }));
+          }
+        }
+      }
+    } catch (error) {
+      toast.error("خطا در حذف آزمایش");
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="d-flex justify-content-center align-items-center p-5">
@@ -514,11 +547,32 @@ const PillsTabs = ({
           {/* Show previous test results in separate accordions */}
           {viewMode && getTestsForCurrentTab().length > 0 && (
             <div className="mb-4">
+              <ConfirmDialog
+                visible={showDeleteConfirm}
+                onHide={() => setShowDeleteConfirm(false)}
+                message="آیا از حذف این آزمایش اطمینان دارید؟"
+                header="تایید حذف"
+                icon="pi pi-exclamation-triangle"
+                accept={() => {
+                  if (testToDelete) {
+                    handleDeleteTest(testToDelete);
+                    setTestToDelete(null);
+                  }
+                  setShowDeleteConfirm(false);
+                }}
+                reject={() => {
+                  setTestToDelete(null);
+                  setShowDeleteConfirm(false);
+                }}
+                acceptLabel="بله"
+                rejectLabel="خیر"
+              />
+
               {getTestsForCurrentTab().map((test) => (
                 <Accordion key={test.uid} className="mb-3">
                   <AccordionTab
                     header={
-                      <div className="d-flex align-items-center justify-content-between">
+                      <div className="d-flex align-items-center justify-content-between w-100">
                         <div className="d-flex align-items-center">
                           <span className="me-2">نتیجه آزمایش</span>
                           <span
@@ -531,12 +585,15 @@ const PillsTabs = ({
                               : "تکمیل شده"}
                           </span>
                         </div>
-                        {/* Add test date if available */}
-                        {test.date && (
-                          <small className="text-muted">
-                            {new Date(test.date).toLocaleDateString("fa-IR")}
-                          </small>
-                        )}
+                        <Button
+                          icon="pi pi-trash"
+                          className="p-button-danger p-button-text"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setTestToDelete(test.uid);
+                            setShowDeleteConfirm(true);
+                          }}
+                        />
                       </div>
                     }
                   >
