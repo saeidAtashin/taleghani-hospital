@@ -103,32 +103,29 @@ const SonographyForm = ({ setShowAzmayeshPAge, badgeColor, uidScan }) => {
     const involvements = formData.sizes.map((item) => ({
       site: item.site,
       size: item.size,
-      // You can include description if needed
-      // description: item.description,
     }));
 
-    const formattedData = {
+    // Create base data object
+    const baseData = {
       patient_uid: formData.patient_uid,
       date: formData.date,
       description: formData.description,
-      birads: formData.birads,
-      echogenicity: formData.echogenicity,
       involvements,
     };
 
-    const formattedDataInPut = {
-      patient_uid: formData.patient_uid,
-      date: formData.date,
-      description: formData.description,
-      birads: formData.birads,
-      echogenicity: formData.echogenicity,
-      involvements,
-    };
+    // Only add birads and echogenicity if they are selected
+    if (formData.birads) {
+      baseData.birads = formData.birads;
+    }
+    if (formData.echogenicity) {
+      baseData.echogenicity = formData.echogenicity;
+    }
+
     if (put) {
       try {
         await axios.put(
           `https://cancerreg.ir/api/v1/records/sonography/${uidScan}/`,
-          formattedDataInPut
+          baseData
         );
         toast.success("تغییرات ذخیره شد");
         setloadingBtn(false);
@@ -136,28 +133,21 @@ const SonographyForm = ({ setShowAzmayeshPAge, badgeColor, uidScan }) => {
       } catch (error) {
         toast.warning("خطایی رخ داده است");
         setloadingBtn(false);
-
-        // console.error(error);
       }
     } else {
       try {
         const response = await axios.post(
           "https://cancerreg.ir/api/v1/records/sonography/",
-          formattedData
+          baseData
         );
         toast.success("ثبت شد");
-
-        // Reset form data and selected date
         setloadingBtn(false);
-
         setFormData(initialFormData);
         setSelectedDate(null);
         setShowAzmayeshPAge("home");
       } catch (error) {
         setloadingBtn(false);
-
         toast.warning("خطایی رخ داده است.");
-        // console.error(error);
       }
     }
   };

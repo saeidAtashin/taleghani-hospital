@@ -10,16 +10,24 @@ import SampleGraphy from "./SampleGraphy";
 
 const PillsTabsTasvir = ({ dataOfTable, allrow, setShowAzmayeshPAge }) => {
   const getTabBadgeColor = (tab) => {
-    const matchingRow = allrow?.records?.find(
-      (row) => row.record_type === tab.eventKey
-    );
-    if (matchingRow && matchingRow.state === "IN_PROGRESS") {
-      return "#ff9008"; // Orange
-    }
-    if (matchingRow && matchingRow.state === "DONE") {
-      return "#3ff369"; // Green
+    if (Array.isArray(dataOfTable)) {
+      const record = dataOfTable.find(record => record.record_type === tab.eventKey);
+      if (record?.state === "IN_PROGRESS") {
+        return "#ff9008"; // Orange
+      }
+      if (record?.state === "DONE") {
+        return "#3ff369"; // Green
+      }
     }
     return null;
+  };
+
+  const getUidForTab = (tabEventKey) => {
+    if (Array.isArray(dataOfTable)) {
+      const record = dataOfTable.find(record => record.record_type === tabEventKey);
+      return record?.uid;
+    }
+    return dataOfTable?.uid;
   };
 
   const tabsInnerImage = [
@@ -28,7 +36,7 @@ const PillsTabsTasvir = ({ dataOfTable, allrow, setShowAzmayeshPAge }) => {
       title: "سونوگرافی",
       content: (
         <SonographyForm
-          uidScan={dataOfTable?.uid}
+          uidScan={getUidForTab("sonography")}
           setShowAzmayeshPAge={setShowAzmayeshPAge}
           badgeColor={getTabBadgeColor({ eventKey: "sonography" })}
         />
@@ -39,7 +47,7 @@ const PillsTabsTasvir = ({ dataOfTable, allrow, setShowAzmayeshPAge }) => {
       title: "ماموگرافی",
       content: (
         <Mammography
-          uidScan={dataOfTable?.uid}
+          uidScan={getUidForTab("mammography")}
           setShowAzmayeshPAge={setShowAzmayeshPAge}
           badgeColor={getTabBadgeColor({ eventKey: "mammography" })}
         />
@@ -50,7 +58,7 @@ const PillsTabsTasvir = ({ dataOfTable, allrow, setShowAzmayeshPAge }) => {
       title: "MRI",
       content: (
         <Mri
-          uidScan={dataOfTable?.uid}
+          uidScan={getUidForTab("mri")}
           setShowAzmayeshPAge={setShowAzmayeshPAge}
           badgeColor={getTabBadgeColor({ eventKey: "mri" })}
         />
@@ -61,7 +69,7 @@ const PillsTabsTasvir = ({ dataOfTable, allrow, setShowAzmayeshPAge }) => {
       title: "CT-Scan",
       content: (
         <Ctscan
-          uidScan={dataOfTable?.uid}
+          uidScan={getUidForTab("ctscan")}
           setShowAzmayeshPAge={setShowAzmayeshPAge}
           badgeColor={getTabBadgeColor({ eventKey: "ctscan" })}
         />
@@ -72,7 +80,7 @@ const PillsTabsTasvir = ({ dataOfTable, allrow, setShowAzmayeshPAge }) => {
       title: "اسکن هسته ای",
       content: (
         <ScanHastei
-          uidScan={dataOfTable?.uid}
+          uidScan={getUidForTab("corescan")}
           setShowAzmayeshPAge={setShowAzmayeshPAge}
           badgeColor={getTabBadgeColor({ eventKey: "corescan" })}
         />
@@ -83,7 +91,7 @@ const PillsTabsTasvir = ({ dataOfTable, allrow, setShowAzmayeshPAge }) => {
       title: "PET-Scan",
       content: (
         <Petscan
-          uidScan={dataOfTable?.uid}
+          uidScan={getUidForTab("petscan")}
           setShowAzmayeshPAge={setShowAzmayeshPAge}
           badgeColor={getTabBadgeColor({ eventKey: "petscan" })}
         />
@@ -94,7 +102,7 @@ const PillsTabsTasvir = ({ dataOfTable, allrow, setShowAzmayeshPAge }) => {
       title: "گرافی ساده",
       content: (
         <SampleGraphy
-          uidScan={dataOfTable?.uid}
+          uidScan={getUidForTab("othergraphy")}
           setShowAzmayeshPAge={setShowAzmayeshPAge}
           badgeColor={getTabBadgeColor({ eventKey: "othergraphy" })}
         />

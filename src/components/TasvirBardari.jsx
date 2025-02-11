@@ -55,19 +55,8 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
   };
 
   const tasvirbardatiCellClick = (rowData, allrow) => {
-    const transferredRecord = rowData?.records?.find(
-      (record) => record?.uid === rowDataTransfer?.data?.uid
-    );
-
-    const inProgressRecord = rowData?.records?.find(
-      (record) => record?.state === "IN_PROGRESS"
-    );
-
-    const recordToOpen =
-      transferredRecord || inProgressRecord || rowData?.records?.[0];
-
-    if (recordToOpen) {
-      settasvirDetailUid(recordToOpen);
+    if (rowData?.records?.length > 0) {
+      settasvirDetailUid(rowData.records);
       setallrow(allrow);
       setShowAzmayeshPAge("orderRegister");
     }
