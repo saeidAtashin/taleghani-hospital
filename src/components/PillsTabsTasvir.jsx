@@ -9,9 +9,33 @@ import Petscan from "./Petscan";
 import SampleGraphy from "./SampleGraphy";
 
 const PillsTabsTasvir = ({ dataOfTable, allrow, setShowAzmayeshPAge }) => {
+  const [activeTab, setActiveTab] = useState("");
+
+  useEffect(() => {
+    // Set active tab based on the clicked record type
+    if (dataOfTable?.activeRecord) {
+      setActiveTab(dataOfTable.activeRecord);
+    } else if (dataOfTable?.records?.[0]?.record_type) {
+      // Fallback to first record if no specific record was clicked
+      setActiveTab(dataOfTable.records[0].record_type);
+    }
+  }, [dataOfTable]);
+
+  const getUidForTab = (tabEventKey) => {
+    if (dataOfTable?.records) {
+      const record = dataOfTable.records.find(
+        record => record.record_type === tabEventKey
+      );
+      return record?.uid;
+    }
+    return dataOfTable?.uid;
+  };
+
   const getTabBadgeColor = (tab) => {
-    if (Array.isArray(dataOfTable)) {
-      const record = dataOfTable.find(record => record.record_type === tab.eventKey);
+    if (dataOfTable?.records) {
+      const record = dataOfTable.records.find(
+        record => record.record_type === tab.eventKey
+      );
       if (record?.state === "IN_PROGRESS") {
         return "#ff9008"; // Orange
       }
@@ -20,14 +44,6 @@ const PillsTabsTasvir = ({ dataOfTable, allrow, setShowAzmayeshPAge }) => {
       }
     }
     return null;
-  };
-
-  const getUidForTab = (tabEventKey) => {
-    if (Array.isArray(dataOfTable)) {
-      const record = dataOfTable.find(record => record.record_type === tabEventKey);
-      return record?.uid;
-    }
-    return dataOfTable?.uid;
   };
 
   const tabsInnerImage = [
@@ -109,19 +125,6 @@ const PillsTabsTasvir = ({ dataOfTable, allrow, setShowAzmayeshPAge }) => {
       ),
     },
   ];
-
-  const [activeTab, setActiveTab] = useState(tabsInnerImage[0]?.eventKey || "");
-
-  useEffect(() => {
-    if (dataOfTable?.record_type) {
-      const matchedTab = tabsInnerImage.find(
-        (tab) => tab.eventKey === dataOfTable.record_type
-      );
-      if (matchedTab) {
-        setActiveTab(matchedTab.eventKey);
-      }
-    }
-  }, [dataOfTable]);
 
   const handleSelect = (selectedKey) => {
     setActiveTab(selectedKey);

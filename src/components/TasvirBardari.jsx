@@ -56,7 +56,11 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
 
   const tasvirbardatiCellClick = (rowData, allrow) => {
     if (rowData?.records?.length > 0) {
-      settasvirDetailUid(rowData.records);
+      const clickedRecordType = rowData.records[0].record_type;
+      settasvirDetailUid({
+        records: rowData.records,
+        activeRecord: clickedRecordType,
+      });
       setallrow(allrow);
       setShowAzmayeshPAge("orderRegister");
     }
@@ -80,7 +84,14 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
         {rowData?.records?.map((record, index) => (
           <span
             key={index}
-            // onClick={() => tasvirbardatiCellClick(record, rowData)}
+            onClick={() => {
+              settasvirDetailUid({
+                records: rowData.records,
+                activeRecord: record.record_type,
+              });
+              setallrow(rowData);
+              setShowAzmayeshPAge("orderRegister");
+            }}
             style={{
               cursor: "pointer",
               color: record?.state === "IN_PROGRESS" ? "#FF7518" : "green",
