@@ -13,6 +13,7 @@ import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import { useParams } from "react-router-dom";
 import HiddenInputsModal from "./HiddenInputsModal";
+import { Accordion, AccordionTab } from "primereact/accordion";
 
 const PillsTabs = ({
   setShowAzmayeshPAge,
@@ -474,307 +475,372 @@ const PillsTabs = ({
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="p-4 mb-5 container shadow-lg">
           {viewMode && getTestsForCurrentTab().length > 0 && (
-            <div className="mb-4 d-flex gap-2">
-              {getTestsForCurrentTab().map((test) => (
-                <span
-                  key={test.uid}
-                  className={`badge ${
-                    test.type === "info" ? "bg-warning" : "bg-success"
-                  }`}
-                >
-                  {test.type === "info" ? "در حال انجام" : "تکمیل شده"}
-                </span>
-              ))}
-            </div>
-          )}
-
-          {getTestsForCurrentTab().length > 0 && (
-            <div className="border-bottom my-4">
-              <h5 className="text-primary mb-3">ثبت نتیجه جدید</h5>
-            </div>
-          )}
-
-          <div className="my-3 d-flex gap-2">
-            {subCategory?.length > 0 &&
-              subCategory.map((subs, index) => (
-                <div key={index} className="my-3">
-                  <span
-                    className={`px-3 py-2 rounded-3 cursor-pointer ${
-                      activeSubCategoryIndex === index ? "bg-warning" : "border"
-                    }`}
-                    onClick={() => handleSubCategoryClick(subs, index)}
-                  >
-                    {subs.name}
-                  </span>{" "}
-                  <div className=""></div>
-                </div>
-              ))}
-          </div>
-          <div className="d-flex flex-column">
-            <div className="mb-3">
-              <Controller
-                name="date"
-                control={control}
-                render={({ field }) => {
-                  const selectedDate = field.value
-                    ? new DateObject({
-                        date: new Date(field.value),
-                        calendar: persian,
-                      })
-                    : null;
-
-                  return (
-                    <DatePicker
-                      {...field}
-                      value={selectedDate}
-                      onChange={(date) => {
-                        if (date) {
-                          const gregorianDate = date
-                            .convert("gregorian")
-                            .toDate();
-                          const formattedDate = gregorianDate
-                            .toISOString()
-                            .split("T")[0];
-                          field.onChange(formattedDate);
-                        } else {
-                          field.onChange(null);
-                        }
-                      }}
-                      calendar={persian}
-                      locale={persian_fa}
-                      format="YYYY/MM/DD"
-                      placeholder="تاریخ را انتخاب کنید"
-                      className="w-full p-2 border rounded"
-                      inputClass="w-full p-2 border rounded"
-                      position="bottom-right"
-                    />
-                  );
-                }}
-              />
-            </div>
-          </div>
-
-          <div className="">
-            {titleOfAll?.length > 0 &&
-              titleOfAll?.map((title, idx) => {
-                if (title?.name === "CBC") {
-                  return (
-                    <div key={idx} className="">
-                      <h3 className="my-4">{title?.name}</h3>
-
-                      <div className="">
-                        {title?.field
-                          ?.sort(
-                            (a, b) => (a?.ordering || 0) - (b?.ordering || 0)
-                          )
-                          ?.reduce((acc, titleData) => {
-                            const { ordering } = titleData;
-                            if (!acc[ordering]) {
-                              acc[ordering] = [];
-                            }
-                            acc[ordering].push(titleData);
-                            return acc;
-                          }, {})
-                          ? Object.keys(
-                              title?.field?.reduce((acc, titleData) => {
-                                const { ordering } = titleData;
-                                if (!acc[ordering]) {
-                                  acc[ordering] = [];
-                                }
-                                acc[ordering].push(titleData);
-                                return acc;
-                              }, {})
-                            ).map((groupKey, idx) => (
-                              <div className="row" key={idx}>
-                                {title?.field
-                                  ?.filter(
-                                    (field) =>
-                                      field?.ordering.toString() === groupKey
-                                  )
-                                  .map((titleData) => (
-                                    <div
-                                      key={titleData?.uid}
-                                      className={` col-md-${
-                                        countOccurrences[titleData?.ordering]
-                                          ? 12 /
-                                            countOccurrences[
-                                              titleData?.ordering
-                                            ]
-                                          : titleData?.ordering
-                                      } mb-4`}
-                                    >
-                                      <label htmlFor={titleData?.uid}>
-                                        {titleData?.name}
-                                      </label>
-                                      {titleData?.options?.length > 0 ? (
-                                        <Controller
-                                          name={titleData?.uid}
-                                          control={control}
-                                          render={({ field }) => (
-                                            <DropD
-                                              titleData={titleData}
-                                              selectedValue={field.value}
-                                              setSelectedValue={(value) =>
-                                                field.onChange(value)
-                                              }
-                                            />
-                                          )}
-                                        />
-                                      ) : (
-                                        <Controller
-                                          name={titleData?.uid}
-                                          control={control}
-                                          render={({ field }) => {
-                                            const handleValueChange = (e) => {
-                                              let value = e.target.value;
-
-                                              if (titleData?.type === "FLOAT") {
-                                                value = parseFloat(value);
-                                              } else if (
-                                                titleData?.type === "PERCENTAGE"
-                                              ) {
-                                                value = parseFloat(value);
-                                              } else if (
-                                                titleData?.type === "CHAR"
-                                              ) {
-                                                value = value.toString();
-                                              }
-
-                                              field.onChange(value);
-                                            };
-
-                                            return (
-                                              <InputText
-                                                {...field}
-                                                onChange={handleValueChange}
-                                                className={`w-100`}
-                                                keyfilter={
-                                                  titleData?.type === "CHAR"
-                                                    ? "char"
-                                                    : titleData?.type ===
-                                                        "FLOAT" ||
-                                                      titleData?.type ===
-                                                        "PERCENTAGE"
-                                                    ? "decimal"
-                                                    : ""
-                                                }
-                                                placeholder={`${titleData?.name} را وارد نمایید`}
-                                              />
-                                            );
-                                          }}
-                                        />
-                                      )}
-                                    </div>
-                                  ))}
-                              </div>
-                            ))
-                          : null}
-                      </div>
-                    </div>
-                  );
+            <Accordion className="mb-4">
+              <AccordionTab
+                header={
+                  <div className="d-flex align-items-center">
+                    <span className="me-2">نتایج قبلی</span>
+                    <span className="badge bg-primary">
+                      {getTestsForCurrentTab().length}
+                    </span>
+                  </div>
                 }
-              })}
-          </div>
-          <div className="">
-            {titleDirectToCategList?.length > 0 && (
-              <div className="row d-flex">
-                {titleDirectToCategList
-                  ?.sort((a, b) => (a?.ordering || 0) - (b?.ordering || 0))
-                  ?.filter((titleDirectToCat) => {
-                    const excludeNames = Exexex.filter(
-                      (name) => name !== selectedName
-                    );
-                    return !excludeNames.includes(titleDirectToCat?.name);
-                  })
-                  ?.map((titleDirectToCat) => (
-                    <div
-                      key={titleDirectToCat?.uid}
-                      className={` ${
-                        titleDirectToCat?.name === "Immunofixation"
-                          ? "flex-grow-1"
-                          : ""
-                      } ${
-                        titleDirectToCat?.titled
-                          ? ""
-                          : `col-md-${
-                              titleDirectToCat?.name === "Immunofixation"
-                                ? 2
-                                : countOccurrencesDirectTitle[
-                                    titleDirectToCat?.ordering
-                                  ]
-                                ? Math.ceil(
-                                    12 /
-                                      countOccurrencesDirectTitle[
-                                        titleDirectToCat?.ordering
-                                      ]
-                                  )
-                                : 12
-                            }`
-                      }`}
-                    >
-                      <div
-                        className={`  py-2 my-4 ${
-                          titleDirectToCat?.titled
-                            ? "fs-4 fw-bold d-flex align-items-start justify-content-start"
-                            : ``
+              >
+                {getTestsForCurrentTab().map((test) => (
+                  <div key={test.uid} className="border-bottom pb-4 mb-4">
+                    <div className="d-flex align-items-center mb-3">
+                      <span
+                        className={`ms-2 badge ${
+                          test.type === "info" ? "bg-warning" : "bg-success"
                         }`}
                       >
-                        <label
-                          htmlFor={titleDirectToCat?.uid}
-                          className="my-auto w-25 text-nowrap"
-                        >
-                          {titleDirectToCat?.name === "Immunofixation"
-                            ? titleDirectToCat?.name
-                            : titleDirectToCat?.name}{" "}
-                        </label>
-                        <div className="">
-                          <Controller
-                            name={titleDirectToCat.uid}
-                            control={control}
-                            render={({ field }) => (
-                              <InputText
-                                {...field}
-                                className="w-100"
-                                disabled={viewMode}
-                                placeholder={`${titleDirectToCat?.name} را وارد نمایید`}
-                              />
-                            )}
-                          />
-                        </div>
-                      </div>
+                        {test.type === "info" ? "در حال انجام" : "تکمیل شده"}
+                      </span>
                     </div>
-                  ))}
-              </div>
-            )}
-          </div>
 
-          {hiddenInputs?.length > 0 && (
-            <HiddenInputsModal
-              hiddenInputs={hiddenInputs}
-              submittedInputs={submittedInputs}
-              setSubmittedInputs={setSubmittedInputs}
-              setHiddenSubmittedData={setHiddenSubmittedData}
-            />
+                    {/* Previous test values */}
+                    <div className="row">
+                      {titleDirectToCategList
+                        ?.sort(
+                          (a, b) => (a?.ordering || 0) - (b?.ordering || 0)
+                        )
+                        ?.filter((field) => {
+                          const excludeNames = Exexex.filter(
+                            (name) => name !== selectedName
+                          );
+                          return !excludeNames.includes(field?.name);
+                        })
+                        ?.map((field) => (
+                          <div
+                            key={`${test.uid}_${field.uid}`}
+                            className={`${
+                              field?.name === "Immunofixation"
+                                ? "flex-grow-1"
+                                : ""
+                            } ${
+                              field?.titled
+                                ? ""
+                                : `col-md-${
+                                    field?.name === "Immunofixation"
+                                      ? 2
+                                      : countOccurrencesDirectTitle[
+                                          field?.ordering
+                                        ]
+                                      ? Math.ceil(
+                                          12 /
+                                            countOccurrencesDirectTitle[
+                                              field?.ordering
+                                            ]
+                                        )
+                                      : 12
+                                  }`
+                            }`}
+                          >
+                            <div className="form-group mb-3">
+                              <label className="text-muted d-block mb-2">
+                                {field?.name}
+                              </label>
+                              <Controller
+                                name={`existing_${test.uid}_${field.uid}`}
+                                control={control}
+                                render={({ field: controllerField }) => (
+                                  <InputText
+                                    {...controllerField}
+                                    className="w-100 bg-light"
+                                    disabled={true}
+                                  />
+                                )}
+                              />
+                            </div>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                ))}
+              </AccordionTab>
+            </Accordion>
           )}
 
-          <button
-            type="submit"
-            className="btn btn-primary mt-5 w-100 text-center"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? (
-              <>
-                <span
-                  className="spinner-border spinner-border-sm me-2"
-                  role="status"
-                  aria-hidden="true"
-                ></span>
-                در حال بارگذاری...
-              </>
-            ) : (
-              "تایید و ثبت نتایج"
+          <div>
+            <h5 className="mb-4">
+              {viewMode ? "ثبت نتیجه جدید" : "ثبت نتیجه آزمایش"}
+            </h5>
+
+            <div className="my-3 d-flex gap-2">
+              {subCategory?.length > 0 &&
+                subCategory.map((subs, index) => (
+                  <div key={index} className="my-3">
+                    <span
+                      className={`px-3 py-2 rounded-3 cursor-pointer ${
+                        activeSubCategoryIndex === index
+                          ? "bg-warning"
+                          : "border"
+                      }`}
+                      onClick={() => handleSubCategoryClick(subs, index)}
+                    >
+                      {subs.name}
+                    </span>{" "}
+                    <div className=""></div>
+                  </div>
+                ))}
+            </div>
+            <div className="d-flex flex-column">
+              <div className="mb-3">
+                <Controller
+                  name="date"
+                  control={control}
+                  render={({ field }) => {
+                    const selectedDate = field.value
+                      ? new DateObject({
+                          date: new Date(field.value),
+                          calendar: persian,
+                        })
+                      : null;
+
+                    return (
+                      <DatePicker
+                        {...field}
+                        value={selectedDate}
+                        onChange={(date) => {
+                          if (date) {
+                            const gregorianDate = date
+                              .convert("gregorian")
+                              .toDate();
+                            const formattedDate = gregorianDate
+                              .toISOString()
+                              .split("T")[0];
+                            field.onChange(formattedDate);
+                          } else {
+                            field.onChange(null);
+                          }
+                        }}
+                        calendar={persian}
+                        locale={persian_fa}
+                        format="YYYY/MM/DD"
+                        placeholder="تاریخ را انتخاب کنید"
+                        className="w-full p-2 border rounded"
+                        inputClass="w-full p-2 border rounded"
+                        position="bottom-right"
+                      />
+                    );
+                  }}
+                />
+              </div>
+            </div>
+
+            <div className="">
+              {titleOfAll?.length > 0 &&
+                titleOfAll?.map((title, idx) => {
+                  if (title?.name === "CBC") {
+                    return (
+                      <div key={idx} className="">
+                        <h3 className="my-4">{title?.name}</h3>
+
+                        <div className="">
+                          {title?.field
+                            ?.sort(
+                              (a, b) => (a?.ordering || 0) - (b?.ordering || 0)
+                            )
+                            ?.reduce((acc, titleData) => {
+                              const { ordering } = titleData;
+                              if (!acc[ordering]) {
+                                acc[ordering] = [];
+                              }
+                              acc[ordering].push(titleData);
+                              return acc;
+                            }, {})
+                            ? Object.keys(
+                                title?.field?.reduce((acc, titleData) => {
+                                  const { ordering } = titleData;
+                                  if (!acc[ordering]) {
+                                    acc[ordering] = [];
+                                  }
+                                  acc[ordering].push(titleData);
+                                  return acc;
+                                }, {})
+                              ).map((groupKey, idx) => (
+                                <div className="row" key={idx}>
+                                  {title?.field
+                                    ?.filter(
+                                      (field) =>
+                                        field?.ordering.toString() === groupKey
+                                    )
+                                    .map((titleData) => (
+                                      <div
+                                        key={titleData?.uid}
+                                        className={` col-md-${
+                                          countOccurrences[titleData?.ordering]
+                                            ? 12 /
+                                              countOccurrences[
+                                                titleData?.ordering
+                                              ]
+                                            : titleData?.ordering
+                                        } mb-4`}
+                                      >
+                                        <label htmlFor={titleData?.uid}>
+                                          {titleData?.name}
+                                        </label>
+                                        {titleData?.options?.length > 0 ? (
+                                          <Controller
+                                            name={titleData?.uid}
+                                            control={control}
+                                            render={({ field }) => (
+                                              <DropD
+                                                titleData={titleData}
+                                                selectedValue={field.value}
+                                                setSelectedValue={(value) =>
+                                                  field.onChange(value)
+                                                }
+                                              />
+                                            )}
+                                          />
+                                        ) : (
+                                          <Controller
+                                            name={titleData?.uid}
+                                            control={control}
+                                            render={({ field }) => {
+                                              const handleValueChange = (e) => {
+                                                let value = e.target.value;
+
+                                                if (
+                                                  titleData?.type === "FLOAT"
+                                                ) {
+                                                  value = parseFloat(value);
+                                                } else if (
+                                                  titleData?.type ===
+                                                  "PERCENTAGE"
+                                                ) {
+                                                  value = parseFloat(value);
+                                                } else if (
+                                                  titleData?.type === "CHAR"
+                                                ) {
+                                                  value = value.toString();
+                                                }
+
+                                                field.onChange(value);
+                                              };
+
+                                              return (
+                                                <InputText
+                                                  {...field}
+                                                  onChange={handleValueChange}
+                                                  className={`w-100`}
+                                                  keyfilter={
+                                                    titleData?.type === "CHAR"
+                                                      ? "char"
+                                                      : titleData?.type ===
+                                                          "FLOAT" ||
+                                                        titleData?.type ===
+                                                          "PERCENTAGE"
+                                                      ? "decimal"
+                                                      : ""
+                                                  }
+                                                  placeholder={`${titleData?.name} را وارد نمایید`}
+                                                />
+                                              );
+                                            }}
+                                          />
+                                        )}
+                                      </div>
+                                    ))}
+                                </div>
+                              ))
+                            : null}
+                        </div>
+                      </div>
+                    );
+                  }
+                })}
+            </div>
+            <div className="">
+              {titleDirectToCategList?.length > 0 && (
+                <div className="row d-flex">
+                  {titleDirectToCategList
+                    ?.sort((a, b) => (a?.ordering || 0) - (b?.ordering || 0))
+                    ?.filter((titleDirectToCat) => {
+                      const excludeNames = Exexex.filter(
+                        (name) => name !== selectedName
+                      );
+                      return !excludeNames.includes(titleDirectToCat?.name);
+                    })
+                    ?.map((titleDirectToCat) => (
+                      <div
+                        key={titleDirectToCat?.uid}
+                        className={`${
+                          titleDirectToCat?.name === "Immunofixation"
+                            ? "flex-grow-1"
+                            : ""
+                        } ${
+                          titleDirectToCat?.titled
+                            ? ""
+                            : `col-md-${
+                                titleDirectToCat?.name === "Immunofixation"
+                                  ? 2
+                                  : countOccurrencesDirectTitle[
+                                      titleDirectToCat?.ordering
+                                    ]
+                                  ? Math.ceil(
+                                      12 /
+                                        countOccurrencesDirectTitle[
+                                          titleDirectToCat?.ordering
+                                        ]
+                                    )
+                                  : 12
+                              }`
+                        }`}
+                      >
+                        <div className={`py-2 my-4`}>
+                          <label className="my-auto w-25 text-nowrap">
+                            {titleDirectToCat?.name}
+                          </label>
+                          <div className="">
+                            <Controller
+                              name={titleDirectToCat.uid}
+                              control={control}
+                              render={({ field }) => (
+                                <InputText
+                                  {...field}
+                                  className="w-100"
+                                  placeholder={`${titleDirectToCat?.name} را وارد نمایید`}
+                                />
+                              )}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              )}
+            </div>
+
+            {hiddenInputs?.length > 0 && (
+              <HiddenInputsModal
+                hiddenInputs={hiddenInputs}
+                submittedInputs={submittedInputs}
+                setSubmittedInputs={setSubmittedInputs}
+                setHiddenSubmittedData={setHiddenSubmittedData}
+              />
             )}
-          </button>
+
+            <button
+              type="submit"
+              className="btn btn-primary mt-5 w-100 text-center"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <>
+                  <span
+                    className="spinner-border spinner-border-sm me-2"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+                  در حال بارگذاری...
+                </>
+              ) : (
+                "تایید و ثبت نتایج"
+              )}
+            </button>
+          </div>
         </div>
       </form>
     </Tab.Container>
