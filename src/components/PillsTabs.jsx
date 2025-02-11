@@ -14,7 +14,11 @@ import persian_fa from "react-date-object/locales/persian_fa";
 import { useParams } from "react-router-dom";
 import HiddenInputsModal from "./HiddenInputsModal";
 
-const PillsTabs = ({ setShowAzmayeshPAge, viewMode = false, viewTestData = null }) => {
+const PillsTabs = ({
+  setShowAzmayeshPAge,
+  viewMode = false,
+  viewTestData = null,
+}) => {
   const [tabsNew, settabsNew] = useState();
   const [titleDirectToCategList, settitleDirectToCategList] = useState();
   const [titleOfAll, settitleOfAll] = useState();
@@ -165,15 +169,17 @@ const PillsTabs = ({ setShowAzmayeshPAge, viewMode = false, viewTestData = null 
 
   useEffect(() => {
     if (viewMode && viewTestData) {
-      // Find the matching tab based on name
-      const matchingTab = tabsNew?.find(tab => 
-        tab.name.toLowerCase() === viewTestData.testName.toLowerCase()
+      // Find all matching tabs based on test names
+      const matchingTabs = tabsNew?.filter((tab) =>
+        viewTestData.testNames.some(
+          (testName) => testName.toLowerCase() === tab.name.toLowerCase()
+        )
       );
-      
-      if (matchingTab) {
-        setActiveTab(matchingTab.uid);
+
+      if (matchingTabs?.length > 0) {
+        setActiveTab(matchingTabs[0].uid);
       }
-      
+
       const fetchTestDetails = async () => {
         try {
           const response = await axios.get(
@@ -181,24 +187,68 @@ const PillsTabs = ({ setShowAzmayeshPAge, viewMode = false, viewTestData = null 
           );
           if (response.status >= 200 && response.status < 400) {
             const testData = response.data.data;
-            
-            const formValues = {};
-            testData.results.forEach(result => {
-              formValues[result.field_uid] = result.value;
+
+            // Map test results by field_uid for easier access
+            const fieldValues = {};
+            testData.results.forEach((result) => {
+              fieldValues[result.field_uid] = result.value;
             });
-            
-            Object.entries(formValues).forEach(([key, value]) => {
-              setValue(key, value);
-            });
+
+            // Only set form values if the test category matches the active tab
+            const activeTabData = tabsNew?.find((tab) => tab.uid === activeTab);
+            const matchingTests =
+              viewTestData.groupedTests[activeTabData?.name] || [];
+
+            if (matchingTests.length > 0) {
+              // Set form values for the current active tab's fields
+              if (titleDirectToCategList) {
+                titleDirectToCategList.forEach((field) => {
+                  if (fieldValues[field.uid] !== undefined) {
+                    setValue(field.uid, fieldValues[field.uid]);
+                  }
+                });
+              }
+
+              if (titleOfAll) {
+                titleOfAll.forEach((title) => {
+                  title.field.forEach((field) => {
+                    if (fieldValues[field.uid] !== undefined) {
+                      setValue(field.uid, fieldValues[field.uid]);
+                    }
+                  });
+                });
+              }
+            } else {
+              // Clear form if no matching tests for this tab
+              reset();
+            }
           }
         } catch (error) {
           toast.error("خطا در دریافت اطلاعات آزمایش");
         }
       };
-      
+
       fetchTestDetails();
     }
-  }, [viewMode, viewTestData, setValue, tabsNew]);
+  }, [
+    viewMode,
+    viewTestData,
+    setValue,
+    tabsNew,
+    titleDirectToCategList,
+    titleOfAll,
+    activeTab,
+  ]);
+
+  // Add this function to check if a test belongs to current tab
+  const getTestsForCurrentTab = () => {
+    if (!viewMode || !viewTestData?.groupedTests || !activeTab) return [];
+
+    const activeTabData = tabsNew?.find((tab) => tab.uid === activeTab);
+    if (!activeTabData) return [];
+
+    return viewTestData.groupedTests[activeTabData.name] || [];
+  };
 
   const handleSelect = (eventKey) => {
     setActiveTab(eventKey);
@@ -331,10 +381,18 @@ const PillsTabs = ({ setShowAzmayeshPAge, viewMode = false, viewTestData = null 
     !isCategoryDataLoaded ||
     (getHideInput && !isHiddenInputsLoaded);
 
-  // Add a function to check if tab name matches test name
+  // Modify the isMatchingTab function to check against array of test names
   const isMatchingTab = (tabName) => {
-    if (!viewMode || !viewTestData?.testName) return false;
-    return tabName.toLowerCase() === viewTestData.testName.toLowerCase();
+    if (!viewMode || !viewTestData?.testNames) return false;
+    return viewTestData.testNames.some(
+      (testName) => testName.toLowerCase() === tabName.toLowerCase()
+    );
+  };
+
+  // Add this after the isMatchingTab function
+  const getTestCountForTab = (tabName) => {
+    if (!viewMode || !viewTestData?.groupedTests) return 0;
+    return viewTestData.groupedTests[tabName]?.length || 0;
   };
 
   if (isLoading) {
@@ -353,26 +411,54 @@ const PillsTabs = ({ setShowAzmayeshPAge, viewMode = false, viewTestData = null 
       <Nav variant="pills" className="mb-3">
         {tabsNew
           ?.sort((a, b) => (a?.ordering || 0) - (b?.ordering || 0))
-          ?.map((tab, index) => (
-            <Nav.Item key={index} className="m-2">
-              <Nav.Link
-                className={`border ${
-                  isMatchingTab(tab.name) ? "bg-danger text-white" : ""
-                }`}
-                eventKey={tab?.uid ?? ""}
-                onClick={() => {
-                  settitleOfAll(undefined);
-                  settitleDirectToCategList(undefined);
-                }}
-              >
-                {tab?.name ?? "Unknown Tab"}
-              </Nav.Link>
-            </Nav.Item>
-          ))}
+          ?.map((tab, index) => {
+            const isMatching = isMatchingTab(tab.name);
+            const testCount = getTestCountForTab(tab.name);
+            return (
+              <Nav.Item key={index} className="m-2">
+                <Nav.Link
+                  className={`border ${
+                    isMatching ? "bg-danger text-white position-relative" : ""
+                  }`}
+                  eventKey={tab?.uid ?? ""}
+                  onClick={() => {
+                    settitleOfAll(undefined);
+                    settitleDirectToCategList(undefined);
+                  }}
+                >
+                  {tab?.name ?? "Unknown Tab"}
+                  {isMatching && testCount > 0 && (
+                    <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark">
+                      {testCount}
+                    </span>
+                  )}
+                </Nav.Link>
+              </Nav.Item>
+            );
+          })}
       </Nav>
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="p-4 mb-5 container shadow-lg">
+          {/* Show tests only for current tab */}
+          {viewMode && viewTestData?.groupedTests && (
+            <div className="mb-4">
+              {getTestsForCurrentTab().map((test) => (
+                <div key={test.uid} className="border-bottom pb-4 mb-4">
+                  <div className="d-flex align-items-center mb-3">
+                    <span
+                      className={`ms-2 badge ${
+                        test.type === "info" ? "bg-warning" : "bg-success"
+                      }`}
+                    >
+                      {test.type === "info" ? "در حال انجام" : "تکمیل شده"}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
           <div className="my-3 d-flex gap-2 ">
             {subCategory?.length > 0 &&
               subCategory.map((subs, index) => (
@@ -428,7 +514,9 @@ const PillsTabs = ({ setShowAzmayeshPAge, viewMode = false, viewTestData = null 
                     locale={persian_fa}
                     format="YYYY/MM/DD"
                     placeholder="تاریخ را انتخاب کنید"
-                    className={`w-full p-2 border rounded ${viewMode ? 'bg-light' : ''}`}
+                    className={`w-full p-2 border rounded ${
+                      viewMode ? "bg-light" : ""
+                    }`}
                     inputClass="w-full p-2 border rounded"
                     position="bottom-right"
                   />
@@ -501,7 +589,8 @@ const PillsTabs = ({ setShowAzmayeshPAge, viewMode = false, viewTestData = null 
                                               titleData={titleData}
                                               selectedValue={field.value}
                                               setSelectedValue={(value) =>
-                                                field.onChange(value)}
+                                                field.onChange(value)
+                                              }
                                               disabled={viewMode}
                                             />
                                           )}
@@ -534,7 +623,9 @@ const PillsTabs = ({ setShowAzmayeshPAge, viewMode = false, viewTestData = null 
                                                 {...field}
                                                 disabled={viewMode}
                                                 onChange={handleValueChange}
-                                                className={`w-100 ${viewMode ? 'bg-light' : ''}`}
+                                                className={`w-100 ${
+                                                  viewMode ? "bg-light" : ""
+                                                }`}
                                                 keyfilter={
                                                   titleData?.type === "CHAR"
                                                     ? "char"
@@ -696,7 +787,9 @@ const PillsTabs = ({ setShowAzmayeshPAge, viewMode = false, viewTestData = null 
                                       </InputIcon>
                                       <InputText
                                         placeholder="درصد"
-                                        className={`w-100 ${viewMode ? 'bg-light' : ''}`}
+                                        className={`w-100 ${
+                                          viewMode ? "bg-light" : ""
+                                        }`}
                                         {...field}
                                         keyfilter="num"
                                         onChange={handleValueChange}
@@ -712,7 +805,9 @@ const PillsTabs = ({ setShowAzmayeshPAge, viewMode = false, viewTestData = null 
                                           ? "متن"
                                           : "عددی"
                                       }`}
-                                      className={`w-100 ${viewMode ? 'bg-light' : ''}`}
+                                      className={`w-100 ${
+                                        viewMode ? "bg-light" : ""
+                                      }`}
                                       keyfilter={
                                         titleDirectToCat?.type === "CHAR"
                                           ? "char"
@@ -795,7 +890,8 @@ const PillsTabs = ({ setShowAzmayeshPAge, viewMode = false, viewTestData = null 
                                               titleData={titleData}
                                               selectedValue={field.value}
                                               setSelectedValue={(value) =>
-                                                field.onChange(value)}
+                                                field.onChange(value)
+                                              }
                                               disabled={viewMode}
                                             />
                                           )}
@@ -837,7 +933,9 @@ const PillsTabs = ({ setShowAzmayeshPAge, viewMode = false, viewTestData = null 
                                                     ? "متن"
                                                     : "عددی"
                                                 }`}
-                                                className={`w-100 ${viewMode ? 'bg-light' : ''}`}
+                                                className={`w-100 ${
+                                                  viewMode ? "bg-light" : ""
+                                                }`}
                                                 value={
                                                   titleData?.name === "κ/λ" &&
                                                   valueinja !== Infinity &&
@@ -877,26 +975,25 @@ const PillsTabs = ({ setShowAzmayeshPAge, viewMode = false, viewTestData = null 
             />
           )}
 
-          {!viewMode && (
-            <button
-              type="submit"
-              className="btn btn-primary mt-5 w-100 text-center"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? (
-                <>
-                  <span
-                    className="spinner-border spinner-border-sm me-2"
-                    role="status"
-                    aria-hidden="true"
-                  ></span>
-                  در حال بارگذاری...
-                </>
-              ) : (
-                "تایید و ثبت نتایج"
-              )}
-            </button>
-          )}
+          {/* Always show submit button */}
+          <button
+            type="submit"
+            className="btn btn-primary mt-5 w-100 text-center"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <>
+                <span
+                  className="spinner-border spinner-border-sm me-2"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+                در حال بارگذاری...
+              </>
+            ) : (
+              "تایید و ثبت نتایج"
+            )}
+          </button>
         </div>
       </form>
     </Tab.Container>

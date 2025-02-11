@@ -163,15 +163,30 @@ export default function AzmayeshatTable() {
   };
 
   const operationsTemplate = (rowData) => {
+    // Group tests by category name
+    const groupedTests = rowData.names.reduce((acc, test) => {
+      if (!acc[test.value]) {
+        acc[test.value] = [];
+      }
+      acc[test.value].push(test);
+      return acc;
+    }, {});
+
     return (
       <button
         type="button"
         className="btn btn-outline-primary"
         onClick={() => {
-          const testUid = rowData.names[0].uid;
-          const testName = rowData.names[0].value;
+          const uniqueTests = [
+            ...new Set(rowData.names.map((test) => test.value)),
+          ];
+          // Pass both unique test names and grouped tests
+          setViewTestData({
+            testUid: rowData.names[0].uid,
+            testNames: uniqueTests,
+            groupedTests: groupedTests,
+          });
           setShowAzmayeshPAge("viewTest");
-          setViewTestData({ testUid, testName });
         }}
       >
         مشاهده
@@ -293,8 +308,8 @@ export default function AzmayeshatTable() {
                 x
               </span>
             </div>
-            <PillsTabs 
-              setShowAzmayeshPAge={setShowAzmayeshPAge} 
+            <PillsTabs
+              setShowAzmayeshPAge={setShowAzmayeshPAge}
               viewMode={true}
               viewTestData={viewTestData}
             />

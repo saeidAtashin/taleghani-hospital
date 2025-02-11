@@ -12,8 +12,6 @@ import PatientDiseaseMap from "./PatientDiseaseMap";
 
 const PatientsDetails = () => {
   const { uid } = useParams();
-  const defaultActiveKey = localStorage.getItem("defaultActiveKey");
-
   const [userIdentityData, setUserIdentityData] = useState([]);
   const [activeTabForce, setActiveTabForce] = useState(0);
   const [rowDataTransfer, setrowDataTransfer] = useState(undefined);
@@ -28,9 +26,7 @@ const PatientsDetails = () => {
         );
         const identityData = response.data.data;
         setUserIdentityData(identityData);
-      } catch (error) {
-        // console.error("Error fetching patient data:", error);
-      }
+      } catch (error) {}
     };
     fetchData();
   }, [refresh]);
