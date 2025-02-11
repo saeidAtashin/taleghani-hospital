@@ -7,6 +7,7 @@ import PillsTabs from "./PillsTabs";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import RegisterTests from "./RegisterTests";
+import { Dialog } from "primereact/dialog";
 
 export default function AzmayeshatTable() {
   const [groupedData, setGroupedData] = useState([]);
@@ -14,6 +15,11 @@ export default function AzmayeshatTable() {
   const [showAzmayeshPAge, setShowAzmayeshPAge] = useState("home");
   const dt = useRef(null);
   const { uid } = useParams();
+  const [selectedTest, setSelectedTest] = useState(null);
+  const [showTestDetails, setShowTestDetails] = useState(false);
+  const [testDetails, setTestDetails] = useState(null);
+  const [categoryDetails, setCategoryDetails] = useState({});
+  const [viewTestData, setViewTestData] = useState(null);
 
   const numberTemplate = (rowData, { rowIndex }) => {
     return <span>{rowIndex + 1}</span>;
@@ -35,7 +41,6 @@ export default function AzmayeshatTable() {
         {rowData.names.map((nameItem, index) => (
           <span
             key={index}
-            onClick={() => {}}
             style={{
               cursor: "pointer",
               fontWeight: "bold",
@@ -45,7 +50,7 @@ export default function AzmayeshatTable() {
               marginBottom: "4px",
             }}
           >
-            {nameItem.value}
+            {categoryDetails[nameItem.id] || nameItem.value}
           </span>
         ))}
       </div>
@@ -66,6 +71,7 @@ export default function AzmayeshatTable() {
             value: test.category,
             type: test.state === "IN_PROGRESS" ? "info" : "secondary",
             id: test.id,
+            uid: test.uid,
           })),
           date: item.created_at ? item.created_at.slice(0, 10) : null,
         }));
@@ -118,6 +124,59 @@ export default function AzmayeshatTable() {
 
   const handleDelete = () => {
     setSelectedGroups([]);
+  };
+
+  const fetchCategoryDetails = async () => {
+    try {
+      const response = await axios.get(
+        `https://cancerreg.ir/api/v1/tests/category-details/`
+      );
+      if (response.status >= 200 && response.status < 400) {
+        const categories = response?.data?.data?.result ?? [];
+        const categoryMap = {};
+        categories.forEach((category) => {
+          categoryMap[category.uid] = category.name;
+        });
+        setCategoryDetails(categoryMap);
+      }
+    } catch (error) {
+      console.error("Error fetching category details:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategoryDetails();
+  }, []);
+
+  const fetchTestDetails = async (testId) => {
+    try {
+      const response = await axios.get(
+        `https://cancerreg.ir/api/v1/tests/test/${testId}/`
+      );
+      if (response.status >= 200 && response.status < 400) {
+        setTestDetails(response.data.data);
+        setShowTestDetails(true);
+      }
+    } catch (error) {
+      console.error("Error fetching test details:", error);
+    }
+  };
+
+  const operationsTemplate = (rowData) => {
+    return (
+      <button
+        type="button"
+        className="btn btn-outline-primary"
+        onClick={() => {
+          const testUid = rowData.names[0].uid;
+          const testName = rowData.names[0].value;
+          setShowAzmayeshPAge("viewTest");
+          setViewTestData({ testUid, testName });
+        }}
+      >
+        مشاهده
+      </button>
+    );
   };
 
   return (
@@ -179,15 +238,7 @@ export default function AzmayeshatTable() {
             <Column
               header="عملیات"
               headerStyle={{ borderBottom: "2px solid black" }}
-              body={(rowData) => (
-                <button
-                  type="button"
-                  className="btn btn-outline-primary"
-                  onClick={() => console.log("rowData", rowData)}
-                >
-                  مشاهده
-                </button>
-              )}
+              body={operationsTemplate}
             />
           </DataTable>
 
@@ -224,6 +275,29 @@ export default function AzmayeshatTable() {
               </span>
             </div>
             <PillsTabs setShowAzmayeshPAge={setShowAzmayeshPAge} />
+          </div>
+        </>
+      ) : showAzmayeshPAge === "viewTest" ? (
+        <>
+          <div className="container mt-5">
+            <div className="d-flex justify-content-between align-items-center">
+              <h2 className="m-2 pb-3">مشاهده نتیجه آزمایش</h2>
+              <span
+                className="text-danger cursor-pointer"
+                style={{ fontSize: "32px" }}
+                onClick={() => {
+                  setShowAzmayeshPAge("home");
+                  setViewTestData(null);
+                }}
+              >
+                x
+              </span>
+            </div>
+            <PillsTabs 
+              setShowAzmayeshPAge={setShowAzmayeshPAge} 
+              viewMode={true}
+              viewTestData={viewTestData}
+            />
           </div>
         </>
       ) : (

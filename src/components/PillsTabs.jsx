@@ -14,7 +14,7 @@ import persian_fa from "react-date-object/locales/persian_fa";
 import { useParams } from "react-router-dom";
 import HiddenInputsModal from "./HiddenInputsModal";
 
-const PillsTabs = ({ setShowAzmayeshPAge }) => {
+const PillsTabs = ({ setShowAzmayeshPAge, viewMode = false, viewTestData = null }) => {
   const [tabsNew, settabsNew] = useState();
   const [titleDirectToCategList, settitleDirectToCategList] = useState();
   const [titleOfAll, settitleOfAll] = useState();
@@ -163,6 +163,43 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
     fetchDataCategoryHidden();
   }, [activeTab, gettedCategory, getHideInput]);
 
+  useEffect(() => {
+    if (viewMode && viewTestData) {
+      // Find the matching tab based on name
+      const matchingTab = tabsNew?.find(tab => 
+        tab.name.toLowerCase() === viewTestData.testName.toLowerCase()
+      );
+      
+      if (matchingTab) {
+        setActiveTab(matchingTab.uid);
+      }
+      
+      const fetchTestDetails = async () => {
+        try {
+          const response = await axios.get(
+            `https://cancerreg.ir/api/v1/tests/test/${viewTestData.testUid}/`
+          );
+          if (response.status >= 200 && response.status < 400) {
+            const testData = response.data.data;
+            
+            const formValues = {};
+            testData.results.forEach(result => {
+              formValues[result.field_uid] = result.value;
+            });
+            
+            Object.entries(formValues).forEach(([key, value]) => {
+              setValue(key, value);
+            });
+          }
+        } catch (error) {
+          toast.error("خطا در دریافت اطلاعات آزمایش");
+        }
+      };
+      
+      fetchTestDetails();
+    }
+  }, [viewMode, viewTestData, setValue, tabsNew]);
+
   const handleSelect = (eventKey) => {
     setActiveTab(eventKey);
 
@@ -294,6 +331,12 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
     !isCategoryDataLoaded ||
     (getHideInput && !isHiddenInputsLoaded);
 
+  // Add a function to check if tab name matches test name
+  const isMatchingTab = (tabName) => {
+    if (!viewMode || !viewTestData?.testName) return false;
+    return tabName.toLowerCase() === viewTestData.testName.toLowerCase();
+  };
+
   if (isLoading) {
     return (
       <div className="d-flex justify-content-center align-items-center p-5">
@@ -313,7 +356,9 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
           ?.map((tab, index) => (
             <Nav.Item key={index} className="m-2">
               <Nav.Link
-                className="border"
+                className={`border ${
+                  isMatchingTab(tab.name) ? "bg-danger text-white" : ""
+                }`}
                 eventKey={tab?.uid ?? ""}
                 onClick={() => {
                   settitleOfAll(undefined);
@@ -364,6 +409,7 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
                 return (
                   <DatePicker
                     {...field}
+                    disabled={viewMode}
                     value={selectedDate}
                     onChange={(date) => {
                       if (date) {
@@ -382,7 +428,7 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
                     locale={persian_fa}
                     format="YYYY/MM/DD"
                     placeholder="تاریخ را انتخاب کنید"
-                    className="w-full p-2 border rounded"
+                    className={`w-full p-2 border rounded ${viewMode ? 'bg-light' : ''}`}
                     inputClass="w-full p-2 border rounded"
                     position="bottom-right"
                   />
@@ -455,8 +501,8 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
                                               titleData={titleData}
                                               selectedValue={field.value}
                                               setSelectedValue={(value) =>
-                                                field.onChange(value)
-                                              }
+                                                field.onChange(value)}
+                                              disabled={viewMode}
                                             />
                                           )}
                                         />
@@ -486,8 +532,9 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
                                             return (
                                               <InputText
                                                 {...field}
+                                                disabled={viewMode}
                                                 onChange={handleValueChange}
-                                                className="w-100"
+                                                className={`w-100 ${viewMode ? 'bg-light' : ''}`}
                                                 keyfilter={
                                                   titleData?.type === "CHAR"
                                                     ? "char"
@@ -597,6 +644,7 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
                                           ];
                                         });
                                       }}
+                                      disabled={viewMode}
                                     />
                                   </>
                                 ) : (
@@ -606,6 +654,7 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
                                     setSelectedValue={(value) => {
                                       field.onChange(value);
                                     }}
+                                    disabled={viewMode}
                                   />
                                 )
                               }
@@ -647,21 +696,23 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
                                       </InputIcon>
                                       <InputText
                                         placeholder="درصد"
-                                        className="w-100"
+                                        className={`w-100 ${viewMode ? 'bg-light' : ''}`}
                                         {...field}
                                         keyfilter="num"
                                         onChange={handleValueChange}
+                                        disabled={viewMode}
                                       />
                                     </IconField>
                                   ) : (
                                     <InputText
                                       {...field}
+                                      disabled={viewMode}
                                       placeholder={`${
                                         titleDirectToCat?.type === "CHAR"
                                           ? "متن"
                                           : "عددی"
                                       }`}
-                                      className="w-100"
+                                      className={`w-100 ${viewMode ? 'bg-light' : ''}`}
                                       keyfilter={
                                         titleDirectToCat?.type === "CHAR"
                                           ? "char"
@@ -744,8 +795,8 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
                                               titleData={titleData}
                                               selectedValue={field.value}
                                               setSelectedValue={(value) =>
-                                                field.onChange(value)
-                                              }
+                                                field.onChange(value)}
+                                              disabled={viewMode}
                                             />
                                           )}
                                         />
@@ -780,12 +831,13 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
                                             return (
                                               <InputText
                                                 {...field}
+                                                disabled={viewMode}
                                                 placeholder={`${
                                                   titleData?.type === "CHAR"
                                                     ? "متن"
                                                     : "عددی"
                                                 }`}
-                                                className="w-100"
+                                                className={`w-100 ${viewMode ? 'bg-light' : ''}`}
                                                 value={
                                                   titleData?.name === "κ/λ" &&
                                                   valueinja !== Infinity &&
@@ -825,24 +877,26 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
             />
           )}
 
-          <button
-            type="submit"
-            className="btn btn-primary mt-5 w-100 text-center"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? (
-              <>
-                <span
-                  className="spinner-border spinner-border-sm me-2"
-                  role="status"
-                  aria-hidden="true"
-                ></span>
-                در حال بارگذاری...
-              </>
-            ) : (
-              "تایید و ثبت نتایج"
-            )}
-          </button>
+          {!viewMode && (
+            <button
+              type="submit"
+              className="btn btn-primary mt-5 w-100 text-center"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <>
+                  <span
+                    className="spinner-border spinner-border-sm me-2"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+                  در حال بارگذاری...
+                </>
+              ) : (
+                "تایید و ثبت نتایج"
+              )}
+            </button>
+          )}
         </div>
       </form>
     </Tab.Container>
