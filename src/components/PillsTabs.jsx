@@ -511,30 +511,35 @@ const PillsTabs = ({
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="p-4 mb-5 container shadow-lg">
+          {/* Show previous test results in separate accordions */}
           {viewMode && getTestsForCurrentTab().length > 0 && (
-            <Accordion className="mb-4">
-              <AccordionTab
-                header={
-                  <div className="d-flex align-items-center">
-                    <span className="me-2">نتایج قبلی</span>
-                    <span className="badge bg-primary">
-                      {getTestsForCurrentTab().length}
-                    </span>
-                  </div>
-                }
-              >
-                {getTestsForCurrentTab().map((test) => (
-                  <div key={test.uid} className="border-bottom pb-4 mb-4">
-                    <div className="d-flex align-items-center mb-3">
-                      <span
-                        className={`ms-2 badge ${
-                          test.type === "info" ? "bg-warning" : "bg-success"
-                        }`}
-                      >
-                        {test.type === "info" ? "در حال انجام" : "تکمیل شده"}
-                      </span>
-                    </div>
-
+            <div className="mb-4">
+              {getTestsForCurrentTab().map((test) => (
+                <Accordion key={test.uid} className="mb-3">
+                  <AccordionTab
+                    header={
+                      <div className="d-flex align-items-center justify-content-between">
+                        <div className="d-flex align-items-center">
+                          <span className="me-2">نتیجه آزمایش</span>
+                          <span
+                            className={`badge ${
+                              test.type === "info" ? "bg-warning" : "bg-success"
+                            }`}
+                          >
+                            {test.type === "info"
+                              ? "در حال انجام"
+                              : "تکمیل شده"}
+                          </span>
+                        </div>
+                        {/* Add test date if available */}
+                        {test.date && (
+                          <small className="text-muted">
+                            {new Date(test.date).toLocaleDateString("fa-IR")}
+                          </small>
+                        )}
+                      </div>
+                    }
+                  >
                     {/* Previous test values */}
                     <div className="row">
                       {titleDirectToCategList
@@ -580,9 +585,11 @@ const PillsTabs = ({
                               <Controller
                                 name={`existing_${test.uid}_${field.uid}`}
                                 control={control}
+                                defaultValue=""
                                 render={({ field: controllerField }) => (
                                   <InputText
                                     {...controllerField}
+                                    value={controllerField.value || ""}
                                     className="w-100 bg-light"
                                     disabled={true}
                                   />
@@ -592,10 +599,10 @@ const PillsTabs = ({
                           </div>
                         ))}
                     </div>
-                  </div>
-                ))}
-              </AccordionTab>
-            </Accordion>
+                  </AccordionTab>
+                </Accordion>
+              ))}
+            </div>
           )}
 
           <div>
