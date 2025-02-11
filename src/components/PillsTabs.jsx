@@ -24,7 +24,7 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
   const [countOccurrencesDirectTitle, setcountOccurrencesDirectTitle] =
     useState([]);
   const [activeSubCategoryIndex, setActiveSubCategoryIndex] = useState(null);
-  const [isLoading, setisLoading] = useState(false);
+  const [isSubmitting, setisSubmitting] = useState(false);
   const [isLoadingAll, setisLoadingAll] = useState(false);
   const [gettedCategory, setgettedCategory] = useState(false);
 
@@ -40,6 +40,10 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
   const { uid } = useParams();
   const [submittedInputs, setSubmittedInputs] = useState([]);
   const [hiddenSubmittedData, setHiddenSubmittedData] = useState([]);
+
+  const [isInitialDataLoaded, setIsInitialDataLoaded] = useState(false);
+  const [isCategoryDataLoaded, setIsCategoryDataLoaded] = useState(false);
+  const [isHiddenInputsLoaded, setIsHiddenInputsLoaded] = useState(false);
 
   useEffect(() => {
     setvalueinja(Number(kValue) / Number(landaValue));
@@ -68,22 +72,27 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
           const list = response?.data?.data?.result ?? [];
           settabsNew(list);
           setgettedCategory(true);
+          setIsInitialDataLoaded(true);
         }
       } catch (error) {
-        setisLoadingAll(false);
+        toast.error("خطا در دریافت اطلاعات");
+      } finally {
+        if (!activeTab) {
+          setisLoadingAll(false);
+        }
       }
     };
     fetchDataCategory();
   }, []);
 
   useEffect(() => {
+    if (!activeTab || !gettedCategory) return;
+
     const fetchDataCategoryUId = async () => {
       try {
         const response = await axios.get(
           `https://cancerreg.ir/api/v1/tests/category-details/${activeTab}/`
         );
-        console.log("response", response?.data?.data);
-        console.log("activeTab", activeTab);
 
         setGetHideInput(true);
 
@@ -96,6 +105,7 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
           settitleDirectToCategList(response?.data?.data?.field);
           setsubCategory(response?.data?.data?.sub_category);
           settitleOfAll(response?.data?.data?.title);
+
           const orderings = response?.data?.data?.title?.flatMap((title) =>
             title?.field?.map((field) => field?.ordering)
           );
@@ -117,22 +127,23 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
           }, {});
 
           setcountOccurrencesDirectTitle(countOccurrences);
-          setisLoadingAll(false);
         }
+        setIsCategoryDataLoaded(true);
       } catch (error) {
         setGetHideInput(false);
-
-        setisLoadingAll(false);
+        toast.error("خطا در دریافت جزئیات");
       }
     };
-    activeTab && gettedCategory && fetchDataCategoryUId();
-  }, [activeTab, tabsNew, gettedCategory]);
+    fetchDataCategoryUId();
+  }, [activeTab, gettedCategory]);
 
   useEffect(() => {
     setActiveTab(tabsNew?.[0]?.uid ?? "");
   }, [tabsNew]);
 
   useEffect(() => {
+    if (!getHideInput || !activeTab || !gettedCategory) return;
+
     const fetchDataCategoryHidden = async () => {
       try {
         const response = await axios.get(
@@ -142,10 +153,15 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
         if (response.status >= 200 && response.status < 400) {
           setHiddenInputs(response?.data?.data);
         }
-      } catch (error) {}
+        setIsHiddenInputsLoaded(true);
+      } catch (error) {
+        toast.error("خطا در دریافت ورودی‌های مخفی");
+      } finally {
+        setisLoadingAll(false);
+      }
     };
-    getHideInput && activeTab && gettedCategory && fetchDataCategoryHidden();
-  }, [activeTab, tabsNew, gettedCategory]);
+    fetchDataCategoryHidden();
+  }, [activeTab, gettedCategory, getHideInput]);
 
   const handleSelect = (eventKey) => {
     setActiveTab(eventKey);
@@ -159,7 +175,7 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
   };
 
   const onSubmit = async (data) => {
-    setisLoading(true);
+    setisSubmitting(true);
     const additionalData = {
       date: data?.date,
       category_uid: activeTab,
@@ -206,7 +222,7 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
         formDataWithExtraData
       );
       if (response?.status >= 200 && response?.status < 400) {
-        setisLoading(false);
+        setisSubmitting(false);
         toast.success("ثبت شد");
       }
       setShowAzmayeshPAge("home");
@@ -218,7 +234,7 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
 
       setimmunofixationUid(undefined);
     } catch (error) {
-      setisLoading(false);
+      setisSubmitting(false);
 
       toast.warning(
         error?.response?.data?.errors?.[0]?.message
@@ -272,7 +288,22 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
     }
   }, [activeTab, tabsNew]);
 
-  if (isLoadingAll) return <>در حال دریافت اطلاعات...</>;
+  const isLoading =
+    isLoadingAll ||
+    !isInitialDataLoaded ||
+    !isCategoryDataLoaded ||
+    (getHideInput && !isHiddenInputsLoaded);
+
+  if (isLoading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center p-5">
+        <div className="spinner-border text-primary me-2" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+        <span>در حال دریافت اطلاعات...</span>
+      </div>
+    );
+  }
 
   return (
     <Tab.Container activeKey={activeTab} onSelect={handleSelect}>
@@ -797,9 +828,9 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
           <button
             type="submit"
             className="btn btn-primary mt-5 w-100 text-center"
-            disabled={isLoading}
+            disabled={isSubmitting}
           >
-            {isLoading ? (
+            {isSubmitting ? (
               <>
                 <span
                   className="spinner-border spinner-border-sm me-2"
