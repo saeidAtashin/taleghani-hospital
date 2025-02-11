@@ -168,17 +168,7 @@ const PillsTabs = ({
   }, [activeTab, gettedCategory, getHideInput]);
 
   useEffect(() => {
-    if (viewMode && viewTestData) {
-      const matchingTabs = tabsNew?.filter((tab) =>
-        viewTestData.testNames.some(
-          (testName) => testName.toLowerCase() === tab.name.toLowerCase()
-        )
-      );
-
-      if (matchingTabs?.length > 0) {
-        setActiveTab(matchingTabs[0].uid);
-      }
-
+    if (viewMode && viewTestData && activeTab) {
       const fetchTestDetails = async () => {
         try {
           const response = await axios.get(
@@ -187,24 +177,39 @@ const PillsTabs = ({
           if (response.status >= 200 && response.status < 400) {
             const testData = response.data.data;
 
-            testData.results.forEach((result) => {
-              const activeTabData = tabsNew?.find(
-                (tab) => tab.uid === activeTab
-              );
-              const matchingTests =
-                viewTestData.groupedTests[activeTabData?.name] || [];
+            // Map results by field_uid for easier access
+            const resultsByFieldId = testData.results.reduce((acc, result) => {
+              acc[result.field_uid] = result.value;
+              return acc;
+            }, {});
 
-              matchingTests.forEach((test) => {
-                setValue(
-                  `existing_${test.uid}_${result.field_uid}`,
-                  result.value
-                );
-              });
-            });
+            // Only set values if we're on a matching tab
+            const activeTabData = tabsNew?.find((tab) => tab.uid === activeTab);
+            const matchingTests =
+              viewTestData.groupedTests[activeTabData?.name] || [];
 
-            reset({
-              date: undefined,
-            });
+            if (matchingTests.length > 0) {
+              if (titleDirectToCategList) {
+                titleDirectToCategList.forEach((field) => {
+                  if (resultsByFieldId[field.uid] !== undefined) {
+                    setValue(field.uid, resultsByFieldId[field.uid]);
+                  }
+                });
+              }
+
+              if (titleOfAll) {
+                titleOfAll.forEach((title) => {
+                  title.field?.forEach((field) => {
+                    if (resultsByFieldId[field.uid] !== undefined) {
+                      setValue(field.uid, resultsByFieldId[field.uid]);
+                    }
+                  });
+                });
+              }
+            } else {
+              // Clear form if no matching tests for this tab
+              reset();
+            }
           }
         } catch (error) {
           toast.error("خطا در دریافت اطلاعات آزمایش");
@@ -213,7 +218,14 @@ const PillsTabs = ({
 
       fetchTestDetails();
     }
-  }, [viewMode, viewTestData, setValue, tabsNew, activeTab]);
+  }, [
+    viewMode,
+    viewTestData,
+    activeTab,
+    tabsNew,
+    titleDirectToCategList,
+    titleOfAll,
+  ]);
 
   const getTestsForCurrentTab = () => {
     if (!viewMode || !viewTestData?.groupedTests || !activeTab) return [];
@@ -226,13 +238,62 @@ const PillsTabs = ({
 
   const handleSelect = (eventKey) => {
     setActiveTab(eventKey);
-
     reset();
     setParentArray([]);
     setSelectedName(undefined);
     setValue("date", undefined);
-
     setimmunofixationUid(undefined);
+
+    if (viewMode && viewTestData) {
+      const activeTabData = tabsNew?.find((tab) => tab.uid === eventKey);
+      const matchingTests =
+        viewTestData.groupedTests[activeTabData?.name] || [];
+
+      if (matchingTests.length > 0) {
+        const fetchTestDetails = async () => {
+          try {
+            const response = await axios.get(
+              `https://cancerreg.ir/api/v1/tests/test/${viewTestData.testUid}/`
+            );
+            if (response.status >= 200 && response.status < 400) {
+              const testData = response.data.data;
+
+              // Map results by field_uid for easier access
+              const resultsByFieldId = testData.results.reduce(
+                (acc, result) => {
+                  acc[result.field_uid] = result.value;
+                  return acc;
+                },
+                {}
+              );
+
+              // Set values for all matching fields
+              if (titleDirectToCategList) {
+                titleDirectToCategList.forEach((field) => {
+                  if (resultsByFieldId[field.uid] !== undefined) {
+                    setValue(field.uid, resultsByFieldId[field.uid]);
+                  }
+                });
+              }
+
+              if (titleOfAll) {
+                titleOfAll.forEach((title) => {
+                  title.field?.forEach((field) => {
+                    if (resultsByFieldId[field.uid] !== undefined) {
+                      setValue(field.uid, resultsByFieldId[field.uid]);
+                    }
+                  });
+                });
+              }
+            }
+          } catch (error) {
+            toast.error("خطا در دریافت اطلاعات آزمایش");
+          }
+        };
+
+        fetchTestDetails();
+      }
+    }
   };
 
   const onSubmit = async (data) => {
@@ -412,40 +473,17 @@ const PillsTabs = ({
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="p-4 mb-5 container shadow-lg">
-          {viewMode && viewTestData?.groupedTests && (
-            <div className="mb-4">
+          {viewMode && getTestsForCurrentTab().length > 0 && (
+            <div className="mb-4 d-flex gap-2">
               {getTestsForCurrentTab().map((test) => (
-                <div key={test.uid} className="border-bottom pb-4 mb-4">
-                  <div className="d-flex align-items-center mb-3">
-                    <span
-                      className={`ms-2 badge ${
-                        test.type === "info" ? "bg-warning" : "bg-success"
-                      }`}
-                    >
-                      {test.type === "info" ? "در حال انجام" : "تکمیل شده"}
-                    </span>
-                  </div>
-                  <div className="row">
-                    {titleDirectToCategList?.map((field, idx) => (
-                      <div key={idx} className="col-md-4 mb-3">
-                        <div className="form-group">
-                          <label className="text-muted">{field.name}</label>
-                          <Controller
-                            name={`existing_${test.uid}_${field.uid}`}
-                            control={control}
-                            render={({ field: controllerField }) => (
-                              <InputText
-                                {...controllerField}
-                                className="form-control bg-light"
-                                disabled={true}
-                              />
-                            )}
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                <span
+                  key={test.uid}
+                  className={`badge ${
+                    test.type === "info" ? "bg-warning" : "bg-success"
+                  }`}
+                >
+                  {test.type === "info" ? "در حال انجام" : "تکمیل شده"}
+                </span>
               ))}
             </div>
           )}
@@ -690,251 +728,24 @@ const PillsTabs = ({
                             : titleDirectToCat?.name}{" "}
                         </label>
                         <div className="">
-                          {titleDirectToCat?.options?.length > 0 ? (
-                            <Controller
-                              name={titleDirectToCat?.uid}
-                              control={control}
-                              render={({ field }) =>
-                                titleDirectToCat?.name === "Immunofixation" ? (
-                                  <>
-                                    <DropD
-                                      titleDirectToCat={titleDirectToCat}
-                                      selectedValue={field.value}
-                                      setSelectedValue={(value, name) => {
-                                        field.onChange(value);
-                                        setSelectedName(name);
-                                        setimmunofixationUid(
-                                          titleDirectToCat?.uid
-                                        );
-
-                                        setParentArray((prevArray) => {
-                                          const updatedArray = prevArray.filter(
-                                            (item) =>
-                                              !item.hasOwnProperty(value)
-                                          );
-
-                                          return [
-                                            ...updatedArray,
-                                            { [value]: "" },
-                                          ];
-                                        });
-                                      }}
-                                    />
-                                  </>
-                                ) : (
-                                  <DropD
-                                    titleDirectToCat={titleDirectToCat}
-                                    selectedValue={field.value}
-                                    setSelectedValue={(value) => {
-                                      field.onChange(value);
-                                    }}
-                                  />
-                                )
-                              }
-                            />
-                          ) : (
-                            <>
-                              <Controller
-                                name={titleDirectToCat?.uid}
-                                control={control}
-                                render={({ field }) => {
-                                  const handleValueChange = (e) => {
-                                    let value = e.target.value;
-
-                                    if (
-                                      titleDirectToCat?.type === "PERCENTAGE"
-                                    ) {
-                                      value = parseFloat(value);
-                                      if (isNaN(value)) value = "";
-                                    } else if (
-                                      titleDirectToCat?.type === "FLOAT"
-                                    ) {
-                                      value = parseFloat(value);
-
-                                      if (isNaN(value)) value = "";
-                                    } else if (
-                                      titleDirectToCat?.type === "CHAR"
-                                    ) {
-                                      value = value.toString();
-                                    }
-
-                                    field.onChange(value);
-                                  };
-
-                                  return titleDirectToCat?.type ===
-                                    "PERCENTAGE" ? (
-                                    <IconField iconPosition="left">
-                                      <InputIcon className="pi pi-percentage">
-                                        {" "}
-                                      </InputIcon>
-                                      <InputText
-                                        placeholder="درصد"
-                                        className={`w-100`}
-                                        {...field}
-                                        keyfilter="num"
-                                        onChange={handleValueChange}
-                                      />
-                                    </IconField>
-                                  ) : (
-                                    <InputText
-                                      {...field}
-                                      placeholder={`${
-                                        titleDirectToCat?.type === "CHAR"
-                                          ? "متن"
-                                          : "عددی"
-                                      }`}
-                                      className={`w-100`}
-                                      keyfilter={
-                                        titleDirectToCat?.type === "CHAR"
-                                          ? "char"
-                                          : "decimal"
-                                      }
-                                      onChange={handleValueChange}
-                                    />
-                                  );
-                                }}
+                          <Controller
+                            name={titleDirectToCat.uid}
+                            control={control}
+                            render={({ field }) => (
+                              <InputText
+                                {...field}
+                                className="w-100"
+                                disabled={viewMode}
+                                placeholder={`${titleDirectToCat?.name} را وارد نمایید`}
                               />
-                            </>
-                          )}
+                            )}
+                          />
                         </div>
                       </div>
                     </div>
                   ))}
               </div>
             )}
-          </div>
-
-          <div className="">
-            {titleOfAll?.length > 0 &&
-              titleOfAll.map((title, idx) => {
-                if (title.name !== "CBC") {
-                  return (
-                    <div key={idx} className="">
-                      <h3 className="my-4">{title?.name}</h3>
-
-                      <div className="">
-                        {title?.field
-                          ?.sort(
-                            (a, b) => (a?.ordering || 0) - (b?.ordering || 0)
-                          )
-                          ?.reduce((acc, titleData) => {
-                            const { ordering } = titleData;
-                            if (!acc[ordering]) {
-                              acc[ordering] = [];
-                            }
-                            acc[ordering].push(titleData);
-                            return acc;
-                          }, {})
-                          ? Object.keys(
-                              title?.field?.reduce((acc, titleData) => {
-                                const { ordering } = titleData;
-                                if (!acc[ordering]) {
-                                  acc[ordering] = [];
-                                }
-                                acc[ordering].push(titleData);
-                                return acc;
-                              }, {})
-                            ).map((groupKey, idx) => (
-                              <div className="row" key={idx}>
-                                {title?.field
-                                  ?.filter(
-                                    (field) =>
-                                      field?.ordering.toString() === groupKey
-                                  )
-                                  .map((titleData) => (
-                                    <div
-                                      key={titleData?.uid}
-                                      className={` col-md-${
-                                        countOccurrences[titleData?.ordering]
-                                          ? 12 /
-                                            countOccurrences[
-                                              titleData?.ordering
-                                            ]
-                                          : titleData?.ordering
-                                      } mb-4`}
-                                    >
-                                      <label htmlFor={titleData?.uid}>
-                                        {titleData?.name}
-                                      </label>
-                                      {titleData?.options?.length > 0 ? (
-                                        <Controller
-                                          name={titleData?.uid}
-                                          control={control}
-                                          render={({ field }) => (
-                                            <DropD
-                                              titleData={titleData}
-                                              selectedValue={field.value}
-                                              setSelectedValue={(value) =>
-                                                field.onChange(value)
-                                              }
-                                            />
-                                          )}
-                                        />
-                                      ) : (
-                                        <Controller
-                                          name={titleData?.uid}
-                                          control={control}
-                                          render={({ field }) => {
-                                            const handleValueChange = (e) => {
-                                              titleData?.name === "κ"
-                                                ? setkValue(e.target.value)
-                                                : titleData?.name === "λ"
-                                                ? setlandaValue(e.target.value)
-                                                : "";
-                                              let value = e.target.value;
-
-                                              if (titleData?.type === "FLOAT") {
-                                                value = parseFloat(value);
-                                              } else if (
-                                                titleData?.type === "PERCENTAGE"
-                                              ) {
-                                                value = parseFloat(value);
-                                              } else if (
-                                                titleData?.type === "CHAR"
-                                              ) {
-                                                value = value.toString();
-                                              }
-
-                                              field.onChange(value);
-                                            };
-
-                                            return (
-                                              <InputText
-                                                {...field}
-                                                placeholder={`${
-                                                  titleData?.type === "CHAR"
-                                                    ? "متن"
-                                                    : "عددی"
-                                                }`}
-                                                className={`w-100`}
-                                                value={
-                                                  titleData?.name === "κ/λ" &&
-                                                  valueinja !== Infinity &&
-                                                  typeof valueinja === "number"
-                                                    ? valueinja
-                                                    : field.value
-                                                }
-                                                keyfilter={
-                                                  titleData?.type === "CHAR"
-                                                    ? "char"
-                                                    : "decimal"
-                                                }
-                                                onChange={handleValueChange}
-                                              />
-                                            );
-                                          }}
-                                        />
-                                      )}
-                                    </div>
-                                  ))}
-                              </div>
-                            ))
-                          : null}
-                      </div>
-                    </div>
-                  );
-                }
-              })}
           </div>
 
           {hiddenInputs?.length > 0 && (
