@@ -50,6 +50,8 @@ const PillsTabs = ({
   const [isCategoryDataLoaded, setIsCategoryDataLoaded] = useState(false);
   const [isHiddenInputsLoaded, setIsHiddenInputsLoaded] = useState(false);
 
+  const [isTestDetailsLoading, setIsTestDetailsLoading] = useState(false);
+
   useEffect(() => {
     setvalueinja(Number(kValue) / Number(landaValue));
   }, [kValue, landaValue]);
@@ -143,33 +145,39 @@ const PillsTabs = ({
   }, [activeTab, gettedCategory]);
 
   useEffect(() => {
-    setActiveTab(tabsNew?.[0]?.uid ?? "");
-  }, [tabsNew]);
+    if (viewMode && viewTestData && tabsNew) {
+      // Find all tests with "info" (in-progress) status
+      const inProgressTests = Object.entries(viewTestData.groupedTests)
+        .flatMap(([categoryName, tests]) =>
+          tests.map((test) => ({
+            ...test,
+            categoryName,
+            tabUid: tabsNew.find((tab) => tab.name === categoryName)?.uid,
+          }))
+        )
+        .filter((test) => test.type === "info");
 
-  useEffect(() => {
-    if (!getHideInput || !activeTab || !gettedCategory) return;
-
-    const fetchDataCategoryHidden = async () => {
-      try {
-        const response = await axios.get(
-          `https://cancerreg.ir/api/v1/tests/order-fields/${activeTab}/`
+      // If there are in-progress tests, set the first one's tab as active
+      if (inProgressTests.length > 0) {
+        const firstInProgressTest = inProgressTests[0];
+        setActiveTab(firstInProgressTest.tabUid);
+      } else {
+        // If no in-progress tests, use the first matching tab
+        const matchingTabs = tabsNew.filter((tab) =>
+          viewTestData.testNames.some(
+            (testName) => testName.toLowerCase() === tab.name.toLowerCase()
+          )
         );
-
-        if (response.status >= 200 && response.status < 400) {
-          setHiddenInputs(response?.data?.data);
+        if (matchingTabs.length > 0) {
+          setActiveTab(matchingTabs[0].uid);
         }
-        setIsHiddenInputsLoaded(true);
-      } catch (error) {
-        toast.error("خطا در دریافت ورودی‌های مخفی");
-      } finally {
-        setisLoadingAll(false);
       }
-    };
-    fetchDataCategoryHidden();
-  }, [activeTab, gettedCategory, getHideInput]);
+    }
+  }, [viewMode, viewTestData, tabsNew]);
 
   useEffect(() => {
     if (viewMode && viewTestData && activeTab) {
+      setIsTestDetailsLoading(true);
       const fetchTestDetails = async () => {
         try {
           const response = await axios.get(
@@ -195,7 +203,6 @@ const PillsTabs = ({
                 if (titleDirectToCategList) {
                   titleDirectToCategList.forEach((field) => {
                     if (resultsByFieldId[field.uid] !== undefined) {
-                      // Use existing_ prefix for نتایج قبلی inputs
                       setValue(
                         `existing_${test.uid}_${field.uid}`,
                         resultsByFieldId[field.uid]
@@ -208,7 +215,6 @@ const PillsTabs = ({
                   titleOfAll.forEach((title) => {
                     title.field?.forEach((field) => {
                       if (resultsByFieldId[field.uid] !== undefined) {
-                        // Use existing_ prefix for نتایج قبلی inputs
                         setValue(
                           `existing_${test.uid}_${field.uid}`,
                           resultsByFieldId[field.uid]
@@ -222,6 +228,9 @@ const PillsTabs = ({
           }
         } catch (error) {
           toast.error("خطا در دریافت اطلاعات آزمایش");
+        } finally {
+          setIsTestDetailsLoading(false);
+          setIsHiddenInputsLoaded(true);
         }
       };
 
@@ -264,29 +273,27 @@ const PillsTabs = ({
     reset(defaultValues);
 
     if (viewMode && viewTestData) {
-      const activeTabData = tabsNew?.find((tab) => tab.uid === eventKey);
-      const matchingTests =
-        viewTestData.groupedTests[activeTabData?.name] || [];
+      setIsTestDetailsLoading(true);
+      const fetchTestDetails = async () => {
+        try {
+          const response = await axios.get(
+            `https://cancerreg.ir/api/v1/tests/test/${viewTestData.testUid}/`
+          );
+          if (response.status >= 200 && response.status < 400) {
+            const testData = response.data.data;
 
-      if (matchingTests.length > 0) {
-        const fetchTestDetails = async () => {
-          try {
-            const response = await axios.get(
-              `https://cancerreg.ir/api/v1/tests/test/${viewTestData.testUid}/`
-            );
-            if (response.status >= 200 && response.status < 400) {
-              const testData = response.data.data;
+            // Map results by field_uid for easier access
+            const resultsByFieldId = testData.results.reduce((acc, result) => {
+              acc[result.field_uid] = result.value;
+              return acc;
+            }, {});
 
-              // Map results by field_uid for easier access
-              const resultsByFieldId = testData.results.reduce(
-                (acc, result) => {
-                  acc[result.field_uid] = result.value;
-                  return acc;
-                },
-                {}
-              );
+            // Set values only for نتایج قبلی inputs
+            const activeTabData = tabsNew?.find((tab) => tab.uid === eventKey);
+            const matchingTests =
+              viewTestData.groupedTests[activeTabData?.name] || [];
 
-              // Set values only for نتایج قبلی inputs
+            if (matchingTests.length > 0) {
               matchingTests.forEach((test) => {
                 if (titleDirectToCategList) {
                   titleDirectToCategList.forEach((field) => {
@@ -313,13 +320,16 @@ const PillsTabs = ({
                 }
               });
             }
-          } catch (error) {
-            toast.error("خطا در دریافت اطلاعات آزمایش");
           }
-        };
+        } catch (error) {
+          toast.error("خطا در دریافت اطلاعات آزمایش");
+        } finally {
+          setIsTestDetailsLoading(false);
+          setIsHiddenInputsLoaded(true);
+        }
+      };
 
-        fetchTestDetails();
-      }
+      fetchTestDetails();
     }
   };
 
@@ -441,7 +451,8 @@ const PillsTabs = ({
     isLoadingAll ||
     !isInitialDataLoaded ||
     !isCategoryDataLoaded ||
-    (getHideInput && !isHiddenInputsLoaded);
+    (getHideInput && !isHiddenInputsLoaded) ||
+    isTestDetailsLoading;
 
   const isMatchingTab = (tabName) => {
     if (!viewMode || !viewTestData?.testNames) return false;

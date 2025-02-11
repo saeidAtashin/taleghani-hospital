@@ -163,30 +163,31 @@ export default function AzmayeshatTable() {
   };
 
   const operationsTemplate = (rowData) => {
-    // Group tests by category name
-    const groupedTests = rowData.names.reduce((acc, test) => {
-      if (!acc[test.value]) {
-        acc[test.value] = [];
-      }
-      acc[test.value].push(test);
-      return acc;
-    }, {});
-
     return (
       <button
         type="button"
         className="btn btn-outline-primary"
         onClick={() => {
+          // Group tests by category name
+          const groupedTests = rowData.names.reduce((acc, test) => {
+            if (!acc[test.value]) {
+              acc[test.value] = [];
+            }
+            acc[test.value].push(test);
+            return acc;
+          }, {});
+
           const uniqueTests = [
             ...new Set(rowData.names.map((test) => test.value)),
           ];
-          // Pass both unique test names and grouped tests
+          const testUid = rowData.names[0].uid;
+
+          setShowAzmayeshPAge("viewTest");
           setViewTestData({
-            testUid: rowData.names[0].uid,
+            testUid,
             testNames: uniqueTests,
             groupedTests: groupedTests,
           });
-          setShowAzmayeshPAge("viewTest");
         }}
       >
         مشاهده
