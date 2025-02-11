@@ -152,7 +152,7 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
           setrowDataTransfer(undefined);
           settasvirDetailUid({
             records: [],
-            activeRecord: "sonography"
+            activeRecord: "sonography",
           });
           setallrow([]);
         }}
