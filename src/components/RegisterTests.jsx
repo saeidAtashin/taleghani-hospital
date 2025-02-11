@@ -7,7 +7,7 @@ const SelectableList = ({ setShowAzmayeshPAge }) => {
   const [selected, setSelected] = useState({});
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const patient_uid = useParams(); // Static for now
+  const patient_uid = useParams();
 
   useEffect(() => {
     const fetchData = async () => {
