@@ -71,8 +71,6 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
         }
       } catch (error) {
         setisLoadingAll(false);
-
-        // console.error("Error fetching data:", error);
       }
     };
     fetchDataCategory();
@@ -125,8 +123,6 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
         setGetHideInput(false);
 
         setisLoadingAll(false);
-
-        // console.error("Error fetching data:", error);
       }
     };
     activeTab && gettedCategory && fetchDataCategoryUId();
@@ -146,9 +142,7 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
         if (response.status >= 200 && response.status < 400) {
           setHiddenInputs(response?.data?.data);
         }
-      } catch (error) {
-        // console.error("Error fetching data:", error);
-      }
+      } catch (error) {}
     };
     getHideInput && activeTab && gettedCategory && fetchDataCategoryHidden();
   }, [activeTab, tabsNew, gettedCategory]);
@@ -197,9 +191,8 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
       ...fields,
       ...parentArray.flatMap((item) => {
         const [uid, value] = Object.entries(item)[0];
-        return uid && value && { uid, value }; // Return empty only if both uid and value exist
+        return uid && value && { uid, value };
       }),
-      // ...(hiddenSubmittedData && [hiddenSubmittedData]),
     ];
 
     const formDataWithExtraData = {
@@ -232,8 +225,6 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
           ? error?.response?.data?.errors?.[0]?.message
           : "نشد "
       );
-
-      // console.error(error?.response?.data?.errors?.[0]?.message);
     }
   };
 
@@ -306,7 +297,6 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="p-4 mb-5 container shadow-lg">
-          {/* <h1>Dynamic Form</h1> */}
           <div className="my-3 d-flex gap-2 ">
             {subCategory?.length > 0 &&
               subCategory.map((subs, index) => (
@@ -325,7 +315,6 @@ const PillsTabs = ({ setShowAzmayeshPAge }) => {
                 </div>
               ))}
           </div>
-          {/* Date Field */}
           <div className="d-flex flex-column">
             <label className="label" htmlFor="date">
               تاریخ
