@@ -190,26 +190,34 @@ const PillsTabs = ({
               viewTestData.groupedTests[activeTabData?.name] || [];
 
             if (matchingTests.length > 0) {
-              if (titleDirectToCategList) {
-                titleDirectToCategList.forEach((field) => {
-                  if (resultsByFieldId[field.uid] !== undefined) {
-                    setValue(field.uid, resultsByFieldId[field.uid]);
-                  }
-                });
-              }
-
-              if (titleOfAll) {
-                titleOfAll.forEach((title) => {
-                  title.field?.forEach((field) => {
+              // Set values for نتایج قبلی inputs using existing_ prefix
+              matchingTests.forEach((test) => {
+                if (titleDirectToCategList) {
+                  titleDirectToCategList.forEach((field) => {
                     if (resultsByFieldId[field.uid] !== undefined) {
-                      setValue(field.uid, resultsByFieldId[field.uid]);
+                      // Use existing_ prefix for نتایج قبلی inputs
+                      setValue(
+                        `existing_${test.uid}_${field.uid}`,
+                        resultsByFieldId[field.uid]
+                      );
                     }
                   });
-                });
-              }
-            } else {
-              // Clear form if no matching tests for this tab
-              reset();
+                }
+
+                if (titleOfAll) {
+                  titleOfAll.forEach((title) => {
+                    title.field?.forEach((field) => {
+                      if (resultsByFieldId[field.uid] !== undefined) {
+                        // Use existing_ prefix for نتایج قبلی inputs
+                        setValue(
+                          `existing_${test.uid}_${field.uid}`,
+                          resultsByFieldId[field.uid]
+                        );
+                      }
+                    });
+                  });
+                }
+              });
             }
           }
         } catch (error) {
@@ -239,11 +247,21 @@ const PillsTabs = ({
 
   const handleSelect = (eventKey) => {
     setActiveTab(eventKey);
-    reset();
     setParentArray([]);
     setSelectedName(undefined);
-    setValue("date", undefined);
     setimmunofixationUid(undefined);
+
+    // Always keep the default form empty
+    const defaultValues = { date: undefined };
+    titleDirectToCategList?.forEach((field) => {
+      defaultValues[field.uid] = "";
+    });
+    titleOfAll?.forEach((title) => {
+      title.field?.forEach((field) => {
+        defaultValues[field.uid] = "";
+      });
+    });
+    reset(defaultValues);
 
     if (viewMode && viewTestData) {
       const activeTabData = tabsNew?.find((tab) => tab.uid === eventKey);
@@ -268,24 +286,32 @@ const PillsTabs = ({
                 {}
               );
 
-              // Set values for all matching fields
-              if (titleDirectToCategList) {
-                titleDirectToCategList.forEach((field) => {
-                  if (resultsByFieldId[field.uid] !== undefined) {
-                    setValue(field.uid, resultsByFieldId[field.uid]);
-                  }
-                });
-              }
-
-              if (titleOfAll) {
-                titleOfAll.forEach((title) => {
-                  title.field?.forEach((field) => {
+              // Set values only for نتایج قبلی inputs
+              matchingTests.forEach((test) => {
+                if (titleDirectToCategList) {
+                  titleDirectToCategList.forEach((field) => {
                     if (resultsByFieldId[field.uid] !== undefined) {
-                      setValue(field.uid, resultsByFieldId[field.uid]);
+                      setValue(
+                        `existing_${test.uid}_${field.uid}`,
+                        resultsByFieldId[field.uid]
+                      );
                     }
                   });
-                });
-              }
+                }
+
+                if (titleOfAll) {
+                  titleOfAll.forEach((title) => {
+                    title.field?.forEach((field) => {
+                      if (resultsByFieldId[field.uid] !== undefined) {
+                        setValue(
+                          `existing_${test.uid}_${field.uid}`,
+                          resultsByFieldId[field.uid]
+                        );
+                      }
+                    });
+                  });
+                }
+              });
             }
           } catch (error) {
             toast.error("خطا در دریافت اطلاعات آزمایش");
