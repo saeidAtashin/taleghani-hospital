@@ -194,34 +194,20 @@ const PillsTabs = ({
               fieldValues[result.field_uid] = result.value;
             });
 
-            // Only set form values if the test category matches the active tab
+            // Set values for existing test fields
             const activeTabData = tabsNew?.find((tab) => tab.uid === activeTab);
             const matchingTests =
               viewTestData.groupedTests[activeTabData?.name] || [];
 
-            if (matchingTests.length > 0) {
-              // Set form values for the current active tab's fields
-              if (titleDirectToCategList) {
-                titleDirectToCategList.forEach((field) => {
-                  if (fieldValues[field.uid] !== undefined) {
-                    setValue(field.uid, fieldValues[field.uid]);
-                  }
-                });
-              }
+            matchingTests.forEach((test) => {
+              // Set values for existing test fields with a special prefix
+              Object.entries(fieldValues).forEach(([fieldUid, value]) => {
+                setValue(`existing_${test.uid}_${fieldUid}`, value);
+              });
+            });
 
-              if (titleOfAll) {
-                titleOfAll.forEach((title) => {
-                  title.field.forEach((field) => {
-                    if (fieldValues[field.uid] !== undefined) {
-                      setValue(field.uid, fieldValues[field.uid]);
-                    }
-                  });
-                });
-              }
-            } else {
-              // Clear form if no matching tests for this tab
-              reset();
-            }
+            // Clear new test form
+            reset({}, { keepDefaultValues: true });
           }
         } catch (error) {
           toast.error("خطا در دریافت اطلاعات آزمایش");
@@ -230,15 +216,7 @@ const PillsTabs = ({
 
       fetchTestDetails();
     }
-  }, [
-    viewMode,
-    viewTestData,
-    setValue,
-    tabsNew,
-    titleDirectToCategList,
-    titleOfAll,
-    activeTab,
-  ]);
+  }, [viewMode, viewTestData, setValue, tabsNew, activeTab]);
 
   // Add this function to check if a test belongs to current tab
   const getTestsForCurrentTab = () => {
@@ -440,7 +418,7 @@ const PillsTabs = ({
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="p-4 mb-5 container shadow-lg">
-          {/* Show tests only for current tab */}
+          {/* Show existing test values for current tab */}
           {viewMode && viewTestData?.groupedTests && (
             <div className="mb-4">
               {getTestsForCurrentTab().map((test) => (
@@ -454,8 +432,37 @@ const PillsTabs = ({
                       {test.type === "info" ? "در حال انجام" : "تکمیل شده"}
                     </span>
                   </div>
+                  {/* Show disabled form fields with existing values */}
+                  <div className="row">
+                    {titleDirectToCategList?.map((field, idx) => (
+                      <div key={idx} className="col-md-4 mb-3">
+                        <div className="form-group">
+                          <label className="text-muted">{field.name}</label>
+                          <Controller
+                            name={`existing_${test.uid}_${field.uid}`}
+                            control={control}
+                            defaultValue=""
+                            render={({ field: controllerField }) => (
+                              <InputText
+                                {...controllerField}
+                                className="form-control bg-light"
+                                disabled={true}
+                              />
+                            )}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               ))}
+            </div>
+          )}
+
+          {/* Divider if there are existing tests */}
+          {getTestsForCurrentTab().length > 0 && (
+            <div className="border-bottom my-4">
+              <h5 className="text-primary mb-3">ثبت نتیجه جدید</h5>
             </div>
           )}
 
