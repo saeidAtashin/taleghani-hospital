@@ -169,7 +169,6 @@ const PillsTabs = ({
 
   useEffect(() => {
     if (viewMode && viewTestData) {
-      // Find all matching tabs based on test names
       const matchingTabs = tabsNew?.filter((tab) =>
         viewTestData.testNames.some(
           (testName) => testName.toLowerCase() === tab.name.toLowerCase()
@@ -188,26 +187,24 @@ const PillsTabs = ({
           if (response.status >= 200 && response.status < 400) {
             const testData = response.data.data;
 
-            // Map test results by field_uid for easier access
-            const fieldValues = {};
             testData.results.forEach((result) => {
-              fieldValues[result.field_uid] = result.value;
-            });
+              const activeTabData = tabsNew?.find(
+                (tab) => tab.uid === activeTab
+              );
+              const matchingTests =
+                viewTestData.groupedTests[activeTabData?.name] || [];
 
-            // Set values for existing test fields
-            const activeTabData = tabsNew?.find((tab) => tab.uid === activeTab);
-            const matchingTests =
-              viewTestData.groupedTests[activeTabData?.name] || [];
-
-            matchingTests.forEach((test) => {
-              // Set values for existing test fields with a special prefix
-              Object.entries(fieldValues).forEach(([fieldUid, value]) => {
-                setValue(`existing_${test.uid}_${fieldUid}`, value);
+              matchingTests.forEach((test) => {
+                setValue(
+                  `existing_${test.uid}_${result.field_uid}`,
+                  result.value
+                );
               });
             });
 
-            // Clear new test form
-            reset({}, { keepDefaultValues: true });
+            reset({
+              date: undefined,
+            });
           }
         } catch (error) {
           toast.error("خطا در دریافت اطلاعات آزمایش");
@@ -218,7 +215,6 @@ const PillsTabs = ({
     }
   }, [viewMode, viewTestData, setValue, tabsNew, activeTab]);
 
-  // Add this function to check if a test belongs to current tab
   const getTestsForCurrentTab = () => {
     if (!viewMode || !viewTestData?.groupedTests || !activeTab) return [];
 
@@ -359,7 +355,6 @@ const PillsTabs = ({
     !isCategoryDataLoaded ||
     (getHideInput && !isHiddenInputsLoaded);
 
-  // Modify the isMatchingTab function to check against array of test names
   const isMatchingTab = (tabName) => {
     if (!viewMode || !viewTestData?.testNames) return false;
     return viewTestData.testNames.some(
@@ -367,7 +362,6 @@ const PillsTabs = ({
     );
   };
 
-  // Add this after the isMatchingTab function
   const getTestCountForTab = (tabName) => {
     if (!viewMode || !viewTestData?.groupedTests) return 0;
     return viewTestData.groupedTests[tabName]?.length || 0;
@@ -418,7 +412,6 @@ const PillsTabs = ({
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="p-4 mb-5 container shadow-lg">
-          {/* Show existing test values for current tab */}
           {viewMode && viewTestData?.groupedTests && (
             <div className="mb-4">
               {getTestsForCurrentTab().map((test) => (
@@ -432,7 +425,6 @@ const PillsTabs = ({
                       {test.type === "info" ? "در حال انجام" : "تکمیل شده"}
                     </span>
                   </div>
-                  {/* Show disabled form fields with existing values */}
                   <div className="row">
                     {titleDirectToCategList?.map((field, idx) => (
                       <div key={idx} className="col-md-4 mb-3">
@@ -441,7 +433,6 @@ const PillsTabs = ({
                           <Controller
                             name={`existing_${test.uid}_${field.uid}`}
                             control={control}
-                            defaultValue=""
                             render={({ field: controllerField }) => (
                               <InputText
                                 {...controllerField}
@@ -459,22 +450,19 @@ const PillsTabs = ({
             </div>
           )}
 
-          {/* Divider if there are existing tests */}
           {getTestsForCurrentTab().length > 0 && (
             <div className="border-bottom my-4">
               <h5 className="text-primary mb-3">ثبت نتیجه جدید</h5>
             </div>
           )}
 
-          <div className="my-3 d-flex gap-2 ">
+          <div className="my-3 d-flex gap-2">
             {subCategory?.length > 0 &&
               subCategory.map((subs, index) => (
-                <div key={index} className="my-3 ">
+                <div key={index} className="my-3">
                   <span
                     className={`px-3 py-2 rounded-3 cursor-pointer ${
-                      activeSubCategoryIndex === index
-                        ? "bg-warning"
-                        : " border"
+                      activeSubCategoryIndex === index ? "bg-warning" : "border"
                     }`}
                     onClick={() => handleSubCategoryClick(subs, index)}
                   >
@@ -485,54 +473,47 @@ const PillsTabs = ({
               ))}
           </div>
           <div className="d-flex flex-column">
-            <label className="label" htmlFor="date">
-              تاریخ
-            </label>
-            <Controller
-              name="date"
-              control={control}
-              render={({ field }) => {
-                const selectedDate = field.value
-                  ? new DateObject({
-                      date: new Date(field.value),
-                      calendar: persian,
-                    })
-                  : null;
+            <div className="mb-3">
+              <Controller
+                name="date"
+                control={control}
+                render={({ field }) => {
+                  const selectedDate = field.value
+                    ? new DateObject({
+                        date: new Date(field.value),
+                        calendar: persian,
+                      })
+                    : null;
 
-                return (
-                  <DatePicker
-                    {...field}
-                    disabled={viewMode}
-                    value={selectedDate}
-                    onChange={(date) => {
-                      if (date) {
-                        const gregorianDate = date
-                          .convert("gregorian")
-                          .toDate();
-                        const formattedDate = gregorianDate
-                          .toISOString()
-                          .split("T")[0];
-                        field.onChange(formattedDate);
-                      } else {
-                        field.onChange(null);
-                      }
-                    }}
-                    calendar={persian}
-                    locale={persian_fa}
-                    format="YYYY/MM/DD"
-                    placeholder="تاریخ را انتخاب کنید"
-                    className={`w-full p-2 border rounded ${
-                      viewMode ? "bg-light" : ""
-                    }`}
-                    inputClass="w-full p-2 border rounded"
-                    position="bottom-right"
-                  />
-                );
-              }}
-            />
-            {errors.date && (
-              <div className="invalid-feedback">{errors.date.message}</div>
-            )}
+                  return (
+                    <DatePicker
+                      {...field}
+                      value={selectedDate}
+                      onChange={(date) => {
+                        if (date) {
+                          const gregorianDate = date
+                            .convert("gregorian")
+                            .toDate();
+                          const formattedDate = gregorianDate
+                            .toISOString()
+                            .split("T")[0];
+                          field.onChange(formattedDate);
+                        } else {
+                          field.onChange(null);
+                        }
+                      }}
+                      calendar={persian}
+                      locale={persian_fa}
+                      format="YYYY/MM/DD"
+                      placeholder="تاریخ را انتخاب کنید"
+                      className="w-full p-2 border rounded"
+                      inputClass="w-full p-2 border rounded"
+                      position="bottom-right"
+                    />
+                  );
+                }}
+              />
+            </div>
           </div>
 
           <div className="">
@@ -566,7 +547,7 @@ const PillsTabs = ({
                                 return acc;
                               }, {})
                             ).map((groupKey, idx) => (
-                              <div className="row " key={idx}>
+                              <div className="row" key={idx}>
                                 {title?.field
                                   ?.filter(
                                     (field) =>
@@ -598,7 +579,6 @@ const PillsTabs = ({
                                               setSelectedValue={(value) =>
                                                 field.onChange(value)
                                               }
-                                              disabled={viewMode}
                                             />
                                           )}
                                         />
@@ -628,11 +608,8 @@ const PillsTabs = ({
                                             return (
                                               <InputText
                                                 {...field}
-                                                disabled={viewMode}
                                                 onChange={handleValueChange}
-                                                className={`w-100 ${
-                                                  viewMode ? "bg-light" : ""
-                                                }`}
+                                                className={`w-100`}
                                                 keyfilter={
                                                   titleData?.type === "CHAR"
                                                     ? "char"
@@ -662,7 +639,7 @@ const PillsTabs = ({
           </div>
           <div className="">
             {titleDirectToCategList?.length > 0 && (
-              <div className="row  d-flex">
+              <div className="row d-flex">
                 {titleDirectToCategList
                   ?.sort((a, b) => (a?.ordering || 0) - (b?.ordering || 0))
                   ?.filter((titleDirectToCat) => {
@@ -742,7 +719,6 @@ const PillsTabs = ({
                                           ];
                                         });
                                       }}
-                                      disabled={viewMode}
                                     />
                                   </>
                                 ) : (
@@ -752,7 +728,6 @@ const PillsTabs = ({
                                     setSelectedValue={(value) => {
                                       field.onChange(value);
                                     }}
-                                    disabled={viewMode}
                                   />
                                 )
                               }
@@ -794,27 +769,21 @@ const PillsTabs = ({
                                       </InputIcon>
                                       <InputText
                                         placeholder="درصد"
-                                        className={`w-100 ${
-                                          viewMode ? "bg-light" : ""
-                                        }`}
+                                        className={`w-100`}
                                         {...field}
                                         keyfilter="num"
                                         onChange={handleValueChange}
-                                        disabled={viewMode}
                                       />
                                     </IconField>
                                   ) : (
                                     <InputText
                                       {...field}
-                                      disabled={viewMode}
                                       placeholder={`${
                                         titleDirectToCat?.type === "CHAR"
                                           ? "متن"
                                           : "عددی"
                                       }`}
-                                      className={`w-100 ${
-                                        viewMode ? "bg-light" : ""
-                                      }`}
+                                      className={`w-100`}
                                       keyfilter={
                                         titleDirectToCat?.type === "CHAR"
                                           ? "char"
@@ -835,7 +804,6 @@ const PillsTabs = ({
             )}
           </div>
 
-          {/* org cbc */}
           <div className="">
             {titleOfAll?.length > 0 &&
               titleOfAll.map((title, idx) => {
@@ -899,7 +867,6 @@ const PillsTabs = ({
                                               setSelectedValue={(value) =>
                                                 field.onChange(value)
                                               }
-                                              disabled={viewMode}
                                             />
                                           )}
                                         />
@@ -934,15 +901,12 @@ const PillsTabs = ({
                                             return (
                                               <InputText
                                                 {...field}
-                                                disabled={viewMode}
                                                 placeholder={`${
                                                   titleData?.type === "CHAR"
                                                     ? "متن"
                                                     : "عددی"
                                                 }`}
-                                                className={`w-100 ${
-                                                  viewMode ? "bg-light" : ""
-                                                }`}
+                                                className={`w-100`}
                                                 value={
                                                   titleData?.name === "κ/λ" &&
                                                   valueinja !== Infinity &&
@@ -982,7 +946,6 @@ const PillsTabs = ({
             />
           )}
 
-          {/* Always show submit button */}
           <button
             type="submit"
             className="btn btn-primary mt-5 w-100 text-center"
