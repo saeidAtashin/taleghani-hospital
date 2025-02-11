@@ -150,7 +150,10 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
           setSelectedOptions([]);
           setShowAzmayeshPAge("orderRegister");
           setrowDataTransfer(undefined);
-          settasvirDetailUid(undefined);
+          settasvirDetailUid({
+            records: [],
+            activeRecord: "sonography"
+          });
           setallrow([]);
         }}
         className="rounded-3"

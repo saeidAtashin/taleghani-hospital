@@ -18,6 +18,9 @@ const PillsTabsTasvir = ({ dataOfTable, allrow, setShowAzmayeshPAge }) => {
     } else if (dataOfTable?.records?.[0]?.record_type) {
       // Fallback to first record if no specific record was clicked
       setActiveTab(dataOfTable.records[0].record_type);
+    } else {
+      // If no records, default to first tab (sonography)
+      setActiveTab("sonography");
     }
   }, [dataOfTable]);
 
