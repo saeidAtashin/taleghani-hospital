@@ -5,12 +5,16 @@
   background-color: #f8f9fa;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  height: calc(100vh); /* Adjust based on your layout */
+  overflow: hidden; /* Prevent container from scrolling */
 }
 
 .menu-sidebar {
   min-width: 250px;
   border-left: 1px solid #e9ecef;
   padding-left: 1.5rem;
+  overflow-y: auto; /* Enable vertical scrolling if needed */
+  height: 100%;
 }
 
 .menu-item {
@@ -43,7 +47,8 @@
   flex: 1;
   width: 100%;
   padding: 0 1rem;
-  
+  overflow-y: auto; /* Make content area scrollable */
+  height: 100%;
 }
 
 .input-section {
@@ -130,4 +135,27 @@
 
 .cursor-pointer {
   cursor: pointer;
+}
+
+/* Add custom scrollbar styling */
+.menu-sidebar::-webkit-scrollbar,
+.content-area::-webkit-scrollbar {
+  width: 6px;
+}
+
+.menu-sidebar::-webkit-scrollbar-track,
+.content-area::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.menu-sidebar::-webkit-scrollbar-thumb,
+.content-area::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.menu-sidebar::-webkit-scrollbar-thumb:hover,
+.content-area::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
 }
