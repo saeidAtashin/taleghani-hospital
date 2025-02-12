@@ -183,7 +183,7 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
 
   const handleSelectionChange = (selected) => {
     setSelectedOptions(selected);
-  }; 
+  };
 
   const [description, setDescreption] = useState("");
 
