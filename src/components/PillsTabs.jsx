@@ -486,13 +486,13 @@ const PillsTabs = ({
             const updatedTests = viewTestData.groupedTests[
               activeTabData.name
             ].filter((test) => test.uid !== uid);
-            setViewTestData((prev) => ({
-              ...prev,
-              groupedTests: {
-                ...prev.groupedTests,
-                [activeTabData.name]: updatedTests,
-              },
-            }));
+            // setViewTestData((prev) => ({
+            //   ...prev,
+            //   groupedTests: {
+            //     ...prev.groupedTests,
+            //     [activeTabData.name]: updatedTests,
+            //   },
+            // }));
           }
         }
       }
