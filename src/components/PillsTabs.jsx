@@ -576,7 +576,7 @@ const PillsTabs = ({
                         <div className="d-flex align-items-center">
                           <span className="me-2">نتیجه آزمایش</span>
                           <span
-                            className={`badge ${
+                            className={`badge mx-3 ${
                               test.type === "info" ? "bg-warning" : "bg-success"
                             }`}
                           >
