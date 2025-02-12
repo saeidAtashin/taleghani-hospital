@@ -104,13 +104,13 @@ const HorizontalNavbar = () => {
   };
 
   return (
-    <div className="horizontal-navbar-container">
+    <div className="horizontal-navbar-container w-100">
       <div className="menu-sidebar">
         {items?.map((item, index) => (
           <div
             key={index}
             onClick={() => handleClick(item)}
-            className={`menu-item ${
+            className={`menu-item shadow-lg mt-4 ${
               selectedItem?.name === item.name ? "active" : ""
             }`}
           >
@@ -122,7 +122,7 @@ const HorizontalNavbar = () => {
         ))}
       </div>
 
-      <div className="content-area">
+      <div className="content-area pt-4 shadow-lg">
         {selectedItem && selectedItem.name === "شهر" && (
           <div className="mb-4">
             <label className="form-label" htmlFor="provinceSelect">
