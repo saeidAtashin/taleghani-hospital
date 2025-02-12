@@ -1,31 +1,127 @@
+.horizontal-navbar-container {
+  display: flex;
+  gap: 2rem;
+  padding: 1.5rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.menu-sidebar {
+  min-width: 250px;
+  border-left: 1px solid #e9ecef;
+  padding-left: 1.5rem;
+}
+
+.menu-item {
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.menu-item:hover {
+  background-color: #e9ecef;
+}
+
+.menu-item.active {
+  background-color: #e7f1ff;
+  color: #0d6efd;
+}
+
+.dropdown-icon img {
+  width: 12px;
+  opacity: 0.6;
+  transform: rotate(90deg);
+  transition: transform 0.2s ease;
+}
+
+.menu-item.active .dropdown-icon img {
+  opacity: 1;
+}
+
+.content-area {
+  flex: 1;
+  padding: 0 1rem;
+}
+
+.input-section {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.badge-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.badge {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  border-radius: 20px;
+  background-color: #e7f1ff;
+  color: #0d6efd;
+  border: 1px solid #0d6efd;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.badge .delete-icon {
+  cursor: pointer;
+  margin-right: 0.5rem;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+  color: #dc3545;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
+
+.badge .delete-icon:hover {
+  opacity: 1;
+  background-color: rgba(220, 53, 69, 0.1);
+}
+
+.form-select, .form-control {
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  border: 1px solid #dee2e6;
+}
+
+.form-select:focus, .form-control:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.btn-primary {
+  padding: 0.5rem 1.5rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(13, 110, 253, 0.3);
+}
+
 .menu-item {
   display: flex;
   align-items: center;
   gap: 8px; /* Adjust gap between text and icon as needed */
 }
 
-.dropdown-icon img {
-  width: 16px; /* Adjust the width to control icon size */
-  transform: rotate(90deg); /* Rotate icon if needed */
-}
-
 .menu-item span {
   font-size: 1rem;
   text-align: right; /* Align text to the right for RTL support */
-}
-
-.badge-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.badge {
-  padding: 0.5em 0.8em;
-  font-size: 0.9rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
 }
 
 .cursor-pointer {

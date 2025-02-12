@@ -76,7 +76,7 @@ const HorizontalNavbar = () => {
   const comonDefFetch = async (id) => {
     setLoading(true);
     try {
-      await apiRequest("delete", `${selectedItem.endpoint}/${id}`);
+      await apiRequest("delete", `${selectedItem.endpoint}${id}/`);
       const response = await apiRequest("get", selectedItem.endpoint);
       setData(response.data.data.results);
       Swal.fire({
@@ -104,28 +104,30 @@ const HorizontalNavbar = () => {
   };
 
   return (
-    <>
-      <div className="cursor-pointer d-flex flex-column justify-content-around align-items-start gap-3 p-3">
+    <div className="horizontal-navbar-container">
+      <div className="menu-sidebar">
         {items?.map((item, index) => (
           <div
             key={index}
             onClick={() => handleClick(item)}
-            className={`d-flex align-items-center justify-content-between menu-item w-100 ${
-              selectedItem?.name === item.name ? "text-primary" : ""
+            className={`menu-item ${
+              selectedItem?.name === item.name ? "active" : ""
             }`}
           >
             <span>{item.name}</span>
-            <div className="dropdown-icon ms-2">
+            <div className="dropdown-icon">
               <img src="/images/dropdown.svg" alt="dropdown" />
             </div>
           </div>
         ))}
       </div>
 
-      <div>
+      <div className="content-area">
         {selectedItem && selectedItem.name === "شهر" && (
-          <div className="mt-3">
-            <label htmlFor="provinceSelect">انتخاب استان:</label>
+          <div className="mb-4">
+            <label className="form-label" htmlFor="provinceSelect">
+              انتخاب استان:
+            </label>
             <select
               id="provinceSelect"
               className="form-select"
@@ -143,50 +145,63 @@ const HorizontalNavbar = () => {
         )}
 
         {selectedItem && (
-          <div className="input-section mt-3">
-            <h5>{selectedItem.name}</h5>
-            <input
-              type="text"
-              value={newItem}
-              onChange={(e) => setNewItem(e.target.value)}
-              className="form-control my-2"
-              placeholder={`${selectedItem.name} را وارد نمایید`}
-            />
-            <button onClick={handleAddInput} className="btn btn-primary">
-              افزودن
-            </button>
+          <div className="input-section">
+            <h5 className="mb-3">{selectedItem.name}</h5>
+            <div className="d-flex gap-2">
+              <input
+                type="text"
+                value={newItem}
+                onChange={(e) => setNewItem(e.target.value)}
+                className="form-control"
+                placeholder={`${selectedItem.name} را وارد نمایید`}
+              />
+              <button
+                onClick={handleAddInput}
+                className="btn btn-primary"
+                disabled={loading}
+              >
+                {loading ? (
+                  <span
+                    className="spinner-border spinner-border-sm"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+                ) : (
+                  "افزودن"
+                )}
+              </button>
+            </div>
+
+            {data.length > 0 && (
+              <div className="badge-container">
+                {data?.map((item, index) => (
+                  <span key={index} className="badge">
+                    {item.name}
+                    <span
+                      className="delete-icon"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(item);
+                      }}
+                    >
+                      ×
+                    </span>
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
-        <div>
-          {selectedItem && data.length > 0 && (
-            <div className="badge-container mt-3 d-flex flex-column">
-              {data?.map((item, index) => (
-                <span
-                  key={index}
-                  className="badge bg-primary me-2 d-flex align-items-center justify-content-between"
-                >
-                  {item.name}
-                  <span
-                    className="ms-2 text-danger cursor-pointer"
-                    onClick={() => handleDelete(item)}
-                  >
-                    ✕
-                  </span>
-                </span>
-              ))}
-              {loading && (
-                <div className="text-center">
-                  <div className="spinner-border text-primary" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                  </div>
-                </div>
-              )}
+        {loading && (
+          <div className="text-center mt-4">
+            <div className="spinner-border text-primary" role="status">
+              <span className="visually-hidden">Loading...</span>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
-    </>
+    </div>
   );
 };
 
