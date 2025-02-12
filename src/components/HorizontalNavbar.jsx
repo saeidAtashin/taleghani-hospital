@@ -40,9 +40,7 @@ const HorizontalNavbar = () => {
         setProvinces(response.data.data.results);
       }
       setData(response.data.data.results);
-    } catch (error) {
-      // console.error(`Error fetching data for ${item.name}:`, error);
-    }
+    } catch (error) {}
     setLoading(false);
   };
 
@@ -69,10 +67,8 @@ const HorizontalNavbar = () => {
         await apiRequest("post", selectedItem.endpoint, payload);
         const response = await apiRequest("get", selectedItem.endpoint);
         setData(response.data.data.results);
-        setNewItem(""); // Clear the input
-      } catch (error) {
-        // console.error(`Error adding new item for ${selectedItem.name}:`, error);
-      }
+        setNewItem("");
+      } catch (error) {}
       setLoading(false);
     }
   };
@@ -89,9 +85,7 @@ const HorizontalNavbar = () => {
         showConfirmButton: false,
         timer: 2000,
       });
-    } catch (error) {
-      // console.error(`Error deleting data for ${selectedItem.name}:`, error);
-    }
+    } catch (error) {}
     setLoading(false);
   };
 
