@@ -110,7 +110,7 @@ const HorizontalNavbar = () => {
           <div
             key={index}
             onClick={() => handleClick(item)}
-            className={`menu-item shadow mt-4 me-4 ${
+            className={`menu-item shadow mt-4 me-4 mb-4 ${
               selectedItem?.name === item.name ? "active" : ""
             }`}
           >
