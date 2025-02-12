@@ -7,7 +7,7 @@ const BasicTestDefinitions = () => {
     <div className="d-flex flex-column w-100">
       <TabComponent />
       <div className="m-5">
-        <PillsTabs />
+        <PillsTabs isLoadingData={false} />
       </div>
     </div>
   );

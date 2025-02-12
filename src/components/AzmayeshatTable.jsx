@@ -290,7 +290,10 @@ export default function AzmayeshatTable() {
                 x
               </span>
             </div>
-            <PillsTabs setShowAzmayeshPAge={setShowAzmayeshPAge} />
+            <PillsTabs
+              isLoadingData={false}
+              setShowAzmayeshPAge={setShowAzmayeshPAge}
+            />
           </div>
         </>
       ) : showAzmayeshPAge === "viewTest" ? (

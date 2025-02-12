@@ -22,6 +22,7 @@ const PillsTabs = ({
   setShowAzmayeshPAge,
   viewMode = false,
   viewTestData = null,
+  isLoadingData,
 }) => {
   const [tabsNew, settabsNew] = useState();
   const [titleDirectToCategList, settitleDirectToCategList] = useState();
@@ -500,7 +501,9 @@ const PillsTabs = ({
     }
   };
 
-  if (isLoading) {
+  console.log("isLoadingData", isLoadingData);
+
+  if (isLoading && isLoadingData !== false) {
     return (
       <div className="d-flex justify-content-center align-items-center p-5">
         <div className="spinner-border text-primary me-2" role="status">
