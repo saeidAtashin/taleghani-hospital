@@ -16,6 +16,7 @@ import HiddenInputsModal from "./HiddenInputsModal";
 import { Accordion, AccordionTab } from "primereact/accordion";
 import { ConfirmDialog } from "primereact/confirmdialog";
 import { Button } from "primereact/button";
+import moment from "jalali-moment";
 
 const PillsTabs = ({
   setShowAzmayeshPAge,
@@ -599,6 +600,16 @@ const PillsTabs = ({
                   >
                     {/* Previous test values */}
                     <div className="row">
+                      {/* <span className="text-muted me-2">
+                        {test?.date
+                          ? moment(test?.date, "YYYY-MM-DD")
+                              ?.locale("fa")
+                              ?.format("jYYYY/jMM/jDD")
+                          : moment(test?.created_at)
+                              ?.locale("fa")
+                              ?.format("jYYYY/jMM/jDD")}
+                      </span> */}
+
                       {titleDirectToCategList
                         ?.sort(
                           (a, b) => (a?.ordering || 0) - (b?.ordering || 0)
