@@ -501,8 +501,6 @@ const PillsTabs = ({
     }
   };
 
-  console.log("isLoadingData", isLoadingData);
-
   if (isLoading && isLoadingData !== false) {
     return (
       <div className="d-flex justify-content-center align-items-center p-5">
@@ -525,9 +523,7 @@ const PillsTabs = ({
             return (
               <Nav.Item key={index} className="m-2">
                 <Nav.Link
-                  className={`border ${
-                    isMatching ? "bg-danger text-white position-relative" : ""
-                  }`}
+                  className={`border ${isMatching ? "position-relative" : ""}`}
                   eventKey={tab?.uid ?? ""}
                   onClick={() => {
                     settitleOfAll(undefined);
@@ -536,7 +532,10 @@ const PillsTabs = ({
                 >
                   {tab?.name ?? "Unknown Tab"}
                   {isMatching && testCount > 0 && (
-                    <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark">
+                    // test.type === "info" ? "bg-warning" : "bg-success"
+                    <span
+                      className={`position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark`}
+                    >
                       {testCount}
                     </span>
                   )}
