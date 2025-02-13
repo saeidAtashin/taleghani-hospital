@@ -6,7 +6,7 @@ import Step3Form from "./Step3Form";
 import { DateObject } from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 
-const PatientDiseaseMap = () => {
+const PatientDiseaseMap = ({ setDiseaseType }) => {
   const [data, setData] = useState([]);
   const [diseaseDetails, setDiseaseDetails] = useState({});
   const [showAdd, setshowAdd] = useState(false);
@@ -18,9 +18,12 @@ const PatientDiseaseMap = () => {
       .then((response) => response.json())
       .then((data) => {
         setData(data?.results || []);
+        if (data?.results?.[0]?.type) {
+          setDiseaseType(data.results[0].type);
+        }
       })
       .catch();
-  }, [refresh, uid]);
+  }, [refresh, uid, setDiseaseType]);
 
   useEffect(() => {
     if (data.length === 0) return;

@@ -23,6 +23,7 @@ const PillsTabs = ({
   viewMode = false,
   viewTestData = null,
   isLoadingData,
+  diseaseType,
 }) => {
   const [tabsNew, settabsNew] = useState();
   const [titleDirectToCategList, settitleDirectToCategList] = useState();
@@ -501,6 +502,26 @@ const PillsTabs = ({
     }
   };
 
+  const filterSubCategories = (subcategories) => {
+    if (!diseaseType || !subcategories) return subcategories;
+
+    console.log("subcategories", subcategories);
+    console.log("diseaseType", diseaseType);
+
+    return subcategories.filter((sub) => {
+      // If diseaseType is SOLID, exclude NON_SOLID categories
+      if (diseaseType === "SOLID") {
+        return !sub.name.includes("NON_SOLID");
+      }
+      // If diseaseType is NON_SOLID, exclude SOLID categories
+      if (diseaseType === "NON_SOLID") {
+        return !sub.name.includes("SOLID") || sub.name.includes("NON_SOLID");
+      }
+      // If no diseaseType, show all categories
+      return true;
+    });
+  };
+
   if (isLoading && isLoadingData !== false) {
     return (
       <div className="d-flex justify-content-center align-items-center p-5">
@@ -682,7 +703,7 @@ const PillsTabs = ({
 
             <div className="my-3 d-flex gap-2">
               {subCategory?.length > 0 &&
-                subCategory.map((subs, index) => (
+                filterSubCategories(subCategory).map((subs, index) => (
                   <div key={index} className="my-3">
                     <span
                       className={`px-3 py-2 rounded-3 cursor-pointer ${
@@ -693,7 +714,7 @@ const PillsTabs = ({
                       onClick={() => handleSubCategoryClick(subs, index)}
                     >
                       {subs.name}
-                    </span>{" "}
+                    </span>
                     <div className=""></div>
                   </div>
                 ))}

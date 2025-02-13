@@ -9,7 +9,7 @@ import axios from "axios";
 import RegisterTests from "./RegisterTests";
 import { Dialog } from "primereact/dialog";
 
-export default function AzmayeshatTable() {
+export default function AzmayeshatTable({ diseaseType }) {
   const [groupedData, setGroupedData] = useState([]);
   const [selectedGroups, setSelectedGroups] = useState([]);
   const [showAzmayeshPAge, setShowAzmayeshPAge] = useState("home");
@@ -112,6 +112,7 @@ export default function AzmayeshatTable() {
         onClick={() => setShowAzmayeshPAge("orderRegister")}
         className="rounded-3 "
       />
+
       <Button
         label="ثبت دستور آزمایش"
         icon="pi pi-plus"
@@ -293,6 +294,7 @@ export default function AzmayeshatTable() {
             <PillsTabs
               isLoadingData={false}
               setShowAzmayeshPAge={setShowAzmayeshPAge}
+              diseaseType={diseaseType}
             />
           </div>
         </>

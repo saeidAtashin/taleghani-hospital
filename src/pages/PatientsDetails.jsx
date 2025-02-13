@@ -16,6 +16,7 @@ const PatientsDetails = () => {
   const [activeTabForce, setActiveTabForce] = useState(0);
   const [rowDataTransfer, setrowDataTransfer] = useState(undefined);
   const [refresh, setrefresh] = useState(false);
+  const [diseaseType, setDiseaseType] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -56,7 +57,7 @@ const PatientsDetails = () => {
       label: "اطلاعات بیماری",
       content: (
         <div>
-          <PatientDiseaseMap />
+          <PatientDiseaseMap setDiseaseType={setDiseaseType} />
         </div>
       ),
     },
@@ -75,7 +76,7 @@ const PatientsDetails = () => {
       label: "آزمایشات",
       content: (
         <>
-          <AzmayeshatTable />
+          <AzmayeshatTable diseaseType={diseaseType} />
         </>
       ),
     },
