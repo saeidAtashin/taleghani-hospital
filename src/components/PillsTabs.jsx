@@ -343,14 +343,11 @@ const PillsTabs = ({
 
   const validateInput = (value, type) => {
     if (!value) return true;
-
+    
     switch (type) {
       case "FLOAT":
-        // Allow typing any value, validation will happen on blur
-        return true;
       case "PERCENTAGE":
-        // Allow typing any value, validation will happen on blur
-        return true;
+        return true; // Allow typing any value, validation will happen on blur
       case "CHAR":
         return true;
       default:
@@ -360,7 +357,7 @@ const PillsTabs = ({
 
   const formatValue = (value, type) => {
     if (!value) return value;
-
+    
     switch (type) {
       case "FLOAT":
         const floatNum = parseFloat(value);
@@ -878,47 +875,49 @@ const PillsTabs = ({
                                           <Controller
                                             name={titleData?.uid}
                                             control={control}
-                                            render={({ field }) => {
-                                              const handleValueChange = (e) => {
-                                                let value = e.target.value;
-
-                                                if (
-                                                  titleData?.type === "FLOAT"
-                                                ) {
-                                                  value = parseFloat(value);
-                                                } else if (
-                                                  titleData?.type ===
-                                                  "PERCENTAGE"
-                                                ) {
-                                                  value = parseFloat(value);
-                                                } else if (
-                                                  titleData?.type === "CHAR"
-                                                ) {
-                                                  value = value.toString();
-                                                }
-
-                                                field.onChange(value);
-                                              };
-
-                                              return (
+                                            render={({ field: controllerField }) => (
+                                              <div className="p-input-icon-right w-100">
+                                                {titleData.type === "PERCENTAGE" && (
+                                                  <i
+                                                    className="pi pi-percentage"
+                                                    style={{ left: "0.75rem", right: "auto" }}
+                                                  />
+                                                )}
                                                 <InputText
-                                                  {...field}
-                                                  onChange={handleValueChange}
-                                                  className={`w-100`}
-                                                  keyfilter={
-                                                    titleData?.type === "CHAR"
-                                                      ? "char"
-                                                      : titleData?.type ===
-                                                          "FLOAT" ||
-                                                        titleData?.type ===
-                                                          "PERCENTAGE"
-                                                      ? "decimal"
-                                                      : ""
+                                                  {...controllerField}
+                                                  className="w-100"
+                                                  placeholder={
+                                                    titleData.type === "FLOAT"
+                                                      ? "مقدار عددی را وارد نمایید"
+                                                      : titleData.type === "PERCENTAGE"
+                                                      ? "درصد را وارد نمایید"
+                                                      : "مقدار را وارد نمایید"
                                                   }
-                                                  placeholder={`${titleData?.name} را وارد نمایید`}
+                                                  onChange={(e) => {
+                                                    const value = e.target.value;
+                                                    if (validateInput(value, titleData.type)) {
+                                                      controllerField.onChange(value);
+                                                    }
+                                                  }}
+                                                  onBlur={(e) => {
+                                                    const value = e.target.value;
+                                                    if (value) {
+                                                      const formattedValue = formatValue(value, titleData.type);
+                                                      controllerField.onChange(formattedValue);
+                                                      if (
+                                                        formattedValue === "" &&
+                                                        (titleData.type === "FLOAT" ||
+                                                          titleData.type === "PERCENTAGE")
+                                                      ) {
+                                                        toast.error(
+                                                          `لطفا یک ${titleData.type === "FLOAT" ? "عدد" : "درصد"} معتبر وارد کنید`
+                                                        );
+                                                      }
+                                                    }
+                                                  }}
                                                 />
-                                              );
-                                            }}
+                                              </div>
+                                            )}
                                           />
                                         )}
                                       </div>
@@ -997,36 +996,23 @@ const PillsTabs = ({
                                     }
                                     onChange={(e) => {
                                       const value = e.target.value;
-                                      if (
-                                        validateInput(
-                                          value,
-                                          titleDirectToCat.type
-                                        )
-                                      ) {
+                                      if (validateInput(value, titleDirectToCat.type)) {
                                         field.onChange(value);
                                       }
                                     }}
                                     onBlur={(e) => {
                                       const value = e.target.value;
                                       if (value) {
-                                        const formattedValue = formatValue(
-                                          value,
-                                          titleDirectToCat.type
-                                        );
+                                        const formattedValue = formatValue(value, titleDirectToCat.type);
                                         field.onChange(formattedValue);
-
-                                        // Show error message if invalid input
                                         if (
                                           formattedValue === "" &&
                                           (titleDirectToCat.type === "FLOAT" ||
-                                            titleDirectToCat.type ===
-                                              "PERCENTAGE")
+                                            titleDirectToCat.type === "PERCENTAGE")
                                         ) {
                                           toast.error(
                                             `لطفا یک ${
-                                              titleDirectToCat.type === "FLOAT"
-                                                ? "عدد"
-                                                : "درصد"
+                                              titleDirectToCat.type === "FLOAT" ? "عدد" : "درصد"
                                             } معتبر وارد کنید`
                                           );
                                         }
