@@ -346,9 +346,17 @@ const PillsTabs = ({
     
     switch (type) {
       case "FLOAT":
-        const floatNum = parseFloat(value);
-        return !isNaN(floatNum);
+        // Allow typing numbers, single decimal point, and minus sign
+        if (value === '-' || value === '.' || value === '-.') return true;
+        // Allow any valid number pattern including decimals
+        return value.match(/^-?\d*\.?\d*$/) !== null;
       case "PERCENTAGE":
+        // Allow typing numbers, single decimal point, and minus sign
+        if (value === '-' || value === '.' || value === '-.') return true;
+        // Allow any valid number pattern including decimals
+        if (!value.match(/^-?\d*\.?\d*$/)) return false;
+        // Only check range if we have a complete number
+        if (value.endsWith('.')) return true;
         const percentNum = parseFloat(value);
         return !isNaN(percentNum) && percentNum >= 0 && percentNum <= 100;
       case "CHAR":
