@@ -180,7 +180,7 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
       ctscan: "ctscan",
       corescan: "corescan",
       petscan: "petscan",
-      othergraphy: "othergraphy",
+      othergraphy: "other-graphy",
     };
 
     let successCount = 0;
@@ -191,7 +191,13 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
       // For each record in the product
       for (const record of product.records) {
         const endpoint = deleteEndpoints[record.record_type];
-        if (!endpoint) continue;
+        if (!endpoint) {
+          console.error(
+            `No endpoint found for record type: ${record.record_type}`
+          );
+          errorCount++;
+          continue;
+        }
 
         try {
           await axios.delete(

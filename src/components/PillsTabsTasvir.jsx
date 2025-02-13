@@ -152,7 +152,7 @@ const PillsTabsTasvir = ({
       ctscan: "ctscan",
       corescan: "corescan",
       petscan: "petscan",
-      othergraphy: "othergraphy",
+      othergraphy: "other-graphy",
     };
 
     const endpoint = deleteEndpoints[recordType];
