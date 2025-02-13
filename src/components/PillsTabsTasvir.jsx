@@ -146,13 +146,13 @@ const PillsTabsTasvir = ({
 
   const handleDelete = (recordType, uid) => {
     const deleteEndpoints = {
-      sonography: 'sonography',
-      mammography: 'mammography',
-      mri: 'mri',
-      ctscan: 'ctscan',
-      corescan: 'corescan',
-      petscan: 'petscan',
-      othergraphy: 'othergraphy'
+      sonography: "sonography",
+      mammography: "mammography",
+      mri: "mri",
+      ctscan: "ctscan",
+      corescan: "corescan",
+      petscan: "petscan",
+      othergraphy: "othergraphy",
     };
 
     const endpoint = deleteEndpoints[recordType];
