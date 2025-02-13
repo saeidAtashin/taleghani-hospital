@@ -346,8 +346,11 @@ const PillsTabs = ({
     
     switch (type) {
       case "FLOAT":
+        const floatNum = parseFloat(value);
+        return !isNaN(floatNum);
       case "PERCENTAGE":
-        return true; // Allow typing any value, validation will happen on blur
+        const percentNum = parseFloat(value);
+        return !isNaN(percentNum) && percentNum >= 0 && percentNum <= 100;
       case "CHAR":
         return true;
       default:
@@ -895,24 +898,14 @@ const PillsTabs = ({
                                                   }
                                                   onChange={(e) => {
                                                     const value = e.target.value;
+                                                    const formattedValue = formatValue(value, titleData.type);
+                                                    
                                                     if (validateInput(value, titleData.type)) {
-                                                      controllerField.onChange(value);
-                                                    }
-                                                  }}
-                                                  onBlur={(e) => {
-                                                    const value = e.target.value;
-                                                    if (value) {
-                                                      const formattedValue = formatValue(value, titleData.type);
                                                       controllerField.onChange(formattedValue);
-                                                      if (
-                                                        formattedValue === "" &&
-                                                        (titleData.type === "FLOAT" ||
-                                                          titleData.type === "PERCENTAGE")
-                                                      ) {
-                                                        toast.error(
-                                                          `لطفا یک ${titleData.type === "FLOAT" ? "عدد" : "درصد"} معتبر وارد کنید`
-                                                        );
-                                                      }
+                                                    } else if (titleData.type === "FLOAT" || titleData.type === "PERCENTAGE") {
+                                                      toast.error(
+                                                        `لطفا یک ${titleData.type === "FLOAT" ? "عدد" : "درصد"} معتبر وارد کنید`
+                                                      );
                                                     }
                                                   }}
                                                 />
@@ -996,26 +989,14 @@ const PillsTabs = ({
                                     }
                                     onChange={(e) => {
                                       const value = e.target.value;
+                                      const formattedValue = formatValue(value, titleDirectToCat.type);
+                                      
                                       if (validateInput(value, titleDirectToCat.type)) {
-                                        field.onChange(value);
-                                      }
-                                    }}
-                                    onBlur={(e) => {
-                                      const value = e.target.value;
-                                      if (value) {
-                                        const formattedValue = formatValue(value, titleDirectToCat.type);
                                         field.onChange(formattedValue);
-                                        if (
-                                          formattedValue === "" &&
-                                          (titleDirectToCat.type === "FLOAT" ||
-                                            titleDirectToCat.type === "PERCENTAGE")
-                                        ) {
-                                          toast.error(
-                                            `لطفا یک ${
-                                              titleDirectToCat.type === "FLOAT" ? "عدد" : "درصد"
-                                            } معتبر وارد کنید`
-                                          );
-                                        }
+                                      } else if (titleDirectToCat.type === "FLOAT" || titleDirectToCat.type === "PERCENTAGE") {
+                                        toast.error(
+                                          `لطفا یک ${titleDirectToCat.type === "FLOAT" ? "عدد" : "درصد"} معتبر وارد کنید`
+                                        );
                                       }
                                     }}
                                   />
