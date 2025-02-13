@@ -343,20 +343,20 @@ const PillsTabs = ({
 
   const validateInput = (value, type) => {
     if (!value) return true;
-    
+
     switch (type) {
       case "FLOAT":
         // Allow typing numbers, single decimal point, and minus sign
-        if (value === '-' || value === '.' || value === '-.') return true;
+        if (value === "-" || value === "." || value === "-.") return true;
         // Allow any valid number pattern including decimals
         return value.match(/^-?\d*\.?\d*$/) !== null;
       case "PERCENTAGE":
         // Allow typing numbers, single decimal point, and minus sign
-        if (value === '-' || value === '.' || value === '-.') return true;
+        if (value === "-" || value === "." || value === "-.") return true;
         // Allow any valid number pattern including decimals
         if (!value.match(/^-?\d*\.?\d*$/)) return false;
         // Only check range if we have a complete number
-        if (value.endsWith('.')) return true;
+        if (value.endsWith(".")) return true;
         const percentNum = parseFloat(value);
         return !isNaN(percentNum) && percentNum >= 0 && percentNum <= 100;
       case "CHAR":
@@ -368,7 +368,7 @@ const PillsTabs = ({
 
   const formatValue = (value, type) => {
     if (!value) return value;
-    
+
     switch (type) {
       case "FLOAT":
         const floatNum = parseFloat(value);
@@ -886,12 +886,18 @@ const PillsTabs = ({
                                           <Controller
                                             name={titleData?.uid}
                                             control={control}
-                                            render={({ field: controllerField }) => (
+                                            render={({
+                                              field: controllerField,
+                                            }) => (
                                               <div className="p-input-icon-right w-100">
-                                                {titleData.type === "PERCENTAGE" && (
+                                                {titleData.type ===
+                                                  "PERCENTAGE" && (
                                                   <i
                                                     className="pi pi-percentage"
-                                                    style={{ left: "0.75rem", right: "auto" }}
+                                                    style={{
+                                                      left: "0.75rem",
+                                                      right: "auto",
+                                                    }}
                                                   />
                                                 )}
                                                 <InputText
@@ -900,19 +906,42 @@ const PillsTabs = ({
                                                   placeholder={
                                                     titleData.type === "FLOAT"
                                                       ? "مقدار عددی را وارد نمایید"
-                                                      : titleData.type === "PERCENTAGE"
+                                                      : titleData.type ===
+                                                        "PERCENTAGE"
                                                       ? "درصد را وارد نمایید"
                                                       : "مقدار را وارد نمایید"
                                                   }
                                                   onChange={(e) => {
-                                                    const value = e.target.value;
-                                                    const formattedValue = formatValue(value, titleData.type);
-                                                    
-                                                    if (validateInput(value, titleData.type)) {
-                                                      controllerField.onChange(formattedValue);
-                                                    } else if (titleData.type === "FLOAT" || titleData.type === "PERCENTAGE") {
+                                                    const value =
+                                                      e.target.value;
+                                                    const formattedValue =
+                                                      formatValue(
+                                                        value,
+                                                        titleData.type
+                                                      );
+
+                                                    if (
+                                                      validateInput(
+                                                        value,
+                                                        titleData.type
+                                                      )
+                                                    ) {
+                                                      controllerField.onChange(
+                                                        formattedValue
+                                                      );
+                                                    } else if (
+                                                      titleData.type ===
+                                                        "FLOAT" ||
+                                                      titleData.type ===
+                                                        "PERCENTAGE"
+                                                    ) {
                                                       toast.error(
-                                                        `لطفا یک ${titleData.type === "FLOAT" ? "عدد" : "درصد"} معتبر وارد کنید`
+                                                        `لطفا یک ${
+                                                          titleData.type ===
+                                                          "FLOAT"
+                                                            ? "عدد"
+                                                            : "درصد"
+                                                        } معتبر وارد کنید`
                                                       );
                                                     }
                                                   }}
@@ -997,13 +1026,28 @@ const PillsTabs = ({
                                     }
                                     onChange={(e) => {
                                       const value = e.target.value;
-                                      const formattedValue = formatValue(value, titleDirectToCat.type);
-                                      
-                                      if (validateInput(value, titleDirectToCat.type)) {
+                                      const formattedValue = formatValue(
+                                        value,
+                                        titleDirectToCat.type
+                                      );
+
+                                      if (
+                                        validateInput(
+                                          value,
+                                          titleDirectToCat.type
+                                        )
+                                      ) {
                                         field.onChange(formattedValue);
-                                      } else if (titleDirectToCat.type === "FLOAT" || titleDirectToCat.type === "PERCENTAGE") {
+                                      } else if (
+                                        titleDirectToCat.type === "FLOAT" ||
+                                        titleDirectToCat.type === "PERCENTAGE"
+                                      ) {
                                         toast.error(
-                                          `لطفا یک ${titleDirectToCat.type === "FLOAT" ? "عدد" : "درصد"} معتبر وارد کنید`
+                                          `لطفا یک ${
+                                            titleDirectToCat.type === "FLOAT"
+                                              ? "عدد"
+                                              : "درصد"
+                                          } معتبر وارد کنید`
                                         );
                                       }
                                     }}
