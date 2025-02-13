@@ -313,6 +313,7 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
             setShowAzmayeshPAge={setShowAzmayeshPAge}
             dataOfTable={tasvirDetailUid}
             allrow={allrow}
+            isFromParent={!!rowDataTransfer}
           />
         </div>
       ) : (

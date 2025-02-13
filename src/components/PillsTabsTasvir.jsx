@@ -7,8 +7,15 @@ import Ctscan from "./Ctscan";
 import ScanHastei from "./ScanHastei";
 import Petscan from "./Petscan";
 import SampleGraphy from "./SampleGraphy";
+import axios from "axios";
+import { toast } from "react-toastify";
 
-const PillsTabsTasvir = ({ dataOfTable, allrow, setShowAzmayeshPAge }) => {
+const PillsTabsTasvir = ({
+  dataOfTable,
+  allrow,
+  setShowAzmayeshPAge,
+  isFromParent = false,
+}) => {
   const [activeTab, setActiveTab] = useState("");
 
   useEffect(() => {
@@ -27,7 +34,7 @@ const PillsTabsTasvir = ({ dataOfTable, allrow, setShowAzmayeshPAge }) => {
   const getUidForTab = (tabEventKey) => {
     if (dataOfTable?.records) {
       const record = dataOfTable.records.find(
-        record => record.record_type === tabEventKey
+        (record) => record.record_type === tabEventKey
       );
       return record?.uid;
     }
@@ -37,7 +44,7 @@ const PillsTabsTasvir = ({ dataOfTable, allrow, setShowAzmayeshPAge }) => {
   const getTabBadgeColor = (tab) => {
     if (dataOfTable?.records) {
       const record = dataOfTable.records.find(
-        record => record.record_type === tab.eventKey
+        (record) => record.record_type === tab.eventKey
       );
       if (record?.state === "IN_PROGRESS") {
         return "#ff9008"; // Orange
@@ -137,33 +144,75 @@ const PillsTabsTasvir = ({ dataOfTable, allrow, setShowAzmayeshPAge }) => {
     return allrow?.records?.some((record) => record.record_type === eventKey);
   };
 
+  const handleDelete = (recordType, uid) => {
+    const deleteEndpoints = {
+      sonography: 'sonography',
+      mammography: 'mammography',
+      mri: 'mri',
+      ctscan: 'ctscan',
+      corescan: 'corescan',
+      petscan: 'petscan',
+      othergraphy: 'othergraphy'
+    };
+
+    const endpoint = deleteEndpoints[recordType];
+    if (!endpoint) {
+      toast.error("نوع رکورد نامعتبر است");
+      return;
+    }
+
+    axios
+      .delete(`https://cancerreg.ir/api/v1/records/${endpoint}/${uid}/`)
+      .then(() => {
+        toast.success("با موفقیت حذف شد");
+        setShowAzmayeshPAge("home");
+      })
+      .catch(() => {
+        toast.error("خطا در حذف");
+      });
+  };
+
   return (
     <Tab.Container activeKey={activeTab} onSelect={handleSelect}>
       <Nav variant="pills">
         {tabsInnerImage?.map((tab) => {
           const badgeColor = getTabBadgeColor(tab);
           const isActive = activeTab === tab.eventKey;
+          const recordUid = getUidForTab(tab.eventKey);
+
           return (
             <Nav.Item key={tab.eventKey} className="m-2 position-relative">
-              <Nav.Link
-                className={`border ${isActive ? "active-tab" : ""}`}
-                eventKey={tab.eventKey}
-              >
-                {tab.title}
-                {badgeColor && (
-                  <span
-                    style={{
-                      position: "absolute",
-                      top: "4px",
-                      right: "4px",
-                      width: "8px",
-                      height: "8px",
-                      borderRadius: "50%",
-                      backgroundColor: badgeColor,
+              <div className="d-flex align-items-center">
+                <Nav.Link
+                  className={`border ${isActive ? "active-tab" : ""}`}
+                  eventKey={tab.eventKey}
+                >
+                  {tab.title}
+                  {badgeColor && (
+                    <span
+                      style={{
+                        position: "absolute",
+                        top: "4px",
+                        right: "4px",
+                        width: "8px",
+                        height: "8px",
+                        borderRadius: "50%",
+                        backgroundColor: badgeColor,
+                      }}
+                    ></span>
+                  )}
+                </Nav.Link>
+                {recordUid && (
+                  <i
+                    className="pi pi-trash p-2 text-danger cursor-pointer"
+                    style={{ fontSize: "0.875rem" }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDelete(tab.eventKey, recordUid);
                     }}
-                  ></span>
+                  />
                 )}
-              </Nav.Link>
+              </div>
             </Nav.Item>
           );
         })}
