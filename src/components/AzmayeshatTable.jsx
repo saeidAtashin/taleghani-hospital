@@ -324,7 +324,7 @@ export default function AzmayeshatTable({ diseaseType }) {
       ) : (
         showAzmayeshPAge === "orderRegisterOrder" && (
           <>
-            <div className="container mt-5">
+            <div className="container mt-5 mb-4">
               <div className="d-flex justify-content-between align-items-center">
                 <h2 className="m-2 pb-3">ثبت دستور آزمایش</h2>
                 <span
