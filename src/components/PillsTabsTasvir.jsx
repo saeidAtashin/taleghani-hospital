@@ -17,6 +17,7 @@ const PillsTabsTasvir = ({
   isFromParent = false,
 }) => {
   const [activeTab, setActiveTab] = useState("");
+  const [deletingRecords, setDeletingRecords] = useState({});
 
   useEffect(() => {
     // Set active tab based on the clicked record type
@@ -144,7 +145,9 @@ const PillsTabsTasvir = ({
     return allrow?.records?.some((record) => record.record_type === eventKey);
   };
 
-  const handleDelete = (recordType, uid) => {
+  const handleDelete = async (recordType, uid) => {
+    setDeletingRecords((prev) => ({ ...prev, [uid]: true }));
+
     const deleteEndpoints = {
       sonography: "sonography",
       mammography: "mammography",
@@ -158,18 +161,21 @@ const PillsTabsTasvir = ({
     const endpoint = deleteEndpoints[recordType];
     if (!endpoint) {
       toast.error("نوع رکورد نامعتبر است");
+      setDeletingRecords((prev) => ({ ...prev, [uid]: false }));
       return;
     }
 
-    axios
-      .delete(`https://cancerreg.ir/api/v1/records/${endpoint}/${uid}/`)
-      .then(() => {
-        toast.success("با موفقیت حذف شد");
-        setShowAzmayeshPAge("home");
-      })
-      .catch(() => {
-        toast.error("خطا در حذف");
-      });
+    try {
+      await axios.delete(
+        `https://cancerreg.ir/api/v1/records/${endpoint}/${uid}/`
+      );
+      toast.success("با موفقیت حذف شد");
+      setShowAzmayeshPAge("home");
+    } catch (error) {
+      toast.error("خطا در حذف");
+    } finally {
+      setDeletingRecords((prev) => ({ ...prev, [uid]: false }));
+    }
   };
 
   return (
@@ -204,9 +210,17 @@ const PillsTabsTasvir = ({
                 </Nav.Link>
                 {recordUid && (
                   <i
-                    className="pi pi-trash p-2 text-danger cursor-pointer"
-                    style={{ fontSize: "0.875rem" }}
+                    className={`pi ${
+                      deletingRecords[recordUid]
+                        ? "pi-spinner pi-spin"
+                        : "pi-trash"
+                    } p-2 text-danger cursor-pointer`}
+                    style={{
+                      fontSize: "0.875rem",
+                      opacity: deletingRecords[recordUid] ? 0.7 : 1,
+                    }}
                     onClick={(e) => {
+                      if (deletingRecords[recordUid]) return;
                       e.stopPropagation();
                       handleDelete(tab.eventKey, recordUid);
                     }}

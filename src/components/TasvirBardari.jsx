@@ -19,6 +19,7 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
   const { uid } = useParams();
   const [loading, setLoading] = useState(false);
   const [btnLoading, setbtnLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const numberTemplate = (rowData, { rowIndex }) => {
     return <span>{rowIndex + 1}</span>;
@@ -173,6 +174,7 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
   );
 
   const handleDelete = async () => {
+    setIsDeleting(true);
     const deleteEndpoints = {
       sonography: "sonography",
       mammography: "mammography",
@@ -186,42 +188,46 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
     let successCount = 0;
     let errorCount = 0;
 
-    // For each selected product
-    for (const product of selectedProducts) {
-      // For each record in the product
-      for (const record of product.records) {
-        const endpoint = deleteEndpoints[record.record_type];
-        if (!endpoint) {
-          console.error(
-            `No endpoint found for record type: ${record.record_type}`
-          );
-          errorCount++;
-          continue;
-        }
+    try {
+      // For each selected product
+      for (const product of selectedProducts) {
+        // For each record in the product
+        for (const record of product.records) {
+          const endpoint = deleteEndpoints[record.record_type];
+          if (!endpoint) {
+            console.error(
+              `No endpoint found for record type: ${record.record_type}`
+            );
+            errorCount++;
+            continue;
+          }
 
-        try {
-          await axios.delete(
-            `https://cancerreg.ir/api/v1/records/${endpoint}/${record.uid}/`
-          );
-          successCount++;
-        } catch (error) {
-          errorCount++;
-          console.error(`Error deleting record ${record.uid}:`, error);
+          try {
+            await axios.delete(
+              `https://cancerreg.ir/api/v1/records/${endpoint}/${record.uid}/`
+            );
+            successCount++;
+          } catch (error) {
+            errorCount++;
+            console.error(`Error deleting record ${record.uid}:`, error);
+          }
         }
       }
-    }
 
-    // Show results
-    if (successCount > 0) {
-      toast.success(`${successCount} مورد با موفقیت حذف شد`);
-    }
-    if (errorCount > 0) {
-      toast.error(`خطا در حذف ${errorCount} مورد`);
-    }
+      // Show results
+      if (successCount > 0) {
+        toast.success(`${successCount} مورد با موفقیت حذف شد`);
+      }
+      if (errorCount > 0) {
+        toast.error(`خطا در حذف ${errorCount} مورد`);
+      }
 
-    // Clear selection and refresh data
-    setSelectedProducts([]);
-    fetchData();
+      // Clear selection and refresh data
+      setSelectedProducts([]);
+      fetchData();
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   const [selectedOptions, setSelectedOptions] = useState([]);
@@ -330,13 +336,18 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
                 className="p-button-success"
               />
               <Button
-                label={`حذف ${selectedProducts.reduce(
-                  (total, product) => total + product.records.length,
-                  0
-                )} مورد`}
-                icon="pi pi-trash"
+                label={
+                  isDeleting
+                    ? "در حال حذف..."
+                    : `حذف ${selectedProducts.reduce(
+                        (total, product) => total + product.records.length,
+                        0
+                      )} مورد`
+                }
+                icon={isDeleting ? "pi pi-spinner pi-spin" : "pi pi-trash"}
                 onClick={handleDelete}
                 className="p-button-danger"
+                disabled={isDeleting}
               />
             </div>
           )}
