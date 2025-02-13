@@ -341,23 +341,68 @@ const PillsTabs = ({
     }
   };
 
+  const validateInput = (value, type) => {
+    if (!value) return true;
+
+    switch (type) {
+      case "FLOAT":
+        // Allow typing any value, validation will happen on blur
+        return true;
+      case "PERCENTAGE":
+        // Allow typing any value, validation will happen on blur
+        return true;
+      case "CHAR":
+        return true;
+      default:
+        return true;
+    }
+  };
+
+  const formatValue = (value, type) => {
+    if (!value) return value;
+
+    switch (type) {
+      case "FLOAT":
+        const floatNum = parseFloat(value);
+        return isNaN(floatNum) ? "" : floatNum;
+      case "PERCENTAGE":
+        const percentNum = parseFloat(value);
+        if (isNaN(percentNum)) return "";
+        if (percentNum < 0) return 0;
+        if (percentNum > 100) return 100;
+        return percentNum;
+      default:
+        return value.toString();
+    }
+  };
+
   const onSubmit = async (data) => {
     setisSubmitting(true);
+    const formattedData = {};
+    Object.entries(data).forEach(([key, value]) => {
+      const field = titleDirectToCategList.find((item) => item.uid === key);
+      if (field) {
+        formattedData[key] = formatValue(value, field.type);
+      } else {
+        formattedData[key] = value;
+      }
+    });
+
     const additionalData = {
       date: data?.date,
       category_uid: activeTab,
       patient_uid: uid,
     };
 
-    delete data.date;
+    delete formattedData.date;
 
-    const fields = Object.keys(data)
+    const fields = Object.keys(formattedData)
       .filter((key) => {
-        const value = data[key];
+        const value = formattedData[key];
         return value !== null && value !== undefined && value !== "";
       })
       .map((key) => {
-        const value = data[key];
+        const value = formattedData[key];
 
         if (key === immunofixationUid) {
           return undefined;
@@ -933,11 +978,62 @@ const PillsTabs = ({
                               name={titleDirectToCat.uid}
                               control={control}
                               render={({ field }) => (
-                                <InputText
-                                  {...field}
-                                  className="w-100"
-                                  placeholder={`${titleDirectToCat?.name} را وارد نمایید`}
-                                />
+                                <div className="p-input-icon-right w-100">
+                                  {titleDirectToCat.type === "PERCENTAGE" && (
+                                    <i
+                                      className="pi pi-percentage"
+                                      style={{ left: "0.75rem", right: "auto" }}
+                                    />
+                                  )}
+                                  <InputText
+                                    {...field}
+                                    className="w-100"
+                                    placeholder={
+                                      titleDirectToCat.type === "FLOAT"
+                                        ? "مقدار عددی را وارد نمایید"
+                                        : titleDirectToCat.type === "PERCENTAGE"
+                                        ? "درصد را وارد نمایید"
+                                        : "مقدار را وارد نمایید"
+                                    }
+                                    onChange={(e) => {
+                                      const value = e.target.value;
+                                      if (
+                                        validateInput(
+                                          value,
+                                          titleDirectToCat.type
+                                        )
+                                      ) {
+                                        field.onChange(value);
+                                      }
+                                    }}
+                                    onBlur={(e) => {
+                                      const value = e.target.value;
+                                      if (value) {
+                                        const formattedValue = formatValue(
+                                          value,
+                                          titleDirectToCat.type
+                                        );
+                                        field.onChange(formattedValue);
+
+                                        // Show error message if invalid input
+                                        if (
+                                          formattedValue === "" &&
+                                          (titleDirectToCat.type === "FLOAT" ||
+                                            titleDirectToCat.type ===
+                                              "PERCENTAGE")
+                                        ) {
+                                          toast.error(
+                                            `لطفا یک ${
+                                              titleDirectToCat.type === "FLOAT"
+                                                ? "عدد"
+                                                : "درصد"
+                                            } معتبر وارد کنید`
+                                          );
+                                        }
+                                      }
+                                    }}
+                                  />
+                                </div>
                               )}
                             />
                           </div>
