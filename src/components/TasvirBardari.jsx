@@ -172,11 +172,50 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
     </div>
   );
 
-  const handleDelete = () => {
-    setProducts(
-      products?.filter((product) => !selectedProducts.includes(product))
-    );
+  const handleDelete = async () => {
+    const deleteEndpoints = {
+      sonography: "sonography",
+      mammography: "mammography",
+      mri: "mri",
+      ctscan: "ctscan",
+      corescan: "corescan",
+      petscan: "petscan",
+      othergraphy: "othergraphy",
+    };
+
+    let successCount = 0;
+    let errorCount = 0;
+
+    // For each selected product
+    for (const product of selectedProducts) {
+      // For each record in the product
+      for (const record of product.records) {
+        const endpoint = deleteEndpoints[record.record_type];
+        if (!endpoint) continue;
+
+        try {
+          await axios.delete(
+            `https://cancerreg.ir/api/v1/records/${endpoint}/${record.uid}/`
+          );
+          successCount++;
+        } catch (error) {
+          errorCount++;
+          console.error(`Error deleting record ${record.uid}:`, error);
+        }
+      }
+    }
+
+    // Show results
+    if (successCount > 0) {
+      toast.success(`${successCount} مورد با موفقیت حذف شد`);
+    }
+    if (errorCount > 0) {
+      toast.error(`خطا در حذف ${errorCount} مورد`);
+    }
+
+    // Clear selection and refresh data
     setSelectedProducts([]);
+    fetchData();
   };
 
   const [selectedOptions, setSelectedOptions] = useState([]);
@@ -285,7 +324,10 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
                 className="p-button-success"
               />
               <Button
-                label="حذف"
+                label={`حذف ${selectedProducts.reduce(
+                  (total, product) => total + product.records.length,
+                  0
+                )} مورد`}
                 icon="pi pi-trash"
                 onClick={handleDelete}
                 className="p-button-danger"
