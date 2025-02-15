@@ -795,47 +795,45 @@ const PillsTabs = ({
                 ))}
             </div>
             <div className="d-flex flex-column w-100">
-              {/* <div className="mb-3"> */}
-                <Controller
-                  name="date"
-                  control={control}
-                  render={({ field }) => {
-                    const selectedDate = field.value
-                      ? new DateObject({
-                          date: new Date(field.value),
-                          calendar: persian,
-                        })
-                      : null;
+              <Controller
+                name="date"
+                control={control}
+                render={({ field }) => {
+                  const selectedDate = field.value
+                    ? new DateObject({
+                        date: new Date(field.value),
+                        calendar: persian,
+                      })
+                    : null;
 
-                    return (
-                      <DatePicker
-                        {...field}
-                        value={selectedDate}
-                        onChange={(date) => {
-                          if (date) {
-                            const gregorianDate = date
-                              .convert("gregorian")
-                              .toDate();
-                            const formattedDate = gregorianDate
-                              .toISOString()
-                              .split("T")[0];
-                            field.onChange(formattedDate);
-                          } else {
-                            field.onChange(null);
-                          }
-                        }}
-                        calendar={persian}
-                        locale={persian_fa}
-                        format="YYYY/MM/DD"
-                        placeholder="تاریخ را انتخاب کنید"
-                        className="w-100 p-2 border rounded"
-                        inputClass="w-100 p-2 border rounded"
-                        position="bottom-right"
-                      />
-                    );
-                  }}
-                />
-              {/* </div> */}
+                  return (
+                    <DatePicker
+                      {...field}
+                      value={selectedDate}
+                      onChange={(date) => {
+                        if (date) {
+                          const gregorianDate = date
+                            .convert("gregorian")
+                            .toDate();
+                          const formattedDate = gregorianDate
+                            .toISOString()
+                            .split("T")[0];
+                          field.onChange(formattedDate);
+                        } else {
+                          field.onChange(null);
+                        }
+                      }}
+                      calendar={persian}
+                      locale={persian_fa}
+                      format="YYYY/MM/DD"
+                      placeholder="تاریخ را انتخاب کنید"
+                      className="w-100 p-2 border rounded"
+                      inputClass="w-100 p-2 border rounded"
+                      position="bottom-right"
+                    />
+                  );
+                }}
+              />
             </div>
 
             <div className="">
