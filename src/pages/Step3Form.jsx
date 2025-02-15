@@ -104,6 +104,7 @@ const Step3Form = ({ patient_uid, onNext, initialData, isEditing = false }) => {
                       met.description.trim()
                   )
                 : undefined,
+            ...(formData.stage?.trim() && { stage: formData.stage.trim() }),
           };
 
     const cleanedDiseaseData = Object.keys(diseaseData).reduce((acc, key) => {
