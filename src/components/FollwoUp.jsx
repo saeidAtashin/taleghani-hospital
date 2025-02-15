@@ -55,22 +55,6 @@ export default function FollwoUp({ setActiveTabForce, setrowDataTransfer }) {
       <div>
         {rowData?.medical_tests?.length > 0 ? (
           rowData?.medical_tests.map((record, index) => (
-            // <span
-            //   key={index}
-            //   onClick={() => tasvirbardatiCellClick(record, rowData, "tests")}
-            //   style={{
-            //     cursor: "pointer",
-            //     color:
-            //       record?.state === "IN_PROGRESS"
-            //         ? "#FF7518"
-            //         : record?.state === "DONE"
-            //         ? "green"
-            //         : "blue",
-            //     marginRight: "8px",
-            //   }}
-            // >
-            //   {record.category}
-            // </span>
             <span
               key={index}
               className="p-1"
