@@ -83,7 +83,7 @@ export default function FollwoUp({ setActiveTabForce, setrowDataTransfer }) {
                     : record?.state === "DONE"
                     ? "green"
                     : "blue",
-                marginRight: "8px",
+                marginRight: "1px",
               }}
             >
               <Badge
@@ -99,7 +99,7 @@ export default function FollwoUp({ setActiveTabForce, setrowDataTransfer }) {
                       : record?.state === "DONE"
                       ? "green"
                       : "blue",
-                  marginRight: "8px",
+                  marginRight: "1px",
                 }}
               />
             </span>
@@ -139,7 +139,7 @@ export default function FollwoUp({ setActiveTabForce, setrowDataTransfer }) {
                       : record?.state === "DONE"
                       ? "green"
                       : "blue",
-                  marginRight: "8px",
+                  marginRight: "1px",
                 }}
               >
                 <Badge
@@ -155,7 +155,7 @@ export default function FollwoUp({ setActiveTabForce, setrowDataTransfer }) {
                         : record?.state === "DONE"
                         ? "green"
                         : "blue",
-                    marginRight: "8px",
+                    marginRight: "1px",
                   }}
                 />
               </span>
@@ -196,7 +196,7 @@ export default function FollwoUp({ setActiveTabForce, setrowDataTransfer }) {
                       : record?.state === "DONE"
                       ? "green"
                       : "blue",
-                  marginRight: "8px",
+                  marginRight: "1px",
                 }}
               >
                 <Badge
@@ -214,7 +214,7 @@ export default function FollwoUp({ setActiveTabForce, setrowDataTransfer }) {
                         : record?.state === "DONE"
                         ? "green"
                         : "blue",
-                    marginRight: "8px",
+                    marginRight: "1px",
                   }}
                 />
               </span>
