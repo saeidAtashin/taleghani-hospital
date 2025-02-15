@@ -13,15 +13,6 @@ const DashboardPage = () => {
           className={"mt-5 z-3 text-center position-absolute "}
         />
         <Lottie className="" loop play animationData={animationData} />
-
-        {/* <div className="libWrapper"> */}
-          <DatePicker
-            round="x4"
-            position="center"
-            onChange={(e) => console.log(e.value.toLocaleDateString("en-CA"))}
-            className="oops"
-          />
-        {/* </div> */}
       </div>
     </div>
   );
