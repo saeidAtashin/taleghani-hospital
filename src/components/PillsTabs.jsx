@@ -995,7 +995,8 @@ const PillsTabs = ({
                                                       {...controllerField}
                                                       className="w-100"
                                                       placeholder={
-                                                        titleData.type === "FLOAT"
+                                                        titleData.type ===
+                                                        "FLOAT"
                                                           ? "مقدار عددی را وارد نمایید"
                                                           : titleData.type ===
                                                             "PERCENTAGE"

@@ -35,12 +35,14 @@ export default function FollwoUp({ setActiveTabForce, setrowDataTransfer }) {
           testUid: record.uid,
           testNames: [record.category],
           groupedTests: {
-            [record.category]: [{
-              ...record,
-              value: record.category,
-              type: record.state === "IN_PROGRESS" ? "info" : "secondary",
-            }]
-          }
+            [record.category]: [
+              {
+                ...record,
+                value: record.category,
+                type: record.state === "IN_PROGRESS" ? "info" : "secondary",
+              },
+            ],
+          },
         });
         break;
 
