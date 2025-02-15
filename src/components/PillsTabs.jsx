@@ -34,7 +34,6 @@ const PillsTabs = ({
   const [isSubmitting, setisSubmitting] = useState(false);
   const [isLoadingAll, setisLoadingAll] = useState(false);
   const [gettedCategory, setgettedCategory] = useState(false);
-
   const [selectedName, setSelectedName] = useState("");
   const [immunofixationUid, setimmunofixationUid] = useState("");
   const [getHideInput, setGetHideInput] = useState(false);
@@ -47,19 +46,17 @@ const PillsTabs = ({
   const { uid } = useParams();
   const [submittedInputs, setSubmittedInputs] = useState([]);
   const [hiddenSubmittedData, setHiddenSubmittedData] = useState([]);
-
   const [isInitialDataLoaded, setIsInitialDataLoaded] = useState(false);
   const [isCategoryDataLoaded, setIsCategoryDataLoaded] = useState(false);
   const [isHiddenInputsLoaded, setIsHiddenInputsLoaded] = useState(false);
-
   const [isTestDetailsLoading, setIsTestDetailsLoading] = useState(false);
-
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [testToDelete, setTestToDelete] = useState(null);
 
   useEffect(() => {
     setvalueinja(Number(kValue) / Number(landaValue));
   }, [kValue, landaValue]);
+
   const {
     control,
     handleSubmit,
