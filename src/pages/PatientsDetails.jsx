@@ -80,6 +80,7 @@ const PatientsDetails = () => {
             diseaseType={diseaseType}
             rowDataTransfer={rowDataTransfer}
             setrowDataTransfer={setrowDataTransfer}
+            activeTabForce={activeTabForce}
           />
         </>
       ),
@@ -125,6 +126,7 @@ const PatientsDetails = () => {
         tabs={tabs}
         activeTabForce={activeTabForce}
         setActiveTabForce={setActiveTabForce}
+        setrowDataTransfer={setrowDataTransfer}
       />
     </div>
   );

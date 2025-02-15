@@ -13,6 +13,7 @@ export default function AzmayeshatTable({
   diseaseType,
   rowDataTransfer,
   setrowDataTransfer,
+  activeTabForce,
 }) {
   const [groupedData, setGroupedData] = useState([]);
   const [selectedGroups, setSelectedGroups] = useState([]);
@@ -103,7 +104,7 @@ export default function AzmayeshatTable({
   }, [showAzmayeshPAge, uid]);
 
   useEffect(() => {
-    if (rowDataTransfer) {
+    if (rowDataTransfer && activeTabForce === "آزمایشات") {
       setShowAzmayeshPAge("viewTest");
       setViewTestData(rowDataTransfer);
       setrowDataTransfer(null);

@@ -2,7 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Tabs, Tab } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const ReusableTabs = ({ tabs, activeTabForce, setActiveTabForce }) => {
+const ReusableTabs = ({
+  tabs,
+  activeTabForce,
+  setActiveTabForce,
+  setrowDataTransfer,
+}) => {
   const [activeKey, setActiveKey] = useState("follow up");
 
   useEffect(() => {
@@ -19,6 +24,8 @@ const ReusableTabs = ({ tabs, activeTabForce, setActiveTabForce }) => {
         setActiveKey(key);
         if (setActiveTabForce) {
           setActiveTabForce(key);
+        } else {
+          setrowDataTransfer(undefined);
         }
       }}
       id="reusable-tabs"
