@@ -683,7 +683,11 @@ const PillsTabs = ({
                             }`}
                           >
                             <div className="form-group mb-3">
-                              <label className="text-muted d-block mb-2">
+                              <label
+                                className={`text-muted d-block mb-2 ${
+                                  field?.titled ? "bg-dark" : ""
+                                }`}
+                              >
                                 {field?.name}
                               </label>
                               <Controller
@@ -883,7 +887,12 @@ const PillsTabs = ({
                                             : titleData?.ordering
                                         } mb-4`}
                                       >
-                                        <label htmlFor={titleData?.uid}>
+                                        <label
+                                          htmlFor={titleData?.uid}
+                                          className={`${
+                                            titleData?.titled ? "bg-dark" : ""
+                                          }`}
+                                        >
                                           {titleData?.name}
                                         </label>
                                         {titleData?.options?.length > 0 ? (
@@ -1089,11 +1098,23 @@ const PillsTabs = ({
                               }`
                         }`}
                       >
-                        <div className={`py-2 my-4`}>
-                          <label className="my-auto w-25 text-nowrap">
+                        <div
+                          className={`py-2 my-4  ${
+                            titleDirectToCat?.titled ? "d-flex " : ""
+                          }`}
+                        >
+                          <label
+                            className={`my-auto w-25 text-nowrap ${
+                              titleDirectToCat?.titled ? "fs-5 fw-bold" : ""
+                            } `}
+                          >
                             {titleDirectToCat?.name}
                           </label>
-                          <div className="">
+                          <div
+                            className={`${
+                              titleDirectToCat?.titled ? "w-100" : ""
+                            }`}
+                          >
                             <Controller
                               name={titleDirectToCat.uid}
                               control={control}
