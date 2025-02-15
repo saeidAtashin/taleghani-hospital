@@ -437,8 +437,12 @@ const NewTreat = ({
 
   const handleSubmitLine = async (treatmentUid) => {
     const payload = {
-      treatment_uid: treatmentUidInGet || treatmentUid || allDatas?.uid || responseUid,
-      start_date: treatmentLineStartDates[treatmentUid]?.value || treatmentStartDate || startDate,
+      treatment_uid:
+        treatmentUidInGet || treatmentUid || allDatas?.uid || responseUid,
+      start_date:
+        treatmentLineStartDates[treatmentUid]?.value ||
+        treatmentStartDate ||
+        startDate,
       end_date: treatmentLineEndDates[treatmentUid]?.value || endDate,
       description: description,
       protocol_uid: selectedProtocol,
@@ -446,9 +450,9 @@ const NewTreat = ({
 
     try {
       let response;
-      const url = uidForCycle ? 
-        `https://cancerreg.ir/api/v1/teatment/treatment-line-update/${uidForCycle}/` :
-        "https://cancerreg.ir/api/v1/teatment/treatment-line/";
+      const url = uidForCycle
+        ? `https://cancerreg.ir/api/v1/teatment/treatment-line-update/${uidForCycle}/`
+        : "https://cancerreg.ir/api/v1/teatment/treatment-line/";
 
       if (uidForCycle) {
         response = await axios.put(url, payload);
@@ -554,7 +558,7 @@ const NewTreat = ({
                 : treatmentValue}
             </h2>
           ) : (
-            <h2 className="m-2 pb-3">ایجاد درمان جدید</h2>
+            <h2 className="ms-2 pb-3"> درمان </h2>
           )}
           <span
             className="text-danger cursor-pointer"
