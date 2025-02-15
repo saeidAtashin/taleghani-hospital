@@ -31,18 +31,27 @@ export default function FollwoUp({ setActiveTabForce, setrowDataTransfer }) {
     switch (type) {
       case "tests":
         setActiveTabForce("آزمایشات");
+        setrowDataTransfer({
+          testUid: record.uid,
+          testNames: [record.category],
+          groupedTests: {
+            [record.category]: [{
+              ...record,
+              value: record.category,
+              type: record.state === "IN_PROGRESS" ? "info" : "secondary",
+            }]
+          }
+        });
         break;
 
       case "graphic":
         setActiveTabForce("تصویربرداری");
         setrowDataTransfer(record);
-
         break;
 
       case "treatments":
         setActiveTabForce("درمان");
         setrowDataTransfer(record);
-
         break;
 
       default:

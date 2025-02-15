@@ -9,7 +9,11 @@ import axios from "axios";
 import RegisterTests from "./RegisterTests";
 import { Dialog } from "primereact/dialog";
 
-export default function AzmayeshatTable({ diseaseType }) {
+export default function AzmayeshatTable({
+  diseaseType,
+  rowDataTransfer,
+  setrowDataTransfer,
+}) {
   const [groupedData, setGroupedData] = useState([]);
   const [selectedGroups, setSelectedGroups] = useState([]);
   const [showAzmayeshPAge, setShowAzmayeshPAge] = useState("home");
@@ -97,6 +101,14 @@ export default function AzmayeshatTable({ diseaseType }) {
 
     fetchData();
   }, [showAzmayeshPAge, uid]);
+
+  useEffect(() => {
+    if (rowDataTransfer) {
+      setShowAzmayeshPAge("viewTest");
+      setViewTestData(rowDataTransfer);
+      setrowDataTransfer(null);
+    }
+  }, [rowDataTransfer]);
 
   const handlePrint = () => {};
 

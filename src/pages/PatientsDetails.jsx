@@ -76,7 +76,11 @@ const PatientsDetails = () => {
       label: "آزمایشات",
       content: (
         <>
-          <AzmayeshatTable diseaseType={diseaseType} />
+          <AzmayeshatTable
+            diseaseType={diseaseType}
+            rowDataTransfer={rowDataTransfer}
+            setrowDataTransfer={setrowDataTransfer}
+          />
         </>
       ),
     },

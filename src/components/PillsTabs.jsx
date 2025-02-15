@@ -150,27 +150,27 @@ const PillsTabs = ({
   }, [activeTab, gettedCategory]);
 
   useEffect(() => {
-    if (viewMode && viewTestData && tabsNew) {
+    if (viewMode && viewTestData && tabsNew && viewTestData.groupedTests) {
       const inProgressTests = Object.entries(viewTestData.groupedTests)
         .flatMap(([categoryName, tests]) =>
-          tests.map((test) => ({
+          tests?.map((test) => ({
             ...test,
             categoryName,
-            tabUid: tabsNew.find((tab) => tab.name === categoryName)?.uid,
+            tabUid: tabsNew.find((tab) => tab?.name === categoryName)?.uid,
           }))
         )
-        .filter((test) => test.type === "info");
+        .filter((test) => test?.type === "info");
 
-      if (inProgressTests.length > 0) {
+      if (inProgressTests?.length > 0) {
         const firstInProgressTest = inProgressTests[0];
         setActiveTab(firstInProgressTest.tabUid);
-      } else {
+      } else if (viewTestData.testNames) {
         const matchingTabs = tabsNew.filter((tab) =>
           viewTestData.testNames.some(
-            (testName) => testName.toLowerCase() === tab.name.toLowerCase()
+            (testName) => testName?.toLowerCase() === tab?.name?.toLowerCase()
           )
         );
-        if (matchingTabs.length > 0) {
+        if (matchingTabs?.length > 0) {
           setActiveTab(matchingTabs[0].uid);
         }
       }
@@ -370,10 +370,10 @@ const PillsTabs = ({
   const onSubmit = async (data) => {
     setisSubmitting(true);
     const formattedData = {};
-    Object.entries(data).forEach(([key, value]) => {
-      const field = titleDirectToCategList.find((item) => item.uid === key);
+    Object?.entries(data)?.forEach(([key, value]) => {
+      const field = titleDirectToCategList?.find((item) => item?.uid === key);
       if (field) {
-        formattedData[key] = formatValue(value, field.type);
+        formattedData[key] = formatValue(value, field?.type);
       } else {
         formattedData[key] = value;
       }
@@ -387,7 +387,7 @@ const PillsTabs = ({
 
     delete formattedData.date;
 
-    const fields = Object.keys(formattedData)
+    const fields = Object?.keys(formattedData)
       .filter((key) => {
         const value = formattedData[key];
         return value !== null && value !== undefined && value !== "";
@@ -408,8 +408,8 @@ const PillsTabs = ({
 
     const extendedFields = [
       ...fields,
-      ...parentArray.flatMap((item) => {
-        const [uid, value] = Object.entries(item)[0];
+      ...parentArray?.flatMap((item) => {
+        const [uid, value] = Object?.entries(item)?.[0];
         return uid && value && { uid, value };
       }),
     ];
@@ -795,9 +795,9 @@ const PillsTabs = ({
                 name="date"
                 control={control}
                 render={({ field }) => {
-                  const selectedDate = field.value
+                  const selectedDate = field?.value
                     ? new DateObject({
-                        date: new Date(field.value),
+                        date: new Date(field?.value),
                         calendar: persian,
                       })
                     : null;
@@ -809,11 +809,11 @@ const PillsTabs = ({
                       onChange={(date) => {
                         if (date) {
                           const gregorianDate = date
-                            .convert("gregorian")
-                            .toDate();
+                            ?.convert("gregorian")
+                            ?.toDate();
                           const formattedDate = gregorianDate
-                            .toISOString()
-                            .split("T")[0];
+                            ?.toISOString()
+                            ?.split("T")[0];
                           field.onChange(formattedDate);
                         } else {
                           field.onChange(null);
@@ -853,7 +853,7 @@ const PillsTabs = ({
                               acc[ordering].push(titleData);
                               return acc;
                             }, {})
-                            ? Object.keys(
+                            ? Object?.keys(
                                 title?.field?.reduce((acc, titleData) => {
                                   const { ordering } = titleData;
                                   if (!acc[ordering]) {
@@ -862,7 +862,7 @@ const PillsTabs = ({
                                   acc[ordering].push(titleData);
                                   return acc;
                                 }, {})
-                              ).map((groupKey, idx) => (
+                              )?.map((groupKey, idx) => (
                                 <div className="row" key={idx}>
                                   {title?.field
                                     ?.filter(
@@ -995,8 +995,7 @@ const PillsTabs = ({
                                                       {...controllerField}
                                                       className="w-100"
                                                       placeholder={
-                                                        titleData.type ===
-                                                        "FLOAT"
+                                                        titleData.type === "FLOAT"
                                                           ? "مقدار عددی را وارد نمایید"
                                                           : titleData.type ===
                                                             "PERCENTAGE"
@@ -1209,7 +1208,7 @@ const PillsTabs = ({
                             acc[ordering].push(titleData);
                             return acc;
                           }, {})
-                          ? Object.keys(
+                          ? Object?.keys(
                               title?.field?.reduce((acc, titleData) => {
                                 const { ordering } = titleData;
                                 if (!acc[ordering]) {
