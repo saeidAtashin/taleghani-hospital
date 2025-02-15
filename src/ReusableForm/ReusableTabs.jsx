@@ -13,11 +13,11 @@ const ReusableTabs = ({ tabs, activeTabForce, setActiveTabForce }) => {
 
   return (
     <Tabs
-      activeKey={activeKey} // Dynamically control the active tab
+      activeKey={activeKey}
       onSelect={(key) => {
         setActiveKey(key);
         if (setActiveTabForce) {
-          setActiveTabForce(key); // Ensure state updates properly
+          setActiveTabForce(key);
         }
       }}
       id="reusable-tabs"
