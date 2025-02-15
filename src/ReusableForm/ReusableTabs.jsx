@@ -13,6 +13,7 @@ const ReusableTabs = ({ tabs, activeTabForce, setActiveTabForce }) => {
 
   return (
     <Tabs
+      className="flex-nowrap overflow-x-auto text-nowrap"
       activeKey={activeKey}
       onSelect={(key) => {
         setActiveKey(key);
