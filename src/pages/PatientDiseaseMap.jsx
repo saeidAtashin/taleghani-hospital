@@ -5,6 +5,9 @@ import { Button } from "primereact/button";
 import Step3Form from "./Step3Form";
 import { DateObject } from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
+import { Dialog } from "primereact/dialog";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const PatientDiseaseMap = ({ setDiseaseType }) => {
   const [data, setData] = useState([]);
@@ -12,6 +15,8 @@ const PatientDiseaseMap = ({ setDiseaseType }) => {
   const [showAdd, setshowAdd] = useState(false);
   const [refresh, setrefresh] = useState(false);
   const { uid } = useParams();
+  const [editingDisease, setEditingDisease] = useState(null);
+  const [showEditDialog, setShowEditDialog] = useState(false);
 
   useEffect(() => {
     fetch(`https://cancerreg.ir/api/v1/patient/patient-disease/${uid}/`)
@@ -49,6 +54,23 @@ const PatientDiseaseMap = ({ setDiseaseType }) => {
     fetchDetails();
   }, [data]);
 
+  const handleEditSubmit = async (formData, diseaseUid) => {
+    try {
+      const response = await axios.put(
+        `https://cancerreg.ir/api/v1/patient/user-disease/${diseaseUid}/`,
+        formData
+      );
+      if (response.status >= 200 && response.status < 400) {
+        toast.success("اطلاعات با موفقیت بروزرسانی شد");
+        setShowEditDialog(false);
+        setEditingDisease(null);
+        setrefresh(!refresh); // Refresh the list
+      }
+    } catch (error) {
+      toast.error("خطا در بروزرسانی اطلاعات");
+    }
+  };
+
   return (
     <div className="p-4">
       {!showAdd && (
@@ -71,16 +93,30 @@ const PatientDiseaseMap = ({ setDiseaseType }) => {
           {data.map((item) => (
             <AccordionTab
               key={item.uid}
-              header={`نوع بدخیمی: ${item.type} - آخرین تغییرات: ${
-                item?.updated_at
-                  ? new DateObject({
-                      date: item?.updated_at,
-                      calendar: "gregorian",
-                    })
-                      .convert(persian)
-                      .format("YYYY/MM/DD")
-                  : ""
-              }`}
+              header={
+                <div className="d-flex justify-content-between align-items-center w-100">
+                  <span>{`نوع بدخیمی: ${item.type} - آخرین تغییرات: ${
+                    item?.updated_at
+                      ? new DateObject({
+                          date: item?.updated_at,
+                          calendar: "gregorian",
+                        })
+                          .convert(persian)
+                          .format("YYYY/MM/DD")
+                      : ""
+                  }`}</span>
+                  <Button
+                    label="ویرایش"
+                    icon="pi pi-pencil"
+                    className="p-button-text"
+                    onClick={(e) => {
+                      e.preventDefault(); // Prevent accordion from toggling
+                      setEditingDisease(item);
+                      setShowEditDialog(true);
+                    }}
+                  />
+                </div>
+              }
             >
               <p>
                 <strong>تشخیص:</strong> {item.diagnosis}
@@ -139,6 +175,32 @@ const PatientDiseaseMap = ({ setDiseaseType }) => {
       ) : (
         <p>اطلاعاتی ثبت نشده است.</p>
       )}
+
+      <Dialog
+        visible={showEditDialog}
+        onHide={() => {
+          setShowEditDialog(false);
+          setEditingDisease(null);
+        }}
+        header="ویرایش اطلاعات بیماری"
+        style={{ width: "90vw", maxWidth: "960px" }}
+        modal
+      >
+        {editingDisease && (
+          <Step3Form
+            patient_uid={uid}
+            initialData={{
+              type: editingDisease.type,
+              diagnosis_uid: editingDisease.diagnosis,
+              disease_data: diseaseDetails[editingDisease.uid]?.disease_data,
+            }}
+            onNext={(formData) =>
+              handleEditSubmit(formData, editingDisease.uid)
+            }
+            isEditing={true}
+          />
+        )}
+      </Dialog>
 
       {showAdd && (
         <Step3Form

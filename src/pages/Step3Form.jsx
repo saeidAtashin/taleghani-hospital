@@ -5,22 +5,24 @@ import { InputText } from "primereact/inputtext";
 import { Toast } from "primereact/toast";
 import axios from "axios";
 import { InputTextarea } from "primereact/inputtextarea";
+import { toast } from "react-toastify";
 
-const Step3Form = ({ patient_uid, onNext }) => {
-  const [formType, setFormType] = useState(null);
+const Step3Form = ({ patient_uid, onNext, initialData, isEditing = false }) => {
+  const [formType, setFormType] = useState(initialData?.type || null);
   const [formData, setFormData] = useState({
-    lymph_nodes: [],
-    spleen: "",
-    b_symptoms: "",
-    stage: "",
-    primary_tumors: [],
-    nearby_lymphs: [],
-    metastasis: [],
+    lymph_nodes: initialData?.disease_data?.lymph_nodes || [],
+    spleen: initialData?.disease_data?.spleen || "",
+    b_symptoms: initialData?.disease_data?.b_symptoms || "",
+    stage: initialData?.disease_data?.stage || "",
+    primary_tumors: initialData?.disease_data?.primary_tumors || [],
+    nearby_lymphs: initialData?.disease_data?.nearby_lymphs || [],
+    metastasis: initialData?.disease_data?.metastasis || [],
   });
   const [diagnosisOptions, setDiagnosisOptions] = useState([]);
-  const [selectedDiagnosis, setSelectedDiagnosis] = useState(null);
+  const [selectedDiagnosis, setSelectedDiagnosis] = useState(
+    initialData?.diagnosis_uid || null
+  );
 
-  // Fetch diagnosis options on component mount
   useEffect(() => {
     const fetchDiagnosisOptions = async () => {
       try {
@@ -32,9 +34,7 @@ const Step3Form = ({ patient_uid, onNext }) => {
           value: item.uid,
         }));
         setDiagnosisOptions(options);
-      } catch (error) {
-        // console.error("Error fetching diagnosis options:", error);
-      }
+      } catch (error) {}
     };
 
     fetchDiagnosisOptions();
@@ -50,8 +50,6 @@ const Step3Form = ({ patient_uid, onNext }) => {
     { label: "+", value: "+" },
     { label: "-", value: "-" },
   ];
-
-  // b_symptomsOptions
 
   const addArrayItem = (field) => {
     setFormData((prev) => ({
@@ -108,7 +106,6 @@ const Step3Form = ({ patient_uid, onNext }) => {
                 : undefined,
           };
 
-    // Remove empty arrays or undefined values from diseaseData
     const cleanedDiseaseData = Object.keys(diseaseData).reduce((acc, key) => {
       if (Array.isArray(diseaseData[key]) && diseaseData[key].length > 0) {
         acc[key] = diseaseData[key];
@@ -118,25 +115,32 @@ const Step3Form = ({ patient_uid, onNext }) => {
       return acc;
     }, {});
 
-    // Construct the payload conditionally including disease_data
     const payload = {
       type: formType,
       diagnosis_uid: selectedDiagnosis,
-      patient_uid,
+      ...(isEditing ? {} : { patient_uid }),
       ...(Object.keys(cleanedDiseaseData).length > 0 && {
         disease_data: cleanedDiseaseData,
-      }), // Include disease_data only if it's not empty
+      }),
     };
 
     try {
-      const response = await axios.post(
-        "https://cancerreg.ir/api/v1/patient/user-disease/",
-        payload
-      );
-
-      onNext();
+      if (isEditing) {
+        // If editing, let parent component handle the API call
+        onNext(payload);
+      } else {
+        // If creating new, handle POST request here
+        const response = await axios.post(
+          "https://cancerreg.ir/api/v1/patient/user-disease/",
+          payload
+        );
+        if (response.status >= 200 && response.status < 400) {
+          toast.success("اطلاعات با موفقیت ثبت شد");
+          onNext();
+        }
+      }
     } catch (error) {
-      // console.error("Submission Error:", error);
+      toast.error("خطا در ثبت اطلاعات");
     }
   };
 
@@ -203,6 +207,7 @@ const Step3Form = ({ patient_uid, onNext }) => {
           ]}
           placeholder="نوع سرطان بیمار را انتخاب نمایید"
           className="w-100 mb-3"
+          disabled={isEditing}
         />
       </div>
       {formType === "NON_SOLID" && (
@@ -277,7 +282,7 @@ const Step3Form = ({ patient_uid, onNext }) => {
         </div>
       )}
       <Button
-        label="ثبت اطلاعات و اتمام ثبت نام"
+        label={isEditing ? "ثبت تغییرات" : "ثبت اطلاعات و اتمام ثبت نام"}
         icon="pi pi-check"
         onClick={handleSubmit}
         disabled={!formType || !selectedDiagnosis}
