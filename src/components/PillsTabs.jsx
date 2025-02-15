@@ -17,7 +17,7 @@ import { Accordion, AccordionTab } from "primereact/accordion";
 import { ConfirmDialog } from "primereact/confirmdialog";
 import { Button } from "primereact/button";
 import moment from "jalali-moment";
-import { Dropdown } from 'primereact/dropdown';
+import { Dropdown } from "primereact/dropdown";
 
 const PillsTabs = ({
   setShowAzmayeshPAge,
@@ -155,7 +155,6 @@ const PillsTabs = ({
 
   useEffect(() => {
     if (viewMode && viewTestData && tabsNew) {
-      // Find all tests with "info" (in-progress) status
       const inProgressTests = Object.entries(viewTestData.groupedTests)
         .flatMap(([categoryName, tests]) =>
           tests.map((test) => ({
@@ -166,12 +165,10 @@ const PillsTabs = ({
         )
         .filter((test) => test.type === "info");
 
-      // If there are in-progress tests, set the first one's tab as active
       if (inProgressTests.length > 0) {
         const firstInProgressTest = inProgressTests[0];
         setActiveTab(firstInProgressTest.tabUid);
       } else {
-        // If no in-progress tests, use the first matching tab
         const matchingTabs = tabsNew.filter((tab) =>
           viewTestData.testNames.some(
             (testName) => testName.toLowerCase() === tab.name.toLowerCase()
@@ -195,19 +192,16 @@ const PillsTabs = ({
           if (response.status >= 200 && response.status < 400) {
             const testData = response.data.data;
 
-            // Map results by field_uid for easier access
             const resultsByFieldId = testData.results.reduce((acc, result) => {
               acc[result.field_uid] = result.value;
               return acc;
             }, {});
 
-            // Only set values if we're on a matching tab
             const activeTabData = tabsNew?.find((tab) => tab.uid === activeTab);
             const matchingTests =
               viewTestData.groupedTests[activeTabData?.name] || [];
 
             if (matchingTests.length > 0) {
-              // Set values for نتایج قبلی inputs using existing_ prefix
               matchingTests.forEach((test) => {
                 if (titleDirectToCategList) {
                   titleDirectToCategList.forEach((field) => {
@@ -269,7 +263,6 @@ const PillsTabs = ({
     setSelectedName(undefined);
     setimmunofixationUid(undefined);
 
-    // Always keep the default form empty
     const defaultValues = { date: undefined };
     titleDirectToCategList?.forEach((field) => {
       defaultValues[field.uid] = "";
@@ -291,13 +284,11 @@ const PillsTabs = ({
           if (response.status >= 200 && response.status < 400) {
             const testData = response.data.data;
 
-            // Map results by field_uid for easier access
             const resultsByFieldId = testData.results.reduce((acc, result) => {
               acc[result.field_uid] = result.value;
               return acc;
             }, {});
 
-            // Set values only for نتایج قبلی inputs
             const activeTabData = tabsNew?.find((tab) => tab.uid === eventKey);
             const matchingTests =
               viewTestData.groupedTests[activeTabData?.name] || [];
@@ -347,16 +338,11 @@ const PillsTabs = ({
 
     switch (type) {
       case "FLOAT":
-        // Allow typing numbers, single decimal point, and minus sign
         if (value === "-" || value === "." || value === "-.") return true;
-        // Allow any valid number pattern including decimals
         return value.match(/^-?\d*\.?\d*$/) !== null;
       case "PERCENTAGE":
-        // Allow typing numbers, single decimal point, and minus sign
         if (value === "-" || value === "." || value === "-.") return true;
-        // Allow any valid number pattern including decimals
         if (!value.match(/^-?\d*\.?\d*$/)) return false;
-        // Only check range if we have a complete number
         if (value.endsWith(".")) return true;
         const percentNum = parseFloat(value);
         return !isNaN(percentNum) && percentNum >= 0 && percentNum <= 100;
@@ -535,21 +521,6 @@ const PillsTabs = ({
       );
       if (response.status >= 200 && response.status < 400) {
         toast.success("آزمایش با موفقیت حذف شد");
-        if (viewTestData) {
-          const activeTabData = tabsNew?.find((tab) => tab.uid === activeTab);
-          if (activeTabData?.name) {
-            const updatedTests = viewTestData.groupedTests[
-              activeTabData.name
-            ].filter((test) => test.uid !== uid);
-            // setViewTestData((prev) => ({
-            //   ...prev,
-            //   groupedTests: {
-            //     ...prev.groupedTests,
-            //     [activeTabData.name]: updatedTests,
-            //   },
-            // }));
-          }
-        }
       }
     } catch (error) {
       toast.error("خطا در حذف آزمایش");
@@ -559,30 +530,21 @@ const PillsTabs = ({
   const filterSubCategories = (subcategories) => {
     if (!diseaseType || !subcategories) return subcategories;
 
-    console.log("subcategories", subcategories);
-    console.log("diseaseType", diseaseType);
-
     return subcategories.filter((sub) => {
-      // If diseaseType is SOLID, exclude NON_SOLID categories
       if (diseaseType === "SOLID") {
         return !sub.name.includes("NON_SOLID");
       }
-      // If diseaseType is NON_SOLID, exclude SOLID categories
       if (diseaseType === "NON_SOLID") {
         return !sub.name.includes("SOLID") || sub.name.includes("NON_SOLID");
       }
-      // If no diseaseType, show all categories
       return true;
     });
   };
 
-  console.log("titleOfAll", titleOfAll);
-  console.log("titleDirectToCategList ", titleDirectToCategList);
-
   const formatSelectOptions = (options) => {
-    return options.map(option => ({
+    return options.map((option) => ({
       label: option.name,
-      value: option.uid
+      value: option.uid,
     }));
   };
 
@@ -617,7 +579,6 @@ const PillsTabs = ({
                 >
                   {tab?.name ?? "Unknown Tab"}
                   {isMatching && testCount > 0 && (
-                    // test.type === "info" ? "bg-warning" : "bg-success"
                     <span
                       className={`position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark`}
                     >
@@ -632,7 +593,6 @@ const PillsTabs = ({
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="p-4 mb-5 container shadow-lg">
-          {/* Show previous test results in separate accordions */}
           {viewMode && getTestsForCurrentTab().length > 0 && (
             <div className="mb-4">
               <ConfirmDialog
@@ -685,18 +645,7 @@ const PillsTabs = ({
                       </div>
                     }
                   >
-                    {/* Previous test values */}
                     <div className="row">
-                      {/* <span className="text-muted me-2">
-                        {test?.date
-                          ? moment(test?.date, "YYYY-MM-DD")
-                              ?.locale("fa")
-                              ?.format("jYYYY/jMM/jDD")
-                          : moment(test?.created_at)
-                              ?.locale("fa")
-                              ?.format("jYYYY/jMM/jDD")}
-                      </span> */}
-
                       {titleDirectToCategList
                         ?.sort(
                           (a, b) => (a?.ordering || 0) - (b?.ordering || 0)
@@ -746,8 +695,12 @@ const PillsTabs = ({
                                     {field?.options?.length > 0 ? (
                                       <Dropdown
                                         value={controllerField.value}
-                                        options={formatSelectOptions(field.options)}
-                                        onChange={(e) => controllerField.onChange(e.value)}
+                                        options={formatSelectOptions(
+                                          field.options
+                                        )}
+                                        onChange={(e) =>
+                                          controllerField.onChange(e.value)
+                                        }
                                         placeholder="انتخاب کنید"
                                         className="w-100"
                                       />
@@ -756,7 +709,10 @@ const PillsTabs = ({
                                         {field.type === "PERCENTAGE" && (
                                           <i
                                             className="pi pi-percentage"
-                                            style={{ left: "0.75rem", right: "auto" }}
+                                            style={{
+                                              left: "0.75rem",
+                                              right: "auto",
+                                            }}
                                           />
                                         )}
                                         <InputText
@@ -777,12 +733,11 @@ const PillsTabs = ({
                                             );
 
                                             if (
-                                              validateInput(
-                                                value,
-                                                field.type
-                                              )
+                                              validateInput(value, field.type)
                                             ) {
-                                              controllerField.onChange(formattedValue);
+                                              controllerField.onChange(
+                                                formattedValue
+                                              );
                                             } else if (
                                               field.type === "FLOAT" ||
                                               field.type === "PERCENTAGE"
@@ -1004,38 +959,55 @@ const PillsTabs = ({
                                               field: controllerField,
                                             }) => (
                                               <div className="p-input-icon-right w-100">
-                                                {titleData.options?.length > 0 ? (
+                                                {titleData.options?.length >
+                                                0 ? (
                                                   <Dropdown
-                                                    value={controllerField.value}
-                                                    options={formatSelectOptions(titleData.options)}
-                                                    onChange={(e) => controllerField.onChange(e.value)}
+                                                    value={
+                                                      controllerField.value
+                                                    }
+                                                    options={formatSelectOptions(
+                                                      titleData.options
+                                                    )}
+                                                    onChange={(e) =>
+                                                      controllerField.onChange(
+                                                        e.value
+                                                      )
+                                                    }
                                                     placeholder="انتخاب کنید"
                                                     className="w-100"
                                                   />
                                                 ) : (
                                                   <>
-                                                    {titleData.type === "PERCENTAGE" && (
+                                                    {titleData.type ===
+                                                      "PERCENTAGE" && (
                                                       <i
                                                         className="pi pi-percentage"
-                                                        style={{ left: "0.75rem", right: "auto" }}
+                                                        style={{
+                                                          left: "0.75rem",
+                                                          right: "auto",
+                                                        }}
                                                       />
                                                     )}
                                                     <InputText
                                                       {...controllerField}
                                                       className="w-100"
                                                       placeholder={
-                                                        titleData.type === "FLOAT"
+                                                        titleData.type ===
+                                                        "FLOAT"
                                                           ? "مقدار عددی را وارد نمایید"
-                                                          : titleData.type === "PERCENTAGE"
+                                                          : titleData.type ===
+                                                            "PERCENTAGE"
                                                           ? "درصد را وارد نمایید"
                                                           : "مقدار را وارد نمایید"
                                                       }
                                                       onChange={(e) => {
-                                                        const value = e.target.value;
-                                                        const formattedValue = formatValue(
-                                                          value,
-                                                          titleData.type
-                                                        );
+                                                        const value =
+                                                          e.target.value;
+                                                        const formattedValue =
+                                                          formatValue(
+                                                            value,
+                                                            titleData.type
+                                                          );
 
                                                         if (
                                                           validateInput(
@@ -1043,14 +1015,19 @@ const PillsTabs = ({
                                                             titleData.type
                                                           )
                                                         ) {
-                                                          controllerField.onChange(formattedValue);
+                                                          controllerField.onChange(
+                                                            formattedValue
+                                                          );
                                                         } else if (
-                                                          titleData.type === "FLOAT" ||
-                                                          titleData.type === "PERCENTAGE"
+                                                          titleData.type ===
+                                                            "FLOAT" ||
+                                                          titleData.type ===
+                                                            "PERCENTAGE"
                                                         ) {
                                                           toast.error(
                                                             `لطفا یک ${
-                                                              titleData.type === "FLOAT"
+                                                              titleData.type ===
+                                                              "FLOAT"
                                                                 ? "عدد"
                                                                 : "درصد"
                                                             } معتبر وارد کنید`
@@ -1125,17 +1102,23 @@ const PillsTabs = ({
                                   {titleDirectToCat.options?.length > 0 ? (
                                     <Dropdown
                                       value={field.value}
-                                      options={formatSelectOptions(titleDirectToCat.options)}
+                                      options={formatSelectOptions(
+                                        titleDirectToCat.options
+                                      )}
                                       onChange={(e) => field.onChange(e.value)}
                                       placeholder="انتخاب کنید"
                                       className="w-100"
                                     />
                                   ) : (
                                     <>
-                                      {titleDirectToCat.type === "PERCENTAGE" && (
+                                      {titleDirectToCat.type ===
+                                        "PERCENTAGE" && (
                                         <i
                                           className="pi pi-percentage"
-                                          style={{ left: "0.75rem", right: "auto" }}
+                                          style={{
+                                            left: "0.75rem",
+                                            right: "auto",
+                                          }}
                                         />
                                       )}
                                       <InputText
@@ -1144,7 +1127,8 @@ const PillsTabs = ({
                                         placeholder={
                                           titleDirectToCat.type === "FLOAT"
                                             ? "مقدار عددی را وارد نمایید"
-                                            : titleDirectToCat.type === "PERCENTAGE"
+                                            : titleDirectToCat.type ===
+                                              "PERCENTAGE"
                                             ? "درصد را وارد نمایید"
                                             : "مقدار را وارد نمایید"
                                         }
@@ -1164,11 +1148,13 @@ const PillsTabs = ({
                                             field.onChange(formattedValue);
                                           } else if (
                                             titleDirectToCat.type === "FLOAT" ||
-                                            titleDirectToCat.type === "PERCENTAGE"
+                                            titleDirectToCat.type ===
+                                              "PERCENTAGE"
                                           ) {
                                             toast.error(
                                               `لطفا یک ${
-                                                titleDirectToCat.type === "FLOAT"
+                                                titleDirectToCat.type ===
+                                                "FLOAT"
                                                   ? "عدد"
                                                   : "درصد"
                                               } معتبر وارد کنید`
@@ -1189,199 +1175,216 @@ const PillsTabs = ({
               )}
             </div>
             {titleOfAll?.length > 0 &&
-                titleOfAll?.map((title, idx) => {
-                  if (title?.name !== "CBC") {
-                    return (
-                      <div key={idx} className="">
-                        <h3 className="my-4">{title?.name}</h3>
+              titleOfAll?.map((title, idx) => {
+                if (title?.name !== "CBC") {
+                  return (
+                    <div key={idx} className="">
+                      <h3 className="my-4">{title?.name}</h3>
 
-                        <div className="">
-                          {title?.field
-                            ?.sort(
-                              (a, b) => (a?.ordering || 0) - (b?.ordering || 0)
-                            )
-                            ?.reduce((acc, titleData) => {
-                              const { ordering } = titleData;
-                              if (!acc[ordering]) {
-                                acc[ordering] = [];
-                              }
-                              acc[ordering].push(titleData);
-                              return acc;
-                            }, {})
-                            ? Object.keys(
-                                title?.field?.reduce((acc, titleData) => {
-                                  const { ordering } = titleData;
-                                  if (!acc[ordering]) {
-                                    acc[ordering] = [];
-                                  }
-                                  acc[ordering].push(titleData);
-                                  return acc;
-                                }, {})
-                              ).map((groupKey, idx) => (
-                                <div className="row" key={idx}>
-                                  {title?.field
-                                    ?.filter(
-                                      (field) =>
-                                        field?.ordering.toString() === groupKey
-                                    )
-                                    .map((titleData) => (
-                                      <div
-                                        key={titleData?.uid}
-                                        className={` col-md-${
-                                          countOccurrences[titleData?.ordering]
-                                            ? 12 /
-                                              countOccurrences[
-                                                titleData?.ordering
-                                              ]
-                                            : titleData?.ordering
-                                        } mb-4`}
-                                      >
-                                        <label htmlFor={titleData?.uid}>
-                                          {titleData?.name}
-                                        </label>
-                                        {titleData?.options?.length > 0 ? (
-                                          <Controller
-                                            name={titleData?.uid}
-                                            control={control}
-                                            render={({ field }) => (
-                                              <div className="p-input-icon-right w-100">
-                                                {titleData.type ===
-                                                  "PERCENTAGE" && (
-                                                  <i
-                                                    className="pi pi-percentage"
-                                                    style={{
-                                                      left: "0.75rem",
-                                                      right: "auto",
-                                                    }}
-                                                  />
-                                                )}
-                                                <InputText
-                                                  {...field}
-                                                  className="w-100"
-                                                  placeholder={
-                                                    titleData.type === "FLOAT"
-                                                      ? "مقدار عددی را وارد نمایید"
-                                                      : titleData.type ===
-                                                        "PERCENTAGE"
-                                                      ? "درصد را وارد نمایید"
-                                                      : "مقدار را وارد نمایید"
-                                                  }
-                                                  onChange={(e) => {
-                                                    const value =
-                                                      e.target.value;
-                                                    const formattedValue =
-                                                      formatValue(
-                                                        value,
-                                                        titleData.type
-                                                      );
-
-                                                    if (
-                                                      validateInput(
-                                                        value,
-                                                        titleData.type
-                                                      )
-                                                    ) {
-                                                      field.onChange(
-                                                        formattedValue
-                                                      );
-                                                    } else if (
-                                                      titleData.type ===
-                                                        "FLOAT" ||
-                                                      titleData.type ===
-                                                        "PERCENTAGE"
-                                                    ) {
-                                                      toast.error(
-                                                        `لطفا یک ${
-                                                          titleData.type ===
-                                                          "FLOAT"
-                                                            ? "عدد"
-                                                            : "درصد"
-                                                        } معتبر وارد کنید`
-                                                      );
-                                                    }
+                      <div className="">
+                        {title?.field
+                          ?.sort(
+                            (a, b) => (a?.ordering || 0) - (b?.ordering || 0)
+                          )
+                          ?.reduce((acc, titleData) => {
+                            const { ordering } = titleData;
+                            if (!acc[ordering]) {
+                              acc[ordering] = [];
+                            }
+                            acc[ordering].push(titleData);
+                            return acc;
+                          }, {})
+                          ? Object.keys(
+                              title?.field?.reduce((acc, titleData) => {
+                                const { ordering } = titleData;
+                                if (!acc[ordering]) {
+                                  acc[ordering] = [];
+                                }
+                                acc[ordering].push(titleData);
+                                return acc;
+                              }, {})
+                            ).map((groupKey, idx) => (
+                              <div className="row" key={idx}>
+                                {title?.field
+                                  ?.filter(
+                                    (field) =>
+                                      field?.ordering.toString() === groupKey
+                                  )
+                                  .map((titleData) => (
+                                    <div
+                                      key={titleData?.uid}
+                                      className={` col-md-${
+                                        countOccurrences[titleData?.ordering]
+                                          ? 12 /
+                                            countOccurrences[
+                                              titleData?.ordering
+                                            ]
+                                          : titleData?.ordering
+                                      } mb-4`}
+                                    >
+                                      <label htmlFor={titleData?.uid}>
+                                        {titleData?.name}
+                                      </label>
+                                      {titleData?.options?.length > 0 ? (
+                                        <Controller
+                                          name={titleData?.uid}
+                                          control={control}
+                                          render={({ field }) => (
+                                            <div className="p-input-icon-right w-100">
+                                              {titleData.type ===
+                                                "PERCENTAGE" && (
+                                                <i
+                                                  className="pi pi-percentage"
+                                                  style={{
+                                                    left: "0.75rem",
+                                                    right: "auto",
                                                   }}
                                                 />
-                                              </div>
-                                            )}
-                                          />
-                                        ) : (
-                                          <Controller
-                                            name={titleData?.uid}
-                                            control={control}
-                                            render={({
-                                              field: controllerField,
-                                            }) => (
-                                              <div className="p-input-icon-right w-100">
-                                                {titleData.options?.length > 0 ? (
-                                                  <Dropdown
-                                                    value={controllerField.value}
-                                                    options={formatSelectOptions(titleData.options)}
-                                                    onChange={(e) => controllerField.onChange(e.value)}
-                                                    placeholder="انتخاب کنید"
+                                              )}
+                                              <InputText
+                                                {...field}
+                                                className="w-100"
+                                                placeholder={
+                                                  titleData.type === "FLOAT"
+                                                    ? "مقدار عددی را وارد نمایید"
+                                                    : titleData.type ===
+                                                      "PERCENTAGE"
+                                                    ? "درصد را وارد نمایید"
+                                                    : "مقدار را وارد نمایید"
+                                                }
+                                                onChange={(e) => {
+                                                  const value = e.target.value;
+                                                  const formattedValue =
+                                                    formatValue(
+                                                      value,
+                                                      titleData.type
+                                                    );
+
+                                                  if (
+                                                    validateInput(
+                                                      value,
+                                                      titleData.type
+                                                    )
+                                                  ) {
+                                                    field.onChange(
+                                                      formattedValue
+                                                    );
+                                                  } else if (
+                                                    titleData.type ===
+                                                      "FLOAT" ||
+                                                    titleData.type ===
+                                                      "PERCENTAGE"
+                                                  ) {
+                                                    toast.error(
+                                                      `لطفا یک ${
+                                                        titleData.type ===
+                                                        "FLOAT"
+                                                          ? "عدد"
+                                                          : "درصد"
+                                                      } معتبر وارد کنید`
+                                                    );
+                                                  }
+                                                }}
+                                              />
+                                            </div>
+                                          )}
+                                        />
+                                      ) : (
+                                        <Controller
+                                          name={titleData?.uid}
+                                          control={control}
+                                          render={({
+                                            field: controllerField,
+                                          }) => (
+                                            <div className="p-input-icon-right w-100">
+                                              {titleData.options?.length > 0 ? (
+                                                <Dropdown
+                                                  value={controllerField.value}
+                                                  options={formatSelectOptions(
+                                                    titleData.options
+                                                  )}
+                                                  onChange={(e) =>
+                                                    controllerField.onChange(
+                                                      e.value
+                                                    )
+                                                  }
+                                                  placeholder="انتخاب کنید"
+                                                  className="w-100"
+                                                />
+                                              ) : (
+                                                <>
+                                                  {titleData.type ===
+                                                    "PERCENTAGE" && (
+                                                    <i
+                                                      className="pi pi-percentage"
+                                                      style={{
+                                                        left: "0.75rem",
+                                                        right: "auto",
+                                                      }}
+                                                    />
+                                                  )}
+                                                  <InputText
+                                                    {...controllerField}
                                                     className="w-100"
-                                                  />
-                                                ) : (
-                                                  <>
-                                                    {titleData.type === "PERCENTAGE" && (
-                                                      <i
-                                                        className="pi pi-percentage"
-                                                        style={{ left: "0.75rem", right: "auto" }}
-                                                      />
-                                                    )}
-                                                    <InputText
-                                                      {...controllerField}
-                                                      className="w-100"
-                                                      placeholder={
-                                                        titleData.type === "FLOAT"
-                                                          ? "مقدار عددی را وارد نمایید"
-                                                          : titleData.type === "PERCENTAGE"
-                                                          ? "درصد را وارد نمایید"
-                                                          : "مقدار را وارد نمایید"
-                                                      }
-                                                      onChange={(e) => {
-                                                        const value = e.target.value;
-                                                        const formattedValue = formatValue(
+                                                    placeholder={
+                                                      titleData.type === "FLOAT"
+                                                        ? "مقدار عددی را وارد نمایید"
+                                                        : titleData.type ===
+                                                          "PERCENTAGE"
+                                                        ? "درصد را وارد نمایید"
+                                                        : "مقدار را وارد نمایید"
+                                                    }
+                                                    onChange={(e) => {
+                                                      const value =
+                                                        e.target.value;
+                                                      const formattedValue =
+                                                        formatValue(
                                                           value,
                                                           titleData.type
                                                         );
 
-                                                        if (
-                                                          validateInput(
-                                                            value,
-                                                            titleData.type
-                                                          )
-                                                        ) {
-                                                          controllerField.onChange(formattedValue);
-                                                        } else if (
-                                                          titleData.type === "FLOAT" ||
-                                                          titleData.type === "PERCENTAGE"
-                                                        ) {
-                                                          toast.error(
-                                                            `لطفا یک ${
-                                                              titleData.type === "FLOAT"
-                                                                ? "عدد"
-                                                                : "درصد"
-                                                            } معتبر وارد کنید`
-                                                          );
-                                                        }
-                                                      }}
-                                                    />
-                                                  </>
-                                                )}
-                                              </div>
-                                            )}
-                                          />
-                                        )}
-                                      </div>
-                                    ))}
-                                </div>
-                              ))
-                            : null}
-                        </div>
+                                                      if (
+                                                        validateInput(
+                                                          value,
+                                                          titleData.type
+                                                        )
+                                                      ) {
+                                                        controllerField.onChange(
+                                                          formattedValue
+                                                        );
+                                                      } else if (
+                                                        titleData.type ===
+                                                          "FLOAT" ||
+                                                        titleData.type ===
+                                                          "PERCENTAGE"
+                                                      ) {
+                                                        toast.error(
+                                                          `لطفا یک ${
+                                                            titleData.type ===
+                                                            "FLOAT"
+                                                              ? "عدد"
+                                                              : "درصد"
+                                                          } معتبر وارد کنید`
+                                                        );
+                                                      }
+                                                    }}
+                                                  />
+                                                </>
+                                              )}
+                                            </div>
+                                          )}
+                                        />
+                                      )}
+                                    </div>
+                                  ))}
+                              </div>
+                            ))
+                          : null}
                       </div>
-                    );
-                  }
-                })}
+                    </div>
+                  );
+                }
+              })}
             {hiddenInputs?.length > 0 && (
               <HiddenInputsModal
                 hiddenInputs={hiddenInputs}
