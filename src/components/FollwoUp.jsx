@@ -7,15 +7,8 @@ import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Badge } from "primereact/badge";
 
-export default function FollwoUp({
-  // activeTabForce,
-  setActiveTabForce,
-  // rowDataTransfer,
-  setrowDataTransfer,
-}) {
+export default function FollwoUp({ setActiveTabForce, setrowDataTransfer }) {
   const [products, setProducts] = useState([]);
-  // const [allrow, setallrow] = useState([]);
-  // const [tasvirDetailUid, settasvirDetailUid] = useState(undefined);
   const dt = useRef(null);
   const { uid } = useParams();
   const [loading, setLoading] = useState(false);
@@ -174,8 +167,6 @@ export default function FollwoUp({
                   marginRight: "8px",
                 }}
               >
-                {/* {record.category}
-                {record?.sub_category && ` (${record.sub_category})`} */}
                 <Badge
                   severity="warning"
                   size={"large"}
@@ -266,8 +257,6 @@ export default function FollwoUp({
             dir="rtl"
             ref={dt}
             value={products}
-            // selection={selectedProducts}
-            // onSelectionChange={(e) => setSelectedProducts(e.value)}
             dataKey="id"
             paginator
             rows={10}
