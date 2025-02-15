@@ -794,8 +794,8 @@ const PillsTabs = ({
                   </div>
                 ))}
             </div>
-            <div className="d-flex flex-column">
-              <div className="mb-3">
+            <div className="d-flex flex-column w-100">
+              {/* <div className="mb-3"> */}
                 <Controller
                   name="date"
                   control={control}
@@ -828,14 +828,14 @@ const PillsTabs = ({
                         locale={persian_fa}
                         format="YYYY/MM/DD"
                         placeholder="تاریخ را انتخاب کنید"
-                        className="w-full p-2 border rounded"
-                        inputClass="w-full p-2 border rounded"
+                        className="w-100 p-2 border rounded"
+                        inputClass="w-100 p-2 border rounded"
                         position="bottom-right"
                       />
                     );
                   }}
                 />
-              </div>
+              {/* </div> */}
             </div>
 
             <div className="">
