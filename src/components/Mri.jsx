@@ -13,7 +13,7 @@ const Mri = ({ setShowAzmayeshPAge, uidScan }) => {
   const [formData, setFormData] = useState({
     patient_uid: uid,
     date: "",
-    sizes: [{ size: "", site: "", description: "" }], // Added description
+    sizes: [{ size: "", site: "" }],
     description: "",
     signal: "",
   });
@@ -207,7 +207,7 @@ const Mri = ({ setShowAzmayeshPAge, uidScan }) => {
               />
             </Form.Group>
           </Col>
-          <Col>
+          {/* <Col>
             <Form.Group>
               <Form.Label>Description</Form.Label>
               <Form.Control
@@ -217,7 +217,7 @@ const Mri = ({ setShowAzmayeshPAge, uidScan }) => {
                 onChange={(e) => handleInputChange(index, e)}
               />
             </Form.Group>
-          </Col>
+          </Col> */}
         </Row>
       ))}
 
