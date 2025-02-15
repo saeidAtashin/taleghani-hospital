@@ -2,10 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Tab, Nav } from "react-bootstrap";
 import axios from "axios";
 import { InputText } from "primereact/inputtext";
-import DropD from "./DropD";
 import { Controller, useForm } from "react-hook-form";
-import { IconField } from "primereact/iconfield";
-import { InputIcon } from "primereact/inputicon";
 import { toast } from "react-toastify";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker, { DateObject } from "react-multi-date-picker";
@@ -16,7 +13,6 @@ import HiddenInputsModal from "./HiddenInputsModal";
 import { Accordion, AccordionTab } from "primereact/accordion";
 import { ConfirmDialog } from "primereact/confirmdialog";
 import { Button } from "primereact/button";
-import moment from "jalali-moment";
 import { Dropdown } from "primereact/dropdown";
 
 const PillsTabs = ({
