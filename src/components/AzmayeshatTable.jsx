@@ -15,9 +15,6 @@ export default function AzmayeshatTable({ diseaseType }) {
   const [showAzmayeshPAge, setShowAzmayeshPAge] = useState("home");
   const dt = useRef(null);
   const { uid } = useParams();
-  const [selectedTest, setSelectedTest] = useState(null);
-  const [showTestDetails, setShowTestDetails] = useState(false);
-  const [testDetails, setTestDetails] = useState(null);
   const [categoryDetails, setCategoryDetails] = useState({});
   const [viewTestData, setViewTestData] = useState(null);
 
@@ -149,27 +146,12 @@ export default function AzmayeshatTable({ diseaseType }) {
     fetchCategoryDetails();
   }, []);
 
-  const fetchTestDetails = async (testId) => {
-    try {
-      const response = await axios.get(
-        `https://cancerreg.ir/api/v1/tests/test/${testId}/`
-      );
-      if (response.status >= 200 && response.status < 400) {
-        setTestDetails(response.data.data);
-        setShowTestDetails(true);
-      }
-    } catch (error) {
-      console.error("Error fetching test details:", error);
-    }
-  };
-
   const operationsTemplate = (rowData) => {
     return (
       <button
         type="button"
         className="btn btn-outline-primary"
         onClick={() => {
-          // Group tests by category name
           const groupedTests = rowData.names.reduce((acc, test) => {
             if (!acc[test.value]) {
               acc[test.value] = [];
