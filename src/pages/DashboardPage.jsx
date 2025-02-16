@@ -1,5 +1,11 @@
 import React from "react";
 import { Card } from "primereact/card";
+import { Chart } from "primereact/chart";
+import ChartDataLabels from "chartjs-plugin-datalabels";
+import { Chart as ChartJS } from "chart.js";
+
+// Register the plugin
+ChartJS.register(ChartDataLabels);
 
 const DashboardPage = () => {
   const dashboardData = [
@@ -33,8 +39,81 @@ const DashboardPage = () => {
     },
   ];
 
+  const [chartData] = React.useState({
+    labels: [
+      "سرطان سینه",
+      "سرطان ریه",
+      "سرطان پوست",
+      "سرطان روده",
+      "سرطان معده",
+    ],
+    datasets: [
+      {
+        label: "تعداد بیماران",
+        data: [45, 32, 28, 22, 15],
+        backgroundColor: "rgba(54, 162, 235, 0.5)",
+        borderColor: "rgb(54, 162, 235)",
+        borderRadius: 8,
+        borderWidth: 2,
+      },
+    ],
+  });
+
+  const [chartOptions] = React.useState({
+    scales: {
+      y: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: "تعداد بیماران",
+          font: {
+            size: 16,
+          },
+        },
+      },
+      x: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: "نوع سرطان",
+          font: {
+            size: 16,
+          },
+        },
+      },
+    },
+    plugins: {
+      title: {
+        display: true,
+        text: "نمودار پراکندگی سرطان‌ها",
+        font: {
+          size: 24,
+          weight: "bold",
+        },
+        padding: {
+          top: 10,
+          bottom: 30,
+        },
+      },
+      legend: {
+        position: "bottom",
+      },
+      datalabels: {
+        display: true,
+        color: "#000000",
+        anchor: "center",
+        align: "center",
+        font: {
+          weight: "bold",
+          size: 20,
+        },
+        formatter: (value) => value,
+      },
+    },
+  });
+
   return (
-    <div className="container mt-5 ">
+    <div className="container mt-5">
       <div className="row">
         {dashboardData.map((card, index) => (
           <div key={index} className="col-md-5 mb-4">
@@ -83,6 +162,15 @@ const DashboardPage = () => {
             </Card>
           </div>
         ))}
+      </div>
+
+      {/* New chart section */}
+      <div className="row mt-5">
+        <div className="col-12">
+          <Card className="shadow-lg rounded-3">
+            <Chart type="bar" data={chartData} options={chartOptions} />
+          </Card>
+        </div>
       </div>
     </div>
   );
