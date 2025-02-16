@@ -141,8 +141,6 @@ const PatientRecordsForm = () => {
   };
 
   const handleChange = (e, field) => {
-    console.log("e in e", e);
-    console.log("field in e", field);
     if (dropdownApis[field]) {
       setPatient((prev) => {
         const newValues = e.value.map((selected) => selected?.label);
@@ -159,7 +157,7 @@ const PatientRecordsForm = () => {
       });
 
       setUpdatedFields((prev) => {
-        const newValues = e.value.map((selected) => selected?.value);
+        const newValues = e?.value?.map((selected) => selected?.value);
 
         if (JSON.stringify(prev[field]) === JSON.stringify(newValues)) {
           return prev;
@@ -171,18 +169,37 @@ const PatientRecordsForm = () => {
         };
       });
     } else {
+      const newValue = e?.target?.value;
+
       setPatient((prev) => {
-        if (prev[field] === e.target.value) {
-          return prev;
+        const updatedPatient = { ...prev, [field]: newValue };
+
+        // Calculate BMI and BSA only if both height and weight exist
+        if (
+          (field === "height" || field === "weight") &&
+          updatedPatient.height &&
+          updatedPatient.weight
+        ) {
+          const height = parseFloat(updatedPatient.height) / 100; // Convert to meters
+          const weight = parseFloat(updatedPatient.weight);
+
+          if (!isNaN(height) && !isNaN(weight) && height > 0 && weight > 0) {
+            // Calculate BMI
+            updatedPatient.bmi = (weight / (height * height)).toFixed(2);
+
+            // Calculate BSA using Mosteller formula
+            updatedPatient.bsa = Math.sqrt((height * weight) / 36).toFixed(2);
+          }
         }
-        return { ...prev, [field]: e.target.value };
+
+        return updatedPatient;
       });
 
       setUpdatedFields((prev) => {
-        if (prev[field] === e.target.value) {
+        if (prev[field] === newValue) {
           return prev;
         }
-        return { ...prev, [field]: e.target.value };
+        return { ...prev, [field]: newValue };
       });
     }
   };
@@ -326,7 +343,16 @@ const PatientRecordsForm = () => {
                 ) : (
                   <InputText
                     value={patient?.[field] || ""}
-                    onChange={(e) => handleChange(e, field)}
+                    onChange={(e) => {
+                      // For height and weight, only allow numbers
+                      if (
+                        (field === "height" || field === "weight") &&
+                        !/^\d*\.?\d*$/.test(e.target.value)
+                      ) {
+                        return;
+                      }
+                      handleChange(e, field);
+                    }}
                     placeholder={`لطفا ${dropdownLabels?.[field]} را وارد کنید`}
                     className={
                       dropdownLabels?.[field] === "BSA" ||
