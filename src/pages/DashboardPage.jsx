@@ -155,7 +155,7 @@ const DashboardPage = () => {
                   ></img>
                   <div>
                     <div className="text-center mb-3 d-flex justify-content-center align-items-center">
-                      <h5 className="mb-2">{card.title}</h5>
+                      <h5 className="mb-2 fw-bold">{card.title}</h5>
                     </div>
                     <div className="text-center mb-3 d-flex justify-content-center align-items-center gap-2">
                       <h3 className="text-primary mb-0">{card.mainNumber}</h3>{" "}
