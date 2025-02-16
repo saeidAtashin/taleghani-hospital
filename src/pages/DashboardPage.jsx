@@ -4,7 +4,6 @@ import { Chart } from "primereact/chart";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import { Chart as ChartJS } from "chart.js";
 
-// Register the plugin
 ChartJS.register(ChartDataLabels);
 
 const DashboardPage = () => {
@@ -45,11 +44,11 @@ const DashboardPage = () => {
       "سرطان ریه",
       "سرطان پوست",
       "سرطان روده",
-      "سرطان معده",
-      "سرطان معده",
-      "سرطان معده",
-      "سرطان معده",
-      "سرطان معده",
+      "سرطان 1",
+      "سرطان 2",
+      "سرطان 3",
+      "سرطان 4",
+      "سرطان 5",
     ],
     datasets: [
       {
@@ -97,7 +96,7 @@ const DashboardPage = () => {
         },
         ticks: {
           font: {
-            size: 24,
+            size: 16,
             weight: "bold",
           },
         },
@@ -129,7 +128,7 @@ const DashboardPage = () => {
           size: 20,
         },
         formatter: (value) => value,
-        offset: 10,
+        offset: 5,
         align: "",
       },
     },
@@ -144,7 +143,7 @@ const DashboardPage = () => {
     <div className="container mt-5">
       <div className="row">
         {dashboardData.map((card, index) => (
-          <div key={index} className="col-md-5 mb-4">
+          <div key={index} className="col-6 mb-4">
             <Card className="h-100 shadow-lg rounded-3">
               <div className="d-flex flex-column h-100">
                 {/* Top Section */}
