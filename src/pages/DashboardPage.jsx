@@ -95,6 +95,12 @@ const DashboardPage = () => {
         grid: {
           display: false,
         },
+        ticks: {
+          font: {
+            size: 24,
+            weight: "bold",
+          },
+        },
       },
     },
     plugins: {
@@ -123,6 +129,8 @@ const DashboardPage = () => {
           size: 20,
         },
         formatter: (value) => value,
+        offset: 10,
+        align: "",
       },
     },
     layout: {
