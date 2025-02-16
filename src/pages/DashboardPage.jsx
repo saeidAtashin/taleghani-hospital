@@ -2,31 +2,30 @@ import React from "react";
 import { Card } from "primereact/card";
 
 const DashboardPage = () => {
-  // Sample data - replace with your actual data
   const dashboardData = [
     {
-      icon: "pi pi-users",
+      icon: "/images/1.svg",
       title: "تعداد کل بیماران",
       mainNumber: "1,234",
       bottomLeft: { title: "بیماران با پروسه خاتمه یافته", number: "45" },
       bottomRight: { title: "بیماران با پروسه در جریان", number: "890" },
     },
     {
-      icon: "pi pi-file",
+      icon: "/images/2.svg",
       title: "تعداد کل درمان‌ها",
       mainNumber: "5,678",
       bottomLeft: { title: "درمان خاتمه یافته", number: "123" },
       bottomRight: { title: "درمان‌ در جریان", number: "5,555" },
     },
     {
-      icon: "pi pi-images",
+      icon: "/images/3.svg",
       title: "تعداد کل تصویربرداری‌ها",
       mainNumber: "3,456",
       bottomLeft: { title: "تصویربرداری انجام شده", number: "89" },
       bottomRight: { title: "تصویربرداری در حال انجام", number: "3,367" },
     },
     {
-      icon: "pi pi-heart",
+      icon: "/images/4.svg",
       title: "تعداد کل آزمایشات",
       mainNumber: "2,789",
       bottomLeft: { title: "آزمایش انجام شده", number: "456" },
@@ -43,9 +42,11 @@ const DashboardPage = () => {
               <div className="d-flex flex-column h-100">
                 {/* Top Section */}
                 <div className="d-flex justify-content-around align-items-center">
-                  <i
-                    className={`${card.icon} fs-1 text-primary mb-2 bg-body-secondary p-3 rounded-3`}
-                  ></i>
+                  <img
+                    src={card.icon}
+                    alt="icon"
+                    className={` fs-1 text-primary mb-2 bg-body-secondary p-3 rounded-3`}
+                  ></img>
                   <div>
                     <div className="text-center mb-3 d-flex justify-content-center align-items-center">
                       <h5 className="mb-2">{card.title}</h5>
