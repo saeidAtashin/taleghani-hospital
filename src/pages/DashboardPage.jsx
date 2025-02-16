@@ -46,15 +46,21 @@ const DashboardPage = () => {
       "سرطان پوست",
       "سرطان روده",
       "سرطان معده",
+      "سرطان معده",
+      "سرطان معده",
+      "سرطان معده",
+      "سرطان معده",
     ],
     datasets: [
       {
         label: "تعداد بیماران",
-        data: [45, 32, 28, 22, 15],
+        data: [45, 32, 28, 22, 15, 18, 22, 50, 20],
         backgroundColor: "rgba(54, 162, 235, 0.5)",
         borderColor: "rgb(54, 162, 235)",
         borderRadius: 8,
         borderWidth: 2,
+        barPercentage: 0.4,
+        categoryPercentage: 0.7,
       },
     ],
   });
@@ -70,6 +76,12 @@ const DashboardPage = () => {
             size: 16,
           },
         },
+        grid: {
+          display: false,
+        },
+        ticks: {
+          display: false,
+        },
       },
       x: {
         beginAtZero: true,
@@ -80,6 +92,9 @@ const DashboardPage = () => {
             size: 16,
           },
         },
+        grid: {
+          display: false,
+        },
       },
     },
     plugins: {
@@ -87,12 +102,12 @@ const DashboardPage = () => {
         display: true,
         text: "نمودار پراکندگی سرطان‌ها",
         font: {
-          size: 24,
+          size: 32,
           weight: "bold",
         },
         padding: {
-          top: 10,
-          bottom: 30,
+          top: 20,
+          bottom: 40,
         },
       },
       legend: {
@@ -108,6 +123,11 @@ const DashboardPage = () => {
           size: 20,
         },
         formatter: (value) => value,
+      },
+    },
+    layout: {
+      padding: {
+        top: 40,
       },
     },
   });
