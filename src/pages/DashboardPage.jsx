@@ -29,8 +29,8 @@ const DashboardPage = () => {
       icon: "pi pi-heart",
       title: "تعداد کل آزمایشات",
       mainNumber: "2,789",
-      bottomLeft: { title: "در حال درمان", number: "456" },
-      bottomRight: { title: "تکمیل شده", number: "2,333" },
+      bottomLeft: { title: "آزمایش انجام شده", number: "456" },
+      bottomRight: { title: "آزمایش در حال انجام", number: "2,333" },
     },
   ];
 
@@ -42,13 +42,19 @@ const DashboardPage = () => {
             <Card className="h-100 shadow-lg rounded-3">
               <div className="d-flex flex-column h-100">
                 {/* Top Section */}
-                <div className="text-center mb-3 d-flex justify-content-center align-items-center">
-                  <i className={`${card.icon} fs-1 text-primary mb-2`}></i>
-                  <h5 className="mb-2">{card.title}</h5>
-                </div>
-                <div className="text-center mb-3 d-flex justify-content-center align-items-center gap-2">
-                  <h3 className="text-primary mb-0">{card.mainNumber}</h3>{" "}
-                  <h3 className=" mb-0">نفر</h3>
+                <div className="d-flex justify-content-around align-items-center">
+                  <i
+                    className={`${card.icon} fs-1 text-primary mb-2 bg-body-secondary p-3 rounded-3`}
+                  ></i>
+                  <div>
+                    <div className="text-center mb-3 d-flex justify-content-center align-items-center">
+                      <h5 className="mb-2">{card.title}</h5>
+                    </div>
+                    <div className="text-center mb-3 d-flex justify-content-center align-items-center gap-2">
+                      <h3 className="text-primary mb-0">{card.mainNumber}</h3>{" "}
+                      <h3 className=" mb-0">نفر</h3>
+                    </div>
+                  </div>
                 </div>
                 {/* Divider */}
                 <hr className="my-3" />
