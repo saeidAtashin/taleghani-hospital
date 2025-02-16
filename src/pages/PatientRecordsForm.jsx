@@ -8,8 +8,26 @@ import { useParams } from "react-router-dom";
 import { Chip } from "primereact/chip";
 
 const PatientRecordsForm = () => {
-  const [patient, setPatient] = useState(null);
-  const [dropdownData, setDropdownData] = useState({});
+  const [patient, setPatient] = useState({
+    height: "",
+    weight: "",
+    bmi: "",
+    bsa: "",
+    treating_physician: "",
+    underlying_diseases: [],
+    habits: [],
+    family_history: [],
+    surgeries: [],
+    drugs_records: [],
+    refer_reason: "",
+    description: "",
+  });
+  const [dropdownData, setDropdownData] = useState({
+    underlying_diseases: [],
+    habits: [],
+    family_history: [],
+    surgeries: [],
+  });
   const [updatedFields, setUpdatedFields] = useState({});
   const [isFormDisabled, setIsFormDisabled] = useState(true);
   const [drugName, setDrugName] = useState("");
@@ -83,7 +101,40 @@ const PatientRecordsForm = () => {
     fetch(patientApiUrl)
       .then((res) => res.json())
       .then((data) => {
-        setPatient(data?.data);
+        if (data?.data) {
+          // Format the dropdown fields to match the MultiSelect value format
+          const formattedData = { ...data.data };
+
+          // Format each dropdown field
+          Object.keys(dropdownApis).forEach((field) => {
+            if (Array.isArray(data.data[field])) {
+              formattedData[field] = data.data[field].map((item) => ({
+                value: item.id || item, // Use item.id if available, otherwise use item itself
+                label: item.name || item, // Use item.name if available, otherwise use item itself
+              }));
+            }
+          });
+
+          setPatient((prev) => ({
+            ...prev,
+            ...formattedData,
+          }));
+
+          // Also set these values in updatedFields to track changes
+          setUpdatedFields((prev) => ({
+            ...prev,
+            ...Object.fromEntries(
+              Object.keys(dropdownApis).map((field) => [
+                field,
+                formattedData[field]?.map((item) => item.value) || [],
+              ])
+            ),
+          }));
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching patient data:", error);
+        toast.error("خطا در دریافت اطلاعات بیمار");
       });
 
     Object.entries(dropdownApis).forEach(([key, url]) => {
@@ -97,77 +148,28 @@ const PatientRecordsForm = () => {
 
           setDropdownData((prevOptions) => ({
             ...prevOptions,
-            [key]: fetchedOptions, // Correcting fieldName.name issue
+            [key]: fetchedOptions || [],
           }));
         })
-        .catch();
+        .catch((error) => {
+          console.error(`Error fetching ${key} data:`, error);
+        });
     });
   }, []);
 
-  useEffect(() => {
-    if (patient && dropdownData) {
-      const updatedPatient = { ...patient };
-      let hasChanges = false;
-
-      Object.keys(dropdownData).forEach((key) => {
-        if (dropdownData[key] && patient[key]) {
-          const selectedValues = patient[key]?.map((item) =>
-            dropdownData[key]?.find((option) => option?.name === item)
-          );
-
-          if (
-            selectedValues &&
-            !areArraysEqual(updatedPatient[key], selectedValues)
-          ) {
-            updatedPatient[key] = selectedValues;
-            hasChanges = true;
-          }
-        }
-      });
-
-      // if (hasChanges) {
-      //   setPatient(updatedPatient);
-      // }
-    }
-  }, [patient, dropdownData]);
-
-  const areArraysEqual = (arr1, arr2) => {
-    if (!arr1 || !arr2) return false;
-    if (arr1.length !== arr2.length) return false;
-    for (let i = 0; i < arr1.length; i++) {
-      if (arr1[i] !== arr2[i]) return false;
-    }
-    return true;
-  };
-
   const handleChange = (e, field) => {
     if (dropdownApis[field]) {
-      setPatient((prev) => {
-        const newValues = e.value.map((selected) => selected?.label);
+      // Store full objects in patient state for display
+      setPatient((prev) => ({
+        ...prev,
+        [field]: e.value,
+      }));
 
-        // Prevent unnecessary re-renders
-        if (JSON.stringify(prev[field]) === JSON.stringify(newValues)) {
-          return prev;
-        }
-
-        return {
-          ...prev,
-          [field]: newValues, // Store labels for UI
-        };
-      });
-
-      setUpdatedFields((prev) => {
-        const newValues = e?.value?.map((selected) => selected?.value);
-
-        if (JSON.stringify(prev[field]) === JSON.stringify(newValues)) {
-          return prev;
-        }
-
-        return {
-          ...prev,
-          [field]: newValues, // Store values for API submission
-        };
-      });
+      // Store only the IDs in updatedFields for API submission
+      setUpdatedFields((prev) => ({
+        ...prev,
+        [field]: e.value.map((item) => item.value),
+      }));
     } else {
       const newValue = e?.target?.value;
 
@@ -205,16 +207,19 @@ const PatientRecordsForm = () => {
   };
 
   const handleSubmit = () => {
+    // Ensure we're sending the correct format to the API
+    const apiData = {
+      ...updatedFields,
+      patient_uid: uid,
+      drugs_records: patient?.drugs_records,
+    };
+
     fetch(patientApiUrl, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        ...updatedFields,
-        patient_uid: uid,
-        drugs_records: patient?.drugs_records,
-      }),
+      body: JSON.stringify(apiData),
     })
       .then(async (res) => {
         const responseData = await res.json();
@@ -320,14 +325,9 @@ const PatientRecordsForm = () => {
 
                 {dropdownApis?.[field] ? (
                   <MultiSelect
-                    value={
-                      dropdownData?.underlying_diseases?.filter((option) =>
-                        patient?.underlying_diseases?.includes(option.label)
-                      ) || []
-                    }
-                    options={dropdownData?.underlying_diseases || []}
+                    value={patient?.[field] || []}
+                    options={dropdownData?.[field] || []}
                     onChange={(e) => {
-                      console.log("e", e);
                       handleChange(e, field);
                     }}
                     multiple
