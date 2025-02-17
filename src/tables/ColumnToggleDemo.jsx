@@ -110,12 +110,13 @@ export default function ColumnToggleDemo() {
                 setGlobalFilter("");
                 const searchParam = "";
                 setLoading(true);
-                axios.get(
-                  `https://cancerreg.ir/api/v1/patient/patient-info/?${searchParam}page=${
-                    page + 1
-                  }&page_size=${rows}`
-                )
-                  .then(response => {
+                axios
+                  .get(
+                    `https://cancerreg.ir/api/v1/patient/patient-info/?${searchParam}page=${
+                      page + 1
+                    }&page_size=${rows}`
+                  )
+                  .then((response) => {
                     const patients = response.data.data.results;
                     setProducts(patients);
                     setCount(response.data?.data?.count || 0);
@@ -191,10 +192,10 @@ export default function ColumnToggleDemo() {
       {loading ? (
         <div>در حال دریافت اطلاعات ... </div>
       ) : (
-        <div className="table-responsive">
+        <div className="table-responsive ">
           <DataTable
             stripedRows
-            dir="rtl"
+            // dir="rtl"
             ref={dt}
             value={products}
             dataKey="uid"
@@ -227,8 +228,8 @@ export default function ColumnToggleDemo() {
                     .reduce((o, key) => (o ? o[key] : null), rowData);
                   return fieldValue ?? "-";
                 }}
-                style={{ textAlign: "right", direction: "rtl" }}
-                className="p-2"
+                style={{ textAlign: "center", direction: "rtl" }}
+                className="p-2 "
               />
             ))}
             <Column
