@@ -129,7 +129,6 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
         setSelectedOptions([]);
       })
       .catch((error) => {
-        // // console.error("Error fetching data:", error);
         toast.error("خطا در بارگذاری داده‌ها");
       })
       .finally(() => setLoading(false));
@@ -189,9 +188,7 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
     let errorCount = 0;
 
     try {
-      // For each selected product
       for (const product of selectedProducts) {
-        // For each record in the product
         for (const record of product.records) {
           const endpoint = deleteEndpoints[record.record_type];
           if (!endpoint) {
@@ -214,7 +211,6 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
         }
       }
 
-      // Show results
       if (successCount > 0) {
         toast.success(`${successCount} مورد با موفقیت حذف شد`);
       }
@@ -222,7 +218,6 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
         toast.error(`خطا در حذف ${errorCount} مورد`);
       }
 
-      // Clear selection and refresh data
       setSelectedProducts([]);
       fetchData();
     } finally {
@@ -271,9 +266,6 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
       })
       .catch((error) => {
         setbtnLoading(false);
-
-        // // console.error("Error submitting data:", error);
-        // Handle error
         toast.warning("مشکلی پیش آمده است.");
       });
   };
