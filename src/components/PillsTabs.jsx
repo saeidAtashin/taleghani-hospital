@@ -685,94 +685,91 @@ const PillsTabs = ({
                     }
                   >
                     <div className="row">
-                      {titleDirectToCategList
-                        ?.sort(
-                          (a, b) => (a?.ordering || 0) - (b?.ordering || 0)
-                        )
-                        ?.filter((field) => {
-                          const excludeNames = Exexex.filter(
-                            (name) => name !== selectedName
-                          );
-                          return !excludeNames.includes(field?.name);
-                        })
-                        ?.map((field) => (
-                          <div
-                            key={`${test.uid}_${field.uid}`}
-                            className={`${
-                              field?.name === "Immunofixation"
-                                ? "flex-grow-1"
-                                : ""
-                            } ${
-                              field?.titled
-                                ? ""
-                                : `col-md-${
-                                    field?.name === "Immunofixation"
-                                      ? 2
-                                      : countOccurrencesDirectTitle[
-                                          field?.ordering
-                                        ]
-                                      ? Math.ceil(
-                                          12 /
-                                            countOccurrencesDirectTitle[
-                                              field?.ordering
-                                            ]
-                                        )
-                                      : 12
-                                  }`
-                            }`}
-                          >
-                            <div className="form-group mb-3">
-                              <label
-                                className={`text-muted d-block mb-2 ${
-                                  field?.titled ? "" : ""
-                                }`}
-                              >
-                                {field?.name}
-                              </label>
+                      {/* Render title inputs */}
+                      {titleOfAll?.map((title) => (
+                        <div key={title.uid} className="col-md-6 mb-4">
+                          <h5>{title.name}</h5>
+                          {title.field?.map((field) => (
+                            <div key={field.uid} className="form-group mb-3">
+                              <label className="text-muted d-block mb-2">{field.name}</label>
                               <Controller
                                 name={`existing_${test.uid}_${field.uid}`}
                                 control={control}
                                 defaultValue=""
                                 render={({ field: controllerField }) => (
-                                  <div className="p-input-icon-right w-100">
-                                    {field?.options?.length > 0 ? (
-                                      <Dropdown
-                                        value={controllerField.value}
-                                        options={formatSelectOptions(
-                                          field.options
-                                        )}
-                                        onChange={(e) => {
-                                          controllerField.onChange(e.value);
-                                          handleInputChange(
-                                            `existing_${test.uid}_${field.uid}`,
-                                            e.value
-                                          );
-                                        }}
-                                        placeholder="انتخاب کنید"
-                                        className="w-100"
-                                      />
-                                    ) : (
-                                      <InputText
-                                        {...controllerField}
-                                        className="w-100"
-                                        placeholder="مقدار را وارد نمایید"
-                                        onChange={(e) => {
-                                          const value = e.target.value;
-                                          controllerField.onChange(value);
-                                          handleInputChange(
-                                            `existing_${test.uid}_${field.uid}`,
-                                            value
-                                          );
-                                        }}
-                                      />
-                                    )}
-                                  </div>
+                                  <InputText
+                                    {...controllerField}
+                                    className="w-100"
+                                    placeholder="مقدار را وارد نمایید"
+                                    onChange={(e) => {
+                                      const value = e.target.value;
+                                      controllerField.onChange(value);
+                                      handleInputChange(`existing_${test.uid}_${field.uid}`, value);
+                                    }}
+                                  />
                                 )}
                               />
                             </div>
+                          ))}
+                        </div>
+                      ))}
+
+                      {/* Render sub_category inputs */}
+                      {subCategory?.map((sub) => (
+                        <div key={sub.uid} className="col-md-6 mb-4">
+                          <h5>{sub.name}</h5>
+                          {sub.field?.map((field) => (
+                            <div key={field.uid} className="form-group mb-3">
+                              <label className="text-muted d-block mb-2">{field.name}</label>
+                              <Controller
+                                name={`existing_${test.uid}_${field.uid}`}
+                                control={control}
+                                defaultValue=""
+                                render={({ field: controllerField }) => (
+                                  <InputText
+                                    {...controllerField}
+                                    className="w-100"
+                                    placeholder="مقدار را وارد نمایید"
+                                    onChange={(e) => {
+                                      const value = e.target.value;
+                                      controllerField.onChange(value);
+                                      handleInputChange(`existing_${test.uid}_${field.uid}`, value);
+                                    }}
+                                  />
+                                )}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      ))}
+
+                      {/* Render existing inputs from titleDirectToCategList */}
+                      {titleDirectToCategList?.map((field) => (
+                        <div key={`${test.uid}_${field.uid}`} className="col-md-6 mb-4">
+                          <div className="form-group mb-3">
+                            <label className="text-muted d-block mb-2">{field.name}</label>
+                            <Controller
+                              name={`existing_${test.uid}_${field.uid}`}
+                              control={control}
+                              defaultValue=""
+                              render={({ field: controllerField }) => (
+                                <InputText
+                                  {...controllerField}
+                                  className="w-100"
+                                  placeholder="مقدار را وارد نمایید"
+                                  onChange={(e) => {
+                                    const value = e.target.value;
+                                    controllerField.onChange(value);
+                                    handleInputChange(`existing_${test.uid}_${field.uid}`, value);
+                                  }}
+                                />
+                              )}
+                            />
                           </div>
-                        ))}
+                        </div>
+                      ))}
                     </div>
+
                     <button
                       type="button"
                       className="btn btn-primary mt-3"
@@ -1023,8 +1020,7 @@ const PillsTabs = ({
                                                       {...controllerField}
                                                       className="w-100"
                                                       placeholder={
-                                                        titleData.type ===
-                                                        "FLOAT"
+                                                        titleData.type === "FLOAT"
                                                           ? "مقدار عددی را وارد نمایید"
                                                           : titleData.type ===
                                                             "PERCENTAGE"
