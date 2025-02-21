@@ -189,14 +189,20 @@ const PillsTabs = ({
             if (response.status >= 200 && response.status < 400) {
               const testData = response.data.data;
 
-              const resultsByFieldId = testData.results.reduce((acc, result) => {
-                acc[result.field_uid] = result.value;
-                return acc;
-              }, {});
+              const resultsByFieldId = testData.results.reduce(
+                (acc, result) => {
+                  acc[result.field_uid] = result.value;
+                  return acc;
+                },
+                {}
+              );
 
               // Populate the form with the fetched data
               Object.keys(resultsByFieldId).forEach((fieldUid) => {
-                setValue(`existing_${testUid}_${fieldUid}`, resultsByFieldId[fieldUid]);
+                setValue(
+                  `existing_${testUid}_${fieldUid}`,
+                  resultsByFieldId[fieldUid]
+                );
               });
             }
           }
