@@ -511,41 +511,59 @@ const PillsTabs = ({
   };
 
   const handleUpdateTest = async (testUid) => {
-    const formattedData = {};
-
-    // Gather the values from the form
-    const formValues = getValues(); // Get all form values
-
-    // Prepare the fields array for the API
-    const fields = Object.entries(formValues).map(([key, value]) => {
-      return {
-        uid: key,
-        value: Array.isArray(value) ? value : [value], // Ensure value is an array
-      };
-    });
-
-    const additionalData = {
-      date: formValues.date,
-      category_uid: activeTab,
-      patient_uid: uid,
-    };
-
-    const formDataWithExtraData = {
-      fields: fields.length > 0 ? fields : undefined,
-      ...additionalData,
-    };
-
     try {
+      const formData = {};
+      
+      // Get all form values
+      const allValues = getValues();
+      
+      // Process titleOfAll fields
+      titleOfAll?.forEach(title => {
+        title.field?.forEach(field => {
+          const fieldKey = `existing_${testUid}_${field.uid}`;
+          const value = allValues[fieldKey];
+          if (value !== undefined && value !== '') {
+            formData[field.uid] = value;
+          }
+        });
+      });
+
+      // Process titleDirectToCategList fields
+      titleDirectToCategList?.forEach(field => {
+        const fieldKey = `existing_${testUid}_${field.uid}`;
+        const value = allValues[fieldKey];
+        if (value !== undefined && value !== '') {
+          formData[field.uid] = value;
+        }
+      });
+
+      // Get the date value
+      const dateValue = allValues[`testDate_${testUid}`];
+
+      // Prepare the payload
+      const payload = {
+        fields: Object.entries(formData).map(([uid, value]) => ({
+          uid,
+          value: Array.isArray(value) ? value : value.toString()
+        })),
+        date: dateValue
+      };
+
+      // Make the PUT request
       const response = await axios.put(
         `https://cancerreg.ir/api/v1/tests/test/${testUid}/`,
-        formDataWithExtraData
+        payload
       );
+
       if (response.status >= 200 && response.status < 400) {
         toast.success("نتیجه آزمایش با موفقیت به‌روزرسانی شد");
-        setHasChanges(false); // Reset changes after successful update
+        setHasChanges(false);
       }
     } catch (error) {
-      toast.error("خطا در به‌روزرسانی نتیجه آزمایش");
+      toast.error(
+        error?.response?.data?.errors?.[0]?.message || 
+        "خطا در به‌روزرسانی نتیجه آزمایش"
+      );
     }
   };
 
@@ -725,6 +743,10 @@ const PillsTabs = ({
                                 onChange={(e) => {
                                   const value = e.target.value;
                                   controllerField.onChange(value);
+                                  handleInputChange(
+                                    `existing_${test.uid}_${field.uid}`,
+                                    value
+                                  );
                                 }}
                               />
                             )}
