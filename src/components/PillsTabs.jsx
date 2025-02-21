@@ -678,7 +678,7 @@ const PillsTabs = ({
                             <div className="form-group mb-3">
                               <label
                                 className={`text-muted d-block mb-2 ${
-                                  field?.titled ? "bg-dark" : ""
+                                  field?.titled ? "" : ""
                                 }`}
                               >
                                 {field?.name}
