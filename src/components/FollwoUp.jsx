@@ -32,17 +32,20 @@ export default function FollwoUp({ setActiveTabForce, setrowDataTransfer }) {
       case "tests":
         setActiveTabForce("آزمایشات");
         setrowDataTransfer({
-          testUid: record.uid,
+          testUids: [record.uid],
           testNames: [record.category],
           groupedTests: {
             [record.category]: [
               {
-                ...record,
+                uid: record.uid,
                 value: record.category,
+                name: record.category,
+                state: record.state,
                 type: record.state === "IN_PROGRESS" ? "info" : "secondary",
               },
             ],
           },
+          showAzmayeshPAge: "viewTest",
         });
         break;
 
