@@ -708,6 +708,29 @@ const PillsTabs = ({
                           ))}
                         </div>
                       ))}
+                      {titleDirectToCategList?.map((field) => (
+                        <div key={field.uid} className="col-md-6 mb-4">
+                          <label className="text-muted d-block mb-2">
+                            {field.name}
+                          </label>
+                          <Controller
+                            name={`existing_${test.uid}_${field.uid}`}
+                            control={control}
+                            defaultValue=""
+                            render={({ field: controllerField }) => (
+                              <InputText
+                                {...controllerField}
+                                className="w-100"
+                                placeholder="مقدار را وارد نمایید"
+                                onChange={(e) => {
+                                  const value = e.target.value;
+                                  controllerField.onChange(value);
+                                }}
+                              />
+                            )}
+                          />
+                        </div>
+                      ))}
                     </div>
 
                     <button
