@@ -65,6 +65,7 @@ const NewTreat = ({
   setmakeitof,
   setrowDataTransfer,
   setTreatmentUidInGet,
+  handleCloseAll,
 }) => {
   const [isCycleVisible, setisCycleVisible] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -563,10 +564,7 @@ const NewTreat = ({
           <span
             className="text-danger cursor-pointer"
             style={{ fontSize: "32px" }}
-            onClick={() => {
-              resetFormFields();
-              setnewTreat(false);
-            }}
+            onClick={handleCloseAll}
           >
             x
           </span>

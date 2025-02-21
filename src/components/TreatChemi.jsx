@@ -57,6 +57,7 @@ const TreatChemi = ({
   setRefreshTreatTable,
   refreshTreatTable,
   handleSubmitLineUpdate,
+  handleCloseAll,
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [showModal2, setShowModal2] = useState(false);

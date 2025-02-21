@@ -365,6 +365,36 @@ const TreatmentTable = ({ rowDataTransfer, setrowDataTransfer }) => {
     }
   };
 
+  const handleCloseAll = () => {
+    // Reset TreatmentTable states
+    setTreatmentValue(null);
+    setDescription("");
+    setnewTreat(false);
+    setStartDateObj(null);
+    setStartDate("");
+    setTreatmentStartDateObj(null);
+    setTreatmentStartDate("");
+    setResponseUid(undefined);
+    setCycles([]);
+    setSelectedProtocol(undefined);
+    setSelectedTreatment(undefined);
+    setTreatmentUidInGet(undefined);
+    setRowData(null);
+    setChildState(null);
+    setEndDateObj(null);
+    setEndDate("");
+    setAllDatas(undefined);
+    setFinaleState(undefined);
+    setIsTreatmentForm(false);
+    setShowStartTreatBtn(true);
+    setShowedPart("");
+    setdontCallForNow(false);
+    setmakeitof(false);
+    setshowLine(false);
+    setShowViewDialog(false);
+    setSelectedRowData(null);
+  };
+
   return (
     <>
       {!newTreat && (
@@ -423,7 +453,7 @@ const TreatmentTable = ({ rowDataTransfer, setrowDataTransfer }) => {
       <Dialog
         visible={showViewDialog}
         className="w-50"
-        onHide={() => setShowViewDialog(false)}
+        onHide={handleCloseAll}
         header="جزئیات درمان"
       >
         <div className="d-flex flex-column gap-4">
@@ -569,6 +599,7 @@ const TreatmentTable = ({ rowDataTransfer, setrowDataTransfer }) => {
           handleTabChange={handleTabChange}
           allDatas={allDatas}
           setshowLine={setshowLine}
+          handleCloseAll={handleCloseAll}
         />
       )}
     </>
