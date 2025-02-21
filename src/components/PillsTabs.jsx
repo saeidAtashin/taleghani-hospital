@@ -52,6 +52,7 @@ const PillsTabs = ({
   const [isTestDetailsLoading, setIsTestDetailsLoading] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [testToDelete, setTestToDelete] = useState(null);
+  const [hasChanges, setHasChanges] = useState(false);
 
   useEffect(() => {
     setvalueinja(Number(kValue) / Number(landaValue));
@@ -62,6 +63,7 @@ const PillsTabs = ({
     handleSubmit,
     reset,
     setValue,
+    getValues,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -541,6 +543,50 @@ const PillsTabs = ({
     }));
   };
 
+  const handleInputChange = (field, value) => {
+    setValue(field, value);
+    setHasChanges(true);
+  };
+
+  const handleUpdateTest = async (testUid) => {
+    const formattedData = {};
+
+    // Gather the values from the form
+    const formValues = getValues(); // Get all form values
+
+    // Prepare the fields array for the API
+    const fields = Object.entries(formValues).map(([key, value]) => {
+      return {
+        uid: key,
+        value: Array.isArray(value) ? value : [value], // Ensure value is an array
+      };
+    });
+
+    const additionalData = {
+      date: formValues.date,
+      category_uid: activeTab,
+      patient_uid: uid,
+    };
+
+    const formDataWithExtraData = {
+      fields: fields.length > 0 ? fields : undefined,
+      ...additionalData,
+    };
+
+    try {
+      const response = await axios.put(
+        `https://cancerreg.ir/api/v1/tests/test/${testUid}/`,
+        formDataWithExtraData
+      );
+      if (response.status >= 200 && response.status < 400) {
+        toast.success("نتیجه آزمایش با موفقیت به‌روزرسانی شد");
+        setHasChanges(false); // Reset changes after successful update
+      }
+    } catch (error) {
+      toast.error("خطا در به‌روزرسانی نتیجه آزمایش");
+    }
+  };
+
   if (isLoading && isLoadingData !== false) {
     return (
       <div className="d-flex justify-content-center align-items-center p-5">
@@ -695,61 +741,30 @@ const PillsTabs = ({
                                         options={formatSelectOptions(
                                           field.options
                                         )}
-                                        onChange={(e) =>
-                                          controllerField.onChange(e.value)
-                                        }
+                                        onChange={(e) => {
+                                          controllerField.onChange(e.value);
+                                          handleInputChange(
+                                            `existing_${test.uid}_${field.uid}`,
+                                            e.value
+                                          );
+                                        }}
                                         placeholder="انتخاب کنید"
                                         className="w-100"
                                       />
                                     ) : (
-                                      <>
-                                        {field.type === "PERCENTAGE" && (
-                                          <i
-                                            className="pi pi-percentage"
-                                            style={{
-                                              left: "0.75rem",
-                                              right: "auto",
-                                            }}
-                                          />
-                                        )}
-                                        <InputText
-                                          {...controllerField}
-                                          className="w-100"
-                                          placeholder={
-                                            field.type === "FLOAT"
-                                              ? "مقدار عددی را وارد نمایید"
-                                              : field.type === "PERCENTAGE"
-                                              ? "درصد را وارد نمایید"
-                                              : "مقدار را وارد نمایید"
-                                          }
-                                          onChange={(e) => {
-                                            const value = e.target.value;
-                                            const formattedValue = formatValue(
-                                              value,
-                                              field.type
-                                            );
-
-                                            if (
-                                              validateInput(value, field.type)
-                                            ) {
-                                              controllerField.onChange(
-                                                formattedValue
-                                              );
-                                            } else if (
-                                              field.type === "FLOAT" ||
-                                              field.type === "PERCENTAGE"
-                                            ) {
-                                              toast.error(
-                                                `لطفا یک ${
-                                                  field.type === "FLOAT"
-                                                    ? "عدد"
-                                                    : "درصد"
-                                                } معتبر وارد کنید`
-                                              );
-                                            }
-                                          }}
-                                        />
-                                      </>
+                                      <InputText
+                                        {...controllerField}
+                                        className="w-100"
+                                        placeholder="مقدار را وارد نمایید"
+                                        onChange={(e) => {
+                                          const value = e.target.value;
+                                          controllerField.onChange(value);
+                                          handleInputChange(
+                                            `existing_${test.uid}_${field.uid}`,
+                                            value
+                                          );
+                                        }}
+                                      />
                                     )}
                                   </div>
                                 )}
@@ -758,6 +773,14 @@ const PillsTabs = ({
                           </div>
                         ))}
                     </div>
+                    <button
+                      type="button"
+                      className="btn btn-primary mt-3"
+                      onClick={() => handleUpdateTest(test.uid)}
+                      disabled={!hasChanges}
+                    >
+                      به‌روزرسانی نتیجه آزمایش
+                    </button>
                   </AccordionTab>
                 </Accordion>
               ))}
@@ -931,6 +954,10 @@ const PillsTabs = ({
                                                       field.onChange(
                                                         formattedValue
                                                       );
+                                                      handleInputChange(
+                                                        titleData?.uid,
+                                                        formattedValue
+                                                      );
                                                     } else if (
                                                       titleData.type ===
                                                         "FLOAT" ||
@@ -968,11 +995,15 @@ const PillsTabs = ({
                                                     options={formatSelectOptions(
                                                       titleData.options
                                                     )}
-                                                    onChange={(e) =>
+                                                    onChange={(e) => {
                                                       controllerField.onChange(
                                                         e.value
-                                                      )
-                                                    }
+                                                      );
+                                                      handleInputChange(
+                                                        titleData?.uid,
+                                                        e.value
+                                                      );
+                                                    }}
                                                     placeholder="انتخاب کنید"
                                                     className="w-100"
                                                   />
@@ -1016,6 +1047,10 @@ const PillsTabs = ({
                                                           )
                                                         ) {
                                                           controllerField.onChange(
+                                                            formattedValue
+                                                          );
+                                                          handleInputChange(
+                                                            titleData?.uid,
                                                             formattedValue
                                                           );
                                                         } else if (
@@ -1117,7 +1152,13 @@ const PillsTabs = ({
                                       options={formatSelectOptions(
                                         titleDirectToCat.options
                                       )}
-                                      onChange={(e) => field.onChange(e.value)}
+                                      onChange={(e) => {
+                                        field.onChange(e.value);
+                                        handleInputChange(
+                                          titleDirectToCat.uid,
+                                          e.value
+                                        );
+                                      }}
                                       placeholder="انتخاب کنید"
                                       className="w-100"
                                     />
@@ -1158,6 +1199,10 @@ const PillsTabs = ({
                                             )
                                           ) {
                                             field.onChange(formattedValue);
+                                            handleInputChange(
+                                              titleDirectToCat.uid,
+                                              formattedValue
+                                            );
                                           } else if (
                                             titleDirectToCat.type === "FLOAT" ||
                                             titleDirectToCat.type ===
@@ -1281,6 +1326,10 @@ const PillsTabs = ({
                                                     field.onChange(
                                                       formattedValue
                                                     );
+                                                    handleInputChange(
+                                                      titleData?.uid,
+                                                      formattedValue
+                                                    );
                                                   } else if (
                                                     titleData.type ===
                                                       "FLOAT" ||
@@ -1315,11 +1364,15 @@ const PillsTabs = ({
                                                   options={formatSelectOptions(
                                                     titleData.options
                                                   )}
-                                                  onChange={(e) =>
+                                                  onChange={(e) => {
                                                     controllerField.onChange(
                                                       e.value
-                                                    )
-                                                  }
+                                                    );
+                                                    handleInputChange(
+                                                      titleData?.uid,
+                                                      e.value
+                                                    );
+                                                  }}
                                                   placeholder="انتخاب کنید"
                                                   className="w-100"
                                                 />
@@ -1362,6 +1415,10 @@ const PillsTabs = ({
                                                         )
                                                       ) {
                                                         controllerField.onChange(
+                                                          formattedValue
+                                                        );
+                                                        handleInputChange(
+                                                          titleData?.uid,
                                                           formattedValue
                                                         );
                                                       } else if (
