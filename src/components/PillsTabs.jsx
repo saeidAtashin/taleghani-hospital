@@ -339,11 +339,13 @@ const PillsTabs = ({
     setisSubmitting(true);
     const formattedData = {};
     Object?.entries(data)?.forEach(([key, value]) => {
-      const field = titleDirectToCategList?.find((item) => item?.uid === key);
-      if (field) {
-        formattedData[key] = formatValue(value, field?.type);
-      } else {
-        formattedData[key] = value;
+      if (!key.startsWith("existing_")) {
+        const field = titleDirectToCategList?.find((item) => item?.uid === key);
+        if (field) {
+          formattedData[key] = formatValue(value, field?.type);
+        } else {
+          formattedData[key] = value;
+        }
       }
     });
 
@@ -363,16 +365,11 @@ const PillsTabs = ({
       .map((key) => {
         const value = formattedData[key];
 
-        if (key === immunofixationUid) {
-          return undefined;
-        }
-
         return {
           uid: key,
           value: Array.isArray(value) ? [value] : value,
         };
-      })
-      .filter((field) => field !== undefined);
+      });
 
     const extendedFields = [
       ...fields,
