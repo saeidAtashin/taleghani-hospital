@@ -208,8 +208,6 @@ const NewTreat = ({
     }
   };
 
-  console.log("allllll", allDatas);
-
   const handleEndSubmit = async () => {
     // setLoading(true);
     setShowModal2(true);
@@ -485,7 +483,6 @@ const NewTreat = ({
   };
 
   const handleSubmitLineUpdate = async (treatmentUid) => {
-    console.log("treatmentUid", treatmentUid);
     const payload = {
       treatment_uid: treatmentUidInGet
         ? treatmentUidInGet

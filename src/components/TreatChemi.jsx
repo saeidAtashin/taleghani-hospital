@@ -269,8 +269,6 @@ const TreatChemi = ({
     }
   };
 
-  console.log("allDatas", allDatas);
-
   return (
     <>
       <div className="d-flex flex-column my-3">
@@ -393,11 +391,6 @@ const TreatChemi = ({
                         onClick={
                           treatment?.state !== "IN_PROGRESS"
                             ? () => {
-                                console.log(
-                                  "treatment?.state",
-                                  treatment?.state
-                                );
-
                                 handleSubmitLine(
                                   treatmentUidInGet
                                     ? treatmentUidInGet
