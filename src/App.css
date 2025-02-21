@@ -377,7 +377,7 @@ select,
 }
 
 .p-connected-overlay-enter-done {
-  background-color: transparent;
+  background-color: white;
 }
 
 .p-cascadeselect-panel .p-cascadeselect-items .p-cascadeselect-sublist {
