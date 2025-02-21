@@ -177,7 +177,7 @@ export default function AzmayeshatTable({
             ...new Set(rowData.names.map((test) => test.value)),
           ];
 
-          const testUids = rowData.names.map(test => test.uid);
+          const testUids = rowData.names.map((test) => test.uid);
 
           setShowAzmayeshPAge("viewTest");
           setViewTestData({
