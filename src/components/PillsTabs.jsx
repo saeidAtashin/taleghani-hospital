@@ -513,26 +513,26 @@ const PillsTabs = ({
   const handleUpdateTest = async (testUid) => {
     try {
       const formData = {};
-      
+
       // Get all form values
       const allValues = getValues();
-      
+
       // Process titleOfAll fields
-      titleOfAll?.forEach(title => {
-        title.field?.forEach(field => {
+      titleOfAll?.forEach((title) => {
+        title.field?.forEach((field) => {
           const fieldKey = `existing_${testUid}_${field.uid}`;
           const value = allValues[fieldKey];
-          if (value !== undefined && value !== '') {
+          if (value !== undefined && value !== "") {
             formData[field.uid] = value;
           }
         });
       });
 
       // Process titleDirectToCategList fields
-      titleDirectToCategList?.forEach(field => {
+      titleDirectToCategList?.forEach((field) => {
         const fieldKey = `existing_${testUid}_${field.uid}`;
         const value = allValues[fieldKey];
-        if (value !== undefined && value !== '') {
+        if (value !== undefined && value !== "") {
           formData[field.uid] = value;
         }
       });
@@ -544,9 +544,9 @@ const PillsTabs = ({
       const payload = {
         fields: Object.entries(formData).map(([uid, value]) => ({
           uid,
-          value: Array.isArray(value) ? value : value.toString()
+          value: Array.isArray(value) ? value : value.toString(),
         })),
-        date: dateValue
+        date: dateValue,
       };
 
       // Make the PUT request
@@ -561,8 +561,8 @@ const PillsTabs = ({
       }
     } catch (error) {
       toast.error(
-        error?.response?.data?.errors?.[0]?.message || 
-        "خطا در به‌روزرسانی نتیجه آزمایش"
+        error?.response?.data?.errors?.[0]?.message ||
+          "خطا در به‌روزرسانی نتیجه آزمایش"
       );
     }
   };
