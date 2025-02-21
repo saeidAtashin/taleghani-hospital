@@ -94,19 +94,19 @@ const TreatChemi = ({
     if (date) {
       const gregorianDate = date.convert("gregorian").toDate();
       const formattedDate = gregorianDate.toISOString().split("T")[0];
-      
-      setCycleDates(prev => ({
+
+      setCycleDates((prev) => ({
         ...prev,
         [treatmentId]: {
           ...prev[treatmentId],
           [cycleIndex]: {
             display: date,
-            value: formattedDate
-          }
-        }
+            value: formattedDate,
+          },
+        },
       }));
     } else {
-      setCycleDates(prev => {
+      setCycleDates((prev) => {
         const newDates = { ...prev };
         if (newDates[treatmentId]) {
           delete newDates[treatmentId][cycleIndex];
@@ -117,12 +117,12 @@ const TreatChemi = ({
   };
 
   const handleCycleDescriptionChange = (treatmentId, cycleIndex, value) => {
-    setCycleDescriptions(prev => ({
+    setCycleDescriptions((prev) => ({
       ...prev,
       [treatmentId]: {
         ...prev[treatmentId],
-        [cycleIndex]: value
-      }
+        [cycleIndex]: value,
+      },
     }));
   };
 
@@ -151,9 +151,9 @@ const TreatChemi = ({
 
     // Set the new cycle's accordion to be open
     const treatmentId = updatedTreatments[treatmentIndex].uid;
-    setActiveCycleIndices(prev => ({
+    setActiveCycleIndices((prev) => ({
       ...prev,
-      [treatmentId]: [...(prev[treatmentId] || []), newCycleNumber - 1]
+      [treatmentId]: [...(prev[treatmentId] || []), newCycleNumber - 1],
     }));
 
     setAllDatas(updatedTreatments);
@@ -177,22 +177,19 @@ const TreatChemi = ({
       setRefreshTreatTable(!refreshTreatTable);
 
       // Update the cycle data in allDatas
-      setAllDatas(prevData => {
-        return prevData.map(treatment => {
+      setAllDatas((prevData) => {
+        return prevData.map((treatment) => {
           if (treatment.uid === treatmentId) {
             return {
               ...treatment,
-              cycles: treatment.cycles.map((c, idx) => 
-                idx === cycleIndex ? 
-                  { ...c, ...response.data.data } : 
-                  c
-              )
+              cycles: treatment.cycles.map((c, idx) =>
+                idx === cycleIndex ? { ...c, ...response.data.data } : c
+              ),
             };
           }
           return treatment;
         });
       });
-
     } catch (error) {
       toast.warning("باید سیکل جدید ثبت نمایید");
     } finally {
@@ -442,13 +439,13 @@ const TreatChemi = ({
                       className=""
                     >
                       <legend>سیکل ها</legend>
-                      <Accordion 
-                        multiple 
+                      <Accordion
+                        multiple
                         activeIndex={activeCycleIndices[treatment.uid] || []}
                         onTabChange={(e) => {
-                          setActiveCycleIndices(prev => ({
+                          setActiveCycleIndices((prev) => ({
                             ...prev,
-                            [treatment.uid]: e.index
+                            [treatment.uid]: e.index,
                           }));
                         }}
                       >
@@ -459,20 +456,27 @@ const TreatChemi = ({
                             className="bg-dark"
                           >
                             <div className="d-flex flex-column my-3">
-                              <label className="p-col-12 p-md-2">
-                                تاریخ:
-                              </label>
+                              <label className="p-col-12 p-md-2">تاریخ:</label>
                               <DatePicker
                                 value={
-                                  cycleDates[treatment.uid]?.[cycleIndex]?.display || 
-                                  (cycle.date ? 
-                                    new DateObject({
-                                      date: cycle.date,
-                                      calendar: "gregorian",
-                                    }).convert(persian).format("YYYY/MM/DD")
+                                  cycleDates[treatment.uid]?.[cycleIndex]
+                                    ?.display ||
+                                  (cycle.date
+                                    ? new DateObject({
+                                        date: cycle.date,
+                                        calendar: "gregorian",
+                                      })
+                                        .convert(persian)
+                                        .format("YYYY/MM/DD")
                                     : "")
                                 }
-                                onChange={(date) => handleCycleDateChange(treatment.uid, cycleIndex, date)}
+                                onChange={(date) =>
+                                  handleCycleDateChange(
+                                    treatment.uid,
+                                    cycleIndex,
+                                    date
+                                  )
+                                }
                                 calendar={persian}
                                 locale={persian_fa}
                                 format="YYYY/MM/DD"
@@ -489,8 +493,20 @@ const TreatChemi = ({
                               </label>
                               <div className="p-col-12 p-md-10">
                                 <InputTextarea
-                                  value={cycleDescriptions[treatment.uid]?.[cycleIndex] || cycle.description || ""}
-                                  onChange={(e) => handleCycleDescriptionChange(treatment.uid, cycleIndex, e.target.value)}
+                                  value={
+                                    cycleDescriptions[treatment.uid]?.[
+                                      cycleIndex
+                                    ] ||
+                                    cycle.description ||
+                                    ""
+                                  }
+                                  onChange={(e) =>
+                                    handleCycleDescriptionChange(
+                                      treatment.uid,
+                                      cycleIndex,
+                                      e.target.value
+                                    )
+                                  }
                                   rows={2}
                                   className="w-100"
                                 />
@@ -501,7 +517,13 @@ const TreatChemi = ({
                               <Button
                                 label="ثبت سیکل"
                                 icon="pi pi-check"
-                                onClick={() => handleCycleapi(treatment.uid, cycle, cycleIndex)}
+                                onClick={() =>
+                                  handleCycleapi(
+                                    treatment.uid,
+                                    cycle,
+                                    cycleIndex
+                                  )
+                                }
                                 loading={loading}
                                 className="w-100 bg-white text-dark rounded-3"
                               />
