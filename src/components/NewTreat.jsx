@@ -438,10 +438,7 @@ const NewTreat = ({
     const payload = {
       treatment_uid:
         treatmentUidInGet || treatmentUid || allDatas?.uid || responseUid,
-      start_date:
-        treatmentLineStartDates[treatmentUid]?.value ||
-        treatmentStartDate ||
-        startDate,
+      start_date: treatmentStartDate,
       description: description,
       protocol_uid: selectedProtocol,
       cycles_list: [],

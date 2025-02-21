@@ -251,6 +251,9 @@ const TreatChemi = ({
           value: formattedDate,
         },
       }));
+
+      // Update the treatment start date as well
+      setTreatmentStartDate(formattedDate);
     } else {
       setTreatmentLineStartDates((prev) => {
         const newDates = { ...prev };
@@ -558,13 +561,15 @@ const TreatChemi = ({
             ))}
           </Accordion>
 
-         { <Button
-            label={`\u00A0 افزودن خط درمان`}
-            icon="pi pi-plus"
-            className="p-button-text border rounded mb-4"
-            onClick={addTreatmentLine}
-            type="button"
-          />}
+          {
+            <Button
+              label={`\u00A0 افزودن خط درمان`}
+              icon="pi pi-plus"
+              className="p-button-text border rounded mb-4"
+              onClick={addTreatmentLine}
+              type="button"
+            />
+          }
         </>
       )}
       {!showStartTreatBtn && finaleState !== "DONE" && (
