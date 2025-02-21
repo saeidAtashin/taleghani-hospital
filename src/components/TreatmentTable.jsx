@@ -194,7 +194,7 @@ const TreatmentTable = ({ rowDataTransfer, setrowDataTransfer }) => {
 
         if (response.status >= 200 && response.status < 400) {
           const treatmentData = response.data.data;
-          
+
           // Convert dates to Persian format
           const startDateJalali = treatmentData.start_date
             ? new DateObject({
@@ -249,8 +249,8 @@ const TreatmentTable = ({ rowDataTransfer, setrowDataTransfer }) => {
 
       if (matchingRow) {
         // Only proceed with CHEMO or HORMONE treatments automatically
-        const isChemoOrHormone = 
-          matchingRow?.category === "HORMONETHERAPY" || 
+        const isChemoOrHormone =
+          matchingRow?.category === "HORMONETHERAPY" ||
           matchingRow?.category === "CHEMOTHERAPY";
 
         if (isChemoOrHormone) {
@@ -339,6 +339,33 @@ const TreatmentTable = ({ rowDataTransfer, setrowDataTransfer }) => {
     }
   }, [rowData, childState, refreshTreatTable]);
 
+  const handleEndTreatment = async () => {
+    try {
+      const payload = {
+        treatment_uid: selectedRowData?.uid,
+        end_date: endDate,
+        description: description,
+        evaluation_uid: selectedTreatment?.value
+      };
+
+      const response = await axios.put(
+        `https://cancerreg.ir/api/v1/teatment/end-treatment/${selectedRowData?.uid}/`,
+        payload
+      );
+
+      if (response.status >= 200 && response.status < 400) {
+        toast.success("درمان با موفقیت به پایان رسید");
+        setShowViewDialog(false);
+        setRefreshTreatTable(!refreshTreatTable);
+      }
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.errors?.[0]?.message || 
+        "خطا در به‌روزرسانی نتیجه درمان"
+      );
+    }
+  };
+
   return (
     <>
       {!newTreat && (
@@ -421,35 +448,69 @@ const TreatmentTable = ({ rowDataTransfer, setrowDataTransfer }) => {
             </label>
             <DatePicker
               value={endDateObj}
+              onChange={(date) => {
+                if (date) {
+                  const gregorianDate = date.convert("gregorian").toDate();
+                  const formattedDate = gregorianDate.toISOString().split("T")[0];
+                  setEndDateObj(date);
+                  setEndDate(formattedDate);
+                } else {
+                  setEndDateObj(null);
+                  setEndDate("");
+                }
+              }}
               calendar={persian}
               locale={persian_fa}
               format="YYYY/MM/DD"
               className="p-2 border rounded w-100"
               inputClass="w-100 p-2 text-end border rounded"
               position="bottom-right"
-              disabled
+              disabled={selectedRowData?.state === "DONE"}
             />
           </div>
 
           <div className="d-flex flex-column">
             <label className="text-muted d-block mb-2">ارزیابی درمان:</label>
-            <input
-              type="text"
-              value={selectedRowData?.evaluation || ''}
-              className="w-100 p-2 border rounded"
-              disabled
-            />
+            {selectedRowData?.state === "DONE" ? (
+              <input
+                type="text"
+                value={selectedRowData?.evaluation || ""}
+                className="w-100 p-2 border rounded"
+                disabled
+              />
+            ) : (
+              <Dropdown
+                value={selectedTreatment}
+                options={treatmentOptions}
+                onChange={(e) => setSelectedTreatment(e.value)}
+                optionLabel="label"
+                placeholder="ارزیابی را انتخاب کنید"
+                className="w-100"
+              />
+            )}
           </div>
 
           <div className="d-flex flex-column">
             <label className="text-muted d-block mb-2">توضیحات:</label>
             <InputTextarea
               value={description}
+              onChange={(e) => setDescription(e.target.value)}
               rows={3}
               className="w-100"
-              disabled
+              disabled={selectedRowData?.state === "DONE"}
             />
           </div>
+
+          {selectedRowData?.state !== "DONE" && (
+            <div className="d-flex justify-content-end mt-3">
+              <Button
+                label="پایان درمان"
+                icon="pi pi-check"
+                onClick={handleEndTreatment}
+                className="p-button-primary"
+              />
+            </div>
+          )}
         </div>
       </Dialog>
 
