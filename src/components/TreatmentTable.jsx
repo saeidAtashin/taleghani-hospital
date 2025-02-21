@@ -340,12 +340,12 @@ const TreatmentTable = ({ rowDataTransfer, setrowDataTransfer }) => {
   }, [rowData, childState, refreshTreatTable]);
 
   const handleEndTreatment = async () => {
+    console.log("selectedTreatment", selectedTreatment);
     try {
       const payload = {
-        treatment_uid: selectedRowData?.uid,
+        evaluation_uid: selectedTreatment,
         end_date: endDate,
         description: description,
-        evaluation_uid: selectedTreatment?.value
       };
 
       const response = await axios.put(
@@ -360,8 +360,8 @@ const TreatmentTable = ({ rowDataTransfer, setrowDataTransfer }) => {
       }
     } catch (error) {
       toast.error(
-        error?.response?.data?.errors?.[0]?.message || 
-        "خطا در به‌روزرسانی نتیجه درمان"
+        error?.response?.data?.errors?.[0]?.message ||
+          "خطا در به‌روزرسانی نتیجه درمان"
       );
     }
   };
@@ -451,7 +451,9 @@ const TreatmentTable = ({ rowDataTransfer, setrowDataTransfer }) => {
               onChange={(date) => {
                 if (date) {
                   const gregorianDate = date.convert("gregorian").toDate();
-                  const formattedDate = gregorianDate.toISOString().split("T")[0];
+                  const formattedDate = gregorianDate
+                    .toISOString()
+                    .split("T")[0];
                   setEndDateObj(date);
                   setEndDate(formattedDate);
                 } else {
