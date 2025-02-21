@@ -334,8 +334,10 @@ const PillsTabs = ({
   const onSubmit = async (data) => {
     setisSubmitting(true);
     const formattedData = {};
+
     Object?.entries(data)?.forEach(([key, value]) => {
-      if (!key.startsWith("existing_")) {
+      // Skip fields that start with 'testDate_' or 'existing_'
+      if (!key.startsWith("existing_") && !key.startsWith("testDate_")) {
         const field = titleDirectToCategList?.find((item) => item?.uid === key);
         if (field) {
           formattedData[key] = formatValue(value, field?.type);
