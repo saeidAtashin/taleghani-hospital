@@ -172,16 +172,16 @@ const TreatChemi = ({
 
     try {
       // Set loading for this specific cycle
-      setCycleSubmitLoading(prev => ({
+      setCycleSubmitLoading((prev) => ({
         ...prev,
-        [`${treatmentId}-${cycleIndex}`]: true
+        [`${treatmentId}-${cycleIndex}`]: true,
       }));
 
       const response = await axios.post(
         "https://cancerreg.ir/api/v1/teatment/cycle/",
         cycleData
       );
-      
+
       setChildState(!childState);
       toast.success("سیکل ذخیره شد");
       setRefreshTreatTable(!refreshTreatTable);
@@ -204,9 +204,9 @@ const TreatChemi = ({
       toast.warning("باید سیکل جدید ثبت نمایید");
     } finally {
       // Clear loading state for this cycle
-      setCycleSubmitLoading(prev => ({
+      setCycleSubmitLoading((prev) => ({
         ...prev,
-        [`${treatmentId}-${cycleIndex}`]: false
+        [`${treatmentId}-${cycleIndex}`]: false,
       }));
     }
   };
@@ -397,22 +397,27 @@ const TreatChemi = ({
                         disabled={treatment?.state !== "DONE" ? false : true}
                       />
                     </div>
-                    {treatment?.state !== "DONE" && 
-                      !hiddenButtons.includes(treatment.uid) && 
-                      !treatment?.protocol && 
+                    {treatment?.state !== "DONE" &&
+                      !hiddenButtons.includes(treatment.uid) &&
+                      !treatment?.protocol &&
                       !treatment?.protocol_uid && (
-                      <Button
-                        label="شروع خط درمان"
-                        icon="pi pi-check"
-                        onClick={
-                          treatment?.state !== "IN_PROGRESS"
-                            ? () => handleSubmitLine(treatmentUidInGet ? treatmentUidInGet : treatment.uid)
-                            : () => handleSubmitLineUpdate(treatment.uid)
-                        }
-                        loading={loading}
-                        className="w-100 bg-white text-dark rounded-3 mb-4"
-                      />
-                    )}
+                        <Button
+                          label="شروع خط درمان"
+                          icon="pi pi-check"
+                          onClick={
+                            treatment?.state !== "IN_PROGRESS"
+                              ? () =>
+                                  handleSubmitLine(
+                                    treatmentUidInGet
+                                      ? treatmentUidInGet
+                                      : treatment.uid
+                                  )
+                              : () => handleSubmitLineUpdate(treatment.uid)
+                          }
+                          loading={loading}
+                          className="w-100 bg-white text-dark rounded-3 mb-4"
+                        />
+                      )}
                   </div>
 
                   <Button
@@ -425,7 +430,7 @@ const TreatChemi = ({
                     }}
                     type="button"
                     disabled={
-                      treatment?.state === "DONE" || 
+                      treatment?.state === "DONE" ||
                       (!treatment?.protocol && !treatment?.protocol_uid)
                     }
                   />
@@ -518,8 +523,18 @@ const TreatChemi = ({
                               <Button
                                 label="ثبت سیکل"
                                 icon="pi pi-check"
-                                onClick={() => handleCycleapi(treatment.uid, cycle, cycleIndex)}
-                                loading={cycleSubmitLoading[`${treatment.uid}-${cycleIndex}`]}
+                                onClick={() =>
+                                  handleCycleapi(
+                                    treatment.uid,
+                                    cycle,
+                                    cycleIndex
+                                  )
+                                }
+                                loading={
+                                  cycleSubmitLoading[
+                                    `${treatment.uid}-${cycleIndex}`
+                                  ]
+                                }
                                 className="w-100 bg-white text-dark rounded-3"
                               />
                             )}
@@ -543,17 +558,16 @@ const TreatChemi = ({
             ))}
           </Accordion>
 
-          <Button
+         { <Button
             label={`\u00A0 افزودن خط درمان`}
             icon="pi pi-plus"
             className="p-button-text border rounded mb-4"
             onClick={addTreatmentLine}
             type="button"
-          />
+          />}
         </>
       )}
-      {!showStartTreatBtn && (
-        // finaleState !== "DONE" &&
+      {!showStartTreatBtn && finaleState !== "DONE" && (
         <div className="d-flex gap-4">
           <Button
             label="پایان درمان"
