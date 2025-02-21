@@ -691,7 +691,9 @@ const PillsTabs = ({
                           <h5>{title.name}</h5>
                           {title.field?.map((field) => (
                             <div key={field.uid} className="form-group mb-3">
-                              <label className="text-muted d-block mb-2">{field.name}</label>
+                              <label className="text-muted d-block mb-2">
+                                {field.name}
+                              </label>
                               <Controller
                                 name={`existing_${test.uid}_${field.uid}`}
                                 control={control}
@@ -704,7 +706,10 @@ const PillsTabs = ({
                                     onChange={(e) => {
                                       const value = e.target.value;
                                       controllerField.onChange(value);
-                                      handleInputChange(`existing_${test.uid}_${field.uid}`, value);
+                                      handleInputChange(
+                                        `existing_${test.uid}_${field.uid}`,
+                                        value
+                                      );
                                     }}
                                   />
                                 )}
@@ -720,7 +725,9 @@ const PillsTabs = ({
                           <h5>{sub.name}</h5>
                           {sub.field?.map((field) => (
                             <div key={field.uid} className="form-group mb-3">
-                              <label className="text-muted d-block mb-2">{field.name}</label>
+                              <label className="text-muted d-block mb-2">
+                                {field.name}
+                              </label>
                               <Controller
                                 name={`existing_${test.uid}_${field.uid}`}
                                 control={control}
@@ -733,7 +740,10 @@ const PillsTabs = ({
                                     onChange={(e) => {
                                       const value = e.target.value;
                                       controllerField.onChange(value);
-                                      handleInputChange(`existing_${test.uid}_${field.uid}`, value);
+                                      handleInputChange(
+                                        `existing_${test.uid}_${field.uid}`,
+                                        value
+                                      );
                                     }}
                                   />
                                 )}
@@ -745,9 +755,14 @@ const PillsTabs = ({
 
                       {/* Render existing inputs from titleDirectToCategList */}
                       {titleDirectToCategList?.map((field) => (
-                        <div key={`${test.uid}_${field.uid}`} className="col-md-6 mb-4">
+                        <div
+                          key={`${test.uid}_${field.uid}`}
+                          className="col-md-6 mb-4"
+                        >
                           <div className="form-group mb-3">
-                            <label className="text-muted d-block mb-2">{field.name}</label>
+                            <label className="text-muted d-block mb-2">
+                              {field.name}
+                            </label>
                             <Controller
                               name={`existing_${test.uid}_${field.uid}`}
                               control={control}
@@ -760,7 +775,10 @@ const PillsTabs = ({
                                   onChange={(e) => {
                                     const value = e.target.value;
                                     controllerField.onChange(value);
-                                    handleInputChange(`existing_${test.uid}_${field.uid}`, value);
+                                    handleInputChange(
+                                      `existing_${test.uid}_${field.uid}`,
+                                      value
+                                    );
                                   }}
                                 />
                               )}
@@ -1020,7 +1038,8 @@ const PillsTabs = ({
                                                       {...controllerField}
                                                       className="w-100"
                                                       placeholder={
-                                                        titleData.type === "FLOAT"
+                                                        titleData.type ===
+                                                        "FLOAT"
                                                           ? "مقدار عددی را وارد نمایید"
                                                           : titleData.type ===
                                                             "PERCENTAGE"
