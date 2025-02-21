@@ -53,23 +53,12 @@ const PillsTabs = ({
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [testToDelete, setTestToDelete] = useState(null);
   const [hasChanges, setHasChanges] = useState(false);
+  const { control, handleSubmit, reset, setValue } = useForm();
+  const [selectedDate, setSelectedDate] = useState(null);
 
   useEffect(() => {
     setvalueinja(Number(kValue) / Number(landaValue));
   }, [kValue, landaValue]);
-
-  const {
-    control,
-    handleSubmit,
-    reset,
-    setValue,
-    getValues,
-    formState: { errors },
-  } = useForm({
-    defaultValues: {
-      date: undefined,
-    },
-  });
 
   useEffect(() => {
     setisLoadingAll(true);
@@ -657,9 +646,39 @@ const PillsTabs = ({
                     }
                   >
                     <div className="row">
+                      {/* Date Input for each test */}
+                      {/* <div className="col-12 mb-4 w-100"> */}
+                        <label className="text-muted d-block mb-2">
+                          تاریخ آزمایش
+                        </label>
+                        <Controller
+                          name={`testDate_${test.uid}`}
+                          control={control}
+                          render={({ field }) => (
+                            <DatePicker
+                              {...field}
+                              onChange={(date) => {
+                                const formattedDate = date
+                                  ? date
+                                      .convert("gregorian")
+                                      .toDate()
+                                      .toISOString()
+                                      .split("T")[0]
+                                  : null;
+                                field.onChange(formattedDate);
+                              }}
+                              placeholder="تاریخ را انتخاب کنید"
+                              className="w-100 p-2 border rounded mb-4"
+                              inputClass="w-100 p-2 border rounded mb-4"
+                              position="bottom-right"
+                            />
+                          )}
+                        />
+                      {/* </div> */}
+
                       {/* Render title inputs */}
                       {titleOfAll?.map((title) => (
-                        <div key={title.uid} className="col-md-6 mb-4">
+                        <div key={title.uid} className="col-md-6 mb-4 mt-4">
                           <h5>{title.name}</h5>
                           {title.field?.map((field) => (
                             <div key={field.uid} className="form-group mb-3">
@@ -688,74 +707,6 @@ const PillsTabs = ({
                               />
                             </div>
                           ))}
-                        </div>
-                      ))}
-
-                      {/* Render sub_category inputs */}
-                      {subCategory?.map((sub) => (
-                        <div key={sub.uid} className="col-md-6 mb-4">
-                          <h5>{sub.name}</h5>
-                          {sub.field?.map((field) => (
-                            <div key={field.uid} className="form-group mb-3">
-                              <label className="text-muted d-block mb-2">
-                                {field.name}
-                              </label>
-                              <Controller
-                                name={`existing_${test.uid}_${field.uid}`}
-                                control={control}
-                                defaultValue=""
-                                render={({ field: controllerField }) => (
-                                  <InputText
-                                    {...controllerField}
-                                    className="w-100"
-                                    placeholder="مقدار را وارد نمایید"
-                                    onChange={(e) => {
-                                      const value = e.target.value;
-                                      controllerField.onChange(value);
-                                      handleInputChange(
-                                        `existing_${test.uid}_${field.uid}`,
-                                        value
-                                      );
-                                    }}
-                                  />
-                                )}
-                              />
-                            </div>
-                          ))}
-                        </div>
-                      ))}
-
-                      {/* Render existing inputs from titleDirectToCategList */}
-                      {titleDirectToCategList?.map((field) => (
-                        <div
-                          key={`${test.uid}_${field.uid}`}
-                          className="col-md-6 mb-4"
-                        >
-                          <div className="form-group mb-3">
-                            <label className="text-muted d-block mb-2">
-                              {field.name}
-                            </label>
-                            <Controller
-                              name={`existing_${test.uid}_${field.uid}`}
-                              control={control}
-                              defaultValue=""
-                              render={({ field: controllerField }) => (
-                                <InputText
-                                  {...controllerField}
-                                  className="w-100"
-                                  placeholder="مقدار را وارد نمایید"
-                                  onChange={(e) => {
-                                    const value = e.target.value;
-                                    controllerField.onChange(value);
-                                    handleInputChange(
-                                      `existing_${test.uid}_${field.uid}`,
-                                      value
-                                    );
-                                  }}
-                                />
-                              )}
-                            />
-                          </div>
                         </div>
                       ))}
                     </div>
