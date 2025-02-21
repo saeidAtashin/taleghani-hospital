@@ -53,7 +53,12 @@ export default function FollwoUp({ setActiveTabForce, setrowDataTransfer }) {
 
       case "treatments":
         setActiveTabForce("درمان");
-        setrowDataTransfer(record);
+        setrowDataTransfer({
+          ...record,
+          openDialog:
+            record.category !== "CHEMOTHERAPY" &&
+            record.category !== "HORMONETHERAPY",
+        });
         break;
 
       default:

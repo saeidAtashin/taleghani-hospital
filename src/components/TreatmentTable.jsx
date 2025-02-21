@@ -258,6 +258,70 @@ const TreatmentTable = ({ rowDataTransfer, setrowDataTransfer }) => {
     }
   }, [rowDataTransfer, products]);
 
+  useEffect(() => {
+    // If rowDataTransfer has openDialog flag, open the dialog
+    if (rowDataTransfer?.openDialog) {
+      const isChemoOrHormone =
+        rowDataTransfer.category === "HORMONETHERAPY" ||
+        rowDataTransfer.category === "CHEMOTHERAPY";
+
+      if (!isChemoOrHormone) {
+        // First fetch the full treatment data
+        axios
+          .get(
+            `https://cancerreg.ir/api/v1/teatment/treatment/${rowDataTransfer.uid}/`
+          )
+          .then((response) => {
+            if (response.status >= 200 && response.status < 400) {
+              const treatmentData = response.data.data;
+
+              // Set the selected row data with full treatment info
+              setSelectedRowData(treatmentData);
+              setShowViewDialog(true);
+
+              // Convert and set start date
+              if (treatmentData.start_date) {
+                const startDateObj = new DateObject({
+                  date: treatmentData.start_date,
+                  calendar: "gregorian",
+                }).convert(persian);
+                setStartDateObj(startDateObj);
+              } else {
+                setStartDateObj(null);
+              }
+
+              // Convert and set end date
+              if (treatmentData.end_date) {
+                const endDateObj = new DateObject({
+                  date: treatmentData.end_date,
+                  calendar: "gregorian",
+                }).convert(persian);
+                setEndDateObj(endDateObj);
+                setEndDate(treatmentData.end_date);
+              } else {
+                setEndDateObj(null);
+                setEndDate("");
+              }
+
+              // Set description and evaluation
+              setDescription(treatmentData.description || "");
+              if (treatmentData.evaluation_uid) {
+                setSelectedTreatment({
+                  value: treatmentData.evaluation_uid,
+                  label: treatmentData.evaluation,
+                });
+              } else {
+                setSelectedTreatment(null);
+              }
+            }
+          })
+          .catch((error) => {
+            toast.error("خطا در دریافت اطلاعات درمان");
+          });
+      }
+    }
+  }, [rowDataTransfer]);
+
   const tryyyy = async (rowData) => {
     const getTreatmentLine = `https://cancerreg.ir/api/v1/teatment/treatment-line/${rowData?.uid}/`;
     try {
