@@ -384,7 +384,10 @@ const TreatChemi = ({
                         disabled={treatment?.state !== "DONE" ? false : true}
                       />
                     </div>
-                    {treatment?.state !== "DONE" && !hiddenButtons.includes(treatment.uid) && (
+                    {treatment?.state !== "DONE" && 
+                      !hiddenButtons.includes(treatment.uid) && 
+                      !treatment?.protocol && 
+                      !treatment?.protocol_uid && (
                       <Button
                         label="شروع خط درمان"
                         icon="pi pi-check"
@@ -408,7 +411,10 @@ const TreatChemi = ({
                       addCycle(index);
                     }}
                     type="button"
-                    disabled={treatment?.state === "DONE" || !hiddenButtons.includes(treatment.uid)}
+                    disabled={
+                      treatment?.state === "DONE" || 
+                      (!treatment?.protocol && !treatment?.protocol_uid)
+                    }
                   />
 
                   {treatment?.cycles?.length > 0 && (
