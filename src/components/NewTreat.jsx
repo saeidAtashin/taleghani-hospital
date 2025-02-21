@@ -118,7 +118,7 @@ const NewTreat = ({
     setStartDate("");
     setEndDateObj(null);
     setEndDate("");
-    setDescription("");
+    // setDescription("");
     setCycles([]);
     setisCycleVisible(false);
     // setShowedPart("home");
@@ -138,7 +138,7 @@ const NewTreat = ({
     // setStartDate("");
     setEndDateObj(null);
     setEndDate("");
-    setDescription("");
+    // setDescription("");
     setCycles([]);
     setisCycleVisible(false);
     setShowedPart("");
