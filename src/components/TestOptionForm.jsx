@@ -21,10 +21,8 @@ const TestOptionForm = ({ selectedCategory, fields, setFields }) => {
 
         const fieldsData = response?.data?.data;
 
-        console.log("fieldsData", fieldsData);
         setFields(fieldsData);
       } catch (error) {
-        // console.error("Error fetching fields:", error);
         toast.error("Failed to load fields.");
       }
     };
@@ -63,7 +61,6 @@ const TestOptionForm = ({ selectedCategory, fields, setFields }) => {
       setInputValue("");
       setOrdering(0);
     } catch (error) {
-      // console.error("Error submitting data:", error);
       toast.warning("Failed to submit data.");
     }
   };
@@ -85,8 +82,6 @@ const TestOptionForm = ({ selectedCategory, fields, setFields }) => {
     setInputValue("");
   };
 
-  console.log("fields", fields);
-
   const handleDelete = async (uid) => {
     Swal.fire({
       title: "آیا از حذف این مورد مطمئن هستید؟",
@@ -104,10 +99,8 @@ const TestOptionForm = ({ selectedCategory, fields, setFields }) => {
             `https://cancerreg.ir/api/v1/tests/mng-field/${uid}/`
           );
           Swal.fire("حذف شد", "آیتم مورد نظر با موفقیت حذف شد", "success");
-          // setRefreshSub(!refreshSub);
         } catch (error) {
           Swal.fire("خطا", "حذف آیتم با خطا مواجه شد", "error");
-          // console.error("Error deleting item:", error);
         }
       }
     });
@@ -165,17 +158,6 @@ const TestOptionForm = ({ selectedCategory, fields, setFields }) => {
           />
         </div>
       </div>
-
-      {/* {fields &&
-        fields?.map((categoryData, idx) => (
-          <div key={idx} className="d-flex gap-4">
-            <div className="d-flex">
-              <div>نام: </div>
-              <div>{categoryData?.name}</div>
-            </div>
-            <div onClick={() => handleDelete(categoryData.uid)}>icon</div>
-          </div>
-        ))} */}
     </div>
   );
 };
