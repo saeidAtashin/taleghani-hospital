@@ -340,7 +340,6 @@ const TreatmentTable = ({ rowDataTransfer, setrowDataTransfer }) => {
   }, [rowData, childState, refreshTreatTable]);
 
   const handleEndTreatment = async () => {
-    console.log("selectedTreatment", selectedTreatment);
     try {
       const payload = {
         evaluation_uid: selectedTreatment,
