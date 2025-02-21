@@ -77,6 +77,9 @@ const TreatChemi = ({
 
   const [activeCycleIndices, setActiveCycleIndices] = useState({});
 
+  // Add new state for cycle submit loading
+  const [cycleSubmitLoading, setCycleSubmitLoading] = useState({});
+
   const handleTreatmentStartDateChange = (date) => {
     if (date) {
       const gregorianDate = date.convert("gregorian").toDate();
@@ -168,11 +171,17 @@ const TreatChemi = ({
     };
 
     try {
-      setLoadingtar(true);
+      // Set loading for this specific cycle
+      setCycleSubmitLoading(prev => ({
+        ...prev,
+        [`${treatmentId}-${cycleIndex}`]: true
+      }));
+
       const response = await axios.post(
         "https://cancerreg.ir/api/v1/teatment/cycle/",
         cycleData
       );
+      
       setChildState(!childState);
       toast.success("سیکل ذخیره شد");
       setRefreshTreatTable(!refreshTreatTable);
@@ -194,7 +203,11 @@ const TreatChemi = ({
     } catch (error) {
       toast.warning("باید سیکل جدید ثبت نمایید");
     } finally {
-      setLoadingtar(false);
+      // Clear loading state for this cycle
+      setCycleSubmitLoading(prev => ({
+        ...prev,
+        [`${treatmentId}-${cycleIndex}`]: false
+      }));
     }
   };
 
@@ -505,14 +518,8 @@ const TreatChemi = ({
                               <Button
                                 label="ثبت سیکل"
                                 icon="pi pi-check"
-                                onClick={() =>
-                                  handleCycleapi(
-                                    treatment.uid,
-                                    cycle,
-                                    cycleIndex
-                                  )
-                                }
-                                loading={loading}
+                                onClick={() => handleCycleapi(treatment.uid, cycle, cycleIndex)}
+                                loading={cycleSubmitLoading[`${treatment.uid}-${cycleIndex}`]}
                                 className="w-100 bg-white text-dark rounded-3"
                               />
                             )}
