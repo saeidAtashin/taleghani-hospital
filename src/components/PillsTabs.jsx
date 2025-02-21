@@ -53,7 +53,7 @@ const PillsTabs = ({
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [testToDelete, setTestToDelete] = useState(null);
   const [hasChanges, setHasChanges] = useState(false);
-  const { control, handleSubmit, reset, setValue } = useForm();
+  const { control, handleSubmit, reset, setValue, getValues } = useForm();
   const [selectedDate, setSelectedDate] = useState(null);
 
   useEffect(() => {
@@ -170,7 +170,6 @@ const PillsTabs = ({
       setIsTestDetailsLoading(true);
       const fetchTestDetails = async () => {
         try {
-          // Fetch details for each test UID
           for (const testUid of viewTestData.testUids) {
             const response = await axios.get(
               `https://cancerreg.ir/api/v1/tests/test/${testUid}/`
@@ -186,13 +185,15 @@ const PillsTabs = ({
                 {}
               );
 
-              // Populate the form with the fetched data
               Object.keys(resultsByFieldId).forEach((fieldUid) => {
                 setValue(
                   `existing_${testUid}_${fieldUid}`,
                   resultsByFieldId[fieldUid]
                 );
               });
+
+              const testDate = testData.date;
+              setValue(`testDate_${testUid}`, testDate);
             }
           }
         } catch (error) {
@@ -647,38 +648,36 @@ const PillsTabs = ({
                   >
                     <div className="row">
                       {/* Date Input for each test */}
-                      {/* <div className="col-12 mb-4 w-100"> */}
-                        <label className="text-muted d-block mb-2">
-                          تاریخ آزمایش
-                        </label>
-                        <Controller
-                          name={`testDate_${test.uid}`}
-                          control={control}
-                          render={({ field }) => (
-                            <DatePicker
-                              {...field}
-                              onChange={(date) => {
-                                const formattedDate = date
-                                  ? date
-                                      .convert("gregorian")
-                                      .toDate()
-                                      .toISOString()
-                                      .split("T")[0]
-                                  : null;
-                                field.onChange(formattedDate);
-                              }}
-                              placeholder="تاریخ را انتخاب کنید"
-                              className="w-100 p-2 border rounded mb-4"
-                              inputClass="w-100 p-2 border rounded mb-4"
-                              position="bottom-right"
-                            />
-                          )}
-                        />
-                      {/* </div> */}
+                      <label className="text-muted d-block mb-2">
+                        تاریخ آزمایش
+                      </label>
+                      <Controller
+                        name={`testDate_${test.uid}`}
+                        control={control}
+                        render={({ field }) => (
+                          <DatePicker
+                            {...field}
+                            onChange={(date) => {
+                              const formattedDate = date
+                                ? date
+                                    .convert("gregorian")
+                                    .toDate()
+                                    .toISOString()
+                                    .split("T")[0]
+                                : null;
+                              field.onChange(formattedDate);
+                            }}
+                            placeholder="تاریخ را انتخاب کنید"
+                            className="w-100 p-2 border rounded mb-4"
+                            inputClass="w-100 p-2 border rounded mb-4"
+                            position="bottom-right"
+                          />
+                        )}
+                      />
 
                       {/* Render title inputs */}
                       {titleOfAll?.map((title) => (
-                        <div key={title.uid} className="col-md-6 mb-4 mt-4">
+                        <div key={title.uid} className="col-md-6 mb-4">
                           <h5>{title.name}</h5>
                           {title.field?.map((field) => (
                             <div key={field.uid} className="form-group mb-3">
