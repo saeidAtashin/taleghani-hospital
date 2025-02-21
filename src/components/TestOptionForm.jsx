@@ -131,7 +131,7 @@ const TestOptionForm = ({ selectedCategory, fields, setFields }) => {
             className="w-100 mb-3"
           />
         </div>
-{/*  */}
+        {/*  */}
         <div className="form-group w-100">
           <InputText
             id="input-value"
