@@ -442,10 +442,15 @@ const NewTreat = ({
         treatmentLineStartDates[treatmentUid]?.value ||
         treatmentStartDate ||
         startDate,
-      end_date: treatmentLineEndDates[treatmentUid]?.value || endDate,
       description: description,
       protocol_uid: selectedProtocol,
+      cycles_list: [],
     };
+
+    // Only add end_date to payload if it has a value
+    if (treatmentLineEndDates[treatmentUid]?.value || endDate) {
+      payload.end_date = treatmentLineEndDates[treatmentUid]?.value || endDate;
+    }
 
     try {
       let response;
@@ -468,17 +473,28 @@ const NewTreat = ({
         toast.current.show({
           severity: "success",
           summary: "موفق",
-          detail: "ذخیره شد",
+          detail: "خط درمان با موفقیت شروع شد",
         });
+
+        setAllDatas((prevData) =>
+          prevData.map((treatment) => {
+            if (treatment.uid === treatmentUid) {
+              return {
+                ...treatment,
+                state: "IN_PROGRESS",
+                treatment_line_uid: response?.data?.data?.uid,
+              };
+            }
+            return treatment;
+          })
+        );
       }
     } catch (err) {
-      if (err?.status >= 400) {
-        toast.current.show({
-          severity: "error",
-          summary: "خطا",
-          detail: err.response?.data?.message || "مشکلی پیش آمده است.",
-        });
-      }
+      toast.current.show({
+        severity: "error",
+        summary: "خطا",
+        detail: err?.response?.data?.message || "خطا در شروع خط درمان",
+      });
     }
   };
 

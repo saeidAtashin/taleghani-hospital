@@ -384,22 +384,14 @@ const TreatChemi = ({
                         disabled={treatment?.state !== "DONE" ? false : true}
                       />
                     </div>
-                    {treatment?.state !== "DONE" && (
+                    {treatment?.state !== "DONE" && !hiddenButtons.includes(treatment.uid) && (
                       <Button
                         label="شروع خط درمان"
                         icon="pi pi-check"
                         onClick={
                           treatment?.state !== "IN_PROGRESS"
-                            ? () => {
-                                handleSubmitLine(
-                                  treatmentUidInGet
-                                    ? treatmentUidInGet
-                                    : treatment.uid
-                                );
-                              }
+                            ? () => handleSubmitLine(treatmentUidInGet ? treatmentUidInGet : treatment.uid)
                             : () => handleSubmitLineUpdate(treatment.uid)
-
-                          //
                         }
                         loading={loading}
                         className="w-100 bg-white text-dark rounded-3 mb-4"
@@ -411,16 +403,12 @@ const TreatChemi = ({
                     label={`\u00A0 ثبت سیکل جدید`}
                     icon="pi pi-plus"
                     className="p-button-text border rounded mb-4"
-                    onClick={
-                      treatment?.state !== "DONE"
-                        ? () => {
-                            setTreatUidForCycle(treatment?.uid);
-                            addCycle(index);
-                          }
-                        : console.log("object")
-                    }
+                    onClick={() => {
+                      setTreatUidForCycle(treatment?.uid);
+                      addCycle(index);
+                    }}
                     type="button"
-                    disabled={treatment?.state !== "DONE" ? false : true}
+                    disabled={treatment?.state === "DONE" || !hiddenButtons.includes(treatment.uid)}
                   />
 
                   {treatment?.cycles?.length > 0 && (

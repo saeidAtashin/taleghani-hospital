@@ -232,10 +232,8 @@ const TreatmentTable = ({ rowDataTransfer, setrowDataTransfer }) => {
     }
 
     // Existing logic for CHEMOTHERAPY or HORMONETHERAPY
-    setIsTreatmentForm(!isTreatmentForm);
     setshowLine(isChemoOrHormone);
     if (isChemoOrHormone) {
-      setIsTreatmentForm(!isTreatmentForm);
       await tryyyy(rowData);
     }
     await newTryyy(rowData);
