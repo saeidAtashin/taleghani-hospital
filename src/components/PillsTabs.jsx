@@ -177,50 +177,26 @@ const PillsTabs = ({
   }, [viewMode, viewTestData, tabsNew]);
 
   useEffect(() => {
-    if (viewMode && viewTestData && activeTab) {
+    if (viewMode && viewTestData && viewTestData.testUids) {
       setIsTestDetailsLoading(true);
       const fetchTestDetails = async () => {
         try {
-          const response = await axios.get(
-            `https://cancerreg.ir/api/v1/tests/test/${viewTestData.testUid}/`
-          );
-          if (response.status >= 200 && response.status < 400) {
-            const testData = response.data.data;
+          // Fetch details for each test UID
+          for (const testUid of viewTestData.testUids) {
+            const response = await axios.get(
+              `https://cancerreg.ir/api/v1/tests/test/${testUid}/`
+            );
+            if (response.status >= 200 && response.status < 400) {
+              const testData = response.data.data;
 
-            const resultsByFieldId = testData.results.reduce((acc, result) => {
-              acc[result.field_uid] = result.value;
-              return acc;
-            }, {});
+              const resultsByFieldId = testData.results.reduce((acc, result) => {
+                acc[result.field_uid] = result.value;
+                return acc;
+              }, {});
 
-            const activeTabData = tabsNew?.find((tab) => tab.uid === activeTab);
-            const matchingTests =
-              viewTestData.groupedTests[activeTabData?.name] || [];
-
-            if (matchingTests.length > 0) {
-              matchingTests.forEach((test) => {
-                if (titleDirectToCategList) {
-                  titleDirectToCategList.forEach((field) => {
-                    if (resultsByFieldId[field.uid] !== undefined) {
-                      setValue(
-                        `existing_${test.uid}_${field.uid}`,
-                        resultsByFieldId[field.uid]
-                      );
-                    }
-                  });
-                }
-
-                if (titleOfAll) {
-                  titleOfAll.forEach((title) => {
-                    title.field?.forEach((field) => {
-                      if (resultsByFieldId[field.uid] !== undefined) {
-                        setValue(
-                          `existing_${test.uid}_${field.uid}`,
-                          resultsByFieldId[field.uid]
-                        );
-                      }
-                    });
-                  });
-                }
+              // Populate the form with the fetched data
+              Object.keys(resultsByFieldId).forEach((fieldUid) => {
+                setValue(`existing_${testUid}_${fieldUid}`, resultsByFieldId[fieldUid]);
               });
             }
           }
@@ -234,14 +210,7 @@ const PillsTabs = ({
 
       fetchTestDetails();
     }
-  }, [
-    viewMode,
-    viewTestData,
-    activeTab,
-    tabsNew,
-    titleDirectToCategList,
-    titleOfAll,
-  ]);
+  }, [viewMode, viewTestData]);
 
   const getTestsForCurrentTab = () => {
     if (!viewMode || !viewTestData?.groupedTests || !activeTab) return [];

@@ -176,11 +176,12 @@ export default function AzmayeshatTable({
           const uniqueTests = [
             ...new Set(rowData.names.map((test) => test.value)),
           ];
-          const testUid = rowData.names[0].uid;
+
+          const testUids = rowData.names.map(test => test.uid);
 
           setShowAzmayeshPAge("viewTest");
           setViewTestData({
-            testUid,
+            testUids,
             testNames: uniqueTests,
             groupedTests: groupedTests,
           });
