@@ -9,6 +9,12 @@ import moment from "jalali-moment";
 import NewTreat from "./NewTreat";
 import { DateObject } from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
+import { Dialog } from "primereact/dialog";
+import { InputTextarea } from "primereact/inputtextarea";
+import { Dropdown } from "primereact/dropdown";
+import { toast } from "react-toastify";
+import DatePicker from "react-multi-date-picker";
+import persian_fa from "react-date-object/locales/persian_fa";
 
 const TreatmentTable = ({ rowDataTransfer, setrowDataTransfer }) => {
   const [treatmentValue, setTreatmentValue] = useState(null);
@@ -42,6 +48,11 @@ const TreatmentTable = ({ rowDataTransfer, setrowDataTransfer }) => {
   const [makeitof, setmakeitof] = useState(false);
 
   const [showLine, setshowLine] = useState(false);
+
+  const [showViewDialog, setShowViewDialog] = useState(false);
+  const [selectedRowData, setSelectedRowData] = useState(null);
+
+  const [treatmentOptions, setTreatmentOptions] = useState([]);
 
   const handleTabChange = (index) => {
     setSelectedProtocol(undefined);
@@ -77,6 +88,22 @@ const TreatmentTable = ({ rowDataTransfer, setrowDataTransfer }) => {
       })
       .catch((err) => {
         // console.error(err);
+      });
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get("https://cancerreg.ir/api/v1/common/treatment-evaluation/")
+      .then((response) => {
+        const results = response.data?.data?.results || [];
+        const formatted = results.map((item) => ({
+          label: item.name,
+          value: item.uid,
+        }));
+        setTreatmentOptions(formatted);
+      })
+      .catch((err) => {
+        console.error("Error fetching treatment evaluations:", err);
       });
   }, []);
 
@@ -155,13 +182,59 @@ const TreatmentTable = ({ rowDataTransfer, setrowDataTransfer }) => {
   );
 
   const handleRowClick = async (rowData) => {
-    setIsTreatmentForm(!isTreatmentForm);
-    const isForm =
+    const isChemoOrHormone =
       rowData?.category === "HORMONETHERAPY" ||
       rowData?.category === "CHEMOTHERAPY";
-    setIsTreatmentForm(!isForm);
-    setshowLine(isForm);
-    if (isForm) {
+
+    if (!isChemoOrHormone) {
+      try {
+        const response = await axios.get(
+          `https://cancerreg.ir/api/v1/teatment/treatment/${rowData?.uid}/`
+        );
+
+        if (response.status >= 200 && response.status < 400) {
+          const treatmentData = response.data.data;
+          
+          // Convert dates to Persian format
+          const startDateJalali = treatmentData.start_date
+            ? new DateObject({
+                date: treatmentData.start_date,
+                calendar: "gregorian",
+              })
+                .convert(persian)
+                .format("YYYY/MM/DD")
+            : "";
+
+          const endDateJalali = treatmentData.end_date
+            ? new DateObject({
+                date: treatmentData.end_date,
+                calendar: "gregorian",
+              })
+                .convert(persian)
+                .format("YYYY/MM/DD")
+            : "";
+
+          setStartDateObj(startDateJalali);
+          setEndDateObj(endDateJalali);
+          setDescription(treatmentData.description || "");
+          setSelectedTreatment({
+            value: treatmentData.evaluation_uid,
+            label: treatmentData.evaluation,
+          });
+
+          setSelectedRowData(treatmentData);
+          setShowViewDialog(true);
+        }
+      } catch (error) {
+        toast.error("خطا در دریافت اطلاعات درمان");
+      }
+      return;
+    }
+
+    // Existing logic for CHEMOTHERAPY or HORMONETHERAPY
+    setIsTreatmentForm(!isTreatmentForm);
+    setshowLine(isChemoOrHormone);
+    if (isChemoOrHormone) {
       setIsTreatmentForm(!isTreatmentForm);
       await tryyyy(rowData);
     }
@@ -175,7 +248,14 @@ const TreatmentTable = ({ rowDataTransfer, setrowDataTransfer }) => {
       );
 
       if (matchingRow) {
-        handleRowClick(matchingRow);
+        // Only proceed with CHEMO or HORMONE treatments automatically
+        const isChemoOrHormone = 
+          matchingRow?.category === "HORMONETHERAPY" || 
+          matchingRow?.category === "CHEMOTHERAPY";
+
+        if (isChemoOrHormone) {
+          handleRowClick(matchingRow);
+        }
       }
     }
   }, [rowDataTransfer, products]);
@@ -189,7 +269,6 @@ const TreatmentTable = ({ rowDataTransfer, setrowDataTransfer }) => {
       setmakeitof(true);
       setTreatmentUidInGet(rowData?.uid);
       setRowData(rowData);
-
     } catch (error) {
       // console.error("Error fetching treatment data:", error);
     }
@@ -314,6 +393,65 @@ const TreatmentTable = ({ rowDataTransfer, setrowDataTransfer }) => {
           />
         </DataTable>
       )}
+
+      <Dialog
+        visible={showViewDialog}
+        className="w-50"
+        onHide={() => setShowViewDialog(false)}
+        header="جزئیات درمان"
+      >
+        <div className="d-flex flex-column gap-4">
+          <div className="d-flex flex-column">
+            <label className="text-muted d-block mb-2">تاریخ شروع درمان:</label>
+            <DatePicker
+              value={startDateObj}
+              calendar={persian}
+              locale={persian_fa}
+              format="YYYY/MM/DD"
+              className="p-2 border rounded w-100"
+              inputClass="w-100 p-2 text-end border rounded"
+              position="bottom-right"
+              disabled
+            />
+          </div>
+
+          <div className="d-flex flex-column">
+            <label className="text-muted d-block mb-2">
+              تاریخ پایان درمان:
+            </label>
+            <DatePicker
+              value={endDateObj}
+              calendar={persian}
+              locale={persian_fa}
+              format="YYYY/MM/DD"
+              className="p-2 border rounded w-100"
+              inputClass="w-100 p-2 text-end border rounded"
+              position="bottom-right"
+              disabled
+            />
+          </div>
+
+          <div className="d-flex flex-column">
+            <label className="text-muted d-block mb-2">ارزیابی درمان:</label>
+            <input
+              type="text"
+              value={selectedRowData?.evaluation || ''}
+              className="w-100 p-2 border rounded"
+              disabled
+            />
+          </div>
+
+          <div className="d-flex flex-column">
+            <label className="text-muted d-block mb-2">توضیحات:</label>
+            <InputTextarea
+              value={description}
+              rows={3}
+              className="w-100"
+              disabled
+            />
+          </div>
+        </div>
+      </Dialog>
 
       {newTreat && (
         <NewTreat
