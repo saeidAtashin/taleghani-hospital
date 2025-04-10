@@ -234,7 +234,7 @@ const PatientDiseaseMap = ({ setDiseaseType }) => {
                 ) : (
                   <div className="d-flex align-items-center justify-content-center p-4">
                     {/* <i className="pi pi-spin pi-spinner me-2" /> */}
-                    <span>اطلاعات به درستی دریافت نشد...</span>
+                    {/* <span>اطلاعات به درستی دریافت نشد...</span> */}
                   </div>
                 )}
               </div>
