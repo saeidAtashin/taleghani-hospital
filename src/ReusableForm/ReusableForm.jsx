@@ -16,7 +16,7 @@ const ReusableForm = ({
   onlyPost = false,
   onSelectChange,
   isLoading = false,
-  defaultValuesFromBackend,
+  initialValues,
   activeIndex,
   loadingBtn,
 }) => {
@@ -29,7 +29,7 @@ const ReusableForm = ({
     setValue,
   } = useForm({
     resolver: zodResolver(formSchema),
-    defaultValues: defaultValuesFromBackend,
+    defaultValues: initialValues || {},
   });
 
   const {
@@ -94,18 +94,10 @@ const ReusableForm = ({
   };
 
   useEffect(() => {
-    reset();
-  }, [activeIndex, reset]);
-
-  useEffect(() => {
-    if (defaultValuesFromBackend) {
-      reset(defaultValuesFromBackend); // Reset form with backend data
+    if (initialValues) {
+      reset(initialValues);
     }
-  }, [defaultValuesFromBackend, reset]);
-
-  useEffect(() => {
-    reset(defaultValuesFromBackend || {});
-  }, [defaultValuesFromBackend, reset]);
+  }, [initialValues, reset]);
 
   // Watch height and weight fields
   const height = watch("height");
@@ -117,13 +109,18 @@ const ReusableForm = ({
     const heightValue = parseFloat(height);
     const weightValue = parseFloat(weight);
 
-    if (!isNaN(heightValue) && !isNaN(weightValue) && heightValue > 0 && weightValue > 0) {
+    if (
+      !isNaN(heightValue) &&
+      !isNaN(weightValue) &&
+      heightValue > 0 &&
+      weightValue > 0
+    ) {
       // Height is already in cm, weight is already in kg
       const heightInM = heightValue / 100; // Convert cm to meters for BMI calculation
 
       // Calculate BMI = weight(kg) / height(m)²
       const bmi = (weightValue / (heightInM * heightInM)).toFixed(1);
-      
+
       // Calculate BSA using Mosteller formula: BSA (m²) = √((height(cm) × weight(kg))/3600)
       const bsa = Math.sqrt((heightValue * weightValue) / 3600).toFixed(2);
 
@@ -261,8 +258,8 @@ const ReusableForm = ({
                               }}
                             >
                               <option value={undefined}>
-                                {defaultValuesFromBackend[field.nameplus]
-                                  ? defaultValuesFromBackend[field.nameplus]
+                                {initialValues[field.nameplus]
+                                  ? initialValues[field.nameplus]
                                   : field.placeholder || "Select an option"}
                               </option>
                               {field.options?.map((option, idx) => (

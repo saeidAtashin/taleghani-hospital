@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./stepper.css";
 import HeaderName from "../components/HeaderName";
@@ -17,7 +17,76 @@ const StepperBootstrap = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [loadingBtn, setLoadingBtn] = useState(false);
+  const [formData, setFormData] = useState({
+    step0: null,
+    step1: null,
+  });
+  const [fetchedSteps, setFetchedSteps] = useState([]);
   const patient_uid_info = localStorage.getItem("patient_uid_info");
+
+  // Function to fetch form data for a specific step
+  const fetchStepData = async (stepIndex) => {
+    if (!patient_uid_info || fetchedSteps.includes(stepIndex)) return;
+
+    try {
+      let endpoint = "";
+      if (stepIndex === 0) {
+        endpoint = PATIENT_INFO;
+      } else if (stepIndex === 1) {
+        endpoint = PATIENT_RECORDS;
+      }
+
+      if (endpoint) {
+        const response = await axios.get(
+          `https://cancerreg.ir/api/v1${endpoint}/${patient_uid_info}`
+        );
+
+        if (response.status >= 200 && response.status < 400) {
+          const data = response.data.data;
+          // Transform the data to match the form field names
+          const transformedData =
+            stepIndex === 0
+              ? {
+                  ...data,
+                  "marital-status": data.marital_status,
+                }
+              : {
+                  ...data,
+                  surgery: data.surgeries,
+                  "underlying-disease": data.underlying_diseases,
+                  "family-history": data.family_history,
+                  "habit-disease": data.habits,
+                  drugs: data.drugs_records,
+                };
+
+          setFormData((prev) => ({
+            ...prev,
+            [`step${stepIndex}`]: transformedData,
+          }));
+          setFetchedSteps((prev) => [...prev, stepIndex]);
+        }
+      }
+    } catch (error) {
+      console.error(`Error fetching step ${stepIndex} data:`, error);
+    }
+  };
+
+  // Fetch data only when needed
+  useEffect(() => {
+    if (
+      patient_uid_info &&
+      activeIndex < 2 &&
+      !fetchedSteps.includes(activeIndex)
+    ) {
+      fetchStepData(activeIndex);
+    }
+  }, [activeIndex, patient_uid_info]);
+
+  const handleStepClick = (index) => {
+    if (index < activeIndex) {
+      setActiveIndex(index);
+    }
+  };
 
   const handleFormSubmit = async (data) => {
     setLoadingBtn(true);
@@ -56,9 +125,7 @@ const StepperBootstrap = () => {
             toast.success("ثبت شد");
           }
         } catch (error) {
-          // Handle errors from the API call
           setLoadingBtn(false);
-          // console.error("Error submitting data:", error);
           setIsLoading(false);
           if (error.response && error.response.status === 400) {
             const errorDetails = error.response.data?.errors;
@@ -103,15 +170,12 @@ const StepperBootstrap = () => {
           }
         } catch (error) {
           setLoadingBtn(false);
-          // console.error("Error submitting data:", error);
           setIsLoading(false);
         }
       }
     } catch (error) {
-      // Handle validation errors
       setIsLoading(false);
       setLoadingBtn(false);
-      // console.error("Validation error:", error);
     }
   };
 
@@ -130,7 +194,7 @@ const StepperBootstrap = () => {
                   activeIndex >= i ? "done" : ""
                 }`}
                 type="button"
-                onClick={() => setActiveIndex(i)}
+                onClick={() => handleStepClick(i)}
                 aria-expanded={activeIndex === i}
                 data-bs-toggle="collapse"
                 data-bs-target={`#collapse${i + 1}`}
@@ -184,7 +248,7 @@ const StepperBootstrap = () => {
         {activeIndex === 2 ? (
           <Step3Form
             patient_uid={patient_uid_info}
-            diagnosis_uid={null} // Replace null with actual diagnosis_uid if applicable
+            diagnosis_uid={null}
             onNext={() => setActiveIndex(activeIndex + 1)}
           />
         ) : activeIndex === 3 ? (
@@ -220,6 +284,7 @@ const StepperBootstrap = () => {
             onSubmit={handleFormSubmit}
             inputsPerRow={[2, 3, 2, 2, 2, 2, 3, 2, 1]}
             loadingBtn={loadingBtn}
+            initialValues={formData.step0}
           />
         ) : (
           <ReusableForm
@@ -232,6 +297,7 @@ const StepperBootstrap = () => {
             onSubmit={handleFormSubmit}
             inputsPerRow={[1, 2, 2, 3, 1, 1, 2]}
             loadingBtn={loadingBtn}
+            initialValues={formData.step1}
           />
         )}
       </div>
