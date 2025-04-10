@@ -22,6 +22,12 @@ const Step3Form = ({ patient_uid, onNext, initialData, isEditing = false }) => {
   const [selectedDiagnosis, setSelectedDiagnosis] = useState(
     initialData?.diagnosis_uid || null
   );
+  const [showDiagnosisDropdown, setShowDiagnosisDropdown] = useState(false);
+  const [selectedDiagnosisLabel, setSelectedDiagnosisLabel] = useState(
+    initialData?.diagnosis || ""
+  );
+  const [showStageDropdown, setShowStageDropdown] = useState(false);
+  const [selectedStageLabel, setSelectedStageLabel] = useState("");
 
   useEffect(() => {
     const fetchDiagnosisOptions = async () => {
@@ -34,11 +40,62 @@ const Step3Form = ({ patient_uid, onNext, initialData, isEditing = false }) => {
           value: item.uid,
         }));
         setDiagnosisOptions(options);
+
+        // Set initial diagnosis label if we have a selected diagnosis
+        if (selectedDiagnosis) {
+          const selectedOption = options.find(
+            (opt) => opt.value === selectedDiagnosis
+          );
+          if (selectedOption) {
+            setSelectedDiagnosisLabel(selectedOption.label);
+          }
+        }
       } catch (error) {}
     };
 
     fetchDiagnosisOptions();
-  }, []);
+  }, [selectedDiagnosis]);
+
+  useEffect(() => {
+    if (initialData) {
+      console.log("initialData", initialData);
+      setFormType(initialData.type);
+      setSelectedDiagnosis(initialData.diagnosis_uid);
+      setSelectedDiagnosisLabel(initialData.diagnosis_uid);
+      setFormData((prev) => ({
+        ...prev,
+        stage: initialData.disease_data?.stage || "",
+        b_symptoms: initialData.disease_data?.b_symptoms || "",
+        spleen: initialData.disease_data?.spleen || "",
+        lymph_nodes: initialData.disease_data?.lymph_nodes || [],
+        primary_tumors: initialData.disease_data?.primary_tumors || [],
+        nearby_lymphs: initialData.disease_data?.nearby_lymphs || [],
+        metastasis: initialData.disease_data?.metastasis || [],
+      }));
+
+      // Set initial stage label
+      if (initialData.disease_data?.stage) {
+        setSelectedStageLabel(initialData.disease_data.stage);
+      }
+    }
+  }, [initialData]);
+
+  const handleDiagnosisChange = (e) => {
+    setSelectedDiagnosis(e.value);
+    const selectedOption = diagnosisOptions.find(
+      (opt) => opt.value === e.value
+    );
+    if (selectedOption) {
+      setSelectedDiagnosisLabel(selectedOption.label);
+    }
+    setShowDiagnosisDropdown(false);
+  };
+
+  const handleStageChange = (e) => {
+    setFormData((prev) => ({ ...prev, stage: e.value }));
+    setSelectedStageLabel(`مرحله: ${e.value}`);
+    setShowStageDropdown(false);
+  };
 
   const stageOptions = [
     { label: "A-I", value: "A-I" },
@@ -215,13 +272,24 @@ const Step3Form = ({ patient_uid, onNext, initialData, isEditing = false }) => {
         <div>
           <div>
             <label>تشخیص</label>
-            <Dropdown
-              value={selectedDiagnosis}
-              onChange={(e) => setSelectedDiagnosis(e.value)}
-              options={diagnosisOptions}
-              placeholder="تشخیص بیمار را انتخاب نمایید"
-              className="w-100 mb-3"
-            />
+            {showDiagnosisDropdown ? (
+              <Dropdown
+                value={selectedDiagnosis}
+                onChange={handleDiagnosisChange}
+                options={diagnosisOptions}
+                placeholder="تشخیص بیمار را انتخاب نمایید"
+                className="w-100 mb-3"
+                autoFocus
+              />
+            ) : (
+              <div
+                className="p-inputtext p-component w-100 mb-3"
+                style={{ cursor: "pointer", textAlign: "right" }}
+                onClick={() => setShowDiagnosisDropdown(true)}
+              >
+                {selectedDiagnosisLabel}
+              </div>
+            )}
           </div>
           {renderArrayField("lymph_nodes", "LN involmentN")}
 
@@ -255,13 +323,24 @@ const Step3Form = ({ patient_uid, onNext, initialData, isEditing = false }) => {
         <div>
           <div>
             <label>تشخیص</label>
-            <Dropdown
-              value={selectedDiagnosis}
-              onChange={(e) => setSelectedDiagnosis(e.value)}
-              options={diagnosisOptions}
-              placeholder="تشخیص بیمار را انتخاب نمایید"
-              className="w-100 mb-3"
-            />
+            {showDiagnosisDropdown ? (
+              <Dropdown
+                value={selectedDiagnosis}
+                onChange={handleDiagnosisChange}
+                options={diagnosisOptions}
+                placeholder="تشخیص بیمار را انتخاب نمایید"
+                className="w-100 mb-3"
+                autoFocus
+              />
+            ) : (
+              <div
+                className="p-inputtext p-component w-100 mb-3"
+                style={{ cursor: "pointer", textAlign: "right" }}
+                onClick={() => setShowDiagnosisDropdown(true)}
+              >
+                {selectedDiagnosisLabel}
+              </div>
+            )}
           </div>
           {renderArrayField("primary_tumors", "T")}
           {renderArrayField("nearby_lymphs", "N")}
@@ -271,15 +350,24 @@ const Step3Form = ({ patient_uid, onNext, initialData, isEditing = false }) => {
       {formType && (
         <div>
           <label>stage</label>
-          <Dropdown
-            value={formData.stage}
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, stage: e.value }))
-            }
-            options={stageOptions}
-            placeholder="مرحله بیمار را انتخاب نمایید"
-            className="w-100 mb-3"
-          />
+          {showStageDropdown ? (
+            <Dropdown
+              value={formData.stage}
+              onChange={handleStageChange}
+              options={stageOptions}
+              placeholder="مرحله بیمار را انتخاب نمایید"
+              className="w-100 mb-3"
+              autoFocus
+            />
+          ) : (
+            <div
+              className="p-inputtext p-component w-100 mb-3"
+              style={{ cursor: "pointer", textAlign: "right" }}
+              onClick={() => setShowStageDropdown(true)}
+            >
+              {selectedStageLabel}
+            </div>
+          )}
         </div>
       )}
       <Button
