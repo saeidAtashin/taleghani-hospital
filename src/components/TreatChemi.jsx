@@ -81,6 +81,9 @@ const TreatChemi = ({
   // Add new state for cycle submit loading
   const [cycleSubmitLoading, setCycleSubmitLoading] = useState({});
 
+  const [showProtocolDropdown, setShowProtocolDropdown] = useState(false);
+  const [selectedProtocolLabel, setSelectedProtocolLabel] = useState("");
+
   useEffect(() => {
     // Check if any treatment line is in progress
     const hasInProgressLine = allDatas?.some(
@@ -88,6 +91,13 @@ const TreatChemi = ({
     );
     setCanAddCycle(hasInProgressLine);
   }, [allDatas]);
+
+  useEffect(() => {
+    // Set initial protocol label when data is loaded
+    if (treatment?.protocol) {
+      setSelectedProtocolLabel(treatment.protocol);
+    }
+  }, [treatment]);
 
   const handleTreatmentStartDateChange = (date) => {
     if (date) {
@@ -393,21 +403,38 @@ const TreatChemi = ({
                       پروتکل:
                     </label>
                     <div className="p-col-12 p-md-10 mb-4">
-                      <Dropdown
-                        value={
-                          treatment?.protocol
-                            ? treatment?.protocol_uid
-                            : selectedProtocol
-                        }
-                        options={protocolOptions}
-                        onChange={(e) => {
-                          setSelectedProtocol(e.value);
-                        }}
-                        placeholder="پروتکل را انتخاب نمایید"
-                        optionLabel="label"
-                        className="w-100"
-                        disabled={treatment?.state !== "DONE" ? false : true}
-                      />
+                      {!showProtocolDropdown ? (
+                        <div
+                          className="p-2 border rounded cursor-pointer"
+                          onClick={() => setShowProtocolDropdown(true)}
+                        >
+                          {selectedProtocolLabel || "انتخاب پروتکل"}
+                        </div>
+                      ) : (
+                        <Dropdown
+                          value={
+                            treatment?.protocol
+                              ? treatment?.protocol_uid
+                              : selectedProtocol
+                          }
+                          options={protocolOptions}
+                          onChange={(e) => {
+                            setSelectedProtocol(e.value);
+                            const selectedOption = protocolOptions.find(
+                              (opt) => opt.value === e.value
+                            );
+                            setSelectedProtocolLabel(
+                              selectedOption?.label || ""
+                            );
+                            setShowProtocolDropdown(false);
+                          }}
+                          placeholder="پروتکل را انتخاب نمایید"
+                          optionLabel="label"
+                          className="w-100"
+                          disabled={treatment?.state !== "DONE" ? false : true}
+                          autoFocus
+                        />
+                      )}
                     </div>
                     {treatment?.state !== "DONE" &&
                       !hiddenButtons.includes(treatment.uid) &&
@@ -441,10 +468,7 @@ const TreatChemi = ({
                       addCycle(index);
                     }}
                     type="button"
-                    disabled={
-                      !canAddCycle ||
-                      treatment?.state === "DONE" 
-                    }
+                    disabled={!canAddCycle || treatment?.state === "DONE"}
                   />
 
                   {treatment?.cycles?.length > 0 && (
