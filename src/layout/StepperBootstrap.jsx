@@ -20,6 +20,7 @@ const StepperBootstrap = () => {
   const [formData, setFormData] = useState({
     step0: null,
     step1: null,
+    step2: null,
   });
   const [fetchedSteps, setFetchedSteps] = useState([]);
   const patient_uid_info = localStorage.getItem("patient_uid_info");
@@ -75,7 +76,7 @@ const StepperBootstrap = () => {
   useEffect(() => {
     if (
       patient_uid_info &&
-      activeIndex < 2 &&
+      activeIndex < 3 &&
       !fetchedSteps.includes(activeIndex)
     ) {
       fetchStepData(activeIndex);
@@ -87,6 +88,12 @@ const StepperBootstrap = () => {
   };
 
   const handleFormSubmit = async (data) => {
+    // Store the form data
+    setFormData((prev) => ({
+      ...prev,
+      [`step${activeIndex}`]: data,
+    }));
+
     // If we're returning to a previous step, just move to next step without any validation or API calls
     if (fetchedSteps.includes(activeIndex)) {
       setActiveIndex((prevIndex) => prevIndex + 1);
@@ -254,6 +261,7 @@ const StepperBootstrap = () => {
             patient_uid={patient_uid_info}
             diagnosis_uid={null}
             onNext={() => setActiveIndex(activeIndex + 1)}
+            initialValues={formData.step2}
           />
         ) : activeIndex === 3 ? (
           <div>
