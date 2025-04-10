@@ -20,6 +20,7 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
   const [loading, setLoading] = useState(false);
   const [btnLoading, setbtnLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isViewMode, setIsViewMode] = useState(false);
 
   const numberTemplate = (rowData, { rowIndex }) => {
     return <span>{rowIndex + 1}</span>;
@@ -58,12 +59,15 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
   const tasvirbardatiCellClick = (rowData, allrow) => {
     if (rowData?.records?.length > 0) {
       const clickedRecordType = rowData.records[0].record_type;
+      const selectedTypes = rowData.records.map((record) => record.record_type);
+      setSelectedOptions(selectedTypes);
       settasvirDetailUid({
         records: rowData.records,
         activeRecord: clickedRecordType,
       });
       setallrow(allrow);
-      setShowAzmayeshPAge("orderRegister");
+      setIsViewMode(true);
+      setShowAzmayeshPAge("orderRegisterOrder");
     }
   };
 
@@ -379,6 +383,7 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
                   setSelectedOptions([]);
                   setShowAzmayeshPAge("home");
                   setrowDataTransfer(undefined);
+                  setIsViewMode(false);
                 }}
               >
                 x
@@ -409,8 +414,8 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
                 }}
               />
             </div>
-            <div className="d-flex justify-content-between mt-4">
-              <>
+            {!isViewMode && (
+              <div className="d-flex justify-content-between mt-4">
                 <button
                   onClick={handleSubmit}
                   type="submit"
@@ -419,8 +424,8 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
                 >
                   تایید و ثبت دستور تصویربرداری ها
                 </button>
-              </>
-            </div>
+              </div>
+            )}
           </div>
         )
       )}
