@@ -83,99 +83,103 @@ const StepperBootstrap = () => {
   }, [activeIndex, patient_uid_info]);
 
   const handleStepClick = (index) => {
-    if (index < activeIndex) {
-      setActiveIndex(index);
-    }
+    setActiveIndex(index);
   };
 
   const handleFormSubmit = async (data) => {
+    // If we're returning to a previous step, just move to next step without any validation or API calls
+    if (fetchedSteps.includes(activeIndex)) {
+      setActiveIndex((prevIndex) => prevIndex + 1);
+      return;
+    }
+
+    // Only proceed with validation and API calls for new steps
     setLoadingBtn(true);
     const currentFields =
       activeIndex === 0 ? formFielsIdentity : formPatientsFields;
 
     try {
-      // Validate the data based on the current form schema
       const schema = generateReusableSchema(currentFields);
       schema.parse(data);
 
       if (activeIndex === 0) {
-        const { ...restOfData } = data;
-
-        const formattedData = {
-          ...restOfData,
-          patient_uid: patient_uid_info,
-          marital_status: data?.["marital-status"]
-            ? data?.["marital-status"]
-            : undefined,
-        };
-
-        setIsLoading(true);
-        try {
-          // Perform the API call
-          const response = await axios.post(
-            "https://cancerreg.ir/api/v1" + PATIENT_INFO,
-            formattedData
-          );
-
-          if (response.status >= 200 && response.status < 400) {
-            // Update the local storage and active index on success
-            localStorage.setItem("patient_uid_info", response.data.data.uid);
-            setActiveIndex((prevIndex) => prevIndex + 1);
-            setLoadingBtn(false);
-            toast.success("ثبت شد");
-          }
-        } catch (error) {
-          setLoadingBtn(false);
-          setIsLoading(false);
-          if (error.response && error.response.status === 400) {
-            const errorDetails = error.response.data?.errors;
-            toast.warning(errorDetails?.[0]?.message || "Invalid inputs");
-          }
-        }
-      }
-
-      if (activeIndex === 1) {
-        const {
-          surgery,
-          "underlying-disease": underlyingDisease,
-          "family-history": familyhistory,
-          "habit-disease": habitdisease,
-          drugs,
-          ...restOfData
-        } = data;
-
-        const formattedData = {
-          ...restOfData,
-          patient_uid: patient_uid_info,
-          surgeries: data?.surgery ? data.surgery : undefined,
-          underlying_diseases: underlyingDisease
-            ? underlyingDisease
-            : undefined,
-          habits: habitdisease ? habitdisease : undefined,
-          family_history: familyhistory ? familyhistory : undefined,
-          drugs_records: data?.drugs ? data?.drugs : undefined,
-        };
-
-        setIsLoading(true);
-        try {
-          // Perform the API call
-          const response = await axios.post(
-            "https://cancerreg.ir/api/v1" + PATIENT_RECORDS,
-            formattedData
-          );
-
-          if (response.status >= 200 && response.status < 400) {
-            setActiveIndex((prevIndex) => prevIndex + 1);
-            setLoadingBtn(false);
-          }
-        } catch (error) {
-          setLoadingBtn(false);
-          setIsLoading(false);
-        }
+        await handleStep0Submit(data);
+      } else if (activeIndex === 1) {
+        await handleStep1Submit(data);
       }
     } catch (error) {
       setIsLoading(false);
       setLoadingBtn(false);
+    }
+  };
+
+  const handleStep0Submit = async (data) => {
+    const { ...restOfData } = data;
+    const formattedData = {
+      ...restOfData,
+      patient_uid: patient_uid_info,
+      marital_status: data?.["marital-status"]
+        ? data?.["marital-status"]
+        : undefined,
+    };
+
+    setIsLoading(true);
+    try {
+      const response = await axios.post(
+        "https://cancerreg.ir/api/v1" + PATIENT_INFO,
+        formattedData
+      );
+
+      if (response.status >= 200 && response.status < 400) {
+        localStorage.setItem("patient_uid_info", response.data.data.uid);
+        setActiveIndex((prevIndex) => prevIndex + 1);
+        setLoadingBtn(false);
+        toast.success("ثبت شد");
+      }
+    } catch (error) {
+      setLoadingBtn(false);
+      setIsLoading(false);
+      if (error.response && error.response.status === 400) {
+        const errorDetails = error.response.data?.errors;
+        toast.warning(errorDetails?.[0]?.message || "Invalid inputs");
+      }
+    }
+  };
+
+  const handleStep1Submit = async (data) => {
+    const {
+      surgery,
+      "underlying-disease": underlyingDisease,
+      "family-history": familyhistory,
+      "habit-disease": habitdisease,
+      drugs,
+      ...restOfData
+    } = data;
+
+    const formattedData = {
+      ...restOfData,
+      patient_uid: patient_uid_info,
+      surgeries: data?.surgery ? data.surgery : undefined,
+      underlying_diseases: underlyingDisease ? underlyingDisease : undefined,
+      habits: habitdisease ? habitdisease : undefined,
+      family_history: familyhistory ? familyhistory : undefined,
+      drugs_records: data?.drugs ? data?.drugs : undefined,
+    };
+
+    setIsLoading(true);
+    try {
+      const response = await axios.post(
+        "https://cancerreg.ir/api/v1" + PATIENT_RECORDS,
+        formattedData
+      );
+
+      if (response.status >= 200 && response.status < 400) {
+        setActiveIndex((prevIndex) => prevIndex + 1);
+        setLoadingBtn(false);
+      }
+    } catch (error) {
+      setLoadingBtn(false);
+      setIsLoading(false);
     }
   };
 
