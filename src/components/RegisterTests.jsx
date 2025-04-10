@@ -27,7 +27,7 @@ const SelectableList = ({ setShowAzmayeshPAge }) => {
     fetchData();
   }, []);
 
-  const toggleSelect = (uid, items = []) => {
+  const toggleSelect = (uid, items = [], parentUid = null) => {
     setSelected((prev) => {
       const newSelected = { ...prev };
       const isSelected = !!newSelected[uid];
@@ -38,6 +38,9 @@ const SelectableList = ({ setShowAzmayeshPAge }) => {
       } else {
         newSelected[uid] = true;
         items.forEach((item) => (newSelected[item.uid] = true));
+        if (parentUid) {
+          newSelected[parentUid] = true;
+        }
       }
 
       return newSelected;
@@ -49,18 +52,19 @@ const SelectableList = ({ setShowAzmayeshPAge }) => {
       .filter((category) => selected[category.uid])
       .map((category) => ({
         uid: category.uid,
-        sub_categories: category.sub_category
-          .filter((sub) => selected[sub.uid])
-          .map((sub) => sub.uid),
+        sub_categories:
+          category.sub_category
+            .filter((sub) => selected[sub.uid])
+            .map((sub) => sub.uid) || [],
         fields: [
-          ...category.field
+          ...(category.field
             .filter((field) => selected[field.uid])
-            .map((field) => field.uid),
-          ...category.title
+            .map((field) => field.uid) || []),
+          ...(category.title
             .filter((tit) => selected[tit.name])
             .flatMap((tit) =>
               tit.field.filter((t) => selected[t.uid]).map((t) => t.uid)
-            ),
+            ) || []),
         ],
       }));
 
@@ -134,7 +138,9 @@ const SelectableList = ({ setShowAzmayeshPAge }) => {
                         className="mx-2 h-auto my-auto "
                         type="checkbox"
                         checked={!!selected[sub.uid]}
-                        onChange={() => toggleSelect(sub.uid, [...sub.field])}
+                        onChange={() =>
+                          toggleSelect(sub.uid, [...sub.field], category.uid)
+                        }
                       />
                       {sub.name} :
                     </label>
@@ -150,7 +156,9 @@ const SelectableList = ({ setShowAzmayeshPAge }) => {
                                   className="mx-2 h-auto my-auto"
                                   type="checkbox"
                                   checked={!!selected[t.uid]}
-                                  onChange={() => toggleSelect(t.uid)}
+                                  onChange={() =>
+                                    toggleSelect(t.uid, [], category.uid)
+                                  }
                                 />
                                 {t.name}
                               </label>
@@ -168,7 +176,9 @@ const SelectableList = ({ setShowAzmayeshPAge }) => {
                         className="mx-2 h-auto my-auto"
                         type="checkbox"
                         checked={!!selected[field.uid]}
-                        onChange={() => toggleSelect(field.uid)}
+                        onChange={() =>
+                          toggleSelect(field.uid, [], category.uid)
+                        }
                       />
                       {field.name}
                     </label>
@@ -185,7 +195,7 @@ const SelectableList = ({ setShowAzmayeshPAge }) => {
                           type="checkbox"
                           checked={!!selected[tit.name]}
                           onChange={() =>
-                            toggleSelect(tit.name, [...tit.field])
+                            toggleSelect(tit.name, [...tit.field], category.uid)
                           }
                         />
                         {tit.name} :
@@ -201,7 +211,9 @@ const SelectableList = ({ setShowAzmayeshPAge }) => {
                                     className="mx-2 h-auto my-auto"
                                     type="checkbox"
                                     checked={!!selected[t.uid]}
-                                    onChange={() => toggleSelect(t.uid)}
+                                    onChange={() =>
+                                      toggleSelect(t.uid, [], category.uid)
+                                    }
                                   />
                                   {t.name}
                                 </label>
