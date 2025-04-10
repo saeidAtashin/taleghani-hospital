@@ -54,7 +54,10 @@ const PillsTabs = ({
   const [testToDelete, setTestToDelete] = useState(null);
   const [hasChanges, setHasChanges] = useState(false);
   const { control, handleSubmit, reset, setValue, getValues } = useForm();
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(() => {
+    const today = new Date();
+    return today.toISOString().split("T")[0];
+  });
 
   useEffect(() => {
     setvalueinja(Number(kValue) / Number(landaValue));
@@ -798,13 +801,17 @@ const PillsTabs = ({
               <Controller
                 name="date"
                 control={control}
+                defaultValue={selectedDate}
                 render={({ field }) => {
                   const selectedDate = field?.value
                     ? new DateObject({
                         date: new Date(field?.value),
                         calendar: persian,
                       })
-                    : null;
+                    : new DateObject({
+                        date: new Date(),
+                        calendar: persian,
+                      });
 
                   return (
                     <DatePicker
