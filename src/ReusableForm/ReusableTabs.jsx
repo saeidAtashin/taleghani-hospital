@@ -8,7 +8,7 @@ const ReusableTabs = ({
   setActiveTabForce,
   setrowDataTransfer,
 }) => {
-  const [activeKey, setActiveKey] = useState("follow up");
+  const [activeKey, setActiveKey] = useState("اطلاعات هویتی");
 
   useEffect(() => {
     if (activeTabForce) {
