@@ -58,6 +58,8 @@ const PillsTabs = ({
     const today = new Date();
     return today.toISOString().split("T")[0];
   });
+  const [immunofixationValue, setImmunofixationValue] = useState("");
+  const [showImmunofixationInput, setShowImmunofixationInput] = useState(false);
 
   useEffect(() => {
     setvalueinja(Number(kValue) / Number(landaValue));
@@ -343,12 +345,20 @@ const PillsTabs = ({
       if (!key.startsWith("existing_") && !key.startsWith("testDate_")) {
         const field = titleDirectToCategList?.find((item) => item?.uid === key);
         if (field) {
-          formattedData[key] = formatValue(value, field?.type);
+          // Skip Immunofixation field from direct submission
+          if (field.name !== "Immunofixation") {
+            formattedData[key] = formatValue(value, field?.type);
+          }
         } else {
           formattedData[key] = value;
         }
       }
     });
+
+    // Add Immunofixation data if it exists
+    if (immunofixationValue) {
+      formattedData[immunofixationUid] = immunofixationValue;
+    }
 
     const additionalData = {
       date: data?.date,
@@ -400,7 +410,8 @@ const PillsTabs = ({
       setParentArray([]);
       setSelectedName(undefined);
       setValue("date", undefined);
-
+      setImmunofixationValue("");
+      setShowImmunofixationInput(false);
       setimmunofixationUid(undefined);
     } catch (error) {
       setisSubmitting(false);
@@ -528,7 +539,12 @@ const PillsTabs = ({
           const fieldKey = `existing_${testUid}_${field.uid}`;
           const value = allValues[fieldKey];
           if (value !== undefined && value !== "") {
-            formData[field.uid] = value;
+            // Format the value based on field type
+            if (field.type === "FLOAT" || field.type === "PERCENTAGE") {
+              formData[field.uid] = parseFloat(value);
+            } else {
+              formData[field.uid] = value;
+            }
           }
         });
       });
@@ -538,7 +554,12 @@ const PillsTabs = ({
         const fieldKey = `existing_${testUid}_${field.uid}`;
         const value = allValues[fieldKey];
         if (value !== undefined && value !== "") {
-          formData[field.uid] = value;
+          // Format the value based on field type
+          if (field.type === "FLOAT" || field.type === "PERCENTAGE") {
+            formData[field.uid] = parseFloat(value);
+          } else {
+            formData[field.uid] = value;
+          }
         }
       });
 
@@ -549,9 +570,10 @@ const PillsTabs = ({
       const payload = {
         fields: Object.entries(formData).map(([uid, value]) => ({
           uid,
-          value: Array.isArray(value) ? value : value.toString(),
+          value: Array.isArray(value) ? value : value,
         })),
         date: dateValue,
+        patient_uid: uid,
       };
 
       // Make the PUT request
@@ -1132,12 +1154,12 @@ const PillsTabs = ({
                               titleDirectToCat?.titled ? "w-100" : ""
                             }`}
                           >
-                            <Controller
-                              name={titleDirectToCat.uid}
-                              control={control}
-                              render={({ field }) => (
-                                <div className="p-input-icon-right w-100">
-                                  {titleDirectToCat.options?.length > 0 ? (
+                            {titleDirectToCat?.name === "Immunofixation" ? (
+                              <>
+                                <Controller
+                                  name={titleDirectToCat.uid}
+                                  control={control}
+                                  render={({ field }) => (
                                     <Dropdown
                                       value={field.value}
                                       options={formatSelectOptions(
@@ -1145,76 +1167,116 @@ const PillsTabs = ({
                                       )}
                                       onChange={(e) => {
                                         field.onChange(e.value);
-                                        handleInputChange(
-                                          titleDirectToCat.uid,
-                                          e.value
+                                        setSelectedName(e.value);
+                                        setShowImmunofixationInput(true);
+                                        setimmunofixationUid(
+                                          titleDirectToCat.uid
                                         );
                                       }}
                                       placeholder="انتخاب کنید"
                                       className="w-100"
                                     />
-                                  ) : (
-                                    <>
-                                      {titleDirectToCat.type ===
-                                        "PERCENTAGE" && (
-                                        <i
-                                          className="pi pi-percentage"
-                                          style={{
-                                            left: "0.75rem",
-                                            right: "auto",
-                                          }}
-                                        />
-                                      )}
-                                      <InputText
-                                        {...field}
-                                        className="w-100"
-                                        placeholder={
-                                          titleDirectToCat.type === "FLOAT"
-                                            ? "مقدار عددی را وارد نمایید"
-                                            : titleDirectToCat.type ===
-                                              "PERCENTAGE"
-                                            ? "درصد را وارد نمایید"
-                                            : "مقدار را وارد نمایید"
-                                        }
+                                  )}
+                                />
+                                {showImmunofixationInput && (
+                                  <div className="mt-3">
+                                    <InputText
+                                      value={immunofixationValue}
+                                      onChange={(e) =>
+                                        setImmunofixationValue(e.target.value)
+                                      }
+                                      placeholder="مقدار را وارد نمایید"
+                                      className="w-100"
+                                    />
+                                  </div>
+                                )}
+                              </>
+                            ) : (
+                              <Controller
+                                name={titleDirectToCat.uid}
+                                control={control}
+                                render={({ field }) => (
+                                  <div className="p-input-icon-right w-100">
+                                    {titleDirectToCat.options?.length > 0 ? (
+                                      <Dropdown
+                                        value={field.value}
+                                        options={formatSelectOptions(
+                                          titleDirectToCat.options
+                                        )}
                                         onChange={(e) => {
-                                          const value = e.target.value;
-                                          const formattedValue = formatValue(
-                                            value,
-                                            titleDirectToCat.type
+                                          field.onChange(e.value);
+                                          handleInputChange(
+                                            titleDirectToCat.uid,
+                                            e.value
                                           );
-
-                                          if (
-                                            validateInput(
+                                        }}
+                                        placeholder="انتخاب کنید"
+                                        className="w-100"
+                                      />
+                                    ) : (
+                                      <>
+                                        {titleDirectToCat.type ===
+                                          "PERCENTAGE" && (
+                                          <i
+                                            className="pi pi-percentage"
+                                            style={{
+                                              left: "0.75rem",
+                                              right: "auto",
+                                            }}
+                                          />
+                                        )}
+                                        <InputText
+                                          {...field}
+                                          className="w-100"
+                                          placeholder={
+                                            titleDirectToCat.type === "FLOAT"
+                                              ? "مقدار عددی را وارد نمایید"
+                                              : titleDirectToCat.type ===
+                                                "PERCENTAGE"
+                                              ? "درصد را وارد نمایید"
+                                              : "مقدار را وارد نمایید"
+                                          }
+                                          onChange={(e) => {
+                                            const value = e.target.value;
+                                            const formattedValue = formatValue(
                                               value,
                                               titleDirectToCat.type
-                                            )
-                                          ) {
-                                            field.onChange(formattedValue);
-                                            handleInputChange(
-                                              titleDirectToCat.uid,
-                                              formattedValue
                                             );
-                                          } else if (
-                                            titleDirectToCat.type === "FLOAT" ||
-                                            titleDirectToCat.type ===
-                                              "PERCENTAGE"
-                                          ) {
-                                            toast.error(
-                                              `لطفا یک ${
-                                                titleDirectToCat.type ===
-                                                "FLOAT"
-                                                  ? "عدد"
-                                                  : "درصد"
-                                              } معتبر وارد کنید`
-                                            );
-                                          }
-                                        }}
-                                      />
-                                    </>
-                                  )}
-                                </div>
-                              )}
-                            />
+
+                                            if (
+                                              validateInput(
+                                                value,
+                                                titleDirectToCat.type
+                                              )
+                                            ) {
+                                              field.onChange(formattedValue);
+                                              handleInputChange(
+                                                titleDirectToCat.uid,
+                                                formattedValue
+                                              );
+                                            } else if (
+                                              titleDirectToCat.type ===
+                                                "FLOAT" ||
+                                              titleDirectToCat.type ===
+                                                "PERCENTAGE"
+                                            ) {
+                                              toast.error(
+                                                `لطفا یک ${
+                                                  titleDirectToCat.type ===
+                                                  "FLOAT"
+                                                    ? "عدد"
+                                                    : "درصد"
+                                                } معتبر وارد کنید`
+                                              );
+                                            }
+                                          }}
+                                        />
+                                      </>
+                                    )}
+                                  </div>
+                                )}
+                              />
+                            )}
                           </div>
                         </div>
                       </div>
