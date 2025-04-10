@@ -142,7 +142,7 @@ const PillsTabsTasvir = ({
   };
 
   const hasMatchingRecord = (eventKey) => {
-    return allrow?.records?.some((record) => record.record_type === eventKey);
+    return allrow?.records?.some((record) => record?.record_type === eventKey);
   };
 
   const handleDelete = async (recordType, uid) => {

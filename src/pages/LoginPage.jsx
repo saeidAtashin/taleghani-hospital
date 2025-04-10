@@ -45,7 +45,7 @@ const LoginPage = () => {
     const validationErrors = validateForm;
     setErrors(validationErrors);
 
-    if (Object.values(validationErrors).some((error) => error)) {
+    if (Object?.values(validationErrors)?.some((error) => error)) {
       return;
     }
 

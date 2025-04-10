@@ -158,8 +158,8 @@ const PillsTabs = ({
         const firstInProgressTest = inProgressTests[0];
         setActiveTab(firstInProgressTest.tabUid);
       } else if (viewTestData.testNames) {
-        const matchingTabs = tabsNew.filter((tab) =>
-          viewTestData.testNames.some(
+        const matchingTabs = tabsNew?.filter((tab) =>
+          viewTestData.testNames?.some(
             (testName) => testName?.toLowerCase() === tab?.name?.toLowerCase()
           )
         );
@@ -477,8 +477,8 @@ const PillsTabs = ({
 
   const isMatchingTab = (tabName) => {
     if (!viewMode || !viewTestData?.testNames) return false;
-    return viewTestData.testNames.some(
-      (testName) => testName.toLowerCase() === tabName.toLowerCase()
+    return viewTestData.testNames?.some(
+      (testName) => testName?.toLowerCase() === tabName?.toLowerCase()
     );
   };
 
@@ -574,6 +574,7 @@ const PillsTabs = ({
         })),
         date: dateValue,
         patient_uid: uid,
+        test_uid: testUid,
       };
 
       // Make the PUT request

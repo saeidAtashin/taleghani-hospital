@@ -74,7 +74,7 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
   useEffect(() => {
     if (rowDataTransfer && products.length > 0) {
       const matchingRow = products.find((row) =>
-        row.records.some((record) => record.uid === rowDataTransfer?.data?.uid)
+        row?.records?.some((record) => record?.uid === rowDataTransfer?.data?.uid)
       );
 
       if (matchingRow) {

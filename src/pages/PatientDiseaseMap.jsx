@@ -39,7 +39,7 @@ const PatientDiseaseMap = ({ setDiseaseType }) => {
     const fetchDetails = async () => {
       const details = {};
       await Promise.all(
-        data.map(async (item) => {
+        data?.map(async (item) => {
           try {
             const response = await fetch(
               `https://cancerreg.ir/api/v1/patient/user-disease/${item.uid}/`
@@ -92,7 +92,7 @@ const PatientDiseaseMap = ({ setDiseaseType }) => {
       <div className="mt-4">
         <h5 className="text-primary mb-3">{title}</h5>
         <div className="grid">
-          {items.map((item, index) => (
+          {items?.map((item, index) => (
             <div key={index} className="col-12 md:col-6 lg:col-4 mb-3">
               <Card className="shadow rounded-2">
                 <div className="d-flex flex-column gap-2 ">
@@ -134,7 +134,7 @@ const PatientDiseaseMap = ({ setDiseaseType }) => {
 
       {data.length > 0 ? (
         <Accordion>
-          {data.map((item) => (
+          {data?.map((item) => (
             <AccordionTab
               key={item.uid}
               header={

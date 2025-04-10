@@ -135,7 +135,7 @@ const PatientForm = ({ setrefresh, refresh }) => {
       });
   };
 
-  if (!patient || Object.keys(dropdownData).some((key) => !dropdownData[key]))
+  if (!patient || Object?.keys(dropdownData)?.some((key) => !dropdownData[key]))
     return <p>Loading...</p>;
 
   return (
