@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Dropdown } from "primereact/dropdown";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Button } from "primereact/button";
@@ -76,9 +76,18 @@ const TreatChemi = ({
   const [treatmentLineEndDates, setTreatmentLineEndDates] = useState({});
 
   const [activeCycleIndices, setActiveCycleIndices] = useState({});
+  const [canAddCycle, setCanAddCycle] = useState(false);
 
   // Add new state for cycle submit loading
   const [cycleSubmitLoading, setCycleSubmitLoading] = useState({});
+
+  useEffect(() => {
+    // Check if any treatment line is in progress
+    const hasInProgressLine = allDatas?.some(
+      (treatment) => treatment.state === "IN_PROGRESS"
+    );
+    setCanAddCycle(hasInProgressLine);
+  }, [allDatas]);
 
   const handleTreatmentStartDateChange = (date) => {
     if (date) {
@@ -433,8 +442,8 @@ const TreatChemi = ({
                     }}
                     type="button"
                     disabled={
-                      treatment?.state === "DONE" ||
-                      (!treatment?.protocol && !treatment?.protocol_uid)
+                      !canAddCycle ||
+                      treatment?.state === "DONE" 
                     }
                   />
 
