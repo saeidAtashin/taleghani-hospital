@@ -71,7 +71,7 @@ export default function ColumnToggleDemo() {
       type="button"
       className="btn btn-outline-primary"
       onClick={() =>
-        window.open(`/dashboard/patients-lists/${rowData.uid}`, "_blank")
+        (window.location.href = `/dashboard/patients-lists/${rowData.uid}`)
       }
     >
       مشاهده
