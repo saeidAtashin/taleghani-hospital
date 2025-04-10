@@ -122,6 +122,12 @@ const Step3Form = ({ patient_uid, onNext, initialData, isEditing = false }) => {
   };
 
   const handleSubmit = async () => {
+    // Check if both stage and diagnosis dropdowns have selected values
+    if (!selectedDiagnosisLabel || !selectedStageLabel) {
+      toast.error("لطفا این دو مورد را تکمیل نمایید");
+      return;
+    }
+
     const diseaseData =
       formType === "NON_SOLID"
         ? {
