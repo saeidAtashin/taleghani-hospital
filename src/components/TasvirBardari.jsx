@@ -85,6 +85,16 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
     }
   }, [rowDataTransfer, products]);
 
+  const recordTypeToPersian = {
+    sonography: "سونوگرافی",
+    mammography: "ماموگرافی",
+    mri: "MRI",
+    ctscan: "CT-Scan",
+    corescan: "اسکن هسته‌ای",
+    petscan: "PET-Scan",
+    othergraphy: "گرافی ساده"
+  };
+
   const nameTemplate = (rowData) => {
     return (
       <div>
@@ -105,7 +115,7 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
               marginRight: "8px",
             }}
           >
-            {record.record_type}
+            {recordTypeToPersian[record.record_type] || record.record_type} {" "}
           </span>
         ))}
       </div>
