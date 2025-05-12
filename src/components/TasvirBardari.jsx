@@ -74,7 +74,9 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
   useEffect(() => {
     if (rowDataTransfer && products.length > 0) {
       const matchingRow = products.find((row) =>
-        row?.records?.some((record) => record?.uid === rowDataTransfer?.data?.uid)
+        row?.records?.some(
+          (record) => record?.uid === rowDataTransfer?.data?.uid
+        )
       );
 
       if (matchingRow) {
@@ -211,6 +213,17 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
           } catch (error) {
             errorCount++;
             console.error(`Error deleting record ${record.uid}:`, error);
+          }
+        }
+
+        // Make the batch file deletion for each product after its records are deleted
+        if (successCount > 0) {
+          try {
+            await axios.delete(
+              `https://cancerreg.ir/api/v1/records/batch-file/${product.uid}/`
+            );
+          } catch (error) {
+            console.error("Error in batch file deletion:", error);
           }
         }
       }
