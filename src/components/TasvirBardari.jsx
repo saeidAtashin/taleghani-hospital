@@ -92,7 +92,7 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
     ctscan: "CT-Scan",
     corescan: "اسکن هسته‌ای",
     petscan: "PET-Scan",
-    othergraphy: "گرافی ساده"
+    othergraphy: "گرافی ساده",
   };
 
   const nameTemplate = (rowData) => {
@@ -115,7 +115,7 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
               marginRight: "8px",
             }}
           >
-            {recordTypeToPersian[record.record_type] || record.record_type} {" "}
+            {recordTypeToPersian[record.record_type] || record.record_type}{" "}
           </span>
         ))}
       </div>
@@ -290,6 +290,7 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
         setShowAzmayeshPAge("home");
         setrowDataTransfer(undefined);
         handleRefresh();
+        setDescreption("");
       })
       .catch((error) => {
         setbtnLoading(false);
