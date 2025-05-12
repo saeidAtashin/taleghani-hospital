@@ -540,6 +540,7 @@ const TreatChemi = ({
                                 className="p-2 border rounded"
                                 inputClass="w-full p-2 text-end w-100 border rounded"
                                 position="bottom-right"
+                                disabled={!!cycle.uid}
                               />
                             </div>
 
@@ -565,6 +566,7 @@ const TreatChemi = ({
                                   }
                                   rows={2}
                                   className="w-100"
+                                  disabled={!!cycle.uid}
                                 />
                               </div>
                             </div>
