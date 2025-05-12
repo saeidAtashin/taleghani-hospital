@@ -315,11 +315,11 @@ const TreatChemi = ({
   };
 
   const hasUnsubmittedCycles = (treatment) => {
-    return treatment?.cycles?.some(cycle => !cycle.uid);
+    return treatment?.cycles?.some((cycle) => !cycle.uid);
   };
 
   const hasIncompleteTreatmentLines = () => {
-    return allDatas?.some(treatment => treatment.state !== "DONE");
+    return allDatas?.some((treatment) => treatment.state !== "DONE");
   };
 
   return (
@@ -486,7 +486,11 @@ const TreatChemi = ({
                       addCycle(index);
                     }}
                     type="button"
-                    disabled={!canAddCycle || treatment?.state === "DONE" || hasUnsubmittedCycles(treatment)}
+                    disabled={
+                      !canAddCycle ||
+                      treatment?.state === "DONE" ||
+                      hasUnsubmittedCycles(treatment)
+                    }
                   />
 
                   {treatment?.cycles?.length > 0 && (
