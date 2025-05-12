@@ -277,28 +277,31 @@ const PatientRecordsForm = () => {
           >
             {dropdownLabels?.[field] === "سوابق دارویی" ? (
               <div className="p-field mb-4">
-                {patient?.drugs_records?.length > 0 && (
+                {/* {patient?.drugs_records?.length > 0 && ( */}
                   <label>سوابق دارویی</label>
-                )}
-                {!isFormDisabled && (
+                {/* )} */}
+                {
                   <div className="d-flex gap-2 w-100">
                     <InputText
+                      disabled={isFormDisabled}
                       value={drugName}
                       onChange={(e) => setDrugName(e.target.value)}
                       placeholder="نام دارو"
                     />
                     <InputText
+                      disabled={isFormDisabled}
                       value={drugDose}
                       onChange={(e) => setDrugDose(e.target.value)}
                       placeholder="دوز دارو"
                     />
                     <Button
+                      disabled={isFormDisabled}
                       label="افزودن"
                       className="rounded"
                       onClick={handleAddDrug}
                     />
                   </div>
-                )}
+                }
                 <div className="mt-3">
                   {patient?.drugs_records?.map((drug, index) => (
                     <Chip
@@ -313,6 +316,9 @@ const PatientRecordsForm = () => {
                       }
                     />
                   ))}
+                  {/* {patient?.drugs_records?.length <= 0 && (
+                    <label>سوابق دارویی ثبت نشده است</label>
+                  )} */}
                 </div>
               </div>
             ) : (
