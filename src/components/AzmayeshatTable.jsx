@@ -43,6 +43,16 @@ export default function AzmayeshatTable({
         {rowData.names.map((nameItem, index) => (
           <span
             key={index}
+            onClick={() => {
+              setShowAzmayeshPAge("viewTest");
+              setViewTestData({
+                testUids: [nameItem.uid],
+                testNames: [nameItem.value],
+                groupedTests: {
+                  [nameItem.value]: [nameItem]
+                }
+              });
+            }}
             style={{
               cursor: "pointer",
               fontWeight: "bold",
