@@ -318,6 +318,10 @@ const TreatChemi = ({
     return treatment?.cycles?.some(cycle => !cycle.uid);
   };
 
+  const hasIncompleteTreatmentLines = () => {
+    return allDatas?.some(treatment => treatment.state !== "DONE");
+  };
+
   return (
     <>
       <div className="d-flex flex-column my-3">
@@ -617,6 +621,7 @@ const TreatChemi = ({
               className="p-button-text border rounded mb-4"
               onClick={addTreatmentLine}
               type="button"
+              disabled={hasIncompleteTreatmentLines()}
             />
           }
         </>
