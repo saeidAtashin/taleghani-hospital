@@ -84,6 +84,8 @@ const TreatChemi = ({
   const [showProtocolDropdown, setShowProtocolDropdown] = useState(false);
   const [selectedProtocolLabel, setSelectedProtocolLabel] = useState("");
 
+  const [isAnyCycleSubmitting, setIsAnyCycleSubmitting] = useState(false);
+
   useEffect(() => {
     // Check if any treatment line is in progress
     const hasInProgressLine = allDatas?.some(
@@ -98,6 +100,14 @@ const TreatChemi = ({
       setSelectedProtocolLabel(treatment.protocol);
     }
   }, [treatment]);
+
+  useEffect(() => {
+    // Check if any cycle is currently submitting
+    const anySubmitting = Object.values(cycleSubmitLoading).some(
+      (loading) => loading === true
+    );
+    setIsAnyCycleSubmitting(anySubmitting);
+  }, [cycleSubmitLoading]);
 
   const handleTreatmentStartDateChange = (date) => {
     if (date) {
@@ -304,6 +314,10 @@ const TreatChemi = ({
     }
   };
 
+  const hasUnsubmittedCycles = (treatment) => {
+    return treatment?.cycles?.some(cycle => !cycle.uid);
+  };
+
   return (
     <>
       <div className="d-flex flex-column my-3">
@@ -468,7 +482,7 @@ const TreatChemi = ({
                       addCycle(index);
                     }}
                     type="button"
-                    disabled={!canAddCycle || treatment?.state === "DONE"}
+                    disabled={!canAddCycle || treatment?.state === "DONE" || hasUnsubmittedCycles(treatment)}
                   />
 
                   {treatment?.cycles?.length > 0 && (
