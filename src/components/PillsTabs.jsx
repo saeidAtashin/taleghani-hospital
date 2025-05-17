@@ -341,11 +341,9 @@ const PillsTabs = ({
     const formattedData = {};
 
     Object?.entries(data)?.forEach(([key, value]) => {
-      // Skip fields that start with 'testDate_' or 'existing_'
       if (!key.startsWith("existing_") && !key.startsWith("testDate_")) {
         const field = titleDirectToCategList?.find((item) => item?.uid === key);
         if (field) {
-          // Skip Immunofixation field from direct submission
           if (field.name !== "Immunofixation") {
             formattedData[key] = formatValue(value, field?.type);
           }
@@ -355,7 +353,6 @@ const PillsTabs = ({
       }
     });
 
-    // Add Immunofixation data if it exists
     if (immunofixationValue) {
       formattedData[immunofixationUid] = immunofixationValue;
     }
@@ -530,16 +527,13 @@ const PillsTabs = ({
     try {
       const formData = {};
 
-      // Get all form values
       const allValues = getValues();
 
-      // Process titleOfAll fields
       titleOfAll?.forEach((title) => {
         title.field?.forEach((field) => {
           const fieldKey = `existing_${testUid}_${field.uid}`;
           const value = allValues[fieldKey];
           if (value !== undefined && value !== "") {
-            // Format the value based on field type
             if (field.type === "FLOAT" || field.type === "PERCENTAGE") {
               formData[field.uid] = parseFloat(value);
             } else {
@@ -549,12 +543,10 @@ const PillsTabs = ({
         });
       });
 
-      // Process titleDirectToCategList fields
       titleDirectToCategList?.forEach((field) => {
         const fieldKey = `existing_${testUid}_${field.uid}`;
         const value = allValues[fieldKey];
         if (value !== undefined && value !== "") {
-          // Format the value based on field type
           if (field.type === "FLOAT" || field.type === "PERCENTAGE") {
             formData[field.uid] = parseFloat(value);
           } else {
@@ -563,10 +555,8 @@ const PillsTabs = ({
         }
       });
 
-      // Get the date value
       const dateValue = allValues[`testDate_${testUid}`];
 
-      // Prepare the payload
       const payload = {
         fields: Object.entries(formData).map(([uid, value]) => ({
           uid,
@@ -577,7 +567,6 @@ const PillsTabs = ({
         test_uid: testUid,
       };
 
-      // Make the PUT request
       const response = await axios.put(
         `https://cancerreg.ir/api/v1/tests/test/${testUid}/`,
         payload
@@ -693,7 +682,6 @@ const PillsTabs = ({
                     }
                   >
                     <div className="row">
-                      {/* Date Input for each test */}
                       <label className="text-muted d-block mb-2">
                         تاریخ آزمایش
                       </label>
@@ -721,7 +709,6 @@ const PillsTabs = ({
                         )}
                       />
 
-                      {/* Render title inputs */}
                       {titleOfAll?.map((title) => (
                         <div key={title.uid} className="col-md-6 mb-4">
                           <h5>{title.name}</h5>
@@ -876,7 +863,9 @@ const PillsTabs = ({
 
                         <div className="">
                           {title?.field
-                            ?.sort((a, b) => (a?.ordering || 0) - (b?.ordering || 0))
+                            ?.sort(
+                              (a, b) => (a?.ordering || 0) - (b?.ordering || 0)
+                            )
                             ?.reduce((acc, titleData) => {
                               const { ordering } = titleData;
                               if (!acc[ordering]) {
@@ -896,20 +885,25 @@ const PillsTabs = ({
                                 }, {})
                               )?.map((groupKey, idx) => {
                                 const fieldsInGroup = title?.field?.filter(
-                                  (field) => field?.ordering.toString() === groupKey
+                                  (field) =>
+                                    field?.ordering.toString() === groupKey
                                 );
                                 const count = countOccurrences[groupKey] || 1;
-                                
+
                                 if (count <= 4) {
-                                  // If 4 or fewer items, use original layout
                                   return (
                                     <div className="row" key={idx}>
                                       {fieldsInGroup.map((titleData) => (
                                         <div
                                           key={titleData?.uid}
                                           className={`col-md-${
-                                            countOccurrences[titleData?.ordering]
-                                              ? 12 / countOccurrences[titleData?.ordering]
+                                            countOccurrences[
+                                              titleData?.ordering
+                                            ]
+                                              ? 12 /
+                                                countOccurrences[
+                                                  titleData?.ordering
+                                                ]
                                               : titleData?.ordering
                                           } mb-4`}
                                         >
@@ -927,7 +921,8 @@ const PillsTabs = ({
                                               control={control}
                                               render={({ field }) => (
                                                 <div className="p-input-icon-right w-100">
-                                                  {titleData.type === "PERCENTAGE" && (
+                                                  {titleData.type ===
+                                                    "PERCENTAGE" && (
                                                     <i
                                                       className="pi pi-percentage"
                                                       style={{
@@ -942,16 +937,19 @@ const PillsTabs = ({
                                                     placeholder={
                                                       titleData.type === "FLOAT"
                                                         ? "مقدار عددی را وارد نمایید"
-                                                        : titleData.type === "PERCENTAGE"
+                                                        : titleData.type ===
+                                                          "PERCENTAGE"
                                                         ? "درصد را وارد نمایید"
                                                         : "مقدار را وارد نمایید"
                                                     }
                                                     onChange={(e) => {
-                                                      const value = e.target.value;
-                                                      const formattedValue = formatValue(
-                                                        value,
-                                                        titleData.type
-                                                      );
+                                                      const value =
+                                                        e.target.value;
+                                                      const formattedValue =
+                                                        formatValue(
+                                                          value,
+                                                          titleData.type
+                                                        );
 
                                                       if (
                                                         validateInput(
@@ -959,18 +957,23 @@ const PillsTabs = ({
                                                           titleData.type
                                                         )
                                                       ) {
-                                                        field.onChange(formattedValue);
+                                                        field.onChange(
+                                                          formattedValue
+                                                        );
                                                         handleInputChange(
                                                           titleData?.uid,
                                                           formattedValue
                                                         );
                                                       } else if (
-                                                        titleData.type === "FLOAT" ||
-                                                        titleData.type === "PERCENTAGE"
+                                                        titleData.type ===
+                                                          "FLOAT" ||
+                                                        titleData.type ===
+                                                          "PERCENTAGE"
                                                       ) {
                                                         toast.error(
                                                           `لطفا یک ${
-                                                            titleData.type === "FLOAT"
+                                                            titleData.type ===
+                                                            "FLOAT"
                                                               ? "عدد"
                                                               : "درصد"
                                                           } معتبر وارد کنید`
@@ -989,14 +992,19 @@ const PillsTabs = ({
                                                 field: controllerField,
                                               }) => (
                                                 <div className="p-input-icon-right w-100">
-                                                  {titleData.options?.length > 0 ? (
+                                                  {titleData.options?.length >
+                                                  0 ? (
                                                     <Dropdown
-                                                      value={controllerField.value}
+                                                      value={
+                                                        controllerField.value
+                                                      }
                                                       options={formatSelectOptions(
                                                         titleData.options
                                                       )}
                                                       onChange={(e) => {
-                                                        controllerField.onChange(e.value);
+                                                        controllerField.onChange(
+                                                          e.value
+                                                        );
                                                         handleInputChange(
                                                           titleData?.uid,
                                                           e.value
@@ -1007,7 +1015,8 @@ const PillsTabs = ({
                                                     />
                                                   ) : (
                                                     <>
-                                                      {titleData.type === "PERCENTAGE" && (
+                                                      {titleData.type ===
+                                                        "PERCENTAGE" && (
                                                         <i
                                                           className="pi pi-percentage"
                                                           style={{
@@ -1020,18 +1029,22 @@ const PillsTabs = ({
                                                         {...controllerField}
                                                         className="w-100"
                                                         placeholder={
-                                                          titleData.type === "FLOAT"
+                                                          titleData.type ===
+                                                          "FLOAT"
                                                             ? "مقدار عددی را وارد نمایید"
-                                                            : titleData.type === "PERCENTAGE"
+                                                            : titleData.type ===
+                                                              "PERCENTAGE"
                                                             ? "درصد را وارد نمایید"
                                                             : "مقدار را وارد نمایید"
                                                         }
                                                         onChange={(e) => {
-                                                          const value = e.target.value;
-                                                          const formattedValue = formatValue(
-                                                            value,
-                                                            titleData.type
-                                                          );
+                                                          const value =
+                                                            e.target.value;
+                                                          const formattedValue =
+                                                            formatValue(
+                                                              value,
+                                                              titleData.type
+                                                            );
 
                                                           if (
                                                             validateInput(
@@ -1047,12 +1060,15 @@ const PillsTabs = ({
                                                               formattedValue
                                                             );
                                                           } else if (
-                                                            titleData.type === "FLOAT" ||
-                                                            titleData.type === "PERCENTAGE"
+                                                            titleData.type ===
+                                                              "FLOAT" ||
+                                                            titleData.type ===
+                                                              "PERCENTAGE"
                                                           ) {
                                                             toast.error(
                                                               `لطفا یک ${
-                                                                titleData.type === "FLOAT"
+                                                                titleData.type ===
+                                                                "FLOAT"
                                                                   ? "عدد"
                                                                   : "درصد"
                                                               } معتبر وارد کنید`
@@ -1071,13 +1087,19 @@ const PillsTabs = ({
                                     </div>
                                   );
                                 } else {
-                                  // If more than 4 items, break into groups of 4
                                   const rows = [];
-                                  for (let i = 0; i < fieldsInGroup.length; i += 4) {
+                                  for (
+                                    let i = 0;
+                                    i < fieldsInGroup.length;
+                                    i += 4
+                                  ) {
                                     rows.push(fieldsInGroup.slice(i, i + 4));
                                   }
                                   return rows.map((row, rowIdx) => (
-                                    <div className="row" key={`${idx}-${rowIdx}`}>
+                                    <div
+                                      className="row"
+                                      key={`${idx}-${rowIdx}`}
+                                    >
                                       {row.map((titleData) => (
                                         <div
                                           key={titleData?.uid}
@@ -1097,7 +1119,8 @@ const PillsTabs = ({
                                               control={control}
                                               render={({ field }) => (
                                                 <div className="p-input-icon-right w-100">
-                                                  {titleData.type === "PERCENTAGE" && (
+                                                  {titleData.type ===
+                                                    "PERCENTAGE" && (
                                                     <i
                                                       className="pi pi-percentage"
                                                       style={{
@@ -1112,16 +1135,19 @@ const PillsTabs = ({
                                                     placeholder={
                                                       titleData.type === "FLOAT"
                                                         ? "مقدار عددی را وارد نمایید"
-                                                        : titleData.type === "PERCENTAGE"
+                                                        : titleData.type ===
+                                                          "PERCENTAGE"
                                                         ? "درصد را وارد نمایید"
                                                         : "مقدار را وارد نمایید"
                                                     }
                                                     onChange={(e) => {
-                                                      const value = e.target.value;
-                                                      const formattedValue = formatValue(
-                                                        value,
-                                                        titleData.type
-                                                      );
+                                                      const value =
+                                                        e.target.value;
+                                                      const formattedValue =
+                                                        formatValue(
+                                                          value,
+                                                          titleData.type
+                                                        );
 
                                                       if (
                                                         validateInput(
@@ -1129,18 +1155,23 @@ const PillsTabs = ({
                                                           titleData.type
                                                         )
                                                       ) {
-                                                        field.onChange(formattedValue);
+                                                        field.onChange(
+                                                          formattedValue
+                                                        );
                                                         handleInputChange(
                                                           titleData?.uid,
                                                           formattedValue
                                                         );
                                                       } else if (
-                                                        titleData.type === "FLOAT" ||
-                                                        titleData.type === "PERCENTAGE"
+                                                        titleData.type ===
+                                                          "FLOAT" ||
+                                                        titleData.type ===
+                                                          "PERCENTAGE"
                                                       ) {
                                                         toast.error(
                                                           `لطفا یک ${
-                                                            titleData.type === "FLOAT"
+                                                            titleData.type ===
+                                                            "FLOAT"
                                                               ? "عدد"
                                                               : "درصد"
                                                           } معتبر وارد کنید`
@@ -1159,14 +1190,19 @@ const PillsTabs = ({
                                                 field: controllerField,
                                               }) => (
                                                 <div className="p-input-icon-right w-100">
-                                                  {titleData.options?.length > 0 ? (
+                                                  {titleData.options?.length >
+                                                  0 ? (
                                                     <Dropdown
-                                                      value={controllerField.value}
+                                                      value={
+                                                        controllerField.value
+                                                      }
                                                       options={formatSelectOptions(
                                                         titleData.options
                                                       )}
                                                       onChange={(e) => {
-                                                        controllerField.onChange(e.value);
+                                                        controllerField.onChange(
+                                                          e.value
+                                                        );
                                                         handleInputChange(
                                                           titleData?.uid,
                                                           e.value
@@ -1177,7 +1213,8 @@ const PillsTabs = ({
                                                     />
                                                   ) : (
                                                     <>
-                                                      {titleData.type === "PERCENTAGE" && (
+                                                      {titleData.type ===
+                                                        "PERCENTAGE" && (
                                                         <i
                                                           className="pi pi-percentage"
                                                           style={{
@@ -1190,18 +1227,22 @@ const PillsTabs = ({
                                                         {...controllerField}
                                                         className="w-100"
                                                         placeholder={
-                                                          titleData.type === "FLOAT"
+                                                          titleData.type ===
+                                                          "FLOAT"
                                                             ? "مقدار عددی را وارد نمایید"
-                                                            : titleData.type === "PERCENTAGE"
+                                                            : titleData.type ===
+                                                              "PERCENTAGE"
                                                             ? "درصد را وارد نمایید"
                                                             : "مقدار را وارد نمایید"
                                                         }
                                                         onChange={(e) => {
-                                                          const value = e.target.value;
-                                                          const formattedValue = formatValue(
-                                                            value,
-                                                            titleData.type
-                                                          );
+                                                          const value =
+                                                            e.target.value;
+                                                          const formattedValue =
+                                                            formatValue(
+                                                              value,
+                                                              titleData.type
+                                                            );
 
                                                           if (
                                                             validateInput(
@@ -1217,12 +1258,15 @@ const PillsTabs = ({
                                                               formattedValue
                                                             );
                                                           } else if (
-                                                            titleData.type === "FLOAT" ||
-                                                            titleData.type === "PERCENTAGE"
+                                                            titleData.type ===
+                                                              "FLOAT" ||
+                                                            titleData.type ===
+                                                              "PERCENTAGE"
                                                           ) {
                                                             toast.error(
                                                               `لطفا یک ${
-                                                                titleData.type === "FLOAT"
+                                                                titleData.type ===
+                                                                "FLOAT"
                                                                   ? "عدد"
                                                                   : "درصد"
                                                               } معتبر وارد کنید`
@@ -1270,12 +1314,16 @@ const PillsTabs = ({
                     }, {})
                     ? Object.entries(
                         titleDirectToCategList
-                          ?.sort((a, b) => (a?.ordering || 0) - (b?.ordering || 0))
+                          ?.sort(
+                            (a, b) => (a?.ordering || 0) - (b?.ordering || 0)
+                          )
                           ?.filter((titleDirectToCat) => {
                             const excludeNames = Exexex.filter(
                               (name) => name !== selectedName
                             );
-                            return !excludeNames.includes(titleDirectToCat?.name);
+                            return !excludeNames.includes(
+                              titleDirectToCat?.name
+                            );
                           })
                           ?.reduce((acc, item) => {
                             const ordering = item.ordering;
@@ -1286,10 +1334,10 @@ const PillsTabs = ({
                             return acc;
                           }, {})
                       ).map(([ordering, items]) => {
-                        const count = countOccurrencesDirectTitle[ordering] || 1;
-                        
+                        const count =
+                          countOccurrencesDirectTitle[ordering] || 1;
+
                         if (count <= 4) {
-                          // If 4 or fewer items, use original layout
                           return (
                             <div className="row w-100" key={ordering}>
                               {items.map((titleDirectToCat) => (
@@ -1303,7 +1351,8 @@ const PillsTabs = ({
                                     titleDirectToCat?.titled
                                       ? ""
                                       : `col-md-${
-                                          titleDirectToCat?.name === "Immunofixation"
+                                          titleDirectToCat?.name ===
+                                          "Immunofixation"
                                             ? 2
                                             : countOccurrencesDirectTitle[
                                                 titleDirectToCat?.ordering
@@ -1315,7 +1364,7 @@ const PillsTabs = ({
                                                   ]
                                               )
                                             : 12
-                                      }`
+                                        }`
                                   }`}
                                 >
                                   <div
@@ -1325,7 +1374,9 @@ const PillsTabs = ({
                                   >
                                     <label
                                       className={`my-auto w-25 text-nowrap ${
-                                        titleDirectToCat?.titled ? "fs-5 fw-bold" : ""
+                                        titleDirectToCat?.titled
+                                          ? "fs-5 fw-bold"
+                                          : ""
                                       } `}
                                     >
                                       {titleDirectToCat?.name}
@@ -1335,7 +1386,8 @@ const PillsTabs = ({
                                         titleDirectToCat?.titled ? "w-100" : ""
                                       }`}
                                     >
-                                      {titleDirectToCat?.name === "Immunofixation" ? (
+                                      {titleDirectToCat?.name ===
+                                      "Immunofixation" ? (
                                         <>
                                           <Controller
                                             name={titleDirectToCat.uid}
@@ -1349,7 +1401,9 @@ const PillsTabs = ({
                                                 onChange={(e) => {
                                                   field.onChange(e.value);
                                                   setSelectedName(e.value);
-                                                  setShowImmunofixationInput(true);
+                                                  setShowImmunofixationInput(
+                                                    true
+                                                  );
                                                   setimmunofixationUid(
                                                     titleDirectToCat.uid
                                                   );
@@ -1364,8 +1418,10 @@ const PillsTabs = ({
                                               <InputText
                                                 value={immunofixationValue}
                                                 onChange={(e) =>
-                                                  setImmunofixationValue(e.target.value)
-                                              }
+                                                  setImmunofixationValue(
+                                                    e.target.value
+                                                  )
+                                                }
                                                 placeholder="مقدار را وارد نمایید"
                                                 className="w-100"
                                               />
@@ -1378,7 +1434,8 @@ const PillsTabs = ({
                                           control={control}
                                           render={({ field }) => (
                                             <div className="p-input-icon-right w-100">
-                                              {titleDirectToCat.options?.length > 0 ? (
+                                              {titleDirectToCat.options
+                                                ?.length > 0 ? (
                                                 <Dropdown
                                                   value={field.value}
                                                   options={formatSelectOptions(
@@ -1396,7 +1453,8 @@ const PillsTabs = ({
                                                 />
                                               ) : (
                                                 <>
-                                                  {titleDirectToCat.type === "PERCENTAGE" && (
+                                                  {titleDirectToCat.type ===
+                                                    "PERCENTAGE" && (
                                                     <i
                                                       className="pi pi-percentage"
                                                       style={{
@@ -1409,18 +1467,22 @@ const PillsTabs = ({
                                                     {...field}
                                                     className="w-100"
                                                     placeholder={
-                                                      titleDirectToCat.type === "FLOAT"
+                                                      titleDirectToCat.type ===
+                                                      "FLOAT"
                                                         ? "مقدار عددی را وارد نمایید"
-                                                        : titleDirectToCat.type === "PERCENTAGE"
+                                                        : titleDirectToCat.type ===
+                                                          "PERCENTAGE"
                                                         ? "درصد را وارد نمایید"
                                                         : "مقدار را وارد نمایید"
                                                     }
                                                     onChange={(e) => {
-                                                      const value = e.target.value;
-                                                      const formattedValue = formatValue(
-                                                        value,
-                                                        titleDirectToCat.type
-                                                      );
+                                                      const value =
+                                                        e.target.value;
+                                                      const formattedValue =
+                                                        formatValue(
+                                                          value,
+                                                          titleDirectToCat.type
+                                                        );
 
                                                       if (
                                                         validateInput(
@@ -1428,18 +1490,23 @@ const PillsTabs = ({
                                                           titleDirectToCat.type
                                                         )
                                                       ) {
-                                                        field.onChange(formattedValue);
+                                                        field.onChange(
+                                                          formattedValue
+                                                        );
                                                         handleInputChange(
                                                           titleDirectToCat.uid,
                                                           formattedValue
                                                         );
                                                       } else if (
-                                                        titleDirectToCat.type === "FLOAT" ||
-                                                        titleDirectToCat.type === "PERCENTAGE"
+                                                        titleDirectToCat.type ===
+                                                          "FLOAT" ||
+                                                        titleDirectToCat.type ===
+                                                          "PERCENTAGE"
                                                       ) {
                                                         toast.error(
                                                           `لطفا یک ${
-                                                            titleDirectToCat.type === "FLOAT"
+                                                            titleDirectToCat.type ===
+                                                            "FLOAT"
                                                               ? "عدد"
                                                               : "درصد"
                                                           } معتبر وارد کنید`
@@ -1460,13 +1527,15 @@ const PillsTabs = ({
                             </div>
                           );
                         } else {
-                          // If more than 4 items, break into groups of 4
                           const rows = [];
                           for (let i = 0; i < items.length; i += 4) {
                             rows.push(items.slice(i, i + 4));
                           }
                           return rows.map((row, rowIdx) => (
-                            <div className="row w-100" key={`${ordering}-${rowIdx}`}>
+                            <div
+                              className="row w-100"
+                              key={`${ordering}-${rowIdx}`}
+                            >
                               {row.map((titleDirectToCat) => (
                                 <div
                                   key={titleDirectToCat?.uid}
@@ -1478,7 +1547,8 @@ const PillsTabs = ({
                                     titleDirectToCat?.titled
                                       ? ""
                                       : `col-md-${
-                                          titleDirectToCat?.name === "Immunofixation"
+                                          titleDirectToCat?.name ===
+                                          "Immunofixation"
                                             ? 2
                                             : 3
                                         }`
@@ -1491,7 +1561,9 @@ const PillsTabs = ({
                                   >
                                     <label
                                       className={`my-auto w-25 text-nowrap ${
-                                        titleDirectToCat?.titled ? "fs-5 fw-bold" : ""
+                                        titleDirectToCat?.titled
+                                          ? "fs-5 fw-bold"
+                                          : ""
                                       } `}
                                     >
                                       {titleDirectToCat?.name}
@@ -1501,7 +1573,8 @@ const PillsTabs = ({
                                         titleDirectToCat?.titled ? "w-100" : ""
                                       }`}
                                     >
-                                      {titleDirectToCat?.name === "Immunofixation" ? (
+                                      {titleDirectToCat?.name ===
+                                      "Immunofixation" ? (
                                         <>
                                           <Controller
                                             name={titleDirectToCat.uid}
@@ -1515,7 +1588,9 @@ const PillsTabs = ({
                                                 onChange={(e) => {
                                                   field.onChange(e.value);
                                                   setSelectedName(e.value);
-                                                  setShowImmunofixationInput(true);
+                                                  setShowImmunofixationInput(
+                                                    true
+                                                  );
                                                   setimmunofixationUid(
                                                     titleDirectToCat.uid
                                                   );
@@ -1530,8 +1605,10 @@ const PillsTabs = ({
                                               <InputText
                                                 value={immunofixationValue}
                                                 onChange={(e) =>
-                                                  setImmunofixationValue(e.target.value)
-                                              }
+                                                  setImmunofixationValue(
+                                                    e.target.value
+                                                  )
+                                                }
                                                 placeholder="مقدار را وارد نمایید"
                                                 className="w-100"
                                               />
@@ -1544,7 +1621,8 @@ const PillsTabs = ({
                                           control={control}
                                           render={({ field }) => (
                                             <div className="p-input-icon-right w-100">
-                                              {titleDirectToCat.options?.length > 0 ? (
+                                              {titleDirectToCat.options
+                                                ?.length > 0 ? (
                                                 <Dropdown
                                                   value={field.value}
                                                   options={formatSelectOptions(
@@ -1562,7 +1640,8 @@ const PillsTabs = ({
                                                 />
                                               ) : (
                                                 <>
-                                                  {titleDirectToCat.type === "PERCENTAGE" && (
+                                                  {titleDirectToCat.type ===
+                                                    "PERCENTAGE" && (
                                                     <i
                                                       className="pi pi-percentage"
                                                       style={{
@@ -1575,18 +1654,22 @@ const PillsTabs = ({
                                                     {...field}
                                                     className="w-100"
                                                     placeholder={
-                                                      titleDirectToCat.type === "FLOAT"
+                                                      titleDirectToCat.type ===
+                                                      "FLOAT"
                                                         ? "مقدار عددی را وارد نمایید"
-                                                        : titleDirectToCat.type === "PERCENTAGE"
+                                                        : titleDirectToCat.type ===
+                                                          "PERCENTAGE"
                                                         ? "درصد را وارد نمایید"
                                                         : "مقدار را وارد نمایید"
                                                     }
                                                     onChange={(e) => {
-                                                      const value = e.target.value;
-                                                      const formattedValue = formatValue(
-                                                        value,
-                                                        titleDirectToCat.type
-                                                      );
+                                                      const value =
+                                                        e.target.value;
+                                                      const formattedValue =
+                                                        formatValue(
+                                                          value,
+                                                          titleDirectToCat.type
+                                                        );
 
                                                       if (
                                                         validateInput(
@@ -1594,18 +1677,23 @@ const PillsTabs = ({
                                                           titleDirectToCat.type
                                                         )
                                                       ) {
-                                                        field.onChange(formattedValue);
+                                                        field.onChange(
+                                                          formattedValue
+                                                        );
                                                         handleInputChange(
                                                           titleDirectToCat.uid,
                                                           formattedValue
                                                         );
                                                       } else if (
-                                                        titleDirectToCat.type === "FLOAT" ||
-                                                        titleDirectToCat.type === "PERCENTAGE"
+                                                        titleDirectToCat.type ===
+                                                          "FLOAT" ||
+                                                        titleDirectToCat.type ===
+                                                          "PERCENTAGE"
                                                       ) {
                                                         toast.error(
                                                           `لطفا یک ${
-                                                            titleDirectToCat.type === "FLOAT"
+                                                            titleDirectToCat.type ===
+                                                            "FLOAT"
                                                               ? "عدد"
                                                               : "درصد"
                                                           } معتبر وارد کنید`
@@ -1889,4 +1977,3 @@ const PillsTabs = ({
 };
 
 export default PillsTabs;
-
