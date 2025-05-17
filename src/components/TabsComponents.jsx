@@ -22,9 +22,9 @@ const TabsComponents = ({
   const [nameSub, setNameSub] = useState("");
   const [ordering, setOrdering] = useState(0);
   const [orderingSub, setOrderingSub] = useState(0);
-  const [selectedCategory, setSelectedCategory] = useState(""); // For the select input
-  const [selectedCategory2, setSelectedCategory2] = useState(""); // For the select input
-  const [selectedtitle, setSelectedtitle] = useState(""); // For the select input
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategory2, setSelectedCategory2] = useState("");
+  const [selectedtitle, setSelectedtitle] = useState("");
   const [nametitle, setNametitle] = useState("");
   const [selectedType, setSelectedType] = useState("");
   const [orderingtitle, setOrderingtitle] = useState(0);
@@ -57,10 +57,6 @@ const TabsComponents = ({
                   className="align-left rounded-3"
                   label="ذخیره تغییرات"
                   onClick={() => {
-                    // if (!selectedCategory) {
-                    //   alert("لطفاً یک دسته‌بندی انتخاب کنید.");
-                    //   return;
-                    // }
                     onSaveChanges(name, ordering, selectedCategory);
                     setName("");
                   }}
@@ -81,7 +77,6 @@ const TabsComponents = ({
                   onChange={(e) => setName(e.target.value)}
                 />
                 <div className="d-flex flex-column">
-                  {/* <label htmlFor="ordering">ترتیب</label> */}
                   <InputText
                     className="rounded-2 w-100"
                     id="ordering"
@@ -102,8 +97,6 @@ const TabsComponents = ({
                   label="ذخیره تغییرات"
                   onClick={() => {
                     onSaveChangesSub(nameSub, orderingSub, selectedCategory);
-                    // setNameSub("");
-                    // setSelectedCategory(""); // Reset the selected category after submission
                   }}
                 />
                 <Button
@@ -133,7 +126,6 @@ const TabsComponents = ({
                     onChange={(e) => setNameSub(e.target.value)}
                   />
                   <div className="p-field d-flex flex-column w-50">
-                    {/* <label htmlFor="categorySelect">انتخاب دسته‌بندی</label> */}
                     <select
                       id="categorySelect"
                       className="form-select rounded-2"
@@ -150,17 +142,16 @@ const TabsComponents = ({
                               <React.Fragment key={uid}>
                                 {category?.items?.map((item, index) => (
                                   <option
-                                    key={item?.uid || index} // Use a unique identifier for items
-                                    value={item?.uid} // Assuming item.uid uniquely identifies the item
+                                    key={item?.uid || index}
+                                    value={item?.uid}
                                   >
                                     {item?.name}
-                                    {/* (Subcategory) */}
                                   </option>
                                 ))}
                               </React.Fragment>
                             );
                           }
-                          return null; // Don't render categories that don't match the active index
+                          return null;
                         })}
                     </select>
                   </div>
@@ -186,8 +177,8 @@ const TabsComponents = ({
                   label="ذخیره تغییرات"
                   onClick={() => {
                     if (!selectedType) {
-                      toast.warning("لطفاً نوع فیلد آزمایش را انتخاب کنید"); // Show an alert or handle validation error
-                      return; // Stop further execution if validation fails
+                      toast.warning("لطفاً نوع فیلد آزمایش را انتخاب کنید");
+                      return;
                     }
 
                     onSaveChangestitle(
@@ -200,8 +191,6 @@ const TabsComponents = ({
                       hide
                     );
                     setNametitle("");
-                    // setSelectedtitle(""); // Reset the selected category after titlemission
-                    // setSelectedCategory2(""); // Reset the selected category after submission
                   }}
                 />
                 <Button
