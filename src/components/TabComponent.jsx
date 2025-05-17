@@ -11,7 +11,6 @@ import DragAndDropOrdering from "./DragAndDropOrdering";
 
 export default function TabComponent() {
   const [activeIndex, setActiveIndex] = useState(1);
-  // const [loading, setLoading] = useState(true);
   const [refresh, setRefresh] = useState(false);
   const [items, setItems] = useState([
     {
@@ -67,9 +66,7 @@ export default function TabComponent() {
           },
           ...fetchedItems,
         ]);
-      } catch (err) {
-        // console.error(err.message);
-      }
+      } catch (err) {}
     };
 
     fetchCategoryList();
@@ -110,9 +107,7 @@ export default function TabComponent() {
       }
       closeModal();
       setRefresh(!refresh);
-    } catch (error) {
-      // console.error("Error submitting data:", error);
-    }
+    } catch (error) {}
   };
 
   const handleDelete = (uid) => {
@@ -133,7 +128,6 @@ export default function TabComponent() {
           Swal.fire("حذف شد", "این مورد با موفقیت حذف شد", "success");
           setRefresh(!refresh);
         } catch (error) {
-          // console.error("Error deleting item:", error);
           Swal.fire("Error!", "Failed to delete the item.", "error");
         }
       }
@@ -159,9 +153,7 @@ export default function TabComponent() {
       );
 
       setRefreshSub(!refreshSub);
-    } catch (error) {
-      // console.error("Error submitting data:", error);
-    }
+    } catch (error) {}
   };
 
   const handleSaveChangesSub = async (name, ordering, selectedCategory) => {
@@ -213,9 +205,7 @@ export default function TabComponent() {
         }, {});
 
         setCategories(grouped);
-      } catch (error) {
-        // console.error("Error fetching data:", error);
-      }
+      } catch (error) {}
     };
 
     fetchData();
@@ -241,9 +231,7 @@ export default function TabComponent() {
         }, {});
 
         setFields(grouped);
-      } catch (error) {
-        // console.error("Error fetching fields:", error);
-      }
+      } catch (error) {}
     };
 
     fetchFields();
@@ -258,9 +246,7 @@ export default function TabComponent() {
         const results = response.data.data.result;
 
         setTitles(results);
-      } catch (error) {
-        // console.error("Error fetching titles:", error);
-      }
+      } catch (error) {}
     };
 
     fetchTitles();
