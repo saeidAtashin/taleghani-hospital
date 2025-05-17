@@ -20,7 +20,7 @@ const TabsComponents = ({
 }) => {
   const [name, setName] = useState("");
   const [nameSub, setNameSub] = useState("");
-  const [ordering, setOrdering] = useState(0);
+  const [ordering, setOrdering] = useState(undefined);
   const [orderingSub, setOrderingSub] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedCategory2, setSelectedCategory2] = useState("");
@@ -80,6 +80,7 @@ const TabsComponents = ({
                   <InputText
                     className="rounded-2 w-100"
                     id="ordering"
+                    placeholder="ترتیب"
                     value={ordering}
                     onChange={(e) => setOrdering(e.target.value)}
                   />
