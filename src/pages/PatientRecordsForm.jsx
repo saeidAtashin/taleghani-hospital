@@ -102,15 +102,13 @@ const PatientRecordsForm = () => {
       .then((res) => res.json())
       .then((data) => {
         if (data?.data) {
-          // Format the dropdown fields to match the MultiSelect value format
           const formattedData = { ...data.data };
 
-          // Format each dropdown field
           Object.keys(dropdownApis).forEach((field) => {
             if (Array.isArray(data.data[field])) {
               formattedData[field] = data.data[field].map((item) => ({
-                value: item.id || item, // Use item.id if available, otherwise use item itself
-                label: item.name || item, // Use item.name if available, otherwise use item itself
+                value: item.id || item,
+                label: item.name || item,
               }));
             }
           });
@@ -120,7 +118,6 @@ const PatientRecordsForm = () => {
             ...formattedData,
           }));
 
-          // Also set these values in updatedFields to track changes
           setUpdatedFields((prev) => ({
             ...prev,
             ...Object.fromEntries(
@@ -159,13 +156,11 @@ const PatientRecordsForm = () => {
 
   const handleChange = (e, field) => {
     if (dropdownApis[field]) {
-      // Store full objects in patient state for display
       setPatient((prev) => ({
         ...prev,
         [field]: e.value,
       }));
 
-      // Store only the IDs in updatedFields for API submission
       setUpdatedFields((prev) => ({
         ...prev,
         [field]: e.value.map((item) => item.value),
@@ -176,20 +171,17 @@ const PatientRecordsForm = () => {
       setPatient((prev) => {
         const updatedPatient = { ...prev, [field]: newValue };
 
-        // Calculate BMI and BSA only if both height and weight exist
         if (
           (field === "height" || field === "weight") &&
           updatedPatient.height &&
           updatedPatient.weight
         ) {
-          const height = parseFloat(updatedPatient.height) / 100; // Convert to meters
+          const height = parseFloat(updatedPatient.height) / 100;
           const weight = parseFloat(updatedPatient.weight);
 
           if (!isNaN(height) && !isNaN(weight) && height > 0 && weight > 0) {
-            // Calculate BMI
             updatedPatient.bmi = (weight / (height * height)).toFixed(2);
 
-            // Calculate BSA using Mosteller formula
             updatedPatient.bsa = Math.sqrt((height * weight) / 36).toFixed(2);
           }
         }
@@ -207,7 +199,6 @@ const PatientRecordsForm = () => {
   };
 
   const handleSubmit = () => {
-    // Ensure we're sending the correct format to the API
     const apiData = {
       ...updatedFields,
       patient_uid: uid,
@@ -277,9 +268,7 @@ const PatientRecordsForm = () => {
           >
             {dropdownLabels?.[field] === "سوابق دارویی" ? (
               <div className="p-field mb-4">
-                {/* {patient?.drugs_records?.length > 0 && ( */}
-                  <label>سوابق دارویی</label>
-                {/* )} */}
+                <label>سوابق دارویی</label>
                 {
                   <div className="d-flex gap-2 w-100">
                     <InputText
@@ -316,9 +305,6 @@ const PatientRecordsForm = () => {
                       }
                     />
                   ))}
-                  {/* {patient?.drugs_records?.length <= 0 && (
-                    <label>سوابق دارویی ثبت نشده است</label>
-                  )} */}
                 </div>
               </div>
             ) : (
@@ -350,7 +336,6 @@ const PatientRecordsForm = () => {
                   <InputText
                     value={patient?.[field] || ""}
                     onChange={(e) => {
-                      // For height and weight, only allow numbers
                       if (
                         (field === "height" || field === "weight") &&
                         !/^\d*\.?\d*$/.test(e.target.value)
