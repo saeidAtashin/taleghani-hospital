@@ -167,14 +167,24 @@ const PatientRecordsForm = () => {
 
   const handleChange = (e, field) => {
     if (dropdownApis[field]) {
+      // For MultiSelect components
+      const selectedValues = e.value || [];
+      const formattedValues = selectedValues.map(value => {
+        const option = dropdownData[field].find(opt => opt.value === value);
+        return {
+          value: value,
+          label: option?.label || ''
+        };
+      });
+
       setPatient((prev) => ({
         ...prev,
-        [field]: e.value,
+        [field]: formattedValues,
       }));
 
       setUpdatedFields((prev) => ({
         ...prev,
-        [field]: e.value.map((item) => item.value),
+        [field]: selectedValues,
       }));
     } else {
       const newValue = e?.target?.value;
@@ -192,7 +202,6 @@ const PatientRecordsForm = () => {
 
           if (!isNaN(height) && !isNaN(weight) && height > 0 && weight > 0) {
             updatedPatient.bmi = (weight / (height * height)).toFixed(2);
-
             updatedPatient.bsa = Math.sqrt((height * weight) / 36).toFixed(2);
           }
         }
