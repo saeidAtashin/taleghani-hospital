@@ -108,7 +108,7 @@ const PatientRecordsForm = () => {
           Object.keys(dropdownApis).forEach((field) => {
             if (Array.isArray(data.data[field])) {
               formattedData[field] = data.data[field].map((item) => ({
-                value: item.uid,
+                value: item.id,
                 label: item.name,
               }));
             }
@@ -140,7 +140,7 @@ const PatientRecordsForm = () => {
         .then((res) => res.json())
         .then((data) => {
           const fetchedOptions = data?.data?.results?.map((item) => ({
-            value: item.uid,
+            value: item.id,
             label: item.name,
           }));
 
@@ -157,23 +157,23 @@ const PatientRecordsForm = () => {
 
   // Add console log for patient state changes
   useEffect(() => {
-    console.log("Current Patient State:", patient);
+    console.log(" Patient :", patient);
   }, [patient]);
 
   // Add console log for dropdown data changes
   useEffect(() => {
-    console.log("Current Dropdown Data:", dropdownData);
+    console.log(" Dropdown :", dropdownData);
   }, [dropdownData]);
 
   const handleChange = (e, field) => {
     if (dropdownApis[field]) {
       // For MultiSelect components
       const selectedValues = e.value || [];
-      const formattedValues = selectedValues.map(value => {
-        const option = dropdownData[field].find(opt => opt.value === value);
+      const formattedValues = selectedValues.map((value) => {
+        const option = dropdownData[field].find((opt) => opt.value === value);
         return {
           value: value,
-          label: option?.label || ''
+          label: option?.label || "",
         };
       });
 
@@ -224,6 +224,8 @@ const PatientRecordsForm = () => {
       patient_uid: uid,
       drugs_records: patient?.drugs_records,
     };
+
+    // patientApiUrl
 
     fetch(patientApiUrl, {
       method: "PUT",
