@@ -8,6 +8,9 @@ import Swal from "sweetalert2";
 import TabsComponents from "./TabsComponents";
 import { toast } from "react-toastify";
 import DragAndDropOrdering from "./DragAndDropOrdering";
+import { Card } from 'primereact/card';
+import { Divider } from 'primereact/divider';
+import { Ripple } from 'primereact/ripple';
 
 export default function TabComponent() {
   const [activeIndex, setActiveIndex] = useState(1);
@@ -43,16 +46,16 @@ export default function TabComponent() {
           label: item?.name,
           uid: item?.uid,
           template: (
-            <div key={item?.uid}>
-              {item.name}{" "}
+            <div className="d-flex justify-content-between gap-1 white-space-nowrap" key={item?.uid}>
+              <span className="text-nowrap">{item.name}</span>
               <i
                 className="pi pi-pencil"
-                style={{ marginLeft: "10px", cursor: "pointer" }}
+                style={{ marginLeft: "2px", cursor: "pointer" }}
                 onClick={() => openEditModal(item)}
               />
               <i
                 className="pi pi-trash"
-                style={{ marginLeft: "10px", cursor: "pointer" }}
+                style={{ marginLeft: "2px", cursor: "pointer" }}
                 onClick={() => handleDelete(item.uid)}
               />
             </div>
@@ -333,107 +336,197 @@ export default function TabComponent() {
   };
 
   return (
-    <div className="w-75 mx-5">
-      <div className="my-5" />
-      <TabMenu
-        scrollable
-        model={items?.map((item) => ({
-          label: item?.template || item?.label,
-          command: item.command,
-        }))}
-        activeIndex={activeIndex === 0 ? 1 : activeIndex}
-        onTabChange={(e) => setActiveIndex(e.index)}
-      />
-      <TabsComponents
-        fields={fieldsNew}
-        setFields={setFieldsNew}
-        onSaveChanges={handleSaveChanges}
-        onSaveChangesSub={handleSaveChangesSub}
-        categories={categories}
-        items={items}
-        activeIndex={activeIndex}
-        showWhatGet={showWhatGet}
-        setShowWhatGet={setShowWhatGet}
-        onSaveChangestitle={handleSaveChangestitle}
-        titles={titles}
-      />
-      {showWhatGet === "showSub" ? (
-        <DragAndDropOrdering
-          sub={items[activeIndex]?.uid}
-          categories={convertFilteredTitlesToCategories(filteredTitles)}
-          refreshSub={refreshTitle}
-          setRefreshSub={setRefreshTitle}
-          url="tests/mng-title"
-        />
-      ) : showWhatGet === "showTitle" ? (
-        <DragAndDropOrdering
-          url="tests/mng-field"
-          sub={items[activeIndex]?.uid}
-          categories={fields}
-          refreshSub={refreshSub}
-          setRefreshSub={setRefreshSub}
-        />
-      ) : showWhatGet === "new" ? (
-        <>
-          {" "}
-          <DragAndDropOrdering
-            url="tests/mng-field"
-            sub={items[activeIndex]?.uid}
-            categories={fieldsNew}
-            refreshSub={refreshSub}
-            setRefreshSub={setRefreshSub}
+    <div className="w-75 mx-auto p-4">
+      <Card className="shadow-2 border-round-xl">
+        <div className="mb-4">
+          <h2 className="text-2xl font-bold text-primary m-0">مدیریت گروه‌ها</h2>
+          <p className="text-500 mt-2">ایجاد و مدیریت گروه‌های آزمایشگاهی</p>
+        </div>
+        
+        <Divider />
+
+        <div className="tab-container">
+          <TabMenu
+            scrollable
+            model={items?.map((item) => ({
+              label: item?.template || item?.label,
+              command: item.command,
+            }))}
+            activeIndex={activeIndex === 0 ? 1 : activeIndex}
+            onTabChange={(e) => setActiveIndex(e.index)}
+            className=" W-75"
           />
-        </>
-      ) : (
-        <DragAndDropOrdering
-          items={items}
-          activeIndex={activeIndex}
-          url="tests/mng-sub-category"
-          sub={items[activeIndex]?.uid}
-          categories={categories}
-          refreshSub={refreshSub}
-          setRefreshSub={setRefreshSub}
-        />
-      )}
+        </div>
+
+        <div className="mt-4">
+          <TabsComponents
+            fields={fieldsNew}
+            setFields={setFieldsNew}
+            onSaveChanges={handleSaveChanges}
+            onSaveChangesSub={handleSaveChangesSub}
+            categories={categories}
+            items={items}
+            activeIndex={activeIndex}
+            showWhatGet={showWhatGet}
+            setShowWhatGet={setShowWhatGet}
+            onSaveChangestitle={handleSaveChangestitle}
+            titles={titles}
+          />
+        </div>
+
+        <div className="mt-4">
+          {showWhatGet === "showSub" ? (
+            <DragAndDropOrdering
+              sub={items[activeIndex]?.uid}
+              categories={convertFilteredTitlesToCategories(filteredTitles)}
+              refreshSub={refreshTitle}
+              setRefreshSub={setRefreshTitle}
+              url="tests/mng-title"
+            />
+          ) : showWhatGet === "showTitle" ? (
+            <DragAndDropOrdering
+              url="tests/mng-field"
+              sub={items[activeIndex]?.uid}
+              categories={fields}
+              refreshSub={refreshSub}
+              setRefreshSub={setRefreshSub}
+            />
+          ) : showWhatGet === "new" ? (
+            <DragAndDropOrdering
+              url="tests/mng-field"
+              sub={items[activeIndex]?.uid}
+              categories={fieldsNew}
+              refreshSub={refreshSub}
+              setRefreshSub={setRefreshSub}
+            />
+          ) : (
+            <DragAndDropOrdering
+              items={items}
+              activeIndex={activeIndex}
+              url="tests/mng-sub-category"
+              sub={items[activeIndex]?.uid}
+              categories={categories}
+              refreshSub={refreshSub}
+              setRefreshSub={setRefreshSub}
+            />
+          )}
+        </div>
+      </Card>
 
       <Dialog
-        header={isEditMode ? "Edit Group" : "اضافه کردن گروه جدید"}
+        header={isEditMode ? "ویرایش گروه" : "اضافه کردن گروه جدید"}
         visible={isModalVisible}
         style={{ width: "30vw" }}
         onHide={closeModal}
+        className="custom-dialog"
+        headerClassName="custom-dialog-header"
       >
-        <div className="d-flex flex-column">
-          <div className="p-field d-flex flex-column mb-4">
-            <label htmlFor="name">نام گروه</label>
+        <div className="p-4">
+          <div className="p-field mb-4">
+            <label htmlFor="name" className="block text-900 font-medium mb-2">نام گروه</label>
             <InputText
               id="name"
               placeholder="نام گروه را وارد نمایید"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              className="w-full p-inputtext-lg"
             />
           </div>
-          <div className="p-field d-flex flex-column mb-4">
-            <label htmlFor="ordering">ترتیب</label>
+          <div className="p-field mb-4">
+            <label htmlFor="ordering" className="block text-900 font-medium mb-2">ترتیب</label>
             <InputText
               id="ordering"
               value={ordering}
               onChange={(e) => setOrdering(e.target.value)}
+              className="w-full p-inputtext-lg"
             />
           </div>
-          <div className="d-flex flex-row-reverse gap-2">
+          <div className="flex justify-content-end gap-2">
             <Button
-              className="align-left rounded-3"
-              label="اضافه کردن"
-              onClick={handleSubmit}
+              label="لغو"
+              icon="pi pi-times"
+              className="p-button-outlined p-button-secondary"
+              onClick={closeModal}
             />
             <Button
-              className="align-left rounded-3 bg-white text-dark border"
-              label="لغو"
-              onClick={closeModal}
+              label={isEditMode ? "ویرایش" : "اضافه کردن"}
+              icon="pi pi-check"
+              className="p-button-primary"
+              onClick={handleSubmit}
             />
           </div>
         </div>
       </Dialog>
+
+      <style jsx>{`
+        .custom-tabmenu {
+          .p-tabmenu-nav {
+            border-radius: 8px;
+            background: #f8f9fa;
+            padding: 0.5rem;
+            
+            .p-tabmenuitem {
+              margin-right: 0.5rem;
+              
+              .p-tabmenuitem-link {
+                border-radius: 6px;
+                padding: 1rem;
+                transition: all 0.2s;
+                
+                &:hover {
+                  background: #e9ecef;
+                }
+                
+                &.p-highlight {
+                  background: #3B82F6;
+                  color: white;
+                }
+              }
+            }
+          }
+        }
+
+        .custom-dialog {
+          .p-dialog-header {
+            background: #f8f9fa;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            padding: 1.5rem;
+          }
+
+          .p-dialog-content {
+            padding: 0;
+          }
+        }
+
+        .p-button {
+          border-radius: 6px;
+          padding: 0.75rem 1.5rem;
+          font-weight: 500;
+          transition: all 0.2s;
+
+          &:hover {
+            transform: translateY(-1px);
+          }
+        }
+
+        .p-inputtext {
+          border-radius: 6px;
+          border: 1px solid #dee2e6;
+          transition: all 0.2s;
+
+          &:focus {
+            border-color: #3B82F6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+          }
+        }
+
+        .p-card {
+          background: white;
+          border: none;
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+      `}</style>
     </div>
   );
 }
