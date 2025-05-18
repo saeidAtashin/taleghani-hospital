@@ -104,29 +104,29 @@ const PatientRecordsForm = () => {
         if (data?.data) {
           const formattedData = { ...data.data };
 
+          // Format the data for MultiSelect components
           Object.keys(dropdownApis).forEach((field) => {
             if (Array.isArray(data.data[field])) {
               formattedData[field] = data.data[field].map((item) => ({
-                value: item.id || item,
-                label: item.name || item,
+                value: item.uid,
+                label: item.name,
               }));
             }
           });
 
-          setPatient((prev) => ({
-            ...prev,
-            ...formattedData,
-          }));
+          // Set patient data
+          setPatient(formattedData);
 
-          setUpdatedFields((prev) => ({
-            ...prev,
-            ...Object.fromEntries(
-              Object.keys(dropdownApis).map((field) => [
-                field,
-                formattedData[field]?.map((item) => item.value) || [],
-              ])
-            ),
-          }));
+          // Set updated fields
+          const initialUpdatedFields = {};
+          Object.keys(dropdownApis).forEach((field) => {
+            if (Array.isArray(formattedData[field])) {
+              initialUpdatedFields[field] = formattedData[field].map(
+                (item) => item.value
+              );
+            }
+          });
+          setUpdatedFields(initialUpdatedFields);
         }
       })
       .catch((error) => {
@@ -134,12 +134,13 @@ const PatientRecordsForm = () => {
         toast.error("خطا در دریافت اطلاعات بیمار");
       });
 
+    // Fetch dropdown options
     Object.entries(dropdownApis).forEach(([key, url]) => {
       fetch(url)
         .then((res) => res.json())
         .then((data) => {
           const fetchedOptions = data?.data?.results?.map((item) => ({
-            value: item.id,
+            value: item.uid,
             label: item.name,
           }));
 
@@ -153,6 +154,16 @@ const PatientRecordsForm = () => {
         });
     });
   }, []);
+
+  // Add console log for patient state changes
+  useEffect(() => {
+    console.log("Current Patient State:", patient);
+  }, [patient]);
+
+  // Add console log for dropdown data changes
+  useEffect(() => {
+    console.log("Current Dropdown Data:", dropdownData);
+  }, [dropdownData]);
 
   const handleChange = (e, field) => {
     if (dropdownApis[field]) {
@@ -317,15 +328,16 @@ const PatientRecordsForm = () => {
 
                 {dropdownApis?.[field] ? (
                   <MultiSelect
-                    value={patient?.[field] || []}
-                    options={dropdownData?.[field] || []}
+                    value={patient[field]?.map((item) => item.value) || []}
+                    options={dropdownData[field] || []}
                     onChange={(e) => {
                       handleChange(e, field);
                     }}
                     multiple
                     optionLabel="label"
+                    optionValue="value"
                     maxSelectedLabels={10}
-                    placeholder={`انتخاب ${dropdownLabels?.[field]}`}
+                    placeholder={`انتخاب ${dropdownLabels[field]}`}
                     className={`custom-dropdown ${
                       classNameMapping[field] || "w-100"
                     }`}
