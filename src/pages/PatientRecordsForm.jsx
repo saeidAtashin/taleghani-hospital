@@ -104,7 +104,6 @@ const PatientRecordsForm = () => {
         if (data?.data) {
           const formattedData = { ...data.data };
 
-          // Format the data for MultiSelect components
           Object.keys(dropdownApis).forEach((field) => {
             if (Array.isArray(data.data[field])) {
               formattedData[field] = data.data[field].map((item) => ({
@@ -114,10 +113,8 @@ const PatientRecordsForm = () => {
             }
           });
 
-          // Set patient data
           setPatient(formattedData);
 
-          // Set updated fields
           const initialUpdatedFields = {};
           Object.keys(dropdownApis).forEach((field) => {
             if (Array.isArray(formattedData[field])) {
@@ -134,7 +131,6 @@ const PatientRecordsForm = () => {
         toast.error("خطا در دریافت اطلاعات بیمار");
       });
 
-    // Fetch dropdown options
     Object.entries(dropdownApis).forEach(([key, url]) => {
       fetch(url)
         .then((res) => res.json())
@@ -155,19 +151,8 @@ const PatientRecordsForm = () => {
     });
   }, []);
 
-  // Add console log for patient state changes
-  useEffect(() => {
-    console.log(" Patient :", patient);
-  }, [patient]);
-
-  // Add console log for dropdown data changes
-  useEffect(() => {
-    console.log(" Dropdown :", dropdownData);
-  }, [dropdownData]);
-
   const handleChange = (e, field) => {
     if (dropdownApis[field]) {
-      // For MultiSelect components
       const selectedValues = e.value || [];
       const formattedValues = selectedValues.map((value) => {
         const option = dropdownData[field].find((opt) => opt.value === value);
@@ -224,8 +209,6 @@ const PatientRecordsForm = () => {
       patient_uid: uid,
       drugs_records: patient?.drugs_records,
     };
-
-    // patientApiUrl
 
     fetch(patientApiUrl, {
       method: "PUT",
