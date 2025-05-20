@@ -61,7 +61,15 @@ const Step3Form = ({ patient_uid, onNext, initialData, isEditing = false }) => {
       console.log("initialData", initialData);
       setFormType(initialData.type);
       setSelectedDiagnosis(initialData.diagnosis_uid);
-      setSelectedDiagnosisLabel(initialData.diagnosis_uid);
+
+      // Set the diagnosis label from the options
+      const selectedOption = diagnosisOptions.find(
+        (opt) => opt.value === initialData.diagnosis_uid
+      );
+      if (selectedOption) {
+        setSelectedDiagnosisLabel(selectedOption.label);
+      }
+
       setFormData((prev) => ({
         ...prev,
         stage: initialData.disease_data?.stage || "",
@@ -73,12 +81,12 @@ const Step3Form = ({ patient_uid, onNext, initialData, isEditing = false }) => {
         metastasis: initialData.disease_data?.metastasis || [],
       }));
 
-      // Set initial stage label
+      // Set the stage label
       if (initialData.disease_data?.stage) {
         setSelectedStageLabel(initialData.disease_data.stage);
       }
     }
-  }, [initialData]);
+  }, [initialData, diagnosisOptions]);
 
   const handleDiagnosisChange = (e) => {
     setSelectedDiagnosis(e.value);
@@ -93,7 +101,7 @@ const Step3Form = ({ patient_uid, onNext, initialData, isEditing = false }) => {
 
   const handleStageChange = (e) => {
     setFormData((prev) => ({ ...prev, stage: e.value }));
-    setSelectedStageLabel(`مرحله: ${e.value}`);
+    setSelectedStageLabel(e.value);
     setShowStageDropdown(false);
   };
 
@@ -148,9 +156,7 @@ const Step3Form = ({ patient_uid, onNext, initialData, isEditing = false }) => {
             ),
             metastasis: formData.metastasis.filter(
               (met) =>
-                met.site.trim() ||
-                met.size.trim() ||
-                met.description.trim()
+                met.site.trim() || met.size.trim() || met.description.trim()
             ),
             ...(formData.stage?.trim() && { stage: formData.stage.trim() }),
           };
