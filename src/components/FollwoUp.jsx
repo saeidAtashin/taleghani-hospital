@@ -261,7 +261,7 @@ export default function FollwoUp({ setActiveTabForce, setrowDataTransfer }) {
       .get(`https://cancerreg.ir/api/v1/reports/follow-up/${uid}/`)
       .then((response) => {
         const fetchedData = response.data.results.map((item, index) => ({
-          id: item?.data?.uid || index, // Ensure uniqueness
+          id: item?.data?.uid || index,
           ...item,
           records: item.records,
           created_at: moment().format("YYYY-MM-DD"),
@@ -277,6 +277,18 @@ export default function FollwoUp({ setActiveTabForce, setrowDataTransfer }) {
   useEffect(() => {
     fetchData();
   }, [uid]);
+
+  // Listen for changes in other components
+  useEffect(() => {
+    const handleStorageChange = () => {
+      fetchData();
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
 
   const headerNew = (
     <div className="d-flex flex-wrap gap-2 align-items-center justify-content-start"></div>

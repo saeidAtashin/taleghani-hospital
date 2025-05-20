@@ -17,6 +17,19 @@ const PatientsDetails = () => {
   const [rowDataTransfer, setrowDataTransfer] = useState(undefined);
   const [refresh, setrefresh] = useState(false);
   const [diseaseType, setDiseaseType] = useState(null);
+  const [followUpData, setFollowUpData] = useState([]);
+
+  const fetchFollowUpData = async () => {
+    try {
+      const response = await apiRequest(
+        "GET",
+        `/reports/follow-up/${uid}/`
+      );
+      setFollowUpData(response.data.data);
+    } catch (error) {
+      console.error("Error fetching follow-up data:", error);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,6 +44,15 @@ const PatientsDetails = () => {
     };
     fetchData();
   }, [refresh]);
+
+  // Initial fetch of follow-up data
+  useEffect(() => {
+    fetchFollowUpData();
+  }, []);
+
+  const handleSuccess = () => {
+    fetchFollowUpData();
+  };
 
   const tabs = [
     {
@@ -68,6 +90,7 @@ const PatientsDetails = () => {
         <TasvirBardari
           rowDataTransfer={rowDataTransfer}
           setrowDataTransfer={setrowDataTransfer}
+          onSuccess={handleSuccess}
         />
       ),
     },
@@ -81,6 +104,7 @@ const PatientsDetails = () => {
             rowDataTransfer={rowDataTransfer}
             setrowDataTransfer={setrowDataTransfer}
             activeTabForce={activeTabForce}
+            onSuccess={handleSuccess}
           />
         </>
       ),
@@ -93,6 +117,7 @@ const PatientsDetails = () => {
           <TreatmentTable
             rowDataTransfer={rowDataTransfer}
             setrowDataTransfer={setrowDataTransfer}
+            onSuccess={handleSuccess}
           />
         </>
       ),
@@ -107,6 +132,7 @@ const PatientsDetails = () => {
             setActiveTabForce={setActiveTabForce}
             rowDataTransfer={rowDataTransfer}
             setrowDataTransfer={setrowDataTransfer}
+            followUpData={followUpData}
           />
         </div>
       ),

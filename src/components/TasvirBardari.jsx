@@ -226,7 +226,6 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
           }
         }
 
-        // Make the batch file deletion for each product after its records are deleted
         if (successCount > 0) {
           try {
             await axios.delete(
@@ -240,6 +239,7 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
 
       if (successCount > 0) {
         toast.success(`${successCount} مورد با موفقیت حذف شد`);
+        window.dispatchEvent(new Event('storage'));
       }
       if (errorCount > 0) {
         toast.error(`خطا در حذف ${errorCount} مورد`);
@@ -291,6 +291,7 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
         setrowDataTransfer(undefined);
         handleRefresh();
         setDescreption("");
+        window.dispatchEvent(new Event('storage'));
       })
       .catch((error) => {
         setbtnLoading(false);

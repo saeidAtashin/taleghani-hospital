@@ -105,6 +105,8 @@ export default function AzmayeshatTable({
         );
 
         setGroupedData(groupedArray);
+        // Trigger follow-up refresh after data is fetched
+        window.dispatchEvent(new Event('storage'));
       } catch (error) {
         // console.error("Error fetching data:", error);
       }

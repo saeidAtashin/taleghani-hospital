@@ -161,6 +161,8 @@ const TreatmentTable = ({ rowDataTransfer, setrowDataTransfer }) => {
         const { results } = response.data;
 
         setProducts(results);
+        // Trigger follow-up refresh after data is fetched
+        window.dispatchEvent(new Event('storage'));
       } catch (error) {
         // console.error("Error fetching data:", error);
       }
@@ -418,6 +420,8 @@ const TreatmentTable = ({ rowDataTransfer, setrowDataTransfer }) => {
         toast.success("درمان با موفقیت به پایان رسید");
         setShowViewDialog(false);
         setRefreshTreatTable(!refreshTreatTable);
+        // Trigger follow-up refresh
+        window.dispatchEvent(new Event('storage'));
       }
     } catch (error) {
       toast.error(
