@@ -267,12 +267,12 @@ export default function AzmayeshatTable({
 
           {selectedGroups.length > 0 && (
             <div className="mt-3 d-flex justify-content-end gap-2">
-              <Button
+              {/* <Button
                 label="چاپ"
                 icon="pi pi-print"
                 onClick={handlePrint}
                 className="p-button-success"
-              />
+              /> */}
               <Button
                 label="حذف"
                 icon="pi pi-trash"

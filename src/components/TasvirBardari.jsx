@@ -349,12 +349,12 @@ export default function TasvirBardari({ rowDataTransfer, setrowDataTransfer }) {
 
           {selectedProducts.length > 0 && (
             <div className="mt-3 d-flex justify-content-end gap-2">
-              <Button
+              {/* <Button
                 label="چاپ"
                 icon="pi pi-print"
                 onClick={handlePrint}
                 className="p-button-success"
-              />
+              /> */}
               <Button
                 label={
                   isDeleting
