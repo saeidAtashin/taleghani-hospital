@@ -120,8 +120,10 @@ function DashboardLayout() {
                     !isExpanded ? "justify-content-center" : ""
                   }`}
                 >
-                  <img className="" src="/images/users.svg" alt="users" />
-                  {isExpanded && <span>لیست بیماران</span>}
+                  {isExpanded && (
+                    <img className="" src="/images/users.svg" alt="users" />
+                  )}
+                  <div>لیست بیماران</div>
                 </a>
               </li>
               <li className="sidebar-item minheight d-flex">
@@ -131,8 +133,8 @@ function DashboardLayout() {
                     !isExpanded ? "justify-content-center" : ""
                   }`}
                 >
-                  <img src="/images/plus.svg" alt="users" />
-                  {isExpanded && <span>افزودن بیمار جدید</span>}
+                  {isExpanded && <img src="/images/plus.svg" alt="users" />}
+                  {<div>افزودن بیمار جدید</div>}
                 </a>
               </li>
             </ul>
