@@ -386,7 +386,7 @@ select,
   border: 1px solid #bfbebe !important;
   border-radius: 4px;
   position: absolute;
-  right: 200%;
+  right: 0%;
 }
 
 .p-cascadeselect-item-content {

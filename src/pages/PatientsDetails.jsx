@@ -21,10 +21,7 @@ const PatientsDetails = () => {
 
   const fetchFollowUpData = async () => {
     try {
-      const response = await apiRequest(
-        "GET",
-        `/reports/follow-up/${uid}/`
-      );
+      const response = await apiRequest("GET", `/reports/follow-up/${uid}/`);
       setFollowUpData(response.data.data);
     } catch (error) {
       console.error("Error fetching follow-up data:", error);
