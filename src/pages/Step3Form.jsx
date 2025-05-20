@@ -122,12 +122,6 @@ const Step3Form = ({ patient_uid, onNext, initialData, isEditing = false }) => {
   };
 
   const handleSubmit = async () => {
-    // Check if both stage and diagnosis dropdowns have selected values
-    if (!selectedDiagnosisLabel || !selectedStageLabel) {
-      toast.error("لطفا این دو مورد را تکمیل نمایید");
-      return;
-    }
-
     const diseaseData =
       formType === "NON_SOLID"
         ? {
@@ -140,38 +134,29 @@ const Step3Form = ({ patient_uid, onNext, initialData, isEditing = false }) => {
             stage: formData.stage.trim() || undefined,
           }
         : {
-            primary_tumors:
-              formData.primary_tumors.length > 0
-                ? formData.primary_tumors.filter(
-                    (tumor) =>
-                      tumor.site.trim() ||
-                      tumor.size.trim() ||
-                      tumor.description.trim()
-                  )
-                : undefined,
-            nearby_lymphs:
-              formData?.nearby_lymphs?.length > 0
-                ? formData.nearby_lymphs.filter(
-                    (lymph) =>
-                      lymph.site.trim() ||
-                      lymph.size.trim() ||
-                      lymph.description.trim()
-                  )
-                : undefined,
-            metastasis:
-              formData.metastasis.length > 0
-                ? formData.metastasis.filter(
-                    (met) =>
-                      met.site.trim() ||
-                      met.size.trim() ||
-                      met.description.trim()
-                  )
-                : undefined,
+            primary_tumors: formData.primary_tumors.filter(
+              (tumor) =>
+                tumor.site.trim() ||
+                tumor.size.trim() ||
+                tumor.description.trim()
+            ),
+            nearby_lymphs: formData.nearby_lymphs.filter(
+              (lymph) =>
+                lymph.site.trim() ||
+                lymph.size.trim() ||
+                lymph.description.trim()
+            ),
+            metastasis: formData.metastasis.filter(
+              (met) =>
+                met.site.trim() ||
+                met.size.trim() ||
+                met.description.trim()
+            ),
             ...(formData.stage?.trim() && { stage: formData.stage.trim() }),
           };
 
     const cleanedDiseaseData = Object.keys(diseaseData).reduce((acc, key) => {
-      if (Array.isArray(diseaseData[key]) && diseaseData[key].length > 0) {
+      if (Array.isArray(diseaseData[key])) {
         acc[key] = diseaseData[key];
       } else if (diseaseData[key] !== undefined) {
         acc[key] = diseaseData[key];
@@ -181,7 +166,7 @@ const Step3Form = ({ patient_uid, onNext, initialData, isEditing = false }) => {
 
     const payload = {
       type: formType,
-      diagnosis_uid: selectedDiagnosis,
+      ...(selectedDiagnosis && { diagnosis_uid: selectedDiagnosis }),
       ...(isEditing ? {} : { patient_uid }),
       ...(Object.keys(cleanedDiseaseData).length > 0 && {
         disease_data: cleanedDiseaseData,
@@ -293,7 +278,7 @@ const Step3Form = ({ patient_uid, onNext, initialData, isEditing = false }) => {
                 style={{ cursor: "pointer", textAlign: "right" }}
                 onClick={() => setShowDiagnosisDropdown(true)}
               >
-                {selectedDiagnosisLabel}
+                {selectedDiagnosisLabel || "انتخاب کنید"}
               </div>
             )}
           </div>
@@ -344,7 +329,7 @@ const Step3Form = ({ patient_uid, onNext, initialData, isEditing = false }) => {
                 style={{ cursor: "pointer", textAlign: "right" }}
                 onClick={() => setShowDiagnosisDropdown(true)}
               >
-                {selectedDiagnosisLabel}
+                {selectedDiagnosisLabel || "انتخاب کنید"}
               </div>
             )}
           </div>
@@ -371,7 +356,7 @@ const Step3Form = ({ patient_uid, onNext, initialData, isEditing = false }) => {
               style={{ cursor: "pointer", textAlign: "right" }}
               onClick={() => setShowStageDropdown(true)}
             >
-              {selectedStageLabel}
+              {selectedStageLabel || "انتخاب کنید"}
             </div>
           )}
         </div>
@@ -380,7 +365,7 @@ const Step3Form = ({ patient_uid, onNext, initialData, isEditing = false }) => {
         label={isEditing ? "ثبت تغییرات" : "ثبت اطلاعات و اتمام ثبت نام"}
         icon="pi pi-check"
         onClick={handleSubmit}
-        disabled={!formType || !selectedDiagnosis}
+        disabled={!formType}
         className="p-button-primary mt-3"
       />
     </div>
