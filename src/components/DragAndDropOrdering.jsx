@@ -83,14 +83,33 @@ const DragAndDropOrdering = ({
                                 justifyContent: "space-between",
                               }}
                             >
-                              <span>{item.name}</span>
-                              <FaTrash
-                                style={{
-                                  // color: "red",
-                                  cursor: "pointer",
-                                }}
-                                onClick={() => handleDelete(item.uid)}
-                              />
+                              <div className="d-flex align-items-center justify-content-between gap-3 w-100">
+                                <span>{item.name}</span>
+
+                                <div className="d-flex align-items-center gap-2">
+                                  <div className="d-flex align-items-center gap-2 bg-primary rounded-3 p-2">
+                                    <span className=" text-white px-2 py-1 border-round">
+                                      {" "}
+                                      ترتیب :
+                                    </span>
+                                    <span
+                                      className=" bg-warning text-dark px-2 py-1 rounded-3"
+                                      style={{
+                                        minWidth: "30px",
+                                        textAlign: "center",
+                                      }}
+                                    >
+                                      {item.ordering}
+                                    </span>
+                                  </div>
+                                  <FaTrash
+                                    style={{
+                                      cursor: "pointer",
+                                    }}
+                                    onClick={() => handleDelete(item.uid)}
+                                  />
+                                </div>
+                              </div>
                             </div>
                           )}
                         </Draggable>
@@ -123,14 +142,29 @@ const DragAndDropOrdering = ({
                   justifyContent: "space-between",
                 }}
               >
-                <span>{categoryData.name}</span>
-                <FaTrash
-                  style={{
-                    // color: "red",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => handleDelete(categoryData.uid)}
-                />
+                <div className="d-flex align-items-center gap-3">
+                  <span>{categoryData.name}</span>
+                </div>
+                <div className="d-flex align-items-center gap-2">
+                  <div className="d-flex align-items-center gap-2 bg-primary rounded-3 p-2">
+                    <span className=" text-white px-2 py-1 border-round">
+                      {" "}
+                      ترتیب :
+                    </span>
+                    <span
+                      className=" bg-warning text-dark px-2 py-1 rounded-3"
+                      style={{ minWidth: "30px", textAlign: "center" }}
+                    >
+                      {categoryData.ordering}
+                    </span>
+                  </div>
+                  <FaTrash
+                    style={{
+                      cursor: "pointer",
+                    }}
+                    onClick={() => handleDelete(categoryData.uid)}
+                  />
+                </div>
               </div>
             </Fragment>
           ))}
