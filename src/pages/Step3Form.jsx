@@ -263,24 +263,13 @@ const Step3Form = ({ patient_uid, onNext, initialData, isEditing = false }) => {
         <div>
           <div>
             <label>تشخیص</label>
-            {showDiagnosisDropdown ? (
-              <Dropdown
-                value={selectedDiagnosis}
-                onChange={handleDiagnosisChange}
-                options={diagnosisOptions}
-                placeholder="تشخیص بیمار را انتخاب نمایید"
-                className="w-100 mb-3"
-                autoFocus
-              />
-            ) : (
-              <div
-                className="p-inputtext p-component w-100 mb-3"
-                style={{ cursor: "pointer", textAlign: "right" }}
-                onClick={() => setShowDiagnosisDropdown(true)}
-              >
-                {selectedDiagnosisLabel || "انتخاب کنید"}
-              </div>
-            )}
+            <Dropdown
+              value={selectedDiagnosis}
+              onChange={handleDiagnosisChange}
+              options={diagnosisOptions}
+              placeholder="تشخیص بیمار را انتخاب نمایید"
+              className="w-100 mb-3"
+            />
           </div>
           {renderArrayField("lymph_nodes", "LN involmentN")}
 
@@ -314,24 +303,13 @@ const Step3Form = ({ patient_uid, onNext, initialData, isEditing = false }) => {
         <div>
           <div>
             <label>تشخیص</label>
-            {showDiagnosisDropdown ? (
-              <Dropdown
-                value={selectedDiagnosis}
-                onChange={handleDiagnosisChange}
-                options={diagnosisOptions}
-                placeholder="تشخیص بیمار را انتخاب نمایید"
-                className="w-100 mb-3"
-                autoFocus
-              />
-            ) : (
-              <div
-                className="p-inputtext p-component w-100 mb-3"
-                style={{ cursor: "pointer", textAlign: "right" }}
-                onClick={() => setShowDiagnosisDropdown(true)}
-              >
-                {selectedDiagnosisLabel || "انتخاب کنید"}
-              </div>
-            )}
+            <Dropdown
+              value={selectedDiagnosis}
+              onChange={handleDiagnosisChange}
+              options={diagnosisOptions}
+              placeholder="تشخیص بیمار را انتخاب نمایید"
+              className="w-100 mb-3"
+            />
           </div>
           {renderArrayField("primary_tumors", "T")}
           {renderArrayField("nearby_lymphs", "N")}
@@ -341,24 +319,13 @@ const Step3Form = ({ patient_uid, onNext, initialData, isEditing = false }) => {
       {formType && (
         <div>
           <label>stage</label>
-          {showStageDropdown ? (
-            <Dropdown
-              value={formData.stage}
-              onChange={handleStageChange}
-              options={stageOptions}
-              placeholder="مرحله بیمار را انتخاب نمایید"
-              className="w-100 mb-3"
-              autoFocus
-            />
-          ) : (
-            <div
-              className="p-inputtext p-component w-100 mb-3"
-              style={{ cursor: "pointer", textAlign: "right" }}
-              onClick={() => setShowStageDropdown(true)}
-            >
-              {selectedStageLabel || "انتخاب کنید"}
-            </div>
-          )}
+          <Dropdown
+            value={formData.stage}
+            onChange={handleStageChange}
+            options={stageOptions}
+            placeholder="مرحله بیمار را انتخاب نمایید"
+            className="w-100 mb-3"
+          />
         </div>
       )}
       <Button
