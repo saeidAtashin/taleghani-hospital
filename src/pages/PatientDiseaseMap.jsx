@@ -263,7 +263,7 @@ const PatientDiseaseMap = ({ setDiseaseType }) => {
             patient_uid={uid}
             initialData={{
               type: editingDisease.type,
-              diagnosis_uid: editingDisease.diagnosis,
+              diagnosis_uid: editingDisease.diagnosis_uid,
               disease_data: diseaseDetails[editingDisease.uid]?.disease_data,
             }}
             onNext={(formData) =>

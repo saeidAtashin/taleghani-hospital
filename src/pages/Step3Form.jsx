@@ -56,6 +56,7 @@ const Step3Form = ({ patient_uid, onNext, initialData, isEditing = false }) => {
     fetchDiagnosisOptions();
   }, [selectedDiagnosis]);
 
+  console.log("initialData", initialData);
   useEffect(() => {
     if (initialData) {
       console.log("initialData", initialData);
