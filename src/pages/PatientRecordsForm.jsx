@@ -99,7 +99,27 @@ const PatientRecordsForm = () => {
 
   useEffect(() => {
     fetch(patientApiUrl)
-      .then((res) => res.json())
+      .then((res) => {
+        if (res.status === 404) {
+          // If record doesn't exist, initialize with empty data
+          setPatient({
+            height: "",
+            weight: "",
+            bmi: "",
+            bsa: "",
+            treating_physician: "",
+            underlying_diseases: [],
+            habits: [],
+            family_history: [],
+            surgeries: [],
+            drugs_records: [],
+            refer_reason: "",
+            description: "",
+          });
+          return null;
+        }
+        return res.json();
+      })
       .then((data) => {
         if (data?.data) {
           const formattedData = { ...data.data };
@@ -210,6 +230,7 @@ const PatientRecordsForm = () => {
       drugs_records: patient?.drugs_records,
     };
 
+    // Try PUT first, if it fails with 404, then try POST
     fetch(patientApiUrl, {
       method: "PUT",
       headers: {
@@ -218,13 +239,26 @@ const PatientRecordsForm = () => {
       body: JSON.stringify(apiData),
     })
       .then(async (res) => {
+        if (res.status === 404) {
+          // If PUT fails with 404, try POST
+          return fetch('https://cancerreg.ir/api/v1/patient/patient-records/', {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(apiData),
+          });
+        }
+        return res;
+      })
+      .then(async (res) => {
         const responseData = await res.json();
 
         if (res.status >= 200 && res.status < 400) {
-          toast.success("ویرایش شما انجام شد");
-          toggleForm();
+          toast.success(res.status === 201 ? "اطلاعات با موفقیت ثبت شد" : "ویرایش شما انجام شد");
+          setIsFormDisabled(true); // Reset form to disabled state
         } else {
-          toast.error("خطا در ویرایش اطلاعات");
+          toast.error(res.status === 201 ? "خطا در ثبت اطلاعات" : "خطا در ویرایش اطلاعات");
         }
       })
       .catch((error) => {

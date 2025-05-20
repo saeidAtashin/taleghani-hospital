@@ -269,7 +269,7 @@ export default function FollwoUp({ setActiveTabForce, setrowDataTransfer }) {
         setProducts(fetchedData);
       })
       .catch((error) => {
-        toast.error("خطا در بارگذاری داده‌ها");
+        // toast.error("خطا در بارگذاری داده‌ها");
       })
       .finally(() => setLoading(false));
   };
