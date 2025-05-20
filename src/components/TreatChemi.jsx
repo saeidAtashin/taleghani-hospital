@@ -377,7 +377,11 @@ const TreatChemi = ({
                       خط درمان {index + 1}
                     </span>
                     <Badge
-                      value={treatment?.state}
+                      value={
+                        treatment?.state === "DONE"
+                          ? "تکمیل شده"
+                          : "در حال انجام"
+                      }
                       className={`mx-4 ${
                         treatment?.state === "DONE" ? "bg-success" : "bg-danger"
                       }`}
